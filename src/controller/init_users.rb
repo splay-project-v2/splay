@@ -24,7 +24,7 @@
 
 # GRANT ALL PRIVILEGES ON splay.* TO splay@localhost IDENTIFIED BY 'splay';
 
-require 'lib/all'
+require './lib/all'
 
 def drop_db(db)
 	db.do("DROP TABLE IF EXISTS users")

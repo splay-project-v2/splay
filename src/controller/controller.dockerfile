@@ -1,14 +1,17 @@
-from ubuntu:12.04
+FROM ruby:2.5.1
 label Description="TBD"
 
 run mkdir -p /usr/splay
 
 workdir /usr/splay
 
-run apt-get update && apt-get -y --no-install-recommends install \
-  build-essential ruby1.8-full rubygems1.8 less libmysqlclient-dev libssl-dev
+run apt-get update -qq 
+run apt-get -y --no-install-recommends install \
+  build-essential rubygems less mysql-client default-libmysqlclient-dev libssl-dev
 
-run gem install json -v 1.8.6 && gem install openssl-nonblock dbi dbd-mysql mysql Orbjson
+run gem install json -v 2.1.0
+run gem install mysql2 openssl
+#openssl-nonblock dbi dbd-mysql Orbjson
 
 add *.rb ./
 add lib ./lib

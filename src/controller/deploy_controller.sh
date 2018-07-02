@@ -19,6 +19,6 @@
 
 set -o nounset                              # Treat unset variables as an error
 
-ruby -rubygems init_db.rb
-ruby -rubygems init_users.rb
-ruby -rubygems controller.rb
+ruby -r rubygems init_db.rb
+ruby -r rubygems init_users.rb
+ruby -r rubygems controller.rb

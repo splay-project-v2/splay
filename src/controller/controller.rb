@@ -21,13 +21,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 
-require 'lib/common'
+require './lib/common'
 
 # We force only one log daemon and one splayd daemon
 SplayControllerConfig::NumLogd = 1
 SplayControllerConfig::NumSplayd = 1
 
-require 'lib/all'
+require './lib/all'
 
 #$log.level = Logger::DEBUG
 $log.level = Logger::INFO
