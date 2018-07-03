@@ -2,11 +2,11 @@ CC= gcc
 
 # Since Lua 5.1, lua and lualib are merged.
 #INCLUDE= -I/usr/include/lua5.1 -I/usr/local/openssl/include
-INCLUDE= -I/usr/include/lua5.1
+INCLUDE= -I/usr/include/lua5.3
 
 # For static linking, but loading dynamic modules will not work then.
 #LIBS= -L/usr/lib -llua5.1 -lm -ldl
-LIBS= -L/usr/lib -llua5.1 -lm
+LIBS= -L/usr/lib -llua5.3 -lm
 OPENSSL_LIBS= -L/usr/local/openssl/lib -lcrypto -lssl
 
 #CFLAGS = -Wall -g -pedantic -DDEBUG $(INCLUDE)
@@ -55,17 +55,20 @@ jobd.o: jobd.c jobd.h
 splay_lib.o: splay_lib.c splay_lib.h
 	$(CC) $(CFLAGS) -c -o splay_lib.o splay_lib.c
 
-splayd: splayd.o splay_lib.o
-	$(CC) -o splayd splayd.o splay_lib.o $(LIBS)
+compmod.o: compmod.c compmod.h
+	$(CC) $(CFLAGS) -c -o compmod.o compmod.c
+
+splayd: splayd.o splay_lib.o compmod.o
+	$(CC) -o splayd splayd.o splay_lib.o compmod.o $(LIBS)
 	strip splayd
 
-jobd: jobd.o splay_lib.o
-	$(CC) -o jobd jobd.o splay_lib.o $(LIBS)
+jobd: jobd.o splay_lib.o compmod.o
+	$(CC) -o jobd jobd.o splay_lib.o compmod.o $(LIBS)
 	strip jobd
 
 ### Splay module
 splay_core.so: splay.o
-	$(CC) -O -fpic -shared -o splay_core.so splay.o -lm
+	$(CC) -O -fpic -shared -o splay_core.so splay.o compmod.o -lm
 	strip splay_core.so
 
 splay.o: splay.c splay.h
@@ -73,7 +76,7 @@ splay.o: splay.c splay.h
 
 ### Misc module
 misc_core.so: misc.o
-	$(CC) -O -fpic -shared -o misc_core.so misc.o -lm
+	$(CC) -O -fpic -shared -o misc_core.so misc.o compmod.o -lm
 	strip misc_core.so
 
 misc.o: misc.c misc.h
@@ -81,7 +84,7 @@ misc.o: misc.c misc.h
 
 ### Data_bits module
 data_bits_core.so: data_bits.o
-	$(CC) -O -fpic -shared -o data_bits_core.so data_bits.o -lm
+	$(CC) -O -fpic -shared -o data_bits_core.so data_bits.o compmod.o -lm
 	strip data_bits_core.so
 
 data_bits.o: data_bits.c data_bits.h
@@ -89,7 +92,7 @@ data_bits.o: data_bits.c data_bits.h
 
 ### luacrypto
 luacrypto/crypto.so: luacrypto/crypto.o
-	$(CC) -O -fpic -shared -o luacrypto/crypto.so luacrypto/*.o $(OPENSSL_LIBS)
+	$(CC) -O -fpic -shared -o luacrypto/crypto.so luacrypto/*.o compmod.o $(OPENSSL_LIBS)
 	strip luacrypto/crypto.so
 
 luacrypto/crypto.o: luacrypto/lcrypto.c luacrypto/lcrypto.h

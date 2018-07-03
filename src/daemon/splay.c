@@ -42,6 +42,8 @@
 
 #include "splay.h"
 
+#include "compmod.h"
+
 static const luaL_reg sp_funcs[] =
 {
 	{"sleep", sp_sleep},

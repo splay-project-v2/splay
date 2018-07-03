@@ -16,6 +16,7 @@
 #endif
 
 #include "lcrypto.h"
+#include "../compmod.h"
 
 LUACRYPTO_API int luaopen_crypto(lua_State *L);
 
@@ -395,7 +396,7 @@ static int rand_cleanup(lua_State *L)
 /*
 ** Create a metatable and leave it on top of the stack.
 */
-LUACRYPTO_API int luacrypto_createmeta (lua_State *L, const char *name, const luaL_reg *methods) {
+LUACRYPTO_API int luacrypto_createmeta (lua_State *L, const char *name, const luaL_Reg *methods) {
   if (!luaL_newmetatable (L, name))
     return 0;
   

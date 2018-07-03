@@ -22,8 +22,8 @@
  * Functions used by splayd (deamon main executable).
  */
 
-#ifndef LUA_COMPAT_5_2
-#define LUA_COMPAT_5_2
+#ifndef LUA_COMPAT_ALL
+#define LUA_COMPAT_ALL
 #endif
 
 #include <stdio.h>
@@ -45,10 +45,14 @@
 
 #include "splay_lib.h"
 
+#include "compmod.h"
+
 int mem = 0;
 int max_mem = 0;
 
-static const luaL_reg splayd[] =
+
+
+static const luaL_Reg splayd[] =
 {
     {"set_max_mem", sp_set_max_mem},
     {NULL, NULL}
@@ -134,8 +138,15 @@ lua_State *new_lua()
 
 
 	/* PiL2 p. 292 */
-	lua_cpcall(L, luaopen_base, NULL);
-	lua_cpcall(L, luaopen_package, NULL);
+	// In lua 5.3 cpcall doesn't exist anymore
+	// lua_cpcall(L, luaopen_base, NULL);
+	// lua_cpcall(L, luaopen_package, NULL);
+	// replace by 
+	lua_pushcfunction(L, luaopen_base);
+	lua_pcall(L, 1,0 , 0);
+	lua_pushcfunction(L, luaopen_package);
+	lua_pcall(L, 1,0 , 0);
+
 	registerlib(L, "io", luaopen_io);
 	registerlib(L, "os", luaopen_os);
 	registerlib(L, "table", luaopen_table);
@@ -143,6 +154,7 @@ lua_State *new_lua()
 	registerlib(L, "math", luaopen_math);
 	registerlib(L, "debug", luaopen_debug);
 
+	// Change in lua 5.3
 	luaL_openlib(L, "splayd", splayd, 0);
 
 	return L;

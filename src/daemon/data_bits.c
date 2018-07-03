@@ -37,6 +37,8 @@
 
 #include "data_bits.h"
 
+#include "compmod.h"
+
 #define set_bit(o, v) ((o)[(v) / 8] |= (1 << ((v) % 8)))
 #define unset_bit(o, v) ((o)[(v) / 8] &= (255 ^ (1 << ((v) % 8))))
 #define get_bit(o, v) (((o)[(v) / 8] & (1 << ((v) % 8))) ? 1 : 0)
