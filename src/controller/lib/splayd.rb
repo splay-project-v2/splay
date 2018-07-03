@@ -42,12 +42,12 @@ class SplaydServer
 
 	def main
 		begin
-			server = TCPserver.new(@port)
+			server = TCPServer.new(@port)
 			server.setsockopt(Socket::SOL_SOCKET,Socket::SO_REUSEADDR, true)
 
 			if @@ssl
 				# SSL key and cert
-				key = OpenSSL::PKey::RSA.new 512
+				key = OpenSSL::PKey::RSA.new 2048
 				cert = OpenSSL::X509::Certificate.new
 				cert.not_before = Time.now
 				cert.not_after = Time.now + 3600
@@ -363,20 +363,20 @@ class Splayd
 	@@auto_add = SplayControllerConfig::AutoAddSplayds
 
 	def initialize(id)
-		@row = $db.select_one "SELECT * FROM splayds WHERE id='#{id}'"
+		@row = ($db.query "SELECT * FROM splayds WHERE id='#{id}'").first
 		if not @row
-			@row = $db.select_one "SELECT * FROM splayds WHERE `key`='#{id}'"
+			@row = ($db.query "SELECT * FROM splayds WHERE `key`='#{id}'").first
 		end
 		if not @row and @@auto_add
 			$log.info "Splayd #{id} Auto-added"
-			$db.do "INSERT INTO splayds SET `key`='#{id}'"
-			@row = $db.select_one "SELECT * FROM splayds WHERE `key`='#{id}'"
+			$db.query "INSERT INTO splayds SET `key`='#{id}'"
+			@row = ($db.query "SELECT * FROM splayds WHERE `key`='#{id}'").first
 		end
 		if @row then @id = @row['id'] end
 	end
 
 	def self.init
-		$db.do "UPDATE splayds
+		$db.query "UPDATE splayds
 				SET status='UNAVAILABLE'
 				WHERE
 				status='AVAILABLE' or status='PREAVAILABLE'"
@@ -385,11 +385,14 @@ class Splayd
 	end
 
 	def self.reset_unseen
-		$db.select_all "SELECT * FROM splayds WHERE
+
+		results = $db.query "SELECT * FROM splayds WHERE
 				last_contact_time<'#{Time.now.to_i - @@unseen_timeout}' AND
 				(status='AVAILABLE' OR
 				status='UNAVAILABLE' OR
-				status='PREAVAILABLE')" do |splayd|
+				status='PREAVAILABLE')"
+
+		results.each do |splayd|
 			$log.debug("Splayd #{splayd['id']} (#{splayd['ip']} - #{splayd['status']}) not seen " +
 					"since #{@@unseen_timeout} seconds (#{splayd['last_contact_time']}) => RESET")
 			# We kill the thread if there is one
@@ -397,16 +400,17 @@ class Splayd
 			s.kill
 			s.reset
 		end
+
 	end
 
 	def self.reset_actions
 		# When the controller start, if some actions where send but still not
 		# replied, we will never receive the reply so we set the action to the
 		# FAILURE status.
-		$db.do "UPDATE actions SET status='FAILURE' WHERE status='SENDING'"
+		$db.query "UPDATE actions SET status='FAILURE' WHERE status='SENDING'"
 
 		# Uncomplete actions, jobd should put the again.
-		$db.do "DELETE FROM actions WHERE status='TEMP'"
+		$db.query "DELETE FROM actions WHERE status='TEMP'"
 	end
 
 	def self.gen_session
@@ -414,10 +418,10 @@ class Splayd
 	end
 	
 	def self.has_job(splayd_id, job_id)
-		sj = $db.select_one "SELECT * FROM splayd_jobs
+		sj = $db.query "SELECT * FROM splayd_jobs
 				WHERE splayd_jobs.splayd_id='#{splayd_id}' AND
 				splayd_jobs.job_id='#{job_id}'"
-		if sj then return true else return false end
+		if sj.first then return true else return false end
 	end
 
 	# Send an action to a splayd only if it is active.
@@ -426,7 +430,7 @@ class Splayd
 	# have no consequences (other than a little DB space) because when the splayd
 	# comes back from a reset state, it will be reset() and the commands deleted.
 	def self.add_action(splayd_id, job_id, command, data = '')
-		$db.do "INSERT INTO actions SET
+		$db.query "INSERT INTO actions SET
 				splayd_id='#{splayd_id}',
 				job_id='#{job_id}',
 				command='#{command}',
@@ -437,7 +441,7 @@ class Splayd
 		#splayd = $db.select_one "SELECT status FROM splayds WHERE id='#{splayd_id}'"
 		# Even UNAVAILABLE, the splayd IS active !
 		#if splayd['status'] == 'AVAILABLE' or splayd['status'] == 'UNAVAILABLE'
-			#$db.do "INSERT INTO actions SET
+			#$db.query "INSERT INTO actions SET
 					#splayd_id='#{splayd_id}',
 					#job_id='#{job_id}',
 					#command='#{command}',
@@ -450,7 +454,8 @@ class Splayd
 
 	def self.blacklist
 		hosts = []
-		$db.select_all "SELECT host FROM blacklist_hosts" do |row|
+		results = $db.query "SELECT host FROM blacklist_hosts"
+		results.each do |row|
 			hosts << row[0]
 		end
 		return hosts
@@ -458,7 +463,8 @@ class Splayd
 
 	def self.localize_all
 		return Thread.new do
-			$db.select_all "SELECT id FROM splayds" do |s|
+			results = $db.query "SELECT id FROM splayds"
+			results.each do |s|
 				splayd = Splayd.new(s['id'])
 				splayd.localize
 			end
@@ -480,16 +486,16 @@ class Splayd
 		# to protect the $dbt object while in use.
 		@@transaction_mutex.synchronize do
 			#$dbt.transaction do |dbt|
-			$dbt.do "BEGIN"
-				status = ($dbt.select_one "SELECT status FROM splayds
-						  WHERE id='#{@id}' FOR UPDATE")['status']
+			$dbt.query "BEGIN"
+				status = (($dbt.query "SELECT status FROM splayds
+						  WHERE id='#{@id}' FOR UPDATE").first)['status']
 				if status == 'REGISTERED' or status == 'UNAVAILABLE' or status == 'RESET' then
-					$dbt.do "UPDATE splayds SET
+					$dbt.query "UPDATE splayds SET
 							status='PREAVAILABLE'
 							WHERE id ='#{@id}'"
 					r = true
 				end
-			$dbt.do "COMMIT"
+			$dbt.query "COMMIT"
 			#end
 		end
 		return r
@@ -517,7 +523,7 @@ class Splayd
 		end
 
 		# We don't update ip, key, session and localization infomrations here
-		$db.do "UPDATE splayds SET
+		$db.query "UPDATE splayds SET
 				name='#{addslashes(infos['settings']['name'])}',
 				version='#{addslashes(infos['status']['version'])}',
 				lua_version='#{addslashes(infos['status']['lua_version'])}',
@@ -561,7 +567,7 @@ class Splayd
 				loc = Localization.get(@row['ip'])
 				$log.info("#{@id} #{@row['ip']} #{hostname} " +
 						"#{loc.country_code2.downcase} #{loc.city_name}")
-				$db.do "UPDATE splayds SET
+				$db.query "UPDATE splayds SET
 						hostname='#{hostname}',
 						country='#{loc.country_code2.downcase}',
 						city='#{loc.city_name}',
@@ -576,11 +582,11 @@ class Splayd
 	end
 
 	def remove_action action
-		$db.do "DELETE FROM actions WHERE id='#{action['id']}'"
+		$db.query "DELETE FROM actions WHERE id='#{action['id']}'"
 	end
 
 	def update(field, value)
-		$db.do "UPDATE splayds SET #{field}='#{value}' WHERE id='#{@id}'"
+		$db.query "UPDATE splayds SET #{field}='#{value}' WHERE id='#{@id}'"
 		@row[field] = value
 	end
 
@@ -593,32 +599,32 @@ class Splayd
 	# DB cleaning when a splayd is reset.
 	def reset
 		@row['session'] = Splayd.gen_session
-		$db.do "UPDATE splayds SET
+		$db.query "UPDATE splayds SET
 				status='RESET', session='#{@row['session']}' WHERE id='#{@id}'"
-		$db.do "DELETE FROM actions WHERE splayd_id='#{@id}'"
-		$db.do "DELETE FROM splayd_jobs WHERE splayd_id='#{@id}'"
-		$db.do "INSERT INTO splayd_availabilities SET
+		$db.query "DELETE FROM actions WHERE splayd_id='#{@id}'"
+		$db.query "DELETE FROM splayd_jobs WHERE splayd_id='#{@id}'"
+		$db.query "INSERT INTO splayd_availabilities SET
 			  splayd_id='#{@id}', status='RESET', time='#{Time.now.to_i}'"
 		# for trace job
-		$db.do "UPDATE splayd_selections SET reset='TRUE' WHERE splayd_id='#{@id}'"
+		$db.query "UPDATE splayd_selections SET reset='TRUE' WHERE splayd_id='#{@id}'"
 	end
 
 	def unavailable
-		$db.do "UPDATE splayds SET status='UNAVAILABLE' WHERE id='#{@id}'"
-		$db.do "INSERT INTO splayd_availabilities SET
+		$db.query "UPDATE splayds SET status='UNAVAILABLE' WHERE id='#{@id}'"
+		$db.query "INSERT INTO splayd_availabilities SET
 			   splayd_id='#{@id}',
 			   status='UNAVAILABLE',
 			   time='#{Time.now.to_i}'"
 	end
 
 	def action_failure
-		$db.do "UPDATE actions SET status='FAILURE'
+		$db.query "UPDATE actions SET status='FAILURE'
 				WHERE status='SENDING' AND splayd_id='#{@id}'"
 	end
 
 	def available
-		$db.do "UPDATE splayds SET status='AVAILABLE' WHERE id='#{@id}'"
-		$db.do "INSERT INTO splayd_availabilities SET
+		$db.query "UPDATE splayds SET status='AVAILABLE' WHERE id='#{@id}'"
+		$db.query "INSERT INTO splayd_availabilities SET
 			   splayd_id='#{@id}',
 			   ip='#{@row['ip']}',
 			   status='AVAILABLE',
@@ -628,17 +634,15 @@ class Splayd
 	end
 
 	def last_contact
-		$db.do "UPDATE splayds SET
-			   last_contact_time='#{Time.now.to_i}' WHERE id='#{@id}'"
+		$db.query "UPDATE splayds SET last_contact_time='#{Time.now.to_i}' WHERE id='#{@id}'"
 		return Time.now.to_i
 	end
 
 	# Restore actions in failure state.
 	def restore_actions
-		$db.select_all "SELECT * FROM actions WHERE
-				status='FAILURE' AND
-				splayd_id='#{@id}'" do |action|
+		results = $db.query "SELECT * FROM actions WHERE status='FAILURE' AND splayd_id='#{@id}'"
 
+		results.each do |action|
 			if action['command'] == 'REGISTER'
 				# We should put the FREE-REGISTER at the same place
 				# where REGISTER was. But, no other register action concerning
@@ -646,27 +650,26 @@ class Splayd
 				# split into states), so, if we remove the REGISTER, we can safely
 				# add the FREE-REGISTER commands at the top of the
 				# actions.
-				job = $db.select_one "SELECT ref FROM jobs WHERE id='#{action['job_id']}'"
-				$db.do "DELETE FROM actions WHERE id='#{action['id']}'"
+				job = ($db.query ("SELECT ref FROM jobs WHERE id='#{action['job_id']}'")).first
+				$db.query "DELETE FROM actions WHERE id='#{action['id']}'"
 				Splayd.add_action(action['splayd_id'], action['job_id'], 'FREE', job['ref'])
 				Splayd.add_action(action['splayd_id'], action['job_id'], 'REGISTER', addslashes(job['code']))
 			else
-				$db.do "UPDATE actions SET status='WAITING' WHERE id='#{action['id']}'"
+				$db.query "UPDATE actions SET status='WAITING' WHERE id='#{action['id']}'"
 			end
 		end
 	end
 
 	# Return the next WAITING action and set status to SENDING.
 	def next_action
-		action = $db.select_one "SELECT * FROM actions WHERE
-				splayd_id='#{@id}' ORDER BY id LIMIT 1"
+		action = ($db.query ("SELECT * FROM actions WHERE splayd_id='#{@id}' ORDER BY id LIMIT 1")).first
 		if action 
 			if action['status'] == 'TEMP'
 				$log.info("INCOMPLETE ACTION: #{action['command']} " +
 							"(splayd: #{@id}, job: #{action['job_id']})")
 			end
 			if action['status'] == 'WAITING'
-				$db.do "UPDATE actions SET
+				$db.query "UPDATE actions SET
 						status='SENDING'
 						WHERE id='#{action['id']}'"
 				return action
@@ -676,7 +679,7 @@ class Splayd
 	end
 
 	def s_j_register job_id
-		$db.do "UPDATE splayd_jobs SET
+		$db.query "UPDATE splayd_jobs SET
 				status='WAITING'
 				WHERE
 				splayd_id='#{@id}' AND
@@ -685,13 +688,13 @@ class Splayd
 	end
 
 	def s_j_free job_id
-		$db.do "DELETE FROM splayd_jobs WHERE
+		$db.query "DELETE FROM splayd_jobs WHERE
 				splayd_id='#{@id}' AND
 				job_id='#{job_id}'"
 	end
 
 	def s_j_start job_id
-		$db.do "UPDATE splayd_jobs SET
+		$db.query "UPDATE splayd_jobs SET
 			  status='RUNNING'
 			  WHERE
 			  splayd_id='#{@id}' AND
@@ -699,7 +702,7 @@ class Splayd
 	end
 
 	def s_j_stop job_id
-		$db.do "UPDATE splayd_jobs SET
+		$db.query "UPDATE splayd_jobs SET
 			  status='WAITING'
 			  WHERE
 			  splayd_id='#{@id}' AND
@@ -708,26 +711,26 @@ class Splayd
 
 	def s_j_status data
 		data = JSON.parse data
-		$db.select_all "SELECT * FROM splayd_jobs WHERE
-				splayd_id='#{@id}' AND
-				status!='RESERVED'" do |sj|
-			job = $db.select_one "SELECT ref FROM jobs WHERE id='#{sj['job_id']}'"
+		results = $db.query "SELECT * FROM splayd_jobs WHERE splayd_id='#{@id}' AND status!='RESERVED'"
+
+		results.each do |sj|
+			job = ($db.query ("SELECT ref FROM jobs WHERE id='#{sj['job_id']}'")).first
 			# There is no difference in Lua between Hash and Array, so when it's
 			# empty (an Hash), we encoded it like an empy Array.
 			if data['jobs'].class == Hash and data['jobs'][job['ref']]
 				if data['jobs'][job['ref']]['status'] == "waiting"
-					$db.do "UPDATE splayd_jobs SET status='WAITING'
+					$db.query "UPDATE splayd_jobs SET status='WAITING'
 							WHERE id='#{sj['id']}'"
 				end
 				# NOTE normally no needed because already set to RUNNING when
 				# we send the START command.
 				if data['jobs'][job['ref']]['status'] == "running"
-					$db.do "UPDATE splayd_jobs SET status='RUNNING'
+					$db.query "UPDATE splayd_jobs SET status='RUNNING'
 							WHERE id='#{sj['id']}'"
 				end
 
 			else
-				$db.do "DELETE FROM splayd_jobs WHERE id='#{sj['id']}'"
+				$db.query "DELETE FROM splayd_jobs WHERE id='#{sj['id']}'"
 			end
 			# it can't be new jobs in data['jobs'] that don't have already an
 			# entry in splayd_jobs
@@ -737,7 +740,7 @@ class Splayd
 	def parse_loadavg s
 		if s.strip != ""
 			l = s.split(" ")
-			$db.do "UPDATE splayds SET
+			$db.query "UPDATE splayds SET
 					load_1='#{l[0]}',
 					load_5='#{l[1]}',
 					load_15='#{l[2]}'
@@ -745,7 +748,7 @@ class Splayd
 		else
 			# NOTE should too be fixed in splayd
 			$log.warn("Splayd #{@id} report an empty loadavg. ")
-			$db.do "UPDATE splayds SET
+			$db.query "UPDATE splayds SET
 					load_1='10',
 					load_5='10',
 					load_15='10'
@@ -756,7 +759,7 @@ class Splayd
 	# NOTE then corresponding entry may already have been deleted if the reply
 	# comes after the job has finished his registration, but no problem.
 	def s_sel_reply(job_id, port, reply_time)
-		$db.do "UPDATE splayd_selections SET
+		$db.query "UPDATE splayd_selections SET
 				replied='TRUE',
 				reply_time='#{reply_time}',
 				port='#{port}'

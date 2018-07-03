@@ -20,6 +20,5 @@
 set -o nounset                              # Treat unset variables as an error
 
 ruby init_db.rb
-echo "initiated"
-#ruby init_users.rb
-#ruby controller.rb
+ruby init_users.rb
+ruby controller.rb

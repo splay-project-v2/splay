@@ -36,8 +36,8 @@ class JobdStandard < Jobd
 		@@dlock_jr.get
 		c_splayd = nil
 
-		$db.select_all "SELECT * FROM jobs WHERE
-				scheduler='#{@@scheduler}' AND status='LOCAL'" do |job|
+		$db.query("SELECT * FROM jobs WHERE
+				scheduler='#{@@scheduler}' AND status='LOCAL'").each do |job|
 
 
 			# Cache at the first call
@@ -48,14 +48,14 @@ class JobdStandard < Jobd
 				
 				# Do not take only AVAILABLE splayds here because new ones can become
 				# AVAILABLE before the next filters.
-				$db.select_all "SELECT id, max_number FROM splayds" do |m|
+				$db.query("SELECT id, max_number FROM splayds").each do |m|
 					c_splayd['max_number'][m['id']] = m['max_number']
 					c_splayd['nb_nodes'][m['id']] = 0
 				end
 
-				$db.select_all "SELECT splayd_id, COUNT(job_id) as nb_nodes
+				$db.query("SELECT splayd_id, COUNT(job_id) as nb_nodes
 						FROM splayd_jobs
-						GROUP BY splayd_id" do |ms|
+						GROUP BY splayd_id").each do |ms|
 					c_splayd['nb_nodes'][ms['splayd_id']] = ms['nb_nodes']
 				end
 			end
@@ -67,7 +67,7 @@ class JobdStandard < Jobd
 			# To select the splayds that have the lowest percentage of occupation 
 			occupation = {}
 
-			$db.select_all(create_filter_query(job)) do |m|
+			$db.query(create_filter_query(job)).each do |m|
 
 				if m['network_send_speed'] / c_splayd['max_number'][m['id']] >=
 						job['network_send_speed'] and
@@ -90,13 +90,13 @@ class JobdStandard < Jobd
 			### Mandatory splayds
 			mandatory_ok = true
 
-			$db.select_all("SELECT * FROM job_mandatory_splayds
-					WHERE job_id='#{job['id']}'") do |mm|
+			$db.query("SELECT * FROM job_mandatory_splayds
+					WHERE job_id='#{job['id']}'").each do |mm|
 
-				m = $db.select_one "SELECT id, ref FROM splayds WHERE
+				m = $db.query("SELECT id, ref FROM splayds WHERE
 						id='#{mm['splayd_id']}'
 						#{ressources_filter}
-						#{bytecode_filter}"
+						#{bytecode_filter}").first
 
 				if m
 					if c_splayd['nb_nodes'][m['id']] == c_splayd['max_number'][m['id']]
@@ -146,8 +146,8 @@ class JobdStandard < Jobd
 				if count >= nb_selected_splayds then break end
 			end
 
-			$db.select_all "SELECT * FROM job_mandatory_splayds
-					WHERE job_id='#{job['id']}'" do |mm|
+			$db.query("SELECT * FROM job_mandatory_splayds
+					WHERE job_id='#{job['id']}'").each do |mm|
 
 				splay_id = mm['splayd_id']
 				q_sel = q_sel + "('#{splayd_id}','#{job['id']}'),"
@@ -160,11 +160,11 @@ class JobdStandard < Jobd
 			q_sel = q_sel[0, q_sel.length - 1]
 			q_job = q_job[0, q_job.length - 1]
 			q_act = q_act[0, q_act.length - 1]
-			$db.do "INSERT INTO splayd_selections (splayd_id, job_id) VALUES #{q_sel}"
-			$db.do "INSERT INTO splayd_jobs (splayd_id, job_id, status) VALUES #{q_job}"
+			$db.query "INSERT INTO splayd_selections (splayd_id, job_id) VALUES #{q_sel}"
+			$db.query "INSERT INTO splayd_jobs (splayd_id, job_id, status) VALUES #{q_job}"
 
-			$db.do "INSERT INTO actions (splayd_id, job_id, command, status) VALUES #{q_act}"
-			$db.do "UPDATE actions SET data='#{addslashes(new_job)}', status='WAITING'
+			$db.query "INSERT INTO actions (splayd_id, job_id, command, status) VALUES #{q_act}"
+			$db.query "UPDATE actions SET data='#{addslashes(new_job)}', status='WAITING'
 					WHERE job_id='#{job['id']}' AND command='REGISTER' AND status='TEMP'"
 
 
@@ -175,24 +175,24 @@ class JobdStandard < Jobd
 
 	# REGISTERING => REGISTERING_TIMEOUT|RUNNING
 	def self.status_registering
-		$db.select_all "SELECT * FROM jobs WHERE
-				scheduler='#{@@scheduler}' AND status='REGISTERING'" do |job|
+		$db.query("SELECT * FROM jobs WHERE
+				scheduler='#{@@scheduler}' AND status='REGISTERING'").each do |job|
 
 			# Mandatory filter
 			mandatory_filter = ''
-			$db.select_all "SELECT * FROM job_mandatory_splayds
-					WHERE job_id='#{job['id']}'" do |mm|
+			$db.query("SELECT * FROM job_mandatory_splayds
+					WHERE job_id='#{job['id']}'").each do |mm|
 				mandatory_filter += " AND splayd_id!=#{mm['splayd_id']} "
 			end
 
 			# NOTE ORDER BY reply_time can not be an excellent idea in that sense that
 			# it could advantage splayd near of the controller.
 			selected_splayds = []
-			$db.select_all "SELECT splayd_id FROM splayd_selections WHERE
+			$db.query("SELECT splayd_id FROM splayd_selections WHERE
 					job_id='#{job['id']}' AND
 					replied='TRUE'
 					#{mandatory_filter}
-					ORDER BY reply_time LIMIT #{job['nb_splayds']}" do |m|
+					ORDER BY reply_time LIMIT #{job['nb_splayds']}").each do |m|
 				selected_splayds << m['splayd_id']
 			end
 
@@ -201,12 +201,12 @@ class JobdStandard < Jobd
 
 			mandatory_ok = true
 
-			$db.select_all "SELECT * FROM job_mandatory_splayds
-					WHERE job_id='#{job['id']}'" do |mm|
-				if not $db.select_one "SELECT id FROM splayd_selections WHERE
+			$db.query("SELECT * FROM job_mandatory_splayds
+					WHERE job_id='#{job['id']}'").each do |mm|
+				if not $db.query("SELECT id FROM splayd_selections WHERE
 						splayd_id='#{mm['splayd_id']}' AND
 						job_id='#{job['id']}' AND
-						replied='TRUE'"
+						replied='TRUE'").first
 					mandatory_ok = false
 					break
 				end
@@ -215,16 +215,16 @@ class JobdStandard < Jobd
 			if normal_ok and mandatory_ok
 
 				selected_splayds.each do |splayd_id|
-					$db.do("UPDATE splayd_selections SET
+					$db.query("UPDATE splayd_selections SET
 							selected='TRUE'
 							WHERE
 							splayd_id='#{splayd_id}' AND
 							job_id='#{job['id']}'")
 				end
-				$db.select_all "SELECT * FROM job_mandatory_splayds
-						WHERE job_id='#{job['id']}'" do |mm|
+				$db.query("SELECT * FROM job_mandatory_splayds
+						WHERE job_id='#{job['id']}'").each do |mm|
 
-					$db.do("UPDATE splayd_selections SET
+					$db.query("UPDATE splayd_selections SET
 							selected='TRUE'
 							WHERE
 							splayd_id='#{mm['splayd_id']}' AND
@@ -233,14 +233,14 @@ class JobdStandard < Jobd
 
 				# We need to unregister the job on the non selected splayds.
 				q_act = ""
-				$db.select_all "SELECT * FROM splayd_selections WHERE
+				$db.query("SELECT * FROM splayd_selections WHERE
 						job_id='#{job['id']}' AND
-						selected='FALSE'" do |m_s|
+						selected='FALSE'").each do |m_s|
 					q_act = q_act + "('#{m_s['splayd_id']}','#{job['id']}','FREE', '#{job['ref']}'),"
 				end
 				if q_act != ""
 					q_act = q_act[0, q_act.length - 1]
-					$db.do "INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"
+					$db.query "INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"
 				end
 
 
@@ -265,19 +265,19 @@ class JobdStandard < Jobd
 				if Time.now.to_i > job['status_time'] + @@register_timeout then
 					# TIMEOUT !
 
-					$db.do "DELETE FROM actions WHERE
+					$db.query "DELETE FROM actions WHERE
 							job_id='#{job['id']}' AND
 							command='REGISTER'"
 
 					# send unregister action
 					# We need to unregister the job on all the splayds.
-					$db.select_all "SELECT * FROM splayd_selections WHERE
-							job_id='#{job['id']}'" do |m_s|
+					$db.query("SELECT * FROM splayd_selections WHERE
+							job_id='#{job['id']}'").each do |m_s|
 						# TODO optimization
 						Splayd::add_action m_s['splayd_id'], job['id'], 'FREE', job['ref']
 					end
 
-					$db.do "DELETE FROM splayd_selections WHERE
+					$db.query "DELETE FROM splayd_selections WHERE
 							job_id='#{job['id']}'"
 					set_job_status(job['id'], 'REGISTER_TIMEOUT')
 				end
@@ -287,10 +287,10 @@ class JobdStandard < Jobd
 
 	# RUNNING => ENDED
 	def self.status_running
-		$db.select_all "SELECT * FROM jobs WHERE
-				scheduler='#{@@scheduler}' AND status='RUNNING'" do |job|
-			if not $db.select_one "SELECT * FROM splayd_jobs
-				WHERE job_id='#{job['id']}' AND status!='RESERVED'"
+		$db.query("SELECT * FROM jobs WHERE
+				scheduler='#{@@scheduler}' AND status='RUNNING'").each do |job|
+			if not $db.query("SELECT * FROM splayd_jobs
+				WHERE job_id='#{job['id']}' AND status!='RESERVED'").first
 				set_job_status(job['id'], 'ENDED')
 			end
 		end
@@ -308,14 +308,14 @@ class JobdStandard < Jobd
 			set_job_status(job['id'], 'KILLED')
 		when 'REGISTERING', 'RUNNING'
 			q_act = ""
-			$db.select_all "SELECT * FROM splayd_jobs WHERE
-					job_id='#{job['id']}'" do |m_s|
+			$db.query("SELECT * FROM splayd_jobs WHERE
+					job_id='#{job['id']}'").each do |m_s|
 				# STOP doesn't remove the job from the splayd
 				q_act = q_act + "('#{m_s['splayd_id']}','#{job['id']}','FREE', '#{job['ref']}'),"
 			end
 			if q_act != ""
 				q_act = q_act[0, q_act.length - 1]
-				$db.do "INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"
+				$db.query "INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"
 			end
 			set_job_status(job['id'], 'KILLED', status_msg)
 		end
@@ -324,25 +324,25 @@ class JobdStandard < Jobd
 	def self.command
 		# NOTE splayd_jobs table is cleaned directly by splayd when it apply the
 		# free command (or reset)
-		$db.select_all "SELECT * FROM jobs WHERE scheduler='#{@@scheduler}' AND
-				command IS NOT NULL" do |job|
+		$db.query("SELECT * FROM jobs WHERE scheduler='#{@@scheduler}' AND
+				command IS NOT NULL").each do |job|
 			if job['command'] =~ /kill|KILL/
 				kill_job(job, "user kill")
 			else
 				msg = "Not understood command: #{job['command']}"
-				$db.do "UPDATE jobs SET command_msg='#{msg}' WHERE id='#{job['id']}'"
+				$db.query "UPDATE jobs SET command_msg='#{msg}' WHERE id='#{job['id']}'"
 			end
-			$db.do "UPDATE jobs SET command='' WHERE id='#{job['id']}'"
+			$db.query "UPDATE jobs SET command='' WHERE id='#{job['id']}'"
 		end
 	end
 
 	# KILL AT
 	def self.kill_max_time
-		$db.select_all "SELECT * FROM jobs WHERE
+		$db.query("SELECT * FROM jobs WHERE
 				scheduler='#{@@scheduler}' AND
 				status='RUNNING' AND
 				max_time IS NOT NULL AND
-				status_time + max_time < #{Time.now.to_i}" do |job|
+				status_time + max_time < #{Time.now.to_i}").each do |job|
 			kill_job(job, "max execution time")
 		end
 	end

@@ -49,28 +49,28 @@ class DistributedLock
 			# TO TEST (transaction) or watch code, must be a Mutex like mine... +
 			# BEGIN and COMMIT
 			#$dbt.transaction do |dbt|
-				@@db.do "BEGIN"
-				locks = @@db.select_one("SELECT * FROM locks
-							WHERE id='1' FOR UPDATE")
+				@@db.query "BEGIN"
+				locks = @@db.query("SELECT * FROM locks
+							WHERE id='1' FOR UPDATE").first
 				if locks[name]
 					if locks[name] == 0
-						@@db.do "UPDATE locks SET #{name}='1' WHERE id ='1'"
+						@@db.query "UPDATE locks SET #{name}='1' WHERE id ='1'"
 						ok = true
 					end
 				else
 					$log.error("Trying to get a non existant lock: #{name}")
 					ok = true
 				end
-				@@db.do "COMMIT"
+				@@db.query "COMMIT"
 			end
 		end
 	end
 
 	def self.release(name)
 		@@mutex.synchronize do
-			#@@db.do "BEGIN"
-			@@db.do "UPDATE locks SET #{name}='0' WHERE id ='1'"
-			#@@db.do "COMMIT"
+			#@@db.query "BEGIN"
+			@@db.query "UPDATE locks SET #{name}='0' WHERE id ='1'"
+			#@@db.query "COMMIT"
 		end
 	end
 end

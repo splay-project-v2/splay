@@ -7,7 +7,7 @@ workdir /usr/splay
 
 run apt-get update -qq 
 run apt-get -y --no-install-recommends install \
-  build-essential rubygems less mysql-client default-libmysqlclient-dev libssl-dev
+  build-essential rubygems less mysql-client default-libmysqlclient-dev libssl-dev openssl
 
 run gem install json -v 2.1.0
 run gem install mysql2 openssl

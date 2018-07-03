@@ -65,9 +65,9 @@ class LogdServer
 				# check)
 
 				# TODO make a static function in Splayd.
-				splayd = $db.select_one "SELECT id FROM splayds WHERE
+				splayd = $db.query("SELECT id FROM splayds WHERE
 						(status='AVAILABLE' OR status='UNAVAILABLE') AND
-						ip='#{ip}'"
+						ip='#{ip}'").first
 
 				if splayd or (@@nat_gateway_ip and ip == @@nat_gateway_ip)
 					Logd.new(socket).run
@@ -109,17 +109,17 @@ class Logd
 				splayd_session = ll_so.read
 
 				if @@nat_gateway_ip and ip == @@nat_gateway_ip
-					job = $db.select_one "SELECT
+					job = $db.query("SELECT
 							jobs.id, splayds.id AS splayd_id, splayds.ip AS splayd_ip
 							FROM splayds, splayd_selections, jobs WHERE
 							jobs.ref='#{job_ref}' AND
 							jobs.status='RUNNING' AND
 							splayds.session='#{splayd_session}' AND
 							splayd_selections.job_id=jobs.id AND
-							splayd_selections.splayd_id=splayds.id"
+							splayd_selections.splayd_id=splayds.id").first
 				else
 					# We verify that the job exists and runs on a splayd that have this IP.
-					job = $db.select_one "SELECT
+					job = $db.query("SELECT
 							jobs.id, splayds.id AS splayd_id, splayds.ip AS splayd_ip
 							FROM splayds, splayd_selections, jobs WHERE
 							jobs.ref='#{job_ref}' AND
@@ -127,7 +127,7 @@ class Logd
 							splayds.ip='#{ip}' AND
 							splayds.session='#{splayd_session}' AND
 							splayd_selections.job_id=jobs.id AND
-							splayd_selections.splayd_id=splayds.id"
+							splayd_selections.splayd_id=splayds.id").first
 				end
 
 				if job

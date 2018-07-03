@@ -132,13 +132,13 @@ def watch(job)
 		j['status'] != "RUNNING"
 
 		sleep(1)
-		j = $db.select_one "SELECT * FROM jobs WHERE ref='#{job['ref']}'"
+		j = $db.query("SELECT * FROM jobs WHERE ref='#{job['ref']}'").first
 		if j['status'] != old_status
 			puts j['status']
 			if j['status'] == "RUNNING"
-				$db.select_all "SELECT * FROM splayd_selections WHERE job_id='#{j['id']}'
-						AND selected='TRUE'" do |ms|
-					m = $db.select_one "SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'"
+				$db.query("SELECT * FROM splayd_selections WHERE job_id='#{j['id']}'
+						AND selected='TRUE'").each do |ms|
+					m = $db.query("SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'").first
 					if j['network_nb_ports'] > 0
 						puts "    #{m['id']} #{m['name']} #{m['ip']} #{ms['port']} - #{ms['port'] +
 								j['network_nb_ports'] - 1}"
