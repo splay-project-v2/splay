@@ -22,6 +22,10 @@
  * Functions used by splayd (deamon main executable).
  */
 
+#ifndef LUA_COMPAT_5_2
+#define LUA_COMPAT_5_2
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

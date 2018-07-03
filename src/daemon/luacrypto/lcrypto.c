@@ -96,7 +96,7 @@ static int evp_digest(lua_State *L)
   EVP_MD_CTX *c = evp_pget(L, 1);
   EVP_MD_CTX *d = NULL;
   unsigned char digest[EVP_MAX_MD_SIZE];
-  size_t written = 0;
+  unsigned int written = 0;
   unsigned int i;
   char *hex;
   
@@ -148,7 +148,7 @@ static int evp_fdigest(lua_State *L)
   const char *s = luaL_checkstring(L, 2);
   const EVP_MD *type = EVP_get_digestbyname(type_name);
   unsigned char digest[EVP_MAX_MD_SIZE];
-  size_t written = 0;
+  unsigned int written = 0;
   unsigned int i;
   char *hex;
   
@@ -238,7 +238,7 @@ static int hmac_digest(lua_State *L)
 {
   HMAC_CTX *c = hmac_pget(L, 1);
   unsigned char digest[EVP_MAX_MD_SIZE];
-  size_t written = 0;
+  unsigned int written = 0;
   unsigned int i;
   char *hex;
 
@@ -284,7 +284,7 @@ static int hmac_fdigest(lua_State *L)
 {
   HMAC_CTX c;
   unsigned char digest[EVP_MAX_MD_SIZE];
-  size_t written = 0;
+  unsigned int written = 0;
   unsigned int i;
   char *hex;
   const char *t = luaL_checkstring(L, 1);
@@ -320,16 +320,16 @@ static int rand_do_bytes(lua_State *L, int (*bytes)(unsigned char *, int))
 {
   size_t count = luaL_checkint(L, 1);
   unsigned char tmp[256], *buf = tmp;
-  if (count > sizeof tmp)
+  if (count > sizeof(tmp))
     buf = malloc(count);
-    if (!buf)
-      return luaL_error(L, "out of memory");
-    else if (!bytes(buf, count))
-      return crypto_error(L);
-    lua_pushlstring(L, (char *)buf, count);
-    if (buf != tmp)
-      free(buf);
-    return 1;
+  if (!buf)
+    return luaL_error(L, "out of memory");
+  else if (!bytes(buf, count))
+    return crypto_error(L);
+  lua_pushlstring(L, (char *)buf, count);
+  if (buf != tmp)
+    free(buf);
+  return 1;
 }
 
 static int rand_bytes(lua_State *L)
