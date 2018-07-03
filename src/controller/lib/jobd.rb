@@ -281,7 +281,7 @@ class Jobd
 			else
 				status_msg += "The bytecode isn't Lua 5.1 bytecode.\n"
 				set_job_status(job['id'], 'NO_RESSOURCES', status_msg)
-				next
+				#next TODO next
 			end
 		end
 		

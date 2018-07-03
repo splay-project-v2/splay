@@ -415,7 +415,7 @@ class JobdTrace < Jobd
 
 			if not mandatory_ok or not normal_ok
 				set_job_status(job['id'], 'NO_RESSOURCES', status_msg)
-				next
+				# next TODO next
 			end
 
 			# We will send the job !
@@ -592,9 +592,9 @@ $log.info("KILLING #{job['id']}")
 		#when 'ENDED':
 		#when 'NO_RESSOURCES':
 		#when 'REGISTER_TIMEOUT':
-		when 'LOCAL':
+		when 'LOCAL'
 			set_job_status(job['id'], 'KILLED')
-		when 'REGISTERING', 'RUNNING':
+		when 'REGISTERING', 'RUNNING'
 			q_act = ""
 			$db.select_all "SELECT * FROM splayd_jobs WHERE
 					job_id='#{job['id']}'" do |m_s|

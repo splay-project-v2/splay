@@ -39,7 +39,6 @@ require 'openssl' # OpenSSL::OpenSSLError
 # require 'fastthread'
 require 'thread' # ThreadError
 require 'fileutils'
-require 'dbi' # DBI::Error
 require 'resolv'
 
 require "#{dir}/db_config"

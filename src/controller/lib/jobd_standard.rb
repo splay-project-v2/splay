@@ -297,16 +297,16 @@ class JobdStandard < Jobd
 	end
 			
 	def self.kill_job(job, status_msg = '')
-$log.info("KILLING #{job['id']}")
+		$log.info("KILLING #{job['id']}")
 		case job['status']
 		# NOTE do nothing for jobs in these states:
 		#when 'KILLED':
 		#when 'ENDED':
 		#when 'NO_RESSOURCES':
 		#when 'REGISTER_TIMEOUT':
-		when 'LOCAL':
+		when 'LOCAL'
 			set_job_status(job['id'], 'KILLED')
-		when 'REGISTERING', 'RUNNING':
+		when 'REGISTERING', 'RUNNING'
 			q_act = ""
 			$db.select_all "SELECT * FROM splayd_jobs WHERE
 					job_id='#{job['id']}'" do |m_s|

@@ -20,23 +20,24 @@
 ## along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 
 
-require 'dbi' # DBI::Error
-require 'mysql'
+require 'mysql2'
 
 class DBUtils
 
+
 	def self.get_new
-		$log.info("New DB connection")
-		# We do not catch exceptions here because if there is a problem the application
-		# must end.
+		$log.info("New DB connection (MySQL2)")
+		# We do not catch exceptions here because if there is a problem the application must end.
 		# TODO exception
-		db = DBI.connect("dbi:#{SplayControllerConfig::SQL_TYPE}:#{SplayControllerConfig::SQL_DB}:#{SplayControllerConfig::SQL_HOST}", SplayControllerConfig::SQL_USER, SplayControllerConfig::SQL_PASS)
-		db['AutoCommit'] = true
+		db = Mysql2::Client.new(
+				:host => SplayControllerConfig::SQL_HOST,
+			  :username => SplayControllerConfig::SQL_USER,
+			  :password => SplayControllerConfig::SQL_PASS,
+			  :database => SplayControllerConfig::SQL_DB
+		)
+		# db.autocommit(false) TODO : check autocommit
 
-		# Permit debug but slow down things
-		if not SplayControllerConfig::Production
-			db = LogObject.new(db, "DB")
-		end
+=begin TODO Alternative for the pinging
 		Thread.new do
 			loop do
 				if not db.ping()
@@ -45,25 +46,7 @@ class DBUtils
 				sleep 3600
 			end
 		end
-		return db
-	end
-
-	def self.get_new_mysql
-		$log.info("New DB connection (MySQL)")
-		# We do not catch exceptions here because if there is a problem the application
-		# must end.
-		# TODO exception
-		db = Mysql.new(SplayControllerConfig::SQL_HOST, SplayControllerConfig::SQL_USER, SplayControllerConfig::SQL_PASS, SplayControllerConfig::SQL_DB)
-		db.autocommit(false)
-
-		Thread.new do
-			loop do
-				if not db.ping()
-					break
-				end
-				sleep 3600
-			end
-		end
+=end
 		return db
 	end
 end
