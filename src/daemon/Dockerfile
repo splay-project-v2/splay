@@ -21,6 +21,7 @@ env L_CPATH "/usr/splay/lib/c"
 add *.* ./
 add Makefile .  
 add luacrypto ./luacrypto
+add lbase64 ./lbase64
 add modules ./modules
 add deploy.sh .
 

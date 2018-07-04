@@ -14,7 +14,7 @@ CFLAGS= -Wall -O2 -pedantic $(INCLUDE)
 
 .PHONY: all, clean
 
-all: splayd jobd splay_core.so misc_core.so data_bits_core.so luacrypto/crypto.so cert
+all: splayd jobd splay_core.so misc_core.so data_bits_core.so luacrypto/crypto.so lbase64/lbase64.so cert
 
 clean:
 	rm -f *~
@@ -97,3 +97,11 @@ luacrypto/crypto.so: luacrypto/crypto.o
 
 luacrypto/crypto.o: luacrypto/lcrypto.c luacrypto/lcrypto.h
 	$(CC) -fpic $(CFLAGS) -c -o luacrypto/crypto.o luacrypto/lcrypto.c
+
+### base64
+lbase64/lbase64.so: lbase64/lbase64.o
+	$(CC) -O -fpic -shared -o base64.so lbase64/*.o compmod.o $(OPENSSL_LIBS)
+	strip base64.so
+
+lbase64/lbase64.o:
+	$(CC) -fpic $(CFLAGS) -c -o lbase64/lbase64.o lbase64/lbase64.c
