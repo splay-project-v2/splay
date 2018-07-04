@@ -34,6 +34,8 @@
 
 #include "misc.h"
 
+#include "compmod.h"
+
 static const luaL_reg misc_funcs[] =
 {
     {"time", misc_time},

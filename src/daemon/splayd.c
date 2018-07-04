@@ -40,6 +40,8 @@
 #include "splay.h"
 #include "splay_lib.h"
 
+#include "compmod.h"
+
 int main(int argc, char *argv[])
 {
 	int tmp;

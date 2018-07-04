@@ -1,5 +1,5 @@
 --[[
-       Splay ### v1.0.6 ###
+       Splay ### v1.3 ###
        Copyright 2006-2011
        http://www.splay-project.org
 ]]
@@ -27,6 +27,7 @@ local io = require"io"
 
 local misc = require"splay.misc"
 local base = _G
+local log = require"splay.log"
 local pairs = pairs
 local print = print
 local type = type
@@ -37,21 +38,23 @@ local gcinfo = gcinfo
 
 local arg = arg
 
-module("splay.utils")
+--module("splay.utils")
+local _M = {}
+_M._COPYRIGHT   = "Copyright 2006 - 2011"
+_M._DESCRIPTION = "Some useful functions (only for local dev)"
+_M._VERSION     = 1.0
+_M.l_o = log.new(3, "[splay.utils]")
 
-_COPYRIGHT   = "Copyright 2006 - 2011"
-_DESCRIPTION = "Some useful functions (only for local dev)"
-_VERSION     = 1.0
 
 -- shortcuts
-function pk(...) return package(...) end
-function pr(...) return print_r(...) end
+function _M.pk(...) return _M.package(...) end
+function _M.pr(...) return _M.print_r(...) end
 
 --[[
 Insert command line arguments in the form 'a=b' into the arg table, but
 using 'a' as the index for value 'b'.
 ]]
-function args()
+function _M.args()
 	if arg then
 		for i = 1, #arg do
 			local s = misc.split(arg[i], "=")
@@ -62,7 +65,7 @@ function args()
 	end
 end
 
-function size(a)
+function _M.size(a)
 	local c = 1
 	for _, _ in pairs(a) do
 		c = c + 1
@@ -70,13 +73,13 @@ function size(a)
 	return c
 end
 
-function package()
+function _M.package()
 	for i, j in pairs(base.package.loaded) do
 		print(i, j)
 	end
 end
 
-function print_r(a, l, p)
+function _M.print_r(a, l, p)
 	local l = l or 2 -- level
 	local p = p or "" -- indentation (used recursivly)
 	if type(a) == "table" then
@@ -93,7 +96,7 @@ function print_r(a, l, p)
 	end
 end
 	
-function mem(ret)
+function _M.mem(ret)
 	collectgarbage()
 	collectgarbage()
 	local s = gcinfo() .. " ko"
@@ -104,7 +107,7 @@ function mem(ret)
 	end
 end
 
-function generate_job(position, number, first_port, list_size, random)
+function _M.generate_job(position, number, first_port, list_size, random)
 	position = tonumber(position)
 	number = tonumber(number or 50)
 	first_port = tonumber(first_port or 20000)
@@ -113,23 +116,28 @@ function generate_job(position, number, first_port, list_size, random)
 	job.me = {ip = "127.0.0.1", port = first_port + position - 1}
 	job.position = position
 	local nodes = {}
+	local jobnodes_array = nil
 	for i = 1, number do
 		table.insert(nodes, {ip = "127.0.0.1",  port = first_port + i - 1})
 	end
 	if random then
 		job.list_type = "random"
 		table.remove(nodes, position)
-		job.nodes = misc.random_pick(nodes, list_size)
+		jobnodes_array = misc.random_pick(nodes, list_size)
 	else
 		job.list_type = "head"
 		if list_size < #nodes then
-			job.nodes = {}
+			jobnodes_array = {}
 			for i = 1, list_size do
-				table.insert(job.nodes, nodes[i])
+				table.insert(jobnodes_array, nodes[i])
 			end
 		else
-			job.nodes = nodes
+			jobnodes_array = nodes
 		end
 	end
+	job.nodes = jobnodes_array --in local mode, no churn allowed
+	job.get_live_nodes = function() return jobnodes_array end -- same function as in recent splay versions
 	return job
 end
+
+return _M

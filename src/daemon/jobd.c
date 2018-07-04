@@ -45,6 +45,8 @@
 #include "splay.h"
 #include "splay_lib.h"
 
+#include "compmod.h"
+
 
 /*
  * For futur use, we could maybe control memory of loaded shared libraries

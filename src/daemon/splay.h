@@ -23,6 +23,8 @@
 
 #define SPLAY_LIBNAME "splay"
 
+#define luaL_reg luaL_Reg
+
 LUA_API int luaopen_splay_core(lua_State *L);
 int sp_sleep(lua_State *L);
 int sp_bits_detect(lua_State *L);

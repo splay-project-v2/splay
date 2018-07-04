@@ -3,6 +3,8 @@
 ** See Copyright Notice in license.html
 */
 
+#define luaL_reg luaL_Reg
+
 #ifndef _LUACRYPTO_
 #define _LUACRYPTO_
 

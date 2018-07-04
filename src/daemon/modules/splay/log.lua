@@ -1,5 +1,5 @@
 --[[
-       Splay ### v1.0.6 ###
+       Splay ### v1.3 ###
        Copyright 2006-2011
        http://www.splay-project.org
 ]]
@@ -58,24 +58,24 @@ local tostring = tostring
 local type = type
 local ori_print = print
 
-module("splay.log")
+local _M = {}
 
-_COPYRIGHT   = "Copyright 2006 - 2011"
-_DESCRIPTION = "Splay Log"
-_VERSION     = 1.0
+_M._COPYRIGHT   = "Copyright 2006 - 2011"
+_M._DESCRIPTION = "Splay Log"
+_M._VERSION     = 1.0
 
 -- default level
 global_level = 3
 
 -- default out (outs support only one parameter !)
-function global_out(msg)
+function _M.global_out(msg)
 	local msg = msg or ""
 	ori_print(tostring(msg))
 	io.flush()
 end
 
 -- not do any level filtering here
-function global_write(level, ...)
+function _M.global_write(level, ...)
 	local m = ""
 
 	-- do not use ipairs, first arg nil => end the loop !
@@ -101,8 +101,8 @@ function global_write(level, ...)
 	return m
 end
 
-function global_filter(self, level, ...)
-	local my_level = self.level or global_level
+function _M.global_filter(self, level, ...)
+	local my_level = global_level or self.level
 	local my_out = self.out or global_out
 	local my_write = self.write or global_write
 	
@@ -121,7 +121,7 @@ function global_filter(self, level, ...)
 	end
 end
 
-function new(level, prefix)
+function _M.new(level, prefix)
 	return {
 		level = level,
 		prefix = prefix,
@@ -155,11 +155,11 @@ local function check(self, l, ...)
 	end
 end
 
-debug = function(self, ...) return check(self, 1, ...) end
-notice = function(self, ...) return check(self, 2, ...) end
-warning = function(self, ...) return check(self, 3, ...) end
-error = function(self, ...) return check(self, 4, ...) end
-print = function(self, ...) return check(self, 5, ...) end
+_M.debug = function(self, ...) return check(self, 1, ...) end
+_M.notice = function(self, ...) return check(self, 2, ...) end
+_M.warning = function(self, ...) return check(self, 3, ...) end
+_M.error = function(self, ...) return check(self, 4, ...) end
+_M.print = function(self, ...) return check(self, 5, ...) end
 
 -- aliases
 info = notice
@@ -170,3 +170,5 @@ i = info
 w = warning
 e = error
 p = print
+
+return _M
