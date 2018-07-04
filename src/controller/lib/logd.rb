@@ -39,8 +39,8 @@ class LogdServer
 		begin
 			$log.info(">>> Splay Controller Log Daemon (port: #{@port})")
 
-			if not File.exists? @@log_dir
-				if not FileUtils::mkdir @@log_dir
+			unless File.exists? @@log_dir
+				unless FileUtils::mkdir @@log_dir
 					$log.warn("Cannot create log dir: #{@@log_dir}")
 				end
 			end
@@ -72,7 +72,8 @@ class LogdServer
 					Logd.new(socket).run
 				else
 					$log.info("Unknown IP (#{ip}) trying to log...")
-					begin socket.close; rescue; end
+					begin socket.close; rescue; # ignored
+					end
 				end
 			end
 		rescue => e
@@ -111,7 +112,7 @@ class Logd
 		ms = (t.to_f - t.to_i).to_s[1,3]
 		pfix = "#{t.strftime("%H:%M:%S")}#{ms} " +
 				"(#{job['splayd_id']}) "
-		return pfix
+		pfix
 	end
 
 	def run
@@ -174,7 +175,7 @@ class Logd
 								break
 							end
 
-							if msg then #prevents from errors when msg=nil, this can happen if raw=nil
+							if msg #prevents from errors when msg=nil, this can happen if raw=nil
 								count = count + msg.length
 								file.flock File::LOCK_EX # synchro between processes
 								file.puts "#{prefix(job)} #{msg}"
@@ -191,6 +192,7 @@ class Logd
 						begin
 							file.close
 						rescue
+							# ignored
 						end
 					end
 				else
@@ -202,6 +204,7 @@ class Logd
 				begin
 					@so.close
 				rescue
+					# ignored
 				end
 			end
 		end

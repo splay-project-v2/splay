@@ -33,22 +33,24 @@ class DistributedLock
 		@lock = false
 	end
 
-	def get()
-		return DistributedLock::get(@name)
+	def get
+		DistributedLock::get(@name)
 	end
 
-	def release()
-		return DistributedLock::release(@name)
+	def release
+		DistributedLock::release(@name)
 	end
 
 	def self.get(name)
-		if not @@db then @@db = DBUtils.get_new end
+		unless @@db
+			@@db = DBUtils.get_new
+		end
 		ok = false
-		while not ok
+		until ok
 			@@mutex.synchronize do
-			# TO TEST (transaction) or watch code, must be a Mutex like mine... +
-			# BEGIN and COMMIT
-			#$dbt.transaction do |dbt|
+				# TO TEST (transaction) or watch code, must be a Mutex like mine... +
+				# BEGIN and COMMIT
+				#$dbt.transaction do |dbt|
 				@@db.transaction do
 					locks = @@db["SELECT * FROM locks
 								WHERE id='1' FOR UPDATE"].first

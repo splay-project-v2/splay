@@ -31,4 +31,4 @@ if ARGV.size < 1
 	exit
 end
 
-$db.do "UPDATE jobs SET command='KILL' WHERE id='#{ARGV[0]}'"
+$db["UPDATE jobs SET command='KILL' WHERE id='#{ARGV[0]}'"]

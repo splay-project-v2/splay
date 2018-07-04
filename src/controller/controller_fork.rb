@@ -43,7 +43,7 @@ puts "Splay Controller is licensed under GPL v3, see COPYING"
 puts
 
 Splayd.init
-$db.do "UPDATE locks SET job_reservation='0' WHERE id ='1'"
+$db["UPDATE locks SET job_reservation='0' WHERE id ='1'"]
 
 $db.disconnect
 $dbt.disconnect

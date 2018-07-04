@@ -35,18 +35,17 @@ $bench.datetime_format = "%H:%M:%S "
 require 'socket' # SocketError and SystemCallError (Errno::*)
 require 'timeout' # Timeout::Error
 require 'openssl' # OpenSSL::OpenSSLError
-# require 'rubygems'
-# require 'fastthread'
 require 'thread' # ThreadError
 require 'fileutils'
 require 'resolv'
+require 'json'
 
 require "#{dir}/db_config"
 require "#{dir}/config"
 require "#{dir}/log_object"
 require "#{dir}/dbutils"
 
-require "#{dir}/json"
+#require "#{dir}/json" TODO Might be removed, as we have the gem
 require "#{dir}/llenc"
 require "#{dir}/array_rand"
 require "#{dir}/utils"
@@ -64,6 +63,6 @@ $DEBUG = false
 $VERBOSE = false
 OpenSSL::debug = false
 
-if not SplayControllerConfig::PublicIP
+unless SplayControllerConfig::PublicIP
 	$log.warn("You must set your public ip in production mode.")
 end

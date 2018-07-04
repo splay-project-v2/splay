@@ -41,7 +41,7 @@ class Statusd
 							splayd_id='#{m_s['splayd_id']}' AND
 							command='STATUS'"].first
 
-					if not action
+					unless action
 						$db["INSERT INTO actions SET
 								splayd_id='#{m_s['splayd_id']}',
 								command='STATUS'"]

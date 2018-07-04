@@ -59,8 +59,7 @@ while true
 			when /m/
 				puts "Give splayd id or ref:"
 				a = gets.chomp
-				splayd = $db.select_one "SELECT id FROM splayds WHERE
-						id='#{a}' OR ref='#{a}'"
+				splayd = $db["SELECT id FROM splayds WHERE id='#{a}' OR ref='#{a}'"]
 				if splayd
 					selected_splayd = splayd['id']
 					puts "Selected splayd ID: #{selected_splayd}"
@@ -71,18 +70,17 @@ while true
 			when /a/
 				puts "Give splayd ref:"
 				ref = gets.chomp
-				$db.do("INSERT INTO splayds SET ref='#{ref}'")
+				$db["INSERT INTO splayds SET ref='#{ref}'"]
 				puts "Splayd added."
 				puts
 			when /l/
-				$db.select_all "SELECT * FROM splayds ORDER BY status, id" do |splayd|
+				$db["SELECT * FROM splayds ORDER BY status, id"].each do |splayd|
 					puts "ID: #{splayd['id']} - ref: #{splayd['ref']} - #{splayd['status']}"
 				end
 				puts
 			when /s/
 				if selected_splayd
-					$db.select_all "SELECT * FROM splayd_jobs WHERE
-							splayd_id='#{selected_splayd}'" do |ms|
+					$db["SELECT * FROM splayd_jobs WHERE splayd_id='#{selected_splayd}'"].each do |_|
 						puts "Job ID: #{mm['job_id']} - status: #{mm['status']}"
 					end
 				else
@@ -91,9 +89,7 @@ while true
 				puts
 			when /k/
 				if selected_splayd
-					$db.do "INSERT INTO actions SET
-						  splayd_id='#{selected_splayd}',
-						  command='KILL'"
+					$db["INSERT INTO actions SET splayd_id='#{selected_splayd}', command='KILL'"]
 					puts "Sended."
 				else
 					puts "Select a splayd first."
@@ -101,8 +97,7 @@ while true
 				puts
 			when /c/
 				if selected_splayd
-					$db.select_all "SELECT * FROM actions WHERE
-							splayd_id='#{selected_splayd}'" do |action|
+					$db["SELECT * FROM actions WHERE splayd_id='#{selected_splayd}'"].each do |action|
 						puts "ID: #{action['id']} - cmd: #{action['command']}"
 					end
 				else
@@ -111,7 +106,7 @@ while true
 				puts
 			when /d/
 				if selected_splayd
-					m = $db.select_one "SELECT * FROM splayds WHERE id='#{selected_splayd}'"
+					m = $db["SELECT * FROM splayds WHERE id='#{selected_splayd}'"].first
 					
 					puts "Splayd #{m['ref']} (#{m['id']})"
 					puts "#{m['name']} - #{m['localization']}"
@@ -144,8 +139,7 @@ while true
 			when /j/
 				puts "Give job id or ref:"
 				a = gets.chomp
-				job = $db.select_one "SELECT id FROM jobs WHERE
-						id='#{a}' OR ref='#{a}'"
+				job = $db["SELECT id FROM jobs WHERE id='#{a}' OR ref='#{a}'"].first
 				if job
 					selected_job = job['id']
 					puts "Selected job ID: #{selected_job} - #{job['status']}"
@@ -154,7 +148,7 @@ while true
 				end
 				puts
 			when /l/
-				$db.select_all "SELECT * FROM jobs" do |job|
+				$db[:jobs].each do |job|
 					puts "ID: #{job['id']} - ref: #{job['ref']} - #{job['status']}"
 				end
 				puts
@@ -165,22 +159,22 @@ while true
 				file = gets.chomp
 				count = 1
 				File.open(file).each do |line|
-					if not(count == 1 and line =~ /^#!.*/)
+					unless count == 1 and line =~ /^#!.*/
 						code += line
 					end
 					count += 1
 				end
 				puts "Enter how many splayds do you want:"
 				nb_splayds = get
-				$db.do "INSERT INTO jobs SET
+				$db["INSERT INTO jobs SET
 						ref='#{ref}',
 						code='#{addslashes(code)}',
-						nb_splayds='#{nb_splayds}'"
+						nb_splayds='#{nb_splayds}'"]
 				puts "Job submitted"
 				puts
 			when /k/
 				if selected_job
-					$db.do "UPDATE jobs SET command='KILL' WHERE id='#{selected_job}'"
+					$db["UPDATE jobs SET command='KILL' WHERE id='#{selected_job}'"]
 					puts "Job killed."
 				else
 					puts "Select a job first."
@@ -191,14 +185,14 @@ while true
 				if selected_job
 					c_ended = 0
 					c_running = 0
-					$db.select_all "SELECT * FROM splayd_selections
-							WHERE job_id='#{selected_job}' ORDER BY splayd_id" do |ms|
+					$db["SELECT * FROM splayd_selections
+							WHERE job_id='#{selected_job}' ORDER BY splayd_id"].each do |ms|
 
-						m = $db.select_one "SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'"
-						s = $db.select_one "SELECT * FROM splayd_jobs
+						m = $db["SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'"].first
+						s = $db["SELECT * FROM splayd_jobs
 								WHERE job_id='#{selected_job}' AND
 								splayd_id='#{ms['splayd_id']}' AND
-								status!='RESERVED'"
+								status!='RESERVED'"].first
 
 						if s
 							puts "#{m['id']} #{m['name']} [#{m['ip']} #{m['status']}] => RUNNING"
@@ -222,7 +216,7 @@ while true
 				j['status'] = "LOCAL"
 				old_status = "LOCAL"
 				while j['status'] != "ENDED" and j['status'] != "NO_RESSOURCES" and j['status'] != "REGISTER_TIMEOUT"
-					j = $db.select_one "SELECT * FROM jobs WHERE ref='#{ref}'"
+					j = $db["SELECT * FROM jobs WHERE ref='#{ref}'"].first
 					if j['status'] != old_status
 						puts j['status']
 						if j['status'] == "NO_RESSOURCES"

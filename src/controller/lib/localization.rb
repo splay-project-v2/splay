@@ -27,7 +27,7 @@ class Localization
 
 	@@loc_db = nil
 	def self.get(ip)
-		if not @@loc_db
+		unless @@loc_db
 			@@loc_db = GeoIP.new("#{File.dirname(__FILE__)}/GeoLiteCity.dat")
 		end
 		return @@loc_db.city(ip) # GeoIP::Record.new(@@loc_db, ip)

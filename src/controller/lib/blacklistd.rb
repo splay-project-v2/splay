@@ -40,16 +40,15 @@ class Blacklistd
 					new_bl << row[0]
 				end
 
-				if bl != new_bl then
+				if bl != new_bl
 					bl = new_bl
 
 					# If the splayd is UNAVAILABLE or RESET, it will needs to
 					# reconnect to be AVAILABLE and so, will already receive the
 					# latest blacklist.
-					$db.do["SELECT * FROM splayds WHERE status='AVAILABLE'"].each do |splayd|
-						action = $db.select_one "SELECT * FROM actions WHERE
-								splayd_id='#{splayd['id']}' AND
-								command='BLACKLIST'"
+
+					$db[:splayds].where(status: 'AVAILABLE').each do |splayd|
+						action = $db[:actions].where(splayd_id: splayd['id'], command: 'BLACKLIST').first
 						if not action
 							$db["INSERT INTO actions SET
 									splayd_id='#{splayd['id']}',

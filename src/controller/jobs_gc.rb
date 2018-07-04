@@ -27,7 +27,7 @@
 require 'lib/all'
 
 def gc_jobs(db)
-	db.do("DELETE FROM jobs WHERE created_at < NOW() - INTERVAL 1 WEEK;")
+	db["DELETE FROM jobs WHERE created_at < NOW() - INTERVAL 1 WEEK;"]
 end
 
 db = DBUtils::get_new

@@ -203,7 +203,7 @@ class JobdStandard < Jobd
 
 			$db["SELECT * FROM job_mandatory_splayds
 					WHERE job_id='#{job['id']}'"].each do |mm|
-				if not $db["SELECT id FROM splayd_selections WHERE
+				unless $db["SELECT id FROM splayd_selections WHERE
 						splayd_id='#{mm['splayd_id']}' AND
 						job_id='#{job['id']}' AND
 						replied='TRUE'"].first
@@ -289,7 +289,7 @@ class JobdStandard < Jobd
 	def self.status_running
 		$db["SELECT * FROM jobs WHERE
 				scheduler='#{@@scheduler}' AND status='RUNNING'"].each do |job|
-			if not $db["SELECT * FROM splayd_jobs
+			unless $db["SELECT * FROM splayd_jobs
 				WHERE job_id='#{job['id']}' AND status!='RESERVED'"].first
 				set_job_status(job['id'], 'ENDED')
 			end

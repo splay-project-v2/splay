@@ -27,11 +27,11 @@
 require './lib/all'
 
 def drop_db(db)
-	db.do("DROP TABLE IF EXISTS users")
+	db["DROP TABLE IF EXISTS users"]
 end
 
 def init_db(db)
-	db.do("CREATE TABLE IF NOT EXISTS users (
+	db["CREATE TABLE IF NOT EXISTS users (
 		id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		login varchar(255) default NULL,
 		email varchar(255) default NULL,
@@ -43,14 +43,15 @@ def init_db(db)
 		remember_token_expires_at datetime default NULL,
 		admin int(11) default '0',
 		demo int(11) default '1'
-		);")
-	time_now = Time.new().strftime("%Y-%m-%d %T")
-	$db.do("INSERT INTO users SET 
+		);"]
+
+	time_now = Time.new.strftime("%Y-%m-%d %T")
+	db["INSERT INTO users SET 
 		login='admin', 
 		crypted_password='d033e22ae348aeb5660fc2140aec35850c4da997', 
 		created_at='#{time_now}', 
 		admin=1, 
-		demo=0")
+		demo=0"]
 
 end
 

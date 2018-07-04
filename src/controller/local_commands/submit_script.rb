@@ -45,12 +45,12 @@ end
 
 ref = OpenSSL::Digest::MD5.hexdigest(rand(1000000).to_s)
 
-$db.do "INSERT INTO jobs SET
+$db["INSERT INTO jobs SET
 		ref='#{ref}'
 		#{to_sql(options)}
-		, script='#{addslashes(script)}'"
+		, script='#{addslashes(script)}'"]
 
-job = $db.select_one "SELECT * FROM jobs WHERE ref='#{ref}'"
+job = $db["SELECT * FROM jobs WHERE ref='#{ref}'"].first
 
 puts "Task transmitted to the controller: #{job['id']} (#{ref})"
 puts

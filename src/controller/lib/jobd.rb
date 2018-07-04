@@ -352,31 +352,17 @@ class Jobd
 	# http://www.iso.org/iso/country_codes/iso_3166_code_lists/english_country_names_and_code_elements.htm
 	def self.countries_by_continent
 		countries = {}
-		countries['af'] = ['ao', 'bf', 'bi', 'bj', 'bw', 'cd', 'cf', 'cg', 'ci', 'cm',
-		'cv', 'dj', 'dz', 'eg', 'eh', 'er', 'et', 'ga', 'gh', 'gm', 'gn', 'gq', 'gw',
-		'ke', 'km', 'lr', 'ls', 'ly', 'ma', 'mg', 'ml', 'mr', 'mu', 'mw', 'mz', 'na',
-		'ne', 'ng', 're', 'rw', 'sc', 'sd', 'sh', 'sl', 'sn', 'so', 'st', 'sz', 'td',
-		'tg', 'tn', 'tz', 'ug', 'yt', 'za', 'zm', 'zw']
-		countries['an'] = ['aq', 'bv', 'gs', 'hm', 'tf'] 
-		countries['as'] = ['ae', 'af', 'am', 'az', 'bd', 'bh', 'bn', 'bt', 'cc', 'cn',
-		'cx', 'cy', 'ge', 'hk', 'id', 'il', 'in', 'io', 'iq', 'ir', 'jo', 'jp', 'kg',
-		'kh', 'kp', 'kr', 'kw', 'kz', 'la', 'lb', 'lk', 'mm', 'mn', 'mo', 'mv', 'my',
-		'np', 'om', 'ph', 'pk', 'ps', 'qa', 'sa', 'sg', 'sy', 'th', 'tj', 'tl', 'tm',
-		'tr', 'tw', 'uz', 'vn', 'ye']
-		countries['eu'] = ['ad', 'al', 'at', 'ax', 'ba', 'be', 'bg', 'by', 'ch', 'cz',
-		'de', 'dk', 'ee', 'es', 'fi', 'fo', 'fr', 'gb', 'gg', 'gi', 'gr', 'hr', 'hu',
-		'ie', 'im', 'is', 'it', 'je', 'li', 'lt', 'lu', 'lv', 'mc', 'md', 'me', 'mk',
-		'mt', 'nl', 'no', 'pl', 'pt', 'ro', 'rs', 'ru', 'se', 'si', 'sj', 'sk', 'sm',
-		'ua', 'va']
-		countries['na'] = ['ag', 'ai', 'an', 'aw', 'bb', 'bm', 'bs', 'bz', 'ca', 'cr',
-		'cu', 'dm', 'do', 'gd', 'gl', 'gp', 'gt', 'hn', 'ht', 'jm', 'kn', 'ky', 'lc',
-		'mq', 'ms', 'mx', 'ni', 'pa', 'pm', 'pr', 'sv', 'tc', 'tt', 'us', 'vc', 'vg',
-		'vi']
-		countries['oc'] = ['as', 'au', 'ck', 'fj', 'fm', 'gu', 'ki', 'mh', 'mp', 'nc',
-		'nf', 'nr', 'nu', 'nz', 'pf', 'pg', 'pn', 'pw', 'sb', 'tk', 'to', 'tv', 'um',
-		'vu', 'wf', 'ws']
-		countries['sa'] = ['ar', 'bo', 'br', 'cl', 'co', 'ec', 'fk', 'gf', 'gy', 'pe',
-		'py', 'sr', 'uy', 've']
+		countries['af'] = %w(ao bf bi bj bw cd cf cg ci cm cv dj dz eg eh er et ga gh gm gn gq gw ke km lr ls ly ma mg
+			ml mr mu mw mz na ne ng re rw sc sd sh sl sn so st sz td tg tn tz ug yt za zm zw)
+		countries['an'] = %w(aq bv gs hm tf)
+		countries['as'] = %w(ae af am az bd bh bn bt cc cn cx cy ge hk id il in io iq ir jo jp kg kh kp kr kw kz la lb
+			lk mm mn mo mv my np om ph pk ps qa sa sg sy th tj tl tm tr tw uz vn ye)
+		countries['eu'] = %w(ad al at ax ba be bg by ch cz de dk ee es fi fo fr gb gg gi gr hr hu ie im is it je li
+			lt lu lv mc md me mk mt nl no pl pt ro rs ru se si sj sk sm ua va)
+		countries['na'] = %w(ag ai an aw bb bm bs bz ca cr cu dm do gd gl gp gt hn ht jm kn ky lc mq ms mx ni pa
+			pm pr sv tc tt us vc vg vi)
+		countries['oc'] = %w(as au ck fj fm gu ki mh mp nc nf nr nu nz pf pg pn pw sb tk to tv um vu wf ws)
+		countries['sa'] = %w(ar bo br cl co ec fk gf gy pe py sr uy ve)
 		return countries
 	end
 

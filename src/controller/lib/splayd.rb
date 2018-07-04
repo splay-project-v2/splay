@@ -668,9 +668,9 @@ class Splayd
 							"(splayd: #{@id}, job: #{action['job_id']})")
 			end
 			if action['status'] == 'WAITING'
-				$db.do "UPDATE actions SET
+				$db["UPDATE actions SET
 						status='SENDING'
-						WHERE id='#{action['id']}'"
+						WHERE id='#{action['id']}'"]
 				return action
 			end
 		end
@@ -678,39 +678,39 @@ class Splayd
 	end
 
 	def s_j_register job_id
-		$db.do "UPDATE splayd_jobs SET
+		$db["UPDATE splayd_jobs SET
 				status='WAITING'
 				WHERE
 				splayd_id='#{@id}' AND
 				job_id='#{job_id}' AND
-				status='RESERVED'"
+				status='RESERVED'"]
 	end
 
 	def s_j_free job_id
-		$db.do "DELETE FROM splayd_jobs WHERE
+		$db["DELETE FROM splayd_jobs WHERE
 				splayd_id='#{@id}' AND
-				job_id='#{job_id}'"
+				job_id='#{job_id}'"]
 	end
 
 	def s_j_start job_id
-		$db.do "UPDATE splayd_jobs SET
+		$db["UPDATE splayd_jobs SET
 			  status='RUNNING'
 			  WHERE
 			  splayd_id='#{@id}' AND
-			  job_id='#{job_id}'"
+			  job_id='#{job_id}'"]
 	end
 
 	def s_j_stop job_id
-		$db.do "UPDATE splayd_jobs SET
+		$db["UPDATE splayd_jobs SET
 			  status='WAITING'
 			  WHERE
 			  splayd_id='#{@id}' AND
-			  job_id='#{job_id}'"
+			  job_id='#{job_id}'"]
 	end
 
 	def s_j_status data
 		data = JSON.parse data
-		results = $db.do "SELECT * FROM splayd_jobs WHERE splayd_id='#{@id}' AND status!='RESERVED'"
+		results = $db["SELECT * FROM splayd_jobs WHERE splayd_id='#{@id}' AND status!='RESERVED'"]
 
 		results.each do |sj|
 			job = $db["SELECT ref FROM jobs WHERE id='#{sj['job_id']}'"].first
@@ -718,18 +718,16 @@ class Splayd
 			# empty (an Hash), we encoded it like an empy Array.
 			if data['jobs'].class == Hash and data['jobs'][job['ref']]
 				if data['jobs'][job['ref']]['status'] == "waiting"
-					$db.do "UPDATE splayd_jobs SET status='WAITING'
-							WHERE id='#{sj['id']}'"
+					$db["UPDATE splayd_jobs SET status='WAITING' WHERE id='#{sj['id']}'"]
 				end
 				# NOTE normally no needed because already set to RUNNING when
 				# we send the START command.
 				if data['jobs'][job['ref']]['status'] == "running"
-					$db.do "UPDATE splayd_jobs SET status='RUNNING'
-							WHERE id='#{sj['id']}'"
+					$db["UPDATE splayd_jobs SET status='RUNNING' WHERE id='#{sj['id']}'"]
 				end
 
 			else
-				$db.do "DELETE FROM splayd_jobs WHERE id='#{sj['id']}'"
+				$db["DELETE FROM splayd_jobs WHERE id='#{sj['id']}'"]
 			end
 			# it can't be new jobs in data['jobs'] that don't have already an
 			# entry in splayd_jobs
@@ -739,29 +737,29 @@ class Splayd
 	def parse_loadavg s
 		if s.strip != ""
 			l = s.split(" ")
-			$db.do "UPDATE splayds SET
+			$db["UPDATE splayds SET
 					load_1='#{l[0]}',
 					load_5='#{l[1]}',
 					load_15='#{l[2]}'
-					WHERE id='#{@id}'"
+					WHERE id='#{@id}'"]
 		else
 			# NOTE should too be fixed in splayd
 			$log.warn("Splayd #{@id} report an empty loadavg. ")
-			$db.do "UPDATE splayds SET
+			$db["UPDATE splayds SET
 					load_1='10',
 					load_5='10',
 					load_15='10'
-					WHERE id='#{@id}'"
+					WHERE id='#{@id}'"]
 		end
 	end
 	
 	# NOTE then corresponding entry may already have been deleted if the reply
 	# comes after the job has finished his registration, but no problem.
 	def s_sel_reply(job_id, port, reply_time)
-		$db.do "UPDATE splayd_selections SET
+		$db["UPDATE splayd_selections SET
 				replied='TRUE',
 				reply_time='#{reply_time}',
 				port='#{port}'
-				WHERE splayd_id='#{@id}' AND job_id='#{job_id}'"
+				WHERE splayd_id='#{@id}' AND job_id='#{job_id}'"]
 	end
 end

@@ -31,6 +31,6 @@ class LogObject
 		if $log
 			$log.add(@level, "#{@name}: #{methodname}(#{args})")
 		end
-		return @o.send(methodname, *args, &block)
+		@o.send(methodname, *args, &block)
 	end
 end

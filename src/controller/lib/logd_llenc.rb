@@ -31,7 +31,7 @@ class LogdServer
 	end
 
 	def run
-		return Thread.new() do
+		Thread.new do
 			main
 		end
 	end
@@ -40,8 +40,8 @@ class LogdServer
 		begin
 			$log.info(">>> Splay Controller Log Daemon (port: #{@port})")
 
-			if not File.exists? @@log_dir
-				if not FileUtils::mkdir @@log_dir
+			unless File.exists? @@log_dir
+				unless FileUtils::mkdir @@log_dir
 					$log.warn("Cannot create log dir: #{@@log_dir}")
 				end
 			end
@@ -73,7 +73,8 @@ class LogdServer
 					Logd.new(socket).run
 				else
 					$log.info("Unknown IP (#{ip}) trying to log...")
-					begin socket.close; rescue; end
+					begin socket.close; rescue; # ignored
+					end
 				end
 			end
 		rescue => e
@@ -182,6 +183,7 @@ class Logd
 						begin
 							file.close
 						rescue
+							# ignored
 						end
 					end
 				else
@@ -193,6 +195,7 @@ class Logd
 				begin
 					@so.close
 				rescue
+					# ignored
 				end
 			end
 		end

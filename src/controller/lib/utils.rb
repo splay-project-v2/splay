@@ -23,17 +23,17 @@
 # MySQL escaping
 def addslashes(str)
 	if not str
-		return ''
+		''
 	else
-		return str.to_s.gsub(/\\/, "\\\\\\").gsub(/'/, "\\\\'").gsub(/"/, "\\\"")
+		str.to_s.gsub(/\\/, "\\\\\\").gsub(/'/, "\\\\'").gsub(/"/, "\\\"")
 	end
 end
 
 def is_bytecode(lines)
 	if raw_code[0,4] =~ /\x1BLua/
-		return true
+		true
 	else
-		return false
+		false
 	end
 end
 		
@@ -41,15 +41,10 @@ def parse_ressources(lines)
 	settings = false
 	options = {}
 	# die_free is set by scheduler trace, but it's not an user settable setting
-	accepted = [
-		"localization", "distance", "latitude", "longitude",
-		"bits", "endianness", "max_mem", "disk_max_size", "disk_max_files",
-		"disk_max_file_descriptors", "network_max_send", "network_max_receive",
-		"network_max_sockets", "network_nb_ports", "network_send_speed",
-		"network_receive_speed", "nb_splayds", "factor",
-		"splayd_version", "max_load", "min_uptime", "hostmasks",
-		"max_time", "scheduler", "list_type", "list_size", "keep_files",
-		"udp_drop_ratio"]
+	accepted = %w(localization distance latitude longitude bits endianness max_mem disk_max_size disk_max_files
+		disk_max_file_descriptors network_max_send network_max_receive network_max_sockets network_nb_ports
+		network_send_speed network_receive_speed nb_splayds factor splayd_version max_load min_uptime
+		hostmasks max_time scheduler list_type list_size keep_files udp_drop_ratio)
 
 	lines.each do |line|
 		if not settings
@@ -71,7 +66,7 @@ def parse_ressources(lines)
 			end
 		end
 	end
-	return options
+	options
 end
 
 def to_sql(options)
@@ -79,7 +74,7 @@ def to_sql(options)
 	options.each do |var, val|
 		s += ", #{var}='#{addslashes(val.to_s)}'"
 	end
-	return s
+	s
 end
 
 def to_human(options)
@@ -87,14 +82,14 @@ def to_human(options)
 	options.each do |var, val|
 		s += "#{var}\t#{val}\n"
 	end
-	return s
+	s
 end
 
 def clean_source(lines)
 	if lines[0]  =~ /^#!.*/
 		lines.delete_at(0)
 	end
-	return lines
+	lines
 end
 
 def only_code(lines)
@@ -118,7 +113,7 @@ def only_code(lines)
 			end
 		end
 	end
-	return code
+	code
 end
 
 def watch(job)
@@ -162,9 +157,11 @@ def command_line_to_code(file_name, arg_pos)
 	code = "arg = {}\narg[0] = '#{file_name}'\n"
 	lua_pos = 0
 	while true
-		if not ARGV[arg_pos] then break end
+		unless ARGV[arg_pos]
+			break
+		end
 		code += "arg[#{lua_pos += 1}] =  '#{ARGV[arg_pos]}'\n"
 		arg_pos += 1
 	end
-	return code
+	code
 end

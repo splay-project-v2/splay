@@ -36,10 +36,10 @@ jobd_id = ARGV[1].to_i
 
 # TODO check if the request is already queued and in that case do not send it
 # again
-$db.do "INSERT INTO actions SET
+$db["INSERT INTO actions SET
 		splayd_id='#{splayd_id}',
 		jobd_id='#{jobd_id}',
-		command='LOCAL_LOG'"
+		command='LOCAL_LOG'"]
 
 # TODO finish, watch in local_log db
 #
@@ -54,13 +54,12 @@ def watch(job)
 		j['status'] != "RUNNING"
 
 		sleep(1)
-		j = $db.select_one "SELECT * FROM jobs WHERE ref='#{job['ref']}'"
+		j = $db["SELECT * FROM jobs WHERE ref='#{job['ref']}'"].first
 		if j['status'] != old_status
 			puts j['status']
 			if j['status'] == "RUNNING"
-				$db.select_all "SELECT * FROM splayd_selections WHERE job_id='#{j['id']}'
-						AND selected='TRUE'" do |ms|
-					m = $db.select_one "SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'"
+				$db["SELECT * FROM splayd_selections WHERE job_id='#{j['id']}' AND selected='TRUE'"].each do |ms|
+					m = $db["SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'"].first
 					if j['network_nb_ports'] > 0
 						puts "    #{m['id']} #{m['name']} #{m['ip']} #{ms['port']} - #{ms['port'] +
 								j['network_nb_ports'] - 1}"

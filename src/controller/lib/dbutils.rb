@@ -24,18 +24,20 @@ require 'sequel'
 
 class DBUtils
 
-
+	# Return new connection to the DB
 	def self.get_new
-		if $log then
+		if $log
 			$log.info("New DB connection (Sequel+MySQL)")
 		end
 		url = "mysql2://#{SplayControllerConfig::SQL_USER}:#{SplayControllerConfig::SQL_PASS}@" +
 				"#{SplayControllerConfig::SQL_HOST}:#{SplayControllerConfig::SQL_PORT}/#{SplayControllerConfig::SQL_DB}"
 		db = Sequel.connect(url)
-		#db.autocommit(false) -- not supported by Sequel adapter for mysql ?
+
+		# Allow smooth transition from previous DBI driver, aliasing the DBI's [do] with Sequel's [run]
 		class << db
 			alias :do :run
 		end
+
 		return db
 	end
 end

@@ -42,7 +42,7 @@ class LLenc
 	end
 
 	def peeraddr
-		return @socket.peeraddr
+		@socket.peeraddr
 	end
 
 	def _log msg
