@@ -42,6 +42,8 @@
 
 #include "splay_lib.h"
 
+#include "compmod.h"
+
 int mem = 0;
 int max_mem = 0;
 

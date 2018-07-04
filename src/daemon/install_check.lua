@@ -9,6 +9,8 @@ require"os"
 require"io"
 require"string"
 
+print("------------- Lua Ok -------------")
+
 -- Splay
 require"splay"
 require"splay.base"
@@ -16,7 +18,11 @@ require"splay.data_bits"
 require"splay.misc"
 require"splay.net"
 require"splay.rpc"
+
+-- Core dumped
 require"splay.urpc"
+
+print("------------- Splay Ok-------------")
 
 -- JSON4Lua
 require"json"
@@ -24,6 +30,9 @@ require"json"
 if json and not json.leo then
 	print("!!! bad json version, you need the modified one (in modules/json.lua")
 end
+
+print("------------- Json Ok-------------")
+
 
 -- LuaSocket other libraries
 require"socket.ftp"
@@ -34,8 +43,13 @@ require"socket.url"
 require"mime"
 require"ltn12"
 
+print("------------- Socket Ok-------------")
+
+
 -- LuaSec
 require"ssl"
+
+print("------------- SSL Ok-------------")
 
 -- Luacrypto
 require"crypto"

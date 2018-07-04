@@ -87,12 +87,18 @@ warning "receivefrom(): nil refused" when we launch another local server
 because the previous socket waiting is closed.
 ]]
 
+print("URPC")
+
 local math = require"math"
 local string = require"string"
+
+-- CORE DUMPED BUG 5.3 
 local crypto = require"crypto"
+
 local events = require"splay.events"
 local socket = require"splay.socket"
 --local enc = require"json"
+
 local enc = require"splay.benc"
 local misc = require"splay.misc"
 local log = require"splay.log"

@@ -973,7 +973,7 @@ jobs_logs_dir = root_dir.."/logs/jobs"
 jobs_dir = root_dir.."/jobs"
 jobs_fs_dir = root_dir.."/jobs_fs" -- then splayd.settings.job.disk.directory
 
-lua_version = "Lua 5.1" -- Do not run without this version.
+lua_version = "Lua 5.3" -- Do not run without this version.
 SSL = true -- Use SSL instead of plain text connection.
 connect_retry_timeout = 180 -- Average reconnect time when connection loose.
 max_disconnection_time = 3600 -- Reset jobs in case of a very long disconnection.

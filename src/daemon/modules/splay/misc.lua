@@ -325,11 +325,11 @@ function _M.convert_base(input, b1, b2)
 end
 
 function _M.ctime()  -- time from core C lib
-	return misc_core.misc_time()
+	return misc_core.time()
 end
 --[[ Unix time with precision of 1/10'000s ]]--
 function _M.time()
-	local s, m = misc_core.misc_time()
+	local s, m = misc_core.time()
 	return s + m / 1000000
 end
 
