@@ -25,11 +25,12 @@ add modules ./modules
 add deploy.sh .
 
 run \
-  export LUA_PATH=$(lua -e 'print(package.path)') ; \
-  export LUA_PATH="${LUA_PATH};/usr/splay/lib/lua/?.lua" ; \
-  export LUA_CPATH=$(lua -e 'print(package.cpath)') ; \
-  export LUA_CPATH="${LUA_CPATH};/usr/splay/lib/c/?.so" ; \
-  echo "${LUA_PATH}\n\n${LUA_CPATH}" ; \ 
-  make all && ./install.sh
+  make all
+
+run export LUA_PATH=$(lua -e 'print(package.path)') ;\
+    export LUA_PATH="${LUA_PATH};/usr/splay/lib/lua/?.lua" ;\
+    export LUA_CPATH=$(lua -e 'print(package.cpath)');\
+    export LUA_CPATH="${LUA_CPATH};/usr/splay/lib/c/?.so" ;\
+    ./install.sh
 
 cmd ["./deploy.sh"]

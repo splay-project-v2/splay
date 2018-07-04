@@ -9,6 +9,9 @@ if [[ $L_CPATH == "" ]]; then
 	exit
 fi
 
+
+# echo "export LUA_PATH=\"/usr/splay/lib/lua/?.lua;;\"" >> ~/.bashrc
+
 echo "This script will install Splay Lua modules and Lua C modules."
 echo
 echo "These are only Lua modules of the Splay package, for the installation"

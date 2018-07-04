@@ -1,5 +1,5 @@
 --[[
-       Splay ### v1.0.6 ###
+       Splay ### v1.3 ###
        Copyright 2006-2011
        http://www.splay-project.org
 ]]
@@ -51,29 +51,33 @@ local error = error
 local pairs = pairs
 local print = print
 local assert= assert
-module("splay.luasocket")
 
-_COPYRIGHT   = "Copyright 2006 - 2011"
-_DESCRIPTION = "LuaSocket helper module"
-_VERSION     = 1.0
+local _M = {}
+
+_M._COPYRIGHT   = "Copyright 2006 - 2011"
+_M._DESCRIPTION = "LuaSocket helper module"
+_M._VERSION     = 1.0
+_M._NAME = "luasocket"
 
 --[[ DEBUG ]]--
-l_o = log.new(3, "[".._NAME.."]")
+l_o = log.new(3, "[".._M._NAME.."]")
 
 --[[
 Set use_async_dns=false to use the default LuaSocket's blocking DNS resolution.
-This is discouraged, as it introduces the single element in the Splay Runtime
-that rely on blocking sockets. This option is offered as emergency solution
-in case of errors.
+This is discouraged, as it relies on blocking sockets. 
+This option is offered as emergency solution in case of errors.
 --]]
-local use_async_dns=true
+local use_async_dns=false
 
-function wrap(socket, err)
-
-	if socket.connect then
-		-- Already luasocket additionnal function...
-		return socket
-	end
+function _M.wrap(socket, err)
+	
+	-- LuaSocket 3.0 ships its own connect, this check needs to be removed otherwise 
+	-- the socket is not wrapped by the event-based non-blocking layer
+	
+	--if socket.connect then 
+	--	-- Already luasocket additional function...
+	--	return socket
+	--end
 
 	-- error forwarding
 	if not socket then return nil, err end
@@ -278,3 +282,5 @@ function wrap(socket, err)
 
 	return socket
 end
+
+return _M

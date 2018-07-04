@@ -1,5 +1,5 @@
 --[[
-       Splay ### v1.0.6 ###
+       Splay ### v1.3 ###
        Copyright 2006-2011
        http://www.splay-project.org
 ]]
@@ -21,13 +21,13 @@ You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
-module("splay.queue")
-
-_COPYRIGHT   = "Copyright 2006 - 2011"
-_DESCRIPTION = "Queue object"
-_VERSION     = 1.0
-
-function new()
+--module("splay.queue")
+local _M = {}
+_M._COPYRIGHT   = "Copyright 2006 - 2011"
+_M._DESCRIPTION = "Queue object"
+_M._VERSION     = 1.0
+_M._NAME 		=	"splay.queue"
+function _M.new()
 
 	local queue = {}
 	local objects = {}
@@ -64,3 +64,5 @@ function new()
 
 	return queue
 end
+
+return _M

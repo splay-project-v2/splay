@@ -20,11 +20,25 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
+socket = require"socket.core"
+rs=require"splay.restricted_socket"
+rs.l_o.level=1
+rs.init(
+	{max_sockets=1024,
+	local_ip="127.0.0.1",
+	start_port=11000,end_port=11500}
+)
+socket=rs.wrap(socket)
 
-require"splay.data_bits_core" -- register splay.data_bits
+require"splay.base"
 
-module("splay.data_bits")
-local _M ={}
-_M._COPYRIGHT   = "Copyright 2006 - 2011"
-_M._DESCRIPTION = "Bits manipulation on data"
-_M._VERSION     = 1.0
+events.run(function()
+	local ip,_ = socket.dns.toip("orion.unine.ch")
+	assert(ip=="130.125.1.11","Expected 130.125.1.11 but was "..ip)
+	--print("orion.unine.ch ->"..ip)
+	
+	local name,_ = socket.dns.tohostname("130.125.1.11")
+	assert(name=="orion.unine.ch","Expected orion.unine.ch but was "..name)	
+	--print("130.125.1.11 ->"..name)
+	print("TEST_OK")
+end)

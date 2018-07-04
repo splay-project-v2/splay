@@ -1,5 +1,5 @@
 --[[
-       Splay ### v1.0.6 ###
+       Splay ### v1.3 ###
        Copyright 2006-2011
        http://www.splay-project.org
 ]]
@@ -48,14 +48,14 @@ to build a new one. setfenv() will not work on core functions.
 
 ]]
 
-local string = require"string"
-local table = require"table"
-local math = require"math"
-local coroutine = require"coroutine"
-local os = require"os" -- Will be restricted later.
+local string = string
+local table = table
+local math = math
+local coroutine = coroutine
+local os = os -- Will be restricted later.
 local rio = require"splay.restricted_io"
 local log = require"splay.log"
-local debug = require"debug" -- -- Will be restricted later.
+local debug = debug -- -- Will be restricted later.
 local base = _G
 local pairs = pairs
 local print = print
@@ -67,19 +67,20 @@ local tonumber = tonumber
 
 local misc = require"splay.misc"
 
-module("splay.sandbox")
-
-_COPYRIGHT   = "Copyright 2006 - 2011"
-_DESCRIPTION = "Sandbox"
-_VERSION     = 1.0
+--module("splay.sandbox")
+local _M = {}
+_M._COPYRIGHT   = "Copyright 2006 - 2011"
+_M._DESCRIPTION = "Sandbox"
+_M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-l_o = log.new(3, "[".._NAME.."]")
+_M.l_o = log.new(3, "[splay.sandbox]")
 
 --[[ CODE ]]--
 
 -- generate the new require with old env upvalues
-function generate_require(allowed, inits)
+function _M.generate_require(allowed, inits)
+
 	local allowed = allowed or {}
 	local inits = inits or {}
 
@@ -91,6 +92,7 @@ function generate_require(allowed, inits)
 	local pack = base.package
 
 	local function create_module_global(modname)
+
 		local sa = misc.split(modname, ".")
 		local path = base
 		for i = 1, #sa do
@@ -101,7 +103,7 @@ function generate_require(allowed, inits)
 			if not path[part] then 
 				path[part] = {}
 				if i == #sa then
-					l_o:debug("Creating global for "..modname)
+					_M.l_o:debug("Creating global for "..modname)
 					path[part] = base.package.loaded[modname]
 				end
 			end
@@ -110,15 +112,17 @@ function generate_require(allowed, inits)
 	end
 
 	local function init(modname)
+
 		if inits[modname] and
 				type(base.package.loaded[modname]) == "table" and
 				base.package.loaded[modname].init then
-			l_o:debug(modname.." initialization.")
+			_M.l_o:debug(modname.." initialization.")
 			base.package.loaded[modname].init(inits[modname])
 		end
 	end
 
 	local function finalize(modname)
+
 		base.package.loaded[modname] = pack.loaded[modname]
 		init(modname)
 		-- Needed only for things alreadly loaded to recreate this in the new
@@ -132,7 +136,7 @@ function generate_require(allowed, inits)
 	-- 2) Load what is in preload table (user modules)
 	-- 3) Copy already loaded libraries (maybe they have additional restrictions)
 	return function(modname)
-		l_o:debug("require() "..modname)
+		_M.l_o:debug("require() "..modname)
 
 		-- creation of the new base.package that will NOT be directly used by
 		-- module()
@@ -155,7 +159,7 @@ function generate_require(allowed, inits)
 		-- if the module is in preload table, is an user module, we will load it
 		-- anyway
 		if base.package.preload[modname] then
-			l_o:notice("User module "..modname.." preloaded.")
+			_M.l_o:notice("User module "..modname.." preloaded.")
 			base.package.preload[modname]()
 			-- we call the function, that contain module(), that will load the
 			-- module into the global "modname" and in package.loaded[modname]
@@ -171,23 +175,23 @@ function generate_require(allowed, inits)
 			end
 		end
 		if not found then
-			l_o:warn("Require of "..modname.." refused")
+			_M.l_o:warn("Require of "..modname.." refused")
 			return nil, "not permitted"
 		end
-		l_o:notice("Require of "..modname.." autorized")
+		_M.l_o:notice("Require of "..modname.." autorized")
 
 		-- package already loaded in the sandbox
 		-- Normally it's the loader[1] but it return a string if not found and I
 		-- don't like that.
 		if base.package.loaded[modname] then
-			l_o:notice(modname.." already loaded.")
+			_M.l_o:notice(modname.." already loaded.")
 			return base.package.loaded[modname]
 		end
 
 		-- package not loaded but existing in pack (previous env)
 		-- (yes we could do that in the form of an additionnal loader)
 		if pack.loaded[modname] then
-			l_o:notice(modname.." already loaded in previous env.")
+			_M.l_o:notice(modname.." already loaded in previous env.")
 			return finalize(modname)
 		end
 
@@ -201,7 +205,7 @@ function generate_require(allowed, inits)
 		for i, loader in pairs(pack.loaders) do
 			local p = loader(modname)
 			if p and type(p) == "function" then
-				l_o:debug(modname.." loader "..i)
+				_M.l_o:debug(modname.." loader "..i)
 				-- will modify pack.loaded[modname]
 				local r = p()
 				-- return instead of directly setting pack.loaded[modname]
@@ -219,7 +223,8 @@ end
 --[[ Generate a loadstring function that refuse bytecode.
 Apparently, there is no security problem with it.
 ]]
-function loadstring_no_bytecode()
+function _M.loadstring_no_bytecode()
+
 	local ls = loadstring
 
 	return function(s)
@@ -232,7 +237,8 @@ function loadstring_no_bytecode()
 end
 	
 -- return secure functions in any situations
-function secure_functions()
+function _M.secure_functions()
+
 	--[[
 	still denied:
 
@@ -265,11 +271,13 @@ function secure_functions()
 			"tostring",
 			"type",
 			"unpack",
-			"xpcall"}
+			"xpcall",
+			"gettimeofday"}
 end
 
 -- secure functions if you work with the true global env
-function secure_functions_global()
+function _M.secure_functions_global()
+
 	--[[
 	still denied:
 
@@ -279,7 +287,7 @@ function secure_functions_global()
 	newproxy
 	require
 	--]]
-	return misc.table_concat(secure_functions(), {
+	return misc.table_concat(_M.secure_functions(), {
 			"loadstring",
 			"getfenv",
 			"module",
@@ -287,7 +295,8 @@ function secure_functions_global()
 end
 
 -- Return os with only secure functions
-function secure_os()
+function _M.secure_os()
+
 	local new = {}
 	local allowel_os = {"exit", "date", "difftime", "time", "clock"}
 	for _, f in pairs(allowel_os) do
@@ -297,7 +306,8 @@ function secure_os()
 end
 
 -- Return debug with only secure functions
-function secure_debug()
+function _M.secure_debug()
+
 	local new = {}
 	local allowed_debug = {"traceback"}
 	for _, f in pairs(allowed_debug) do
@@ -306,22 +316,22 @@ function secure_debug()
 	return new
 end
 
-function sandboxed_denied()
+function _M.sandboxed_denied()
 	log:print("This function is sandboxed -- usage not allowed. Aborting in 10secs.")
 	events.exit()
 	os.exit()
 end
 -- Replace a sandboxed function with a stub function.
-function load_sandboxed_func(name)
+function _M.load_sandboxed_func(name)
 	if type(base[name]) == "function" then
-		return sandboxed_denied
+		return _M.sandboxed_denied
 	else
 		return nil
 	end
 end
 
 -- Only keep in the environment what is in the keep list.
-function clean_env(keep_list)
+function _M.clean_env(keep_list)
 	local remove_list = {}
 	for name, val in pairs(base) do
 		local found = false
@@ -336,8 +346,8 @@ function clean_env(keep_list)
 		end
 	end
 	for _, name in pairs(remove_list) do
-		l_o:notice("removing: "..name.." (type: "..type(base[name])..")")
-		base[name] = load_sandboxed_func(name)
+		_M.l_o:notice("removing: "..name.." (type: "..type(base[name])..")")
+		base[name] = _M.load_sandboxed_func(name)
 	end
 end
 
@@ -345,8 +355,7 @@ end
 --
 -- socket will already be a SE: RS: socket, so when it will be copied, it will
 -- then be init() without problems.
-function protect_env(settings)
-
+function _M.protect_env(settings)
 	if not settings then
 		return nil, "missing settings"
 	end
@@ -367,22 +376,24 @@ function protect_env(settings)
 	base.io = rio
 	base.package.loaded.io = base.io
 
-	base.os = secure_os()
+	base.os = _M.secure_os()
 	-- link to restricted_io
 	base.os.remove = base.io.remove
 	base.os.rename = base.io.rename
 	base.os.tmpname = base.io.tmpname
 	
-	base.debug = secure_debug()
+	base.debug = _M.secure_debug()
 	
 	-- New (secure) require()
-	base.require = generate_require(allowed, settings.inits)
+	base.require = _M.generate_require(allowed, settings.inits)
 
 	-- New loadstring not accepting bytecode
 	--base.loadstring = loadstring_no_bytecode()
 
 	-- Remove everything except authorized globals (and secure functions)
-	local sf = secure_functions_global()
+	local sf = _M.secure_functions_global()
 	sf[#sf + 1] = "require"
-	clean_env(misc.table_concat(globals, sf))
+	_M.clean_env(misc.table_concat(globals, sf))
 end
+
+return _M

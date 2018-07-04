@@ -21,7 +21,7 @@
 #ifndef MISC_H
 #define MISC_H
 
-#define MISC_LIBNAME "splay.misc"
+#define MISC_LIBNAME "splay.misc_core"
 
 LUA_API int luaopen_splay_misc_core(lua_State *L);
 int misc_time(lua_State *L);
