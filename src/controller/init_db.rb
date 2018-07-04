@@ -27,19 +27,19 @@
 require './lib/all'
 
 def drop_db(db)
-	db.query("DROP TABLE IF EXISTS splayds")
-	db.query("DROP TABLE IF EXISTS splayd_availabilities")
-	db.query("DROP TABLE IF EXISTS jobs")
-	db.query("DROP TABLE IF EXISTS job_mandatory_splayds")
-	db.query("DROP TABLE IF EXISTS splayd_jobs")
-	db.query("DROP TABLE IF EXISTS splayd_selections")
-	db.query("DROP TABLE IF EXISTS blacklist_hosts")
-	db.query("DROP TABLE IF EXISTS actions")
-	db.query("DROP TABLE IF EXISTS locks")
+	db.do("DROP TABLE IF EXISTS splayds")
+	db.do("DROP TABLE IF EXISTS splayd_availabilities")
+	db.do("DROP TABLE IF EXISTS jobs")
+	db.do("DROP TABLE IF EXISTS job_mandatory_splayds")
+	db.do("DROP TABLE IF EXISTS splayd_jobs")
+	db.do("DROP TABLE IF EXISTS splayd_selections")
+	db.do("DROP TABLE IF EXISTS blacklist_hosts")
+	db.do("DROP TABLE IF EXISTS actions")
+	db.do("DROP TABLE IF EXISTS locks")
 end
 
 def init_db(db)
-	db.query("CREATE TABLE IF NOT EXISTS splayds (
+	db.do("CREATE TABLE IF NOT EXISTS splayds (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 
 			`key` VARCHAR(255) NOT NULL,
@@ -84,7 +84,7 @@ def init_db(db)
 			INDEX `key` (`key`)
 			) engine=innodb")
 
-	db.query("CREATE TABLE IF NOT EXISTS splayd_availabilities (
+	db.do("CREATE TABLE IF NOT EXISTS splayd_availabilities (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			ip VARCHAR(255),
@@ -92,7 +92,7 @@ def init_db(db)
 			time INT NOT NULL
 			)")
 
-	db.query("CREATE TABLE IF NOT EXISTS jobs (
+	db.do("CREATE TABLE IF NOT EXISTS jobs (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			ref VARCHAR(255) NOT NULL,
 			user_id INT NOT NULL,
@@ -148,13 +148,13 @@ def init_db(db)
 			INDEX ref (ref)
 			)")
 
-	db.query("CREATE TABLE IF NOT EXISTS job_mandatory_splayds (
+	db.do("CREATE TABLE IF NOT EXISTS job_mandatory_splayds (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			job_id INT NOT NULL,
 			splayd_id INT NOT NULL
 			)")
 
-	db.query("CREATE TABLE IF NOT EXISTS splayd_jobs (
+	db.do("CREATE TABLE IF NOT EXISTS splayd_jobs (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
@@ -162,7 +162,7 @@ def init_db(db)
 			INDEX splayd_id (splayd_id)
 			)")
 
-	db.query("CREATE TABLE IF NOT EXISTS splayd_selections (
+	db.do("CREATE TABLE IF NOT EXISTS splayd_selections (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
@@ -177,12 +177,12 @@ def init_db(db)
 			INDEX job_id (job_id)
 			)")
 
-	db.query("CREATE TABLE IF NOT EXISTS blacklist_hosts (
+	db.do("CREATE TABLE IF NOT EXISTS blacklist_hosts (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			host VARCHAR(255)
 			)")
 
-	db.query("CREATE TABLE IF NOT EXISTS actions (
+	db.do("CREATE TABLE IF NOT EXISTS actions (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
@@ -194,7 +194,7 @@ def init_db(db)
 			INDEX job_id (job_id)
 			)")
 
-	db.query("CREATE TABLE IF NOT EXISTS local_log (
+	db.do("CREATE TABLE IF NOT EXISTS local_log (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
@@ -203,16 +203,16 @@ def init_db(db)
 			INDEX job_id (job_id)
 			)")
 
-	db.query("CREATE TABLE IF NOT EXISTS locks (
+	db.do("CREATE TABLE IF NOT EXISTS locks (
 			id INT NOT NULL,
 			job_reservation INT NOT NULL DEFAULT '0'
 			) engine=innodb")
 
-	db.query("INSERT INTO locks SET
+	db.do("INSERT INTO locks SET
 			id='1',
 			job_reservation='0'")
 
-	db.query("CREATE TABLE IF NOT EXISTS users (
+	db.do("CREATE TABLE IF NOT EXISTS users (
 			id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			login varchar(255) default NULL,
 			email varchar(255) default NULL,
@@ -231,4 +231,4 @@ end
 db = DBUtils::get_new
 drop_db(db)
 init_db(db)
-db.close
+db.disconnect

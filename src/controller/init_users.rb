@@ -27,11 +27,11 @@
 require './lib/all'
 
 def drop_db(db)
-	db.query("DROP TABLE IF EXISTS users")
+	db.do("DROP TABLE IF EXISTS users")
 end
 
 def init_db(db)
-	db.query("CREATE TABLE IF NOT EXISTS users (
+	db.do("CREATE TABLE IF NOT EXISTS users (
 		id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		login varchar(255) default NULL,
 		email varchar(255) default NULL,
@@ -45,7 +45,7 @@ def init_db(db)
 		demo int(11) default '1'
 		);")
 	time_now = Time.new().strftime("%Y-%m-%d %T")
-	$db.query("INSERT INTO users SET 
+	$db.do("INSERT INTO users SET 
 		login='admin', 
 		crypted_password='d033e22ae348aeb5660fc2140aec35850c4da997', 
 		created_at='#{time_now}', 
@@ -57,4 +57,4 @@ end
 db = DBUtils::get_new
 drop_db(db)
 init_db(db)
-db.close
+db.disconnect

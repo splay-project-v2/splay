@@ -73,11 +73,11 @@ class Jobd
 	# Update job status (and status time)
 	def self.set_job_status(id, status, status_msg = "")
 		$log.info("Job #{id}: #{status} #{status_msg}")
-		$db.query "UPDATE jobs SET
+		$db["UPDATE jobs SET
 				status='#{status}',
 				status_time='#{Time.now.to_i}',
 				status_msg='#{status_msg}'
-				WHERE id='#{id}'"
+				WHERE id='#{id}'"]
 	end
 
 	# A fast created json string with the node position or with the futur
@@ -124,7 +124,7 @@ class Jobd
 				if c > max then break end
 				c += 1
 			end
-			res = $db.query("SELECT ip FROM splayds WHERE id='#{m_s['splayd_id']}'").first
+			res = $db["SELECT ip FROM splayds WHERE id='#{m_s['splayd_id']}'"].first
 			el = {}
 			el['id'] = m_s['splayd_id']
 			el['ip'] = res['ip']
@@ -184,7 +184,7 @@ class Jobd
 	# the query.
 	# (query should return values with splayd_id)
 	def self.send_all_list(job, query)
-		m_s_s = $db.query(query)
+		m_s_s = $db.do(query)
 		
 		case job['list_type']
 		when 'HEAD' # simple head list of job['list_size'] element
@@ -197,10 +197,10 @@ class Jobd
 				pos = pos + 1
 			end
 			q_act = q_act[0, q_act.length - 1]
-			$db.query "INSERT INTO actions (splayd_id, job_id, command, position, status)
-					VALUES #{q_act}"
-			$db.query "UPDATE actions SET data='#{list_json}', status='WAITING'
-					WHERE job_id='#{job['id']}' AND command='LIST' AND status='TEMP'"
+			$db["INSERT INTO actions (splayd_id, job_id, command, position, status)
+					VALUES #{q_act}"]
+			$db["UPDATE actions SET data='#{list_json}', status='WAITING'
+					WHERE job_id='#{job['id']}' AND command='LIST' AND status='TEMP'"]
 		when 'RANDOM' # random list of job['list_size'] element
 
 			lists = random_lists(job, m_s_s)
@@ -213,21 +213,21 @@ class Jobd
 			end
 			if q_act.size > 0 
 				q_act = q_act[0, q_act.length - 1]
-				$db.query "INSERT INTO actions (splayd_id, job_id, command, data)
-						VALUES #{q_act}"
+				$db["INSERT INTO actions (splayd_id, job_id, command, data)
+						VALUES #{q_act}"]
 			end
 		end
 	end
 
 	# query should return values with splayd_id
 	def self.send_start(job, query)
-		m_s_s = $db.query(query)
+		m_s_s = $db.do(query)
 		q_act = ""
 		m_s_s.each do |m_s|
 			q_act = q_act + "('#{m_s['splayd_id']}','#{job['id']}','START', '#{job['ref']}'),"
 		end
 		q_act = q_act[0, q_act.length - 1]
-		$db.query "INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"
+		$db["INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"]
 	end
 
 	def self.create_filter_query(job)
@@ -309,8 +309,8 @@ class Jobd
 
 		# We don't take splayds already mandatory (see later)
 		mandatory_filter = ""
-		$db.query("SELECT * FROM job_mandatory_splayds
-				WHERE job_id='#{job['id']}'").each do |mm|
+		$db["SELECT * FROM job_mandatory_splayds
+				WHERE job_id='#{job['id']}'"].each do |mm|
 			mandatory_filter += " AND splayds.id!=#{mm['splayd_id']} "
 		end
 

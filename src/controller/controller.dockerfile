@@ -10,7 +10,7 @@ run apt-get -y --no-install-recommends install \
   build-essential rubygems less mysql-client default-libmysqlclient-dev libssl-dev openssl
 
 run gem install json -v 2.1.0
-run gem install mysql2 openssl
+run gem install mysql2 sequel openssl
 #openssl-nonblock dbi dbd-mysql Orbjson
 
 add *.rb ./

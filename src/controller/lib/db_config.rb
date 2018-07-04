@@ -25,4 +25,5 @@ class DBConfig
 	SQL_HOST = "splay_db"
 	SQL_USER = "splay"
 	SQL_PASS = "splay"
+	SQL_PORT = "3306"
 end

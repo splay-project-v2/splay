@@ -72,8 +72,8 @@ class JobdTrace < Jobd
 	# We are just restarted, no threads to apply the trace, we need to kill
 	# each running jobs
 	def self.init()
-		results = $db.query "SELECT * FROM jobs WHERE
-				scheduler='#{@@scheduler}' AND status='RUNNING'"
+		results = $db["SELECT * FROM jobs WHERE
+				scheduler='#{@@scheduler}' AND status='RUNNING'"]
 		results.each do |job|
 			kill_job(job, "controller restart, trace job aborted")
 		end
@@ -82,13 +82,13 @@ class JobdTrace < Jobd
 	def self.start_trace(job, trace_number, list)
 		$log.info("TRACE #{job['id']}: start #{trace_number}")
 					
-		s_s = ($db.query "SELECT * FROM splayd_selections
+		s_s = $db["SELECT * FROM splayd_selections
 				WHERE
 				job_id='#{job['id']}' AND
-				trace_number='#{trace_number}'").first
+				trace_number='#{trace_number}'"].first
 		s = Splayd.new(s_s['splayd_id'])
 
-		$db.query "UPDATE splayd_selections SET
+		$db.do "UPDATE splayd_selections SET
 				trace_status='RUNNING'
 				WHERE
 				job_id='#{job['id']}' AND
@@ -110,13 +110,13 @@ class JobdTrace < Jobd
 	def self.stop_trace(job, trace_number)
 		$log.info("TRACE #{job['id']}: stop #{trace_number}")
 
-		s_s = $db.query("SELECT * FROM splayd_selections
+		s_s = $db["SELECT * FROM splayd_selections
 				WHERE
 				job_id='#{job['id']}' AND
-				trace_number='#{trace_number}'").first
+				trace_number='#{trace_number}'"].first
 		if s_s['trace_status'] == 'RUNNING'
 			s = Splayd.new(s_s['splayd_id'])
-			$db.query "UPDATE splayd_selections SET
+			$db.do "UPDATE splayd_selections SET
 					trace_status='WAITING'
 					WHERE
 					job_id='#{job['id']}' AND
@@ -139,7 +139,7 @@ class JobdTrace < Jobd
 	def self.replace_failed(job)
 
 		# Replace all nodes non AVAILABLE or RESET
-		results = $db.query "SELECT * FROM splayds, splayd_selections
+		results = $db.do "SELECT * FROM splayds, splayd_selections
 				WHERE
 				splayd_selections.job_id='#{job['id']}' AND
 				splayd_selections.trace_number IS NOT NULL AND
@@ -154,7 +154,7 @@ class JobdTrace < Jobd
 	def self.repair(job, old)
 		$log.warn("TRACE #{job['id']}: splayd #{old['splayd_id']} has failed.")
 
-		new = $db.query("SELECT * FROM splayds, splayd_selections
+		new = $db["SELECT * FROM splayds, splayd_selections
 				WHERE
 				splayd_selections.job_id='#{job['id']}' AND
 				splayd_selections.trace_number IS NULL AND
@@ -162,7 +162,7 @@ class JobdTrace < Jobd
 				splayd_selections.reset='FALSE' AND
 				splayds.id = splayd_selections.splayd_id AND
 				splayds.status='AVAILABLE'
-				ORDER BY reply_time").first
+				ORDER BY reply_time"].first
 
 		if not new
 			$log.error("TRACE #{job['id']}: repair FAILED, no free splayds.")
@@ -172,20 +172,20 @@ class JobdTrace < Jobd
 		trace_number = old['trace_number']
 		stop_trace(job, trace_number)
 
-		$db.query "UPDATE splayd_selections SET
+		$db.do "UPDATE splayd_selections SET
 				trace_number=NULL
 				WHERE
 				job_id='#{job['id']}' AND
 				splayd_id='#{old['splayd_id']}'"
 
-		$db.query "UPDATE splayd_selections SET
+		$db.do "UPDATE splayd_selections SET
 				trace_number='#{trace_number}'
 				WHERE
 				job_id='#{job['id']}' AND
 				splayd_id='#{new['splayd_id']}'"
 
 		if old['trace_status'] == 'RUNNING'
-			$db.query "UPDATE splayd_selections SET
+			$db.do "UPDATE splayd_selections SET
 					trace_status='RUNNING'
 					WHERE
 					job_id='#{job['id']}' AND
@@ -203,8 +203,8 @@ class JobdTrace < Jobd
 
 	# Return the scheduling description as an array
 	def self.get_scheduling(job)
-		job = $db.query("SELECT scheduler_description FROM
-				jobs WHERE id='#{job['id']}'").first
+		job = $db["SELECT scheduler_description FROM
+				jobs WHERE id='#{job['id']}'"].first
 		return job['scheduler_description'].split("\n")
 	end
 
@@ -212,7 +212,7 @@ class JobdTrace < Jobd
 	# all reparations)
 	def self.running_list(job)
 		# Splayds already in the job
-		splayds = $db.query "SELECT * FROM splayd_selections WHERE
+		splayds = $db.do "SELECT * FROM splayd_selections WHERE
 				job_id='#{job['id']}' AND trace_status='RUNNING'"
 		
 		# head list
@@ -336,9 +336,9 @@ class JobdTrace < Jobd
 
 		c_splayd = nil
 
-		results = $db.query "SELECT * FROM jobs WHERE
+		results = $db["SELECT * FROM jobs WHERE
 				scheduler='#{@@scheduler}' AND
-				status='LOCAL' AND die_free='FALSE'"
+				status='LOCAL' AND die_free='FALSE'"]
 
 		results.each do |job|
 
@@ -350,13 +350,13 @@ class JobdTrace < Jobd
 				
 				# Do not take only AVAILABLE splayds here because new ones can become
 				# AVAILABLE before the next filters.
-				res = $db.query "SELECT id, max_number FROM splayds"
+				res = $db.do "SELECT id, max_number FROM splayds"
 				res.each do |m|
 					c_splayd['max_number'][m['id']] = m['max_number']
 					c_splayd['nb_nodes'][m['id']] = 0
 				end
 
-				res = $db.query "SELECT splayd_id, COUNT(job_id) as nb_nodes
+				res = $db.do "SELECT splayd_id, COUNT(job_id) as nb_nodes
 						FROM splayd_jobs
 						GROUP BY splayd_id"
 				res.each do |ms|
@@ -371,7 +371,7 @@ class JobdTrace < Jobd
 			# To select the splayds that have the lowest percentage of occupation 
 			occupation = {}
 
-			$db.query(create_filter_query(job)).each do |m|
+			$db.do(create_filter_query(job)).each do |m|
 
 				if m['network_send_speed'] / c_splayd['max_number'][m['id']] >=
 						job['network_send_speed'] and
@@ -394,13 +394,13 @@ class JobdTrace < Jobd
 			### Mandatory splayds
 			mandatory_ok = true
 
-			$db.query("SELECT * FROM job_mandatory_splayds
+			$db.do("SELECT * FROM job_mandatory_splayds
 					WHERE job_id='#{job['id']}'").each do |mm|
 
-				m = $db.query("SELECT id, ref FROM splayds WHERE
+				m = $db["SELECT id, ref FROM splayds WHERE
 						id='#{mm['splayd_id']}'
 						#{ressources_filter}
-						#{bytecode_filter}").first
+						#{bytecode_filter}"].first
 
 				if m
 					if c_splayd['nb_nodes'][m['id']] == c_splayd['max_number'][m['id']]
@@ -450,7 +450,7 @@ class JobdTrace < Jobd
 				if count >= nb_selected_splayds then break end
 			end
 
-			$db.query("SELECT * FROM job_mandatory_splayds
+			$db.do("SELECT * FROM job_mandatory_splayds
 					WHERE job_id='#{job['id']}'").each do |mm|
 
 				splay_id = mm['splayd_id']
@@ -466,11 +466,11 @@ class JobdTrace < Jobd
 			q_act = q_act[0, q_act.length - 1]
 			# In trace jobs, all are selected and kept, but only those that have
 			# replied will be used.
-			$db.query "INSERT INTO splayd_selections (splayd_id, job_id, selected) VALUES #{q_sel}"
-			$db.query "INSERT INTO splayd_jobs (splayd_id, job_id, status) VALUES #{q_job}"
+			$db.do "INSERT INTO splayd_selections (splayd_id, job_id, selected) VALUES #{q_sel}"
+			$db.do "INSERT INTO splayd_jobs (splayd_id, job_id, status) VALUES #{q_job}"
 
-			$db.query "INSERT INTO actions (splayd_id, job_id, command, status) VALUES #{q_act}"
-			$db.query "UPDATE actions SET data='#{addslashes(new_job)}', status='WAITING'
+			$db.do "INSERT INTO actions (splayd_id, job_id, command, status) VALUES #{q_act}"
+			$db.do "UPDATE actions SET data='#{addslashes(new_job)}', status='WAITING'
 					WHERE job_id='#{job['id']}' AND command='REGISTER' AND status='TEMP'"
 
 
@@ -482,8 +482,8 @@ class JobdTrace < Jobd
 	# REGISTERING => REGISTERING_TIMEOUT|RUNNING
 	# NOTE don't apply mandatory in this step
 	def self.status_registering
-		$db.query("SELECT * FROM jobs WHERE
-				scheduler='#{@@scheduler}' AND status='REGISTERING'").each do |job|
+		$db["SELECT * FROM jobs WHERE
+				scheduler='#{@@scheduler}' AND status='REGISTERING'"].each do |job|
 
 			# We will not use
 			# selected='TRUE' 
@@ -495,10 +495,10 @@ class JobdTrace < Jobd
 			scheduling = get_scheduling(job)
 
 			possible_splayds = []
-			$db.query("SELECT splayd_id FROM splayd_selections WHERE
+			$db["SELECT splayd_id FROM splayd_selections WHERE
 					job_id='#{job['id']}' AND
 					replied='TRUE'
-					ORDER BY reply_time LIMIT #{scheduling.size}").each do |m|
+					ORDER BY reply_time LIMIT #{scheduling.size}"].each do |m|
 				possible_splayds << m['splayd_id']
 			end
 
@@ -507,7 +507,7 @@ class JobdTrace < Jobd
 
 				trace_number = 0
 				possible_splayds.each do |splayd_id|
-					$db.query("UPDATE splayd_selections SET
+					$db.do("UPDATE splayd_selections SET
 							trace_number='#{trace_number += 1}'
 							WHERE
 							splayd_id='#{splayd_id}' AND
@@ -518,7 +518,7 @@ class JobdTrace < Jobd
 
 				start_nodes.each do |trace_number|
 					$log.debug("TRACE #{job['id']}: initial #{trace_number}")
-					$db.query("UPDATE splayd_selections SET
+					$db.do("UPDATE splayd_selections SET
 							trace_status='RUNNING'
 							WHERE
 							trace_number='#{trace_number}' AND
@@ -554,19 +554,19 @@ class JobdTrace < Jobd
 				if Time.now.to_i > job['status_time'] + @@register_timeout then
 					# TIMEOUT !
 
-					$db.query "DELETE FROM actions WHERE
+					$db.do "DELETE FROM actions WHERE
 							job_id='#{job['id']}' AND
 							command='REGISTER'"
 
 					# send unregister action
 					# We need to unregister the job on all the splayds.
-					$db.query("SELECT * FROM splayd_selections WHERE
-							job_id='#{job['id']}'").each do |m_s|
+					$db["SELECT * FROM splayd_selections WHERE
+							job_id='#{job['id']}'"].each do |m_s|
 						# TODO optimization
 						Splayd::add_action m_s['splayd_id'], job['id'], 'FREE', job['ref']
 					end
 
-					$db.query "DELETE FROM splayd_selections WHERE
+					$db.do "DELETE FROM splayd_selections WHERE
 							job_id='#{job['id']}'"
 
 					set_job_status(job['id'], 'REGISTER_TIMEOUT')
@@ -577,8 +577,8 @@ class JobdTrace < Jobd
 	
 	# RUNNING => ENDED
 	def self.status_running
-		$db.query("SELECT * FROM jobs WHERE
-				scheduler='#{@@scheduler}' AND status='RUNNING'").each do |job|
+		$db["SELECT * FROM jobs WHERE
+				scheduler='#{@@scheduler}' AND status='RUNNING'"].each do |job|
 			# TODO error msg...
 		end
 	end
@@ -600,14 +600,14 @@ $log.info("KILLING #{job['id']}")
 			set_job_status(job['id'], 'KILLED')
 		when 'REGISTERING', 'RUNNING'
 			q_act = ""
-			$db.query("SELECT * FROM splayd_jobs WHERE
-					job_id='#{job['id']}'").each do |m_s|
+			$db["SELECT * FROM splayd_jobs WHERE
+					job_id='#{job['id']}'"].each do |m_s|
 				# STOP doesn't remove the job from the splayd
 				q_act = q_act + "('#{m_s['splayd_id']}','#{job['id']}','FREE', '#{job['ref']}'),"
 			end
 			if q_act != ""
 				q_act = q_act[0, q_act.length - 1]
-				$db.query "INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"
+				$db.do "INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"
 			end
 			set_job_status(job['id'], 'KILLED', status_msg)
 		end
@@ -616,25 +616,25 @@ $log.info("KILLING #{job['id']}")
 	def self.command
 		# NOTE splayd_jobs table is cleaned directly by splayd when it apply the
 		# unregister command (or reset)
-		$db.query("SELECT * FROM jobs WHERE scheduler='#{@@scheduler}' AND
-				command IS NOT NULL").each do |job|
+		$db["SELECT * FROM jobs WHERE scheduler='#{@@scheduler}' AND
+				command IS NOT NULL"].each do |job|
 			if job['command'] =~ /kill|KILL/
 				kill_job(job, "user kill")
 			else
 				msg = "Not understood command: #{job['command']}"
-				$db.query "UPDATE jobs SET command_msg='#{msg}' WHERE id='#{job['id']}'"
+				$db.do "UPDATE jobs SET command_msg='#{msg}' WHERE id='#{job['id']}'"
 			end
-			$db.query "UPDATE jobs SET command='' WHERE id='#{job['id']}'"
+			$db.do "UPDATE jobs SET command='' WHERE id='#{job['id']}'"
 		end
 	end
 
 	# KILL AT
 	def self.kill_max_time
-		$db.query("SELECT * FROM jobs WHERE
+		$db["SELECT * FROM jobs WHERE
 				scheduler='#{@@scheduler}' AND
 				status='RUNNING' AND
 				max_time IS NOT NULL AND
-				status_time + max_time < #{Time.now.to_i}").each do |job|
+				status_time + max_time < #{Time.now.to_i}"].each do |job|
 			kill_job(job, "max execution time")
 		end
 	end

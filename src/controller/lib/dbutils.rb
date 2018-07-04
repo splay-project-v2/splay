@@ -20,33 +20,22 @@
 ## along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 
 
-require 'mysql2'
+require 'sequel'
 
 class DBUtils
 
 
 	def self.get_new
-		$log.info("New DB connection (MySQL2)")
-		# We do not catch exceptions here because if there is a problem the application must end.
-		# TODO exception
-		db = Mysql2::Client.new(
-				:host => SplayControllerConfig::SQL_HOST,
-			  :username => SplayControllerConfig::SQL_USER,
-			  :password => SplayControllerConfig::SQL_PASS,
-			  :database => SplayControllerConfig::SQL_DB
-		)
-		# db.autocommit(false) TODO : check autocommit
-
-=begin TODO Alternative for the pinging
-		Thread.new do
-			loop do
-				if not db.ping()
-					break
-				end
-				sleep 3600
-			end
+		if $log then
+			$log.info("New DB connection (Sequel+MySQL)")
 		end
-=end
+		url = "mysql2://#{SplayControllerConfig::SQL_USER}:#{SplayControllerConfig::SQL_PASS}@" +
+				"#{SplayControllerConfig::SQL_HOST}:#{SplayControllerConfig::SQL_PORT}/#{SplayControllerConfig::SQL_DB}"
+		db = Sequel.connect(url)
+		#db.autocommit(false) -- not supported by Sequel adapter for mysql ?
+		class << db
+			alias :do :run
+		end
 		return db
 	end
 end
