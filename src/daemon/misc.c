@@ -44,8 +44,9 @@ static const luaL_reg misc_funcs[] =
 
 LUA_API int luaopen_splay_misc_core(lua_State *L)
 {
-    luaL_openlib(L, MISC_LIBNAME, misc_funcs, 0);
-    return 0;
+    //luaL_openlib(L, MISC_LIBNAME, misc_funcs, 0);
+	luaL_newlib(L, misc_funcs);
+    return 1;
 }
 
 int misc_time(lua_State *L)

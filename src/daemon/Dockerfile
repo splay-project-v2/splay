@@ -8,8 +8,8 @@ workdir /usr/splay
 
 run apt-get update 
 run apt-get -y --no-install-recommends install build-essential openssl libssl1.0 
-# Due to a bug where the symbol link is not create
 run apt-get -y --no-install-recommends install lua5.3 liblua5.3-0 liblua5.3-dev
+# Due to a bug of lua 5.3 package where the symbol link is not create
 run update-alternatives --install /usr/bin/lua lua /usr/bin/lua5.3 10
 run update-alternatives --install /usr/bin/luac luac /usr/bin/luac5.3 10
 
@@ -21,6 +21,7 @@ env L_CPATH "/usr/splay/lib/c"
 add *.* ./
 add Makefile .  
 add luacrypto ./luacrypto
+add lbase64 ./lbase64
 add modules ./modules
 add deploy.sh .
 

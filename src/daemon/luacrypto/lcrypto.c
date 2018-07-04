@@ -3,22 +3,27 @@
 ** See Copyright Notice in license.html
 */
 
+// #include <config.h>
 #include <string.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
 #include <openssl/rand.h>
 
-#include "lua.h"
-#include "lauxlib.h"
+#include <lua.h>
+#include <lauxlib.h>
+
 #if ! defined (LUA_VERSION_NUM) || LUA_VERSION_NUM < 501
-#include "compat-5.1.h"
+// #include "compat-5.1.h"
 #endif
 
 #include "lcrypto.h"
+
 #include "../compmod.h"
 
-LUACRYPTO_API int luaopen_crypto(lua_State *L);
+/* LUACRYPTO_API int luaopen_crypto(lua_State *L){
+  printf("luaopen_crypto");
+}; */
 
 static int crypto_error(lua_State *L)
 {
@@ -32,7 +37,7 @@ static int crypto_error(lua_State *L)
 
 static EVP_MD_CTX *evp_pget(lua_State *L, int i)
 {
-  if (luaL_checkudata(L, i, LUACRYPTO_EVPNAME) == NULL) luaL_typerror(L, i, LUACRYPTO_EVPNAME);
+  if (luaL_checkudata(L, i, LUACRYPTO_EVPNAME) == NULL) luaL_argerror(L, i, LUACRYPTO_EVPNAME);
   return lua_touserdata(L, i);
 }
 
@@ -86,7 +91,7 @@ static int evp_update(lua_State *L)
   EVP_MD_CTX *c = evp_pget(L, 1);
   const char *s = luaL_checkstring(L, 2);
   
-  EVP_DigestUpdate(c, s, lua_strlen(L, 2));
+  EVP_DigestUpdate(c, s, lua_rawlen(L, 2));
   
   lua_settop(L, 1);
   return 1;
@@ -104,7 +109,7 @@ static int evp_digest(lua_State *L)
   if (lua_isstring(L, 2))
   {  
     const char *s = luaL_checkstring(L, 2);
-    EVP_DigestUpdate(c, s, lua_strlen(L, 2));
+    EVP_DigestUpdate(c, s, lua_rawlen(L, 2));
   }
   
   d = EVP_MD_CTX_create();
@@ -160,7 +165,7 @@ static int evp_fdigest(lua_State *L)
   
   c = EVP_MD_CTX_create();
   EVP_DigestInit_ex(c, type, NULL);
-  EVP_DigestUpdate(c, s, lua_strlen(L, 2));
+  EVP_DigestUpdate(c, s, lua_rawlen(L, 2));
   EVP_DigestFinal_ex(c, digest, &written);
   
   if (lua_toboolean(L, 3))
@@ -179,7 +184,7 @@ static int evp_fdigest(lua_State *L)
 
 static HMAC_CTX *hmac_pget(lua_State *L, int i)
 {
- if (luaL_checkudata(L, i, LUACRYPTO_HMACNAME) == NULL) luaL_typerror(L, i, LUACRYPTO_HMACNAME);
+ if (luaL_checkudata(L, i, LUACRYPTO_HMACNAME) == NULL) luaL_argerror(L, i, LUACRYPTO_HMACNAME);
  return lua_touserdata(L, i);
 }
 
@@ -204,7 +209,7 @@ static int hmac_fnew(lua_State *L)
   }
 
   HMAC_CTX_init(c);
-  HMAC_Init_ex(c, k, lua_strlen(L, 2), type, NULL);
+  HMAC_Init_ex(c, k, lua_rawlen(L, 2), type, NULL);
 
   return 1;
 }
@@ -229,7 +234,7 @@ static int hmac_update(lua_State *L)
   HMAC_CTX *c = hmac_pget(L, 1);
   const char *s = luaL_checkstring(L, 2);
 
-  HMAC_Update(c, (unsigned char *)s, lua_strlen(L, 2));
+  HMAC_Update(c, (unsigned char *)s, lua_rawlen(L, 2));
 
   lua_settop(L, 1);
   return 1;
@@ -246,7 +251,7 @@ static int hmac_digest(lua_State *L)
   if (lua_isstring(L, 2))
   {
     const char *s = luaL_checkstring(L, 2);
-    HMAC_Update(c, (unsigned char *)s, lua_strlen(L, 2));
+    HMAC_Update(c, (unsigned char *)s, lua_rawlen(L, 2));
   }
 
   HMAC_Final(c, digest, &written);
@@ -299,8 +304,8 @@ static int hmac_fdigest(lua_State *L)
   }
 
   HMAC_CTX_init(&c);
-  HMAC_Init_ex(&c, k, lua_strlen(L, 3), type, NULL);
-  HMAC_Update(&c, (unsigned char *)s, lua_strlen(L, 2));
+  HMAC_Init_ex(&c, k, lua_rawlen(L, 3), type, NULL);
+  HMAC_Update(&c, (unsigned char *)s, lua_rawlen(L, 2));
   HMAC_Final(&c, digest, &written);
 
   if (lua_toboolean(L, 4))
@@ -319,9 +324,9 @@ static int hmac_fdigest(lua_State *L)
 
 static int rand_do_bytes(lua_State *L, int (*bytes)(unsigned char *, int))
 {
-  size_t count = luaL_checkint(L, 1);
+  size_t count = (size_t)luaL_checkinteger(L,1);
   unsigned char tmp[256], *buf = tmp;
-  if (count > sizeof(tmp))
+  if (count > sizeof tmp)
     buf = malloc(count);
   if (!buf)
     return luaL_error(L, "out of memory");
@@ -359,6 +364,7 @@ static int rand_status(lua_State *L)
 }
 
 enum { WRITE_FILE_COUNT = 1024 };
+/*
 static int rand_load(lua_State *L)
 {
   const char *name = luaL_optstring(L, 1, 0);
@@ -385,7 +391,7 @@ static int rand_write(lua_State *L)
     return crypto_error(L);
   lua_pushnumber(L, n);
   return 1;
-}
+} */
 
 static int rand_cleanup(lua_State *L)
 {
@@ -399,9 +405,9 @@ static int rand_cleanup(lua_State *L)
 LUACRYPTO_API int luacrypto_createmeta (lua_State *L, const char *name, const luaL_Reg *methods) {
   if (!luaL_newmetatable (L, name))
     return 0;
-  
+
   /* define methods */
-  luaL_openlib (L, NULL, methods, 0);
+  luaL_openlib(L, name, methods, 0);
   
   /* define metamethods */
   lua_pushliteral (L, "__index");
@@ -410,8 +416,8 @@ LUACRYPTO_API int luacrypto_createmeta (lua_State *L, const char *name, const lu
 
   lua_pushliteral (L, "__metatable");
   lua_pushliteral (L, LUACRYPTO_PREFIX"you're not allowed to get this metatable");
-  lua_settable (L, -3);
-
+  lua_settable (L, -3); 
+  
   return 1;
 }
 
@@ -420,12 +426,12 @@ LUACRYPTO_API int luacrypto_createmeta (lua_State *L, const char *name, const lu
 */
 static void create_metatables (lua_State *L)
 {
-  struct luaL_reg evp_functions[] = {
+  struct luaL_Reg evp_functions[] = {
     { "digest", evp_fdigest },
     { "new", evp_fnew },
     {NULL, NULL},
   };
-  struct luaL_reg evp_methods[] = {
+  struct luaL_Reg evp_methods[] = {
     { "__tostring", evp_tostring },
     { "__gc", evp_gc },
     { "clone", evp_clone },
@@ -435,12 +441,12 @@ static void create_metatables (lua_State *L)
     { "update",	evp_update },
     {NULL, NULL},
   };
-  struct luaL_reg hmac_functions[] = {
+  struct luaL_Reg hmac_functions[] = {
     { "digest", hmac_fdigest },
     { "new", hmac_fnew },
     { NULL, NULL }
   };
-  struct luaL_reg hmac_methods[] = {
+  struct luaL_Reg hmac_methods[] = {
     { "__tostring", hmac_tostring },
     { "__gc", hmac_gc },
     { "clone", hmac_clone },
@@ -450,7 +456,7 @@ static void create_metatables (lua_State *L)
     { "update", hmac_update },
     { NULL, NULL }
   };
-  struct luaL_reg rand_functions[] = {
+  struct luaL_Reg rand_functions[] = {
     { "bytes", rand_bytes },
     { "pseudo_bytes", rand_pseudo_bytes },
     { "add", rand_add },
@@ -461,13 +467,13 @@ static void create_metatables (lua_State *L)
     { "cleanup", rand_cleanup },
     { NULL, NULL }
   };
-
-  luaL_openlib (L, LUACRYPTO_EVPNAME, evp_functions, 0);
+  
+  luaL_openlib (L, LUACRYPTO_EVPNAME, evp_functions, 0); 
   luacrypto_createmeta(L, LUACRYPTO_EVPNAME, evp_methods);
   luaL_openlib (L, LUACRYPTO_HMACNAME, hmac_functions, 0);
   luacrypto_createmeta(L, LUACRYPTO_HMACNAME, hmac_methods);
   luaL_openlib (L, LUACRYPTO_RANDNAME, rand_functions, 0);
-  lua_pop (L, 3);
+  lua_pop (L, 3); 
 }
 
 /*
@@ -498,16 +504,13 @@ LUACRYPTO_API void luacrypto_set_info (lua_State *L) {
 ** driver open method.
 */
 LUACRYPTO_API int luaopen_crypto(lua_State *L)
-{
-  
-  struct luaL_reg core[] = {
+{  
+  struct luaL_Reg core[] = {
     {NULL, NULL},
   };
-
   OpenSSL_add_all_digests();
-
   create_metatables (L);
   luaL_openlib (L, LUACRYPTO_CORENAME, core, 0);
-  luacrypto_set_info (L);
+  // luacrypto_set_info (L);
   return 1;
 }
