@@ -48,10 +48,10 @@ exit
 
 ref = OpenSSL::Digest::MD5.hexdigest(rand(1000000).to_s)
 
-$db["INSERT INTO jobs SET
+$db.run("INSERT INTO jobs SET
 		ref='#{ref}'
 		#{to_sql(options)}
-		, code='#{addslashes(code)}'"]
+		, code='#{addslashes(code)}'")
 
 job = $db["SELECT * FROM jobs WHERE ref='#{ref}'"].first
 

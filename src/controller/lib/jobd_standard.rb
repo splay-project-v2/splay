@@ -160,12 +160,12 @@ class JobdStandard < Jobd
 			q_sel = q_sel[0, q_sel.length - 1]
 			q_job = q_job[0, q_job.length - 1]
 			q_act = q_act[0, q_act.length - 1]
-			$db.do "INSERT INTO splayd_selections (splayd_id, job_id) VALUES #{q_sel}"
-			$db.do "INSERT INTO splayd_jobs (splayd_id, job_id, status) VALUES #{q_job}"
+			$db.run("INSERT INTO splayd_selections (splayd_id, job_id) VALUES #{q_sel}")
+			$db.run("INSERT INTO splayd_jobs (splayd_id, job_id, status) VALUES #{q_job}")
 
-			$db.do "INSERT INTO actions (splayd_id, job_id, command, status) VALUES #{q_act}"
-			$db.do "UPDATE actions SET data='#{addslashes(new_job)}', status='WAITING'
-					WHERE job_id='#{job['id']}' AND command='REGISTER' AND status='TEMP'"
+			$db.run("INSERT INTO actions (splayd_id, job_id, command, status) VALUES #{q_act}")
+			$db.run("UPDATE actions SET data='#{addslashes(new_job)}', status='WAITING'
+					WHERE job_id='#{job['id']}' AND command='REGISTER' AND status='TEMP'")
 
 
 			set_job_status(job['id'], 'REGISTERING')
@@ -215,20 +215,20 @@ class JobdStandard < Jobd
 			if normal_ok and mandatory_ok
 
 				selected_splayds.each do |splayd_id|
-					$db["UPDATE splayd_selections SET
+					$db.run("UPDATE splayd_selections SET
 							selected='TRUE'
 							WHERE
 							splayd_id='#{splayd_id}' AND
-							job_id='#{job['id']}'"]
+							job_id='#{job['id']}'")
 				end
 				$db["SELECT * FROM job_mandatory_splayds
 						WHERE job_id='#{job['id']}'"].each do |mm|
 
-					$db["UPDATE splayd_selections SET
+					$db.run("UPDATE splayd_selections SET
 							selected='TRUE'
 							WHERE
 							splayd_id='#{mm['splayd_id']}' AND
-							job_id='#{job['id']}'"]
+							job_id='#{job['id']}'")
 				end
 
 				# We need to unregister the job on the non selected splayds.
@@ -240,7 +240,7 @@ class JobdStandard < Jobd
 				end
 				if q_act != ""
 					q_act = q_act[0, q_act.length - 1]
-					$db.do "INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"
+					$db.run("INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}")
 				end
 
 
@@ -265,9 +265,9 @@ class JobdStandard < Jobd
 				if Time.now.to_i > job['status_time'] + @@register_timeout then
 					# TIMEOUT !
 
-					$db.do "DELETE FROM actions WHERE
+					$db.run("DELETE FROM actions WHERE
 							job_id='#{job['id']}' AND
-							command='REGISTER'"
+							command='REGISTER'")
 
 					# send unregister action
 					# We need to unregister the job on all the splayds.
@@ -277,8 +277,8 @@ class JobdStandard < Jobd
 						Splayd::add_action m_s['splayd_id'], job['id'], 'FREE', job['ref']
 					end
 
-					$db.do "DELETE FROM splayd_selections WHERE
-							job_id='#{job['id']}'"
+					$db.run("DELETE FROM splayd_selections WHERE
+							job_id='#{job['id']}'")
 					set_job_status(job['id'], 'REGISTER_TIMEOUT')
 				end
 			end
@@ -315,7 +315,7 @@ class JobdStandard < Jobd
 			end
 			if q_act != ""
 				q_act = q_act[0, q_act.length - 1]
-				$db.do "INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"
+				$db.run("INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}")
 			end
 			set_job_status(job['id'], 'KILLED', status_msg)
 		end
@@ -330,9 +330,9 @@ class JobdStandard < Jobd
 				kill_job(job, "user kill")
 			else
 				msg = "Not understood command: #{job['command']}"
-				$db.do "UPDATE jobs SET command_msg='#{msg}' WHERE id='#{job['id']}'"
+				$db.run("UPDATE jobs SET command_msg='#{msg}' WHERE id='#{job['id']}'")
 			end
-			$db.do "UPDATE jobs SET command='' WHERE id='#{job['id']}'"
+			$db.run("UPDATE jobs SET command='' WHERE id='#{job['id']}'")
 		end
 	end
 

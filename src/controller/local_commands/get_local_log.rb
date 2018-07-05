@@ -36,10 +36,10 @@ jobd_id = ARGV[1].to_i
 
 # TODO check if the request is already queued and in that case do not send it
 # again
-$db["INSERT INTO actions SET
+$db.run("INSERT INTO actions SET
 		splayd_id='#{splayd_id}',
 		jobd_id='#{jobd_id}',
-		command='LOCAL_LOG'"]
+		command='LOCAL_LOG'")
 
 # TODO finish, watch in local_log db
 #

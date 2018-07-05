@@ -73,11 +73,11 @@ class Jobd
 	# Update job status (and status time)
 	def self.set_job_status(id, status, status_msg = "")
 		$log.info("Job #{id}: #{status} #{status_msg}")
-		$db["UPDATE jobs SET
+		$db.run("UPDATE jobs SET
 				status='#{status}',
 				status_time='#{Time.now.to_i}',
 				status_msg='#{status_msg}'
-				WHERE id='#{id}'"]
+				WHERE id='#{id}'")
 	end
 
 	# A fast created json string with the node position or with the futur
@@ -197,10 +197,10 @@ class Jobd
 				pos = pos + 1
 			end
 			q_act = q_act[0, q_act.length - 1]
-			$db["INSERT INTO actions (splayd_id, job_id, command, position, status)
-					VALUES #{q_act}"]
-			$db["UPDATE actions SET data='#{list_json}', status='WAITING'
-					WHERE job_id='#{job['id']}' AND command='LIST' AND status='TEMP'"]
+			$db.run("INSERT INTO actions (splayd_id, job_id, command, position, status)
+					VALUES #{q_act}")
+			$db.run("UPDATE actions SET data='#{list_json}', status='WAITING'
+					WHERE job_id='#{job['id']}' AND command='LIST' AND status='TEMP'")
 		when 'RANDOM' # random list of job['list_size'] element
 
 			lists = random_lists(job, m_s_s)
@@ -213,8 +213,8 @@ class Jobd
 			end
 			if q_act.size > 0 
 				q_act = q_act[0, q_act.length - 1]
-				$db["INSERT INTO actions (splayd_id, job_id, command, data)
-						VALUES #{q_act}"]
+				$db.run("INSERT INTO actions (splayd_id, job_id, command, data)
+						VALUES #{q_act}")
 			end
 		end
 	end
@@ -227,7 +227,7 @@ class Jobd
 			q_act = q_act + "('#{m_s['splayd_id']}','#{job['id']}','START', '#{job['ref']}'),"
 		end
 		q_act = q_act[0, q_act.length - 1]
-		$db["INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"]
+		$db.run("INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}")
 	end
 
 	def self.create_filter_query(job)

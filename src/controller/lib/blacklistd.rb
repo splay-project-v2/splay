@@ -50,16 +50,16 @@ class Blacklistd
 					$db[:splayds].where(status: 'AVAILABLE').each do |splayd|
 						action = $db[:actions].where(splayd_id: splayd['id'], command: 'BLACKLIST').first
 						if not action
-							$db["INSERT INTO actions SET
+							$db.run("INSERT INTO actions SET
 									splayd_id='#{splayd['id']}',
 									command='BLACKLIST',
-									data='#{bl.to_json}'"]
+									data='#{bl.to_json}'")
 						else
-							$db["UPDATE actions SET
+							$db.run("UPDATE actions SET
 									data='#{bl.to_json}'
 									WHERE
 									splayd_id='#{splayd['id']}' AND
-									command='BLACKLIST'"]
+									command='BLACKLIST'")
 						end
 					end
 				end

@@ -88,11 +88,11 @@ class JobdTrace < Jobd
 				trace_number='#{trace_number}'"].first
 		s = Splayd.new(s_s['splayd_id'])
 
-		$db["UPDATE splayd_selections SET
+		$db.run("UPDATE splayd_selections SET
 				trace_status='RUNNING'
 				WHERE
 				job_id='#{job['id']}' AND
-				splayd_id='#{s.id}'"]
+				splayd_id='#{s.id}'")
 
 		# If the splayd cannot be repaired the trace will stay on it but we
 		# will do nothing.
@@ -116,11 +116,11 @@ class JobdTrace < Jobd
 				trace_number='#{trace_number}'"].first
 		if s_s['trace_status'] == 'RUNNING'
 			s = Splayd.new(s_s['splayd_id'])
-			$db["UPDATE splayd_selections SET
+			$db.run("UPDATE splayd_selections SET
 					trace_status='WAITING'
 					WHERE
 					job_id='#{job['id']}' AND
-					splayd_id='#{s.id}'"]
+					splayd_id='#{s.id}'")
 
 			# Stop is called before repair (even after we need this check, see
 			# start_trace()), so the node has maybe reset during the run.
@@ -171,24 +171,24 @@ class JobdTrace < Jobd
 		trace_number = old['trace_number']
 		stop_trace(job, trace_number)
 
-		$db["UPDATE splayd_selections SET
+		$db.run("UPDATE splayd_selections SET
 				trace_number=NULL
 				WHERE
 				job_id='#{job['id']}' AND
-				splayd_id='#{old['splayd_id']}'"]
+				splayd_id='#{old['splayd_id']}'")
 
-		$db["UPDATE splayd_selections SET
+		$db.run("UPDATE splayd_selections SET
 				trace_number='#{trace_number}'
 				WHERE
 				job_id='#{job['id']}' AND
-				splayd_id='#{new['splayd_id']}'"]
+				splayd_id='#{new['splayd_id']}'")
 
 		if old['trace_status'] == 'RUNNING'
-			$db["UPDATE splayd_selections SET
+			$db.run("UPDATE splayd_selections SET
 					trace_status='RUNNING'
 					WHERE
 					job_id='#{job['id']}' AND
-					splayd_id='#{new['splayd_id']}'"]
+					splayd_id='#{new['splayd_id']}'")
 
 			# create the new list of running nodes
 			list = running_list(job)
@@ -460,12 +460,12 @@ class JobdTrace < Jobd
 			q_act = q_act[0, q_act.length - 1]
 			# In trace jobs, all are selected and kept, but only those that have
 			# replied will be used.
-			$db["INSERT INTO splayd_selections (splayd_id, job_id, selected) VALUES #{q_sel}"]
-			$db["INSERT INTO splayd_jobs (splayd_id, job_id, status) VALUES #{q_job}"]
+			$db.run("INSERT INTO splayd_selections (splayd_id, job_id, selected) VALUES #{q_sel}")
+			$db.run("INSERT INTO splayd_jobs (splayd_id, job_id, status) VALUES #{q_job}")
 
-			$db["INSERT INTO actions (splayd_id, job_id, command, status) VALUES #{q_act}"]
-			$db["UPDATE actions SET data='#{addslashes(new_job)}', status='WAITING'
-					WHERE job_id='#{job['id']}' AND command='REGISTER' AND status='TEMP'"]
+			$db.run("INSERT INTO actions (splayd_id, job_id, command, status) VALUES #{q_act}")
+			$db.run("UPDATE actions SET data='#{addslashes(new_job)}', status='WAITING'
+					WHERE job_id='#{job['id']}' AND command='REGISTER' AND status='TEMP'")
 
 
 			set_job_status(job['id'], 'REGISTERING')
@@ -500,22 +500,22 @@ class JobdTrace < Jobd
 
 				trace_number = 0
 				possible_splayds.each do |splayd_id|
-					$db["UPDATE splayd_selections SET
+					$db.run("UPDATE splayd_selections SET
 							trace_number='#{trace_number += 1}'
 							WHERE
 							splayd_id='#{splayd_id}' AND
-							job_id='#{job['id']}'"]
+							job_id='#{job['id']}'")
 				end
 
 				start_nodes = start_nodes_list(scheduling)
 
 				start_nodes.each do |trace_number|
 					$log.debug("TRACE #{job['id']}: initial #{trace_number}")
-					$db["UPDATE splayd_selections SET
+					$db.run("UPDATE splayd_selections SET
 							trace_status='RUNNING'
 							WHERE
 							trace_number='#{trace_number}' AND
-							job_id='#{job['id']}'"]
+							job_id='#{job['id']}'")
 				end
 
 
@@ -547,9 +547,9 @@ class JobdTrace < Jobd
 				if Time.now.to_i > job['status_time'] + @@register_timeout then
 					# TIMEOUT !
 
-					$db["DELETE FROM actions WHERE
+					$db.run("DELETE FROM actions WHERE
 							job_id='#{job['id']}' AND
-							command='REGISTER'"]
+							command='REGISTER'")
 
 					# send unregister action
 					# We need to unregister the job on all the splayds.
@@ -559,8 +559,8 @@ class JobdTrace < Jobd
 						Splayd::add_action m_s['splayd_id'], job['id'], 'FREE', job['ref']
 					end
 
-					$db["DELETE FROM splayd_selections WHERE
-							job_id='#{job['id']}'"]
+					$db.run("DELETE FROM splayd_selections WHERE
+							job_id='#{job['id']}'")
 
 					set_job_status(job['id'], 'REGISTER_TIMEOUT')
 				end
@@ -600,7 +600,7 @@ class JobdTrace < Jobd
 				end
 				if q_act != ""
 					q_act = q_act[0, q_act.length - 1]
-					$db["INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}"]
+					$db.run("INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}")
 				end
 				set_job_status(job['id'], 'KILLED', status_msg)
 			end
@@ -615,9 +615,9 @@ class JobdTrace < Jobd
 				kill_job(job, "user kill")
 			else
 				msg = "Not understood command: #{job['command']}"
-				$db["UPDATE jobs SET command_msg='#{msg}' WHERE id='#{job['id']}'"]
+				$db.run("UPDATE jobs SET command_msg='#{msg}' WHERE id='#{job['id']}'")
 			end
-			$db["UPDATE jobs SET command='' WHERE id='#{job['id']}'"]
+			$db.run("UPDATE jobs SET command='' WHERE id='#{job['id']}'")
 		end
 	end
 

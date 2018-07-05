@@ -56,7 +56,7 @@ class DistributedLock
 								WHERE id='1' FOR UPDATE"].first
 					if locks[name.to_sym]
 						if locks[name.to_sym] == 0
-							@@db["UPDATE locks SET #{name.to_sym}='1' WHERE id ='1'"]
+							@@db.run("UPDATE locks SET #{name.to_sym}='1' WHERE id ='1'")
 							ok = true
 						end
 					else
@@ -71,7 +71,7 @@ class DistributedLock
 	def self.release(name)
 		@@mutex.synchronize do
 			#@@db.do "BEGIN"
-			@@db["UPDATE locks SET #{name.to_sym}='0' WHERE id ='1'"]
+			@@db.run("UPDATE locks SET #{name.to_sym}='0' WHERE id ='1'")
 			#@@db.do "COMMIT"
 		end
 	end
