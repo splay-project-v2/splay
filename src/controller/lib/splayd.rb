@@ -152,7 +152,6 @@ class SplaydProtocol
 	def auth
 		$log.debug("A splayd (#{@ip}) try to connect.")
 		@so.read # We get a standard message, inherited from the MAJ of Splay Lua
-		$log.debug("Read fucking standard")
 
 		if @so.read != "KEY" then raise ProtocolError, "KEY" end
 		key = addslashes(@so.read)
@@ -160,10 +159,13 @@ class SplaydProtocol
 
 		ok = true
 		@splayd = Splayd.new(key)
+		$log.debug("New splayd created, its ID:  #{@splayd.row[:id]}")
 
-		if not @splayd.id or @splayd.row['status'] == "DELETED"
+		if not @splayd.row[:id] or @splayd.row['status'] == "DELETED"
 			refused "That splayd doesn't exist: #{key}"
 		end
+
+		$log.debug("WORK HERE")
 
 		if @@nat_gateway_ip and @ip == @@nat_gateway_ip
 			if key =~ /NAT_([^_]*)_.*/ or key =~ /NAT_(.*)/
@@ -174,6 +176,8 @@ class SplaydProtocol
 			end
 		end
 
+		$log.debug("WORK HERE")
+
     ## This restriction is way too restrictive, and it makes impossible
     ## to deploy several splayds on the same phisical machine, a typical
     ## scenario in cluster deployments.
@@ -181,10 +185,10 @@ class SplaydProtocol
 		##	refused "Your IP is already used by another splayd."
 		##end
 
-		if not @splayd.check_and_set_preavailable
+		unless @splayd.check_and_set_preavailable
 			refused "Your splayd is already connected. " +
-				 "Try to kill an existing process or wait " +
-				 "2 minutes and retry."
+									"Try to kill an existing process or wait " +
+									"2 minutes and retry."
 		end
 
 		# From here if there is not an external error (socket or db problem), the
@@ -217,8 +221,13 @@ class SplaydProtocol
 				@so.write @ip
 				if @so.read != "OK" then raise ProtocolError, "INFOS not OK" end
 				infos = @so.read # no addslashes (json)
-				
+
+				$log.debug("HERE")
+
 				@splayd.insert_splayd_infos(infos)
+
+				$log.debug("THERE")
+
 
 				bl = Splayd.blacklist
 				@so.write "BLACKLIST"
@@ -377,7 +386,9 @@ class Splayd
 			$db.run("INSERT INTO splayds SET `key`='#{id}'")
 			@row = $db["SELECT * FROM splayds WHERE `key`='#{id}'"].first
 		end
-		if @row then @id = @row['id'] end
+		if @row
+			@id = @row[:id]
+		end
 	end
 
 	def self.init
@@ -487,13 +498,14 @@ class Splayd
 	end
 
 	def check_and_set_preavailable
+		$log.debug("ID is #{@id}")
 		r = false
 		# to protect the $dbt object while in use.
 		@@transaction_mutex.synchronize do
 			#$dbt.transaction do |dbt|
 			$dbt.transaction do
 				status = ($dbt["SELECT status FROM splayds
-						  WHERE id='#{@id}' FOR UPDATE"].first)['status']
+						  WHERE id='#{@id}' FOR UPDATE"].first)[:status]
 				if status == 'REGISTERED' or status == 'UNAVAILABLE' or status == 'RESET' then
 					$dbt.run("UPDATE splayds SET
 							status='PREAVAILABLE'
@@ -502,7 +514,7 @@ class Splayd
 				end
 			end
 		end
-		return r
+		r
 	end
 
 	# Check that this IP is not used by another splayd.
