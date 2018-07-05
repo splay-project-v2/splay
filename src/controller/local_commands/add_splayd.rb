@@ -30,4 +30,4 @@ if ARGV.size < 1
 end
 
 key = ARGV[0]
-$db["INSERT INTO splayds SET `key`='#{key}'"]
+$db.run("INSERT INTO splayds SET `key`='#{key}'")

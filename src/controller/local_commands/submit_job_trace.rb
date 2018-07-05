@@ -56,12 +56,12 @@ options['scheduler'] = 'trace'
 ref = OpenSSL::Digest::MD5.hexdigest(rand(1000000).to_s)
 
 puts "TRACE #{trace}"
-$db["INSERT INTO jobs SET
+$db.run("INSERT INTO jobs SET
 		ref='#{ref}'
 		#{to_sql(options)}
 		, die_free='FALSE'
 		, code='#{addslashes(code)}'
-		, scheduler_description='#{addslashes(trace)}'"]
+		, scheduler_description='#{addslashes(trace)}'")
 
 job = $db["SELECT * FROM jobs WHERE ref='#{ref}'"].first
 

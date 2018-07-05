@@ -42,9 +42,9 @@ class Statusd
 							command='STATUS'"].first
 
 					unless action
-						$db["INSERT INTO actions SET
+						$db.run("INSERT INTO actions SET
 								splayd_id='#{m_s['splayd_id']}',
-								command='STATUS'"]
+								command='STATUS'")
 					end
 				end
 			end
