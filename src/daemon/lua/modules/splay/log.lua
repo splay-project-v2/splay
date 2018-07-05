@@ -65,7 +65,7 @@ _M._DESCRIPTION = "Splay Log"
 _M._VERSION     = 1.0
 
 -- default level
-global_level = 3
+_M.global_level = 3
 
 -- default out (outs support only one parameter !)
 function _M.global_out(msg)
@@ -125,7 +125,7 @@ function _M.new(level, prefix)
 	return {
 		level = level,
 		prefix = prefix,
-		filter = global_filter,
+		filter = _M.global_filter,
 		debug = function(self, ...) return self:filter(1, ...) end,
 		notice = function(self, ...) return self:filter(2, ...) end,
 		warning = function(self, ...) return self:filter(3, ...) end,

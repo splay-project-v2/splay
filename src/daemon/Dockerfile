@@ -27,6 +27,7 @@ ADD c/c_exec ./
 ADD c/Makefile ./
 ADD lua/*.lua ./
 ADD lua/modules ./modules 
+ADD lua/tests ./lua_tests
 
 RUN make all
 

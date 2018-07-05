@@ -3,6 +3,8 @@ docker-compose kill
 docker-compose rm -f
 docker-compose build 
 docker-compose up -d db 
-sleep 20
 docker-compose up -d controller 
+
+docker-compose scale daemon=1
+
 docker-compose logs -f controller

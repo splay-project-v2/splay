@@ -1083,7 +1083,7 @@ function clean_libs(dir, old_libs)
 end
 
 function controller(so)
-	print("Controller registration")
+	print("Controller registration, KEY : "..splayd.settings.key..", session : "..splayd.session )
 	-- Send the splayd-type
 	assert(so:send(splayd.settings.protocol))
 	-- the splayd registers on the Controller
@@ -1094,6 +1094,8 @@ function controller(so)
 	-- The splayd lists the libs it already has in its cache.
 	-- It informs the controller of the libs that it has.
 	
+	-- 
+	print("Registration information send to controller")
 
 	-- call only if settings splayd-type == 'grid'
 	if splayd.settings.protocol == "grid" then
@@ -1101,6 +1103,7 @@ function controller(so)
 	end
 	
 	local msg = assert(so:receive())
+	print("Registration response : "..msg)
 	if msg ~= "OK" then
 		local reason = assert(so:receive())
 		print("Refused: "..reason)

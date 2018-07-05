@@ -14,12 +14,13 @@ local misc=require"splay.misc"
 local math=require"math"
 local assert=assert
 local setmetatable = setmetatable
-module("splay.token_bucket")
+
+local _M = {}
 
 --[[ DEBUG ]]--
 l_o = log.new(1, "[".._NAME.."]")
 
-function new(toks,rate,cap)
+function _M.new(toks,rate,cap)
 	
 	local bucket ={}
 	local tokens=toks*1000 or 1000*1024*1024 --buffer size
@@ -57,3 +58,5 @@ function new(toks,rate,cap)
 	
 	return bucket
 end
+
+return _M
