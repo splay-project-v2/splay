@@ -36,7 +36,7 @@ class SplaydServer
 
 	def run
 		Thread.new do
-					main
+			main
 		end
 	end
 
@@ -75,7 +75,7 @@ class SplaydServer
 		begin
 			loop do
 				so = server.accept
-				$log.debug("Connection reveived")
+				$log.debug("Connection received")
 				SplaydProtocol.new(so).run
 			end
 		rescue => e
@@ -111,12 +111,10 @@ class SplaydProtocol
 		@so_ori = so
 		@so = LLenc.new(so)
 		@so.set_timeout(@@socket_timeout)
-		$log.debug("Daemon Init")
 	end
 
 	def run
 		Thread.new do
-			$log.debug("Daemon Thread running")
 			begin
 				auth
 				main
@@ -159,13 +157,10 @@ class SplaydProtocol
 
 		ok = true
 		@splayd = Splayd.new(key)
-		$log.debug("New splayd created, its ID:  #{@splayd.row[:id]}")
 
 		if not @splayd.row[:id] or @splayd.row['status'] == "DELETED"
 			refused "That splayd doesn't exist: #{key}"
 		end
-
-		$log.debug("WORK HERE")
 
 		if @@nat_gateway_ip and @ip == @@nat_gateway_ip
 			if key =~ /NAT_([^_]*)_.*/ or key =~ /NAT_(.*)/
@@ -175,8 +170,6 @@ class SplaydProtocol
 				$log.info("#{@splayd}: IP of NAT gateway without replacement.")
 			end
 		end
-
-		$log.debug("WORK HERE")
 
     ## This restriction is way too restrictive, and it makes impossible
     ## to deploy several splayds on the same phisical machine, a typical
@@ -222,12 +215,7 @@ class SplaydProtocol
 				if @so.read != "OK" then raise ProtocolError, "INFOS not OK" end
 				infos = @so.read # no addslashes (json)
 
-				$log.debug("HERE")
-
 				@splayd.insert_splayd_infos(infos)
-
-				$log.debug("THERE")
-
 
 				bl = Splayd.blacklist
 				@so.write "BLACKLIST"
@@ -498,7 +486,6 @@ class Splayd
 	end
 
 	def check_and_set_preavailable
-		$log.debug("ID is #{@id}")
 		r = false
 		# to protect the $dbt object while in use.
 		@@transaction_mutex.synchronize do
