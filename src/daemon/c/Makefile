@@ -11,10 +11,12 @@ OPENSSL_LIBS= -L/usr/local/openssl/lib -lcrypto -lssl
 
 #CFLAGS = -Wall -g -pedantic -DDEBUG $(INCLUDE)
 CFLAGS= -Wall -O2 -pedantic $(INCLUDE)
+C_EXEC_PATH=.
+SO_PATH=.
 
 .PHONY: all, clean
 
-all: splayd jobd splay_core.so misc_core.so data_bits_core.so luacrypto/crypto.so lbase64/lbase64.so cert
+all: splayd jobd so_module cert
 
 clean:
 	rm -f *~
@@ -46,17 +48,19 @@ cert:
 	cat cert.pem root.pem > client.pem
 	openssl x509 -subject -issuer -noout -in client.pem
 
-splayd.o: splayd.c splayd.h
-	$(CC) $(CFLAGS) -c -o splayd.o splayd.c
-
-jobd.o: jobd.c jobd.h
-	$(CC) $(CFLAGS) -c -o jobd.o jobd.c
-
-splay_lib.o: splay_lib.c splay_lib.h
-	$(CC) $(CFLAGS) -c -o splay_lib.o splay_lib.c
 
 compmod.o: compmod.c compmod.h
 	$(CC) $(CFLAGS) -c -o compmod.o compmod.c
+
+# For create executable jobd and splayd
+splayd.o: $(C_EXEC_PATH)/splayd.c $(C_EXEC_PATH)/splayd.h
+	$(CC) $(CFLAGS) -c -o splayd.o $(C_EXEC_PATH)/splayd.c
+
+jobd.o: $(C_EXEC_PATH)/jobd.c $(C_EXEC_PATH)/jobd.h
+	$(CC) $(CFLAGS) -c -o jobd.o $(C_EXEC_PATH)/jobd.c
+
+splay_lib.o: $(C_EXEC_PATH)/splay_lib.c $(C_EXEC_PATH)/splay_lib.h
+	$(CC) $(CFLAGS) -c -o splay_lib.o $(C_EXEC_PATH)/splay_lib.c
 
 splayd: splayd.o splay_lib.o compmod.o
 	$(CC) -o splayd splayd.o splay_lib.o compmod.o $(LIBS)
@@ -66,37 +70,41 @@ jobd: jobd.o splay_lib.o compmod.o
 	$(CC) -o jobd jobd.o splay_lib.o compmod.o $(LIBS)
 	strip jobd
 
+
+## Lua Extension modules
+so_module: splay_core.so misc_core.so data_bits_core.so luacrypto/crypto.so lbase64/lbase64.so
+
 ### Splay module
 splay_core.so: splay.o
 	$(CC) -O -fpic -shared -o splay_core.so splay.o compmod.o -lm
 	strip splay_core.so
 
-splay.o: splay.c splay.h
-	$(CC) -fpic $(CFLAGS) -c -o splay.o splay.c
+splay.o: $(SO_PATH)/splay.c $(SO_PATH)/splay.h
+	$(CC) -fpic $(CFLAGS) -c -o splay.o $(SO_PATH)/splay.c
 
 ### Misc module
 misc_core.so: misc.o
 	$(CC) -O -fpic -shared -o misc_core.so misc.o compmod.o -lm
 	strip misc_core.so
 
-misc.o: misc.c misc.h
-	$(CC) -fpic $(CFLAGS) -c -o misc.o misc.c
+misc.o: $(SO_PATH)/misc.c $(SO_PATH)/misc.h
+	$(CC) -fpic $(CFLAGS) -c -o misc.o $(SO_PATH)/misc.c
 
 ### Data_bits module
 data_bits_core.so: data_bits.o
 	$(CC) -O -fpic -shared -o data_bits_core.so data_bits.o compmod.o -lm
 	strip data_bits_core.so
 
-data_bits.o: data_bits.c data_bits.h
-	$(CC) -fpic $(CFLAGS) -c -o data_bits.o data_bits.c
+data_bits.o: $(SO_PATH)/data_bits.c $(SO_PATH)/data_bits.h
+	$(CC) -fpic $(CFLAGS) -c -o data_bits.o $(SO_PATH)/data_bits.c
 
 ### luacrypto
 luacrypto/crypto.so: luacrypto/crypto.o
 	$(CC) -O -fpic -shared -o luacrypto/crypto.so luacrypto/*.o compmod.o $(OPENSSL_LIBS)
 	strip luacrypto/crypto.so
 
-luacrypto/crypto.o: luacrypto/lcrypto.c luacrypto/lcrypto.h
-	$(CC) -fpic $(CFLAGS) -c -o luacrypto/crypto.o luacrypto/lcrypto.c
+luacrypto/crypto.o: $(SO_PATH)/luacrypto/lcrypto.c $(SO_PATH)/luacrypto/lcrypto.h
+	$(CC) -fpic $(CFLAGS) -c -o luacrypto/crypto.o $(SO_PATH)/luacrypto/lcrypto.c
 
 ### base64
 lbase64/lbase64.so: lbase64/lbase64.o
@@ -104,4 +112,4 @@ lbase64/lbase64.so: lbase64/lbase64.o
 	strip base64.so
 
 lbase64/lbase64.o:
-	$(CC) -fpic $(CFLAGS) -c -o lbase64/lbase64.o lbase64/lbase64.c
+	$(CC) -fpic $(CFLAGS) -c -o lbase64/lbase64.o $(SO_PATH)/lbase64/lbase64.c

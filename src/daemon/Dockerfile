@@ -1,37 +1,43 @@
-from ubuntu:18.04
-label Description="TBD"
+FROM ubuntu:18.04
+LABEL Description="TBD"
 
-run mkdir -p /usr/splay/lib/c
-run mkdir -p /usr/splay/lib/lua
+RUN mkdir -p /usr/splay/lib/c
+RUN mkdir -p /usr/splay/lib/lua
 
-workdir /usr/splay
+WORKDIR /usr/splay
 
-run apt-get update 
-run apt-get -y --no-install-recommends install build-essential openssl libssl1.0 
-run apt-get -y --no-install-recommends install lua5.3 liblua5.3-0 liblua5.3-dev
+RUN apt-get update 
+RUN apt-get -y --no-install-recommends install build-essential openssl libssl1.0 
+RUN apt-get -y --no-install-recommends install lua5.3 liblua5.3-0 liblua5.3-dev
 # Due to a bug of lua 5.3 package where the symbol link is not create
-run update-alternatives --install /usr/bin/lua lua /usr/bin/lua5.3 10
-run update-alternatives --install /usr/bin/luac luac /usr/bin/luac5.3 10
+RUN update-alternatives --install /usr/bin/lua lua /usr/bin/lua5.3 10
+RUN update-alternatives --install /usr/bin/luac luac /usr/bin/luac5.3 10
 
-run apt-get -y --no-install-recommends install lua-socket lua-socket-dev lua-sec
+RUN apt-get -y --no-install-recommends install lua-socket lua-socket-dev lua-sec
 
-env L_PATH  "/usr/splay/lib/lua"
-env L_CPATH "/usr/splay/lib/c"
+ENV L_PATH  "/usr/splay/lib/lua"
+ENV L_CPATH "/usr/splay/lib/c"
 
-add *.* ./
-add Makefile .  
-add luacrypto ./luacrypto
-add lbase64 ./lbase64
-add modules ./modules
-add deploy.sh .
+ADD certificats/*.cnf ./
+ADD bash/*.sh ./
+ADD c/*.c ./
+ADD c/*.h ./
+ADD c/so_module ./
+ADD c/c_exec ./
+ADD c/Makefile ./
+ADD lua/*.lua ./
+ADD lua/modules ./modules 
 
-run \
-  make all
+RUN make all
 
-run export LUA_PATH=$(lua -e 'print(package.path)') ;\
+RUN export LUA_PATH=$(lua -e 'print(package.path)') ;\
     export LUA_PATH="${LUA_PATH};/usr/splay/lib/lua/?.lua" ;\
     export LUA_CPATH=$(lua -e 'print(package.cpath)');\
     export LUA_CPATH="${LUA_CPATH};/usr/splay/lib/c/?.so" ;\
     ./install.sh
 
-cmd ["./deploy.sh"]
+RUN chmod +x ./clean_src.sh ; \
+    ./clean_src.sh
+
+CMD ["./deploy.sh"]
+
