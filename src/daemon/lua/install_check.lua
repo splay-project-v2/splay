@@ -24,12 +24,8 @@ require"splay.urpc"
 
 print("------------- Splay Ok-------------")
 
--- JSON4Lua
+-- cjson : Need to install : https://luarocks.org/modules/openresty/lua-cjson
 require"json"
-
-if json and not json.leo then
-	print("!!! bad json version, you need the modified one (in modules/json.lua")
-end
 
 print("------------- Json Ok-------------")
 

@@ -1,4 +1,4 @@
-local cjson=require"cjson"
+local cjson=require"json"
 local json=require"json"
 os=require"os"
 --read raw json (list+topology)

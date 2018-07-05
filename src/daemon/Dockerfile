@@ -41,4 +41,3 @@ RUN chmod +x ./clean_src.sh ; \
     ./clean_src.sh
 
 CMD ["./deploy.sh"]
-
