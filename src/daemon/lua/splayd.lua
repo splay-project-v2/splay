@@ -1140,7 +1140,7 @@ function check()
 	if production and not splayd.set_max_mem then
 		print("Production mode must be run from the C daemon. DISEABLE FOR NOW")
 		-- TODO : Uncomment when understand this part
-		--return false
+		-- return false
 	end
 
 	if lua_version ~= _VERSION then
