@@ -75,6 +75,7 @@ class SplaydServer
 		begin
 			loop do
 				so = server.accept
+				so.read # We get a standard message, inherited from the MAJ of Splay Lua
 				SplaydProtocol.new(so).run
 			end
 		rescue => e
