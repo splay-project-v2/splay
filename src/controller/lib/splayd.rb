@@ -35,8 +35,8 @@ class SplaydServer
 	end
 
 	def run
-		return Thread.new() do
-			main
+		Thread.new do
+					main
 		end
 	end
 
@@ -113,11 +113,11 @@ class SplaydProtocol
 	end
 
 	def run
-		return Thread.new do
+		Thread.new do
 			begin
 				auth
 				main
-			rescue DBI::Error => e
+			rescue Sequel::Error => e
 				$log.fatal(e.class.to_s + ": " + e.to_s + "\n" + e.backtrace.join("\n"))
 			rescue => e
 				# "normal" situation
