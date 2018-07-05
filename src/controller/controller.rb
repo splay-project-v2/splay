@@ -30,8 +30,8 @@ SplayControllerConfig::NumSplayd = 1
 
 require './lib/all'
 
-#$log.level = Logger::DEBUG
-$log.level = Logger::INFO
+$log.level = Logger::DEBUG
+#$log.level = Logger::INFO
 
 puts
 puts ">>> Splayd Controller #{SplayControllerConfig::CTLVersion} <<<"

@@ -28,20 +28,20 @@ require './lib/all'
 
 # Cleanup database in case of reuse
 def drop_db(db)
-	db["DROP TABLE IF EXISTS splayds"]
-	db["DROP TABLE IF EXISTS splayd_availabilities"]
-	db["DROP TABLE IF EXISTS jobs"]
-	db["DROP TABLE IF EXISTS job_mandatory_splayds"]
-	db["DROP TABLE IF EXISTS splayd_jobs"]
-	db["DROP TABLE IF EXISTS splayd_selections"]
-	db["DROP TABLE IF EXISTS blacklist_hosts"]
-	db["DROP TABLE IF EXISTS actions"]
-	db["DROP TABLE IF EXISTS locks"]
+	db.run("DROP TABLE IF EXISTS splayds")
+	db.run("DROP TABLE IF EXISTS splayd_availabilities")
+	db.run("DROP TABLE IF EXISTS jobs")
+	db.run("DROP TABLE IF EXISTS job_mandatory_splayds")
+	db.run("DROP TABLE IF EXISTS splayd_jobs")
+	db.run("DROP TABLE IF EXISTS splayd_selections")
+	db.run("DROP TABLE IF EXISTS blacklist_hosts")
+	db.run("DROP TABLE IF EXISTS actions")
+	db.run("DROP TABLE IF EXISTS locks")
 end
 
 # Initialize database with needed tables
 def init_db(db)
-	db["CREATE TABLE IF NOT EXISTS splayds (
+	db.run("CREATE TABLE IF NOT EXISTS splayds (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 
 			`key` VARCHAR(255) NOT NULL,
@@ -84,17 +84,17 @@ def init_db(db)
 			last_contact_time INT,
 			INDEX ip (ip),
 			INDEX `key` (`key`)
-			) engine=innodb"]
+			) engine=innodb")
 
-	db["CREATE TABLE IF NOT EXISTS splayd_availabilities (
+	db.run("CREATE TABLE IF NOT EXISTS splayd_availabilities (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			ip VARCHAR(255),
 			status ENUM('AVAILABLE','UNAVAILABLE','RESET') DEFAULT 'AVAILABLE',
 			time INT NOT NULL
-			)"]
+			)")
 
-	db["CREATE TABLE IF NOT EXISTS jobs (
+	db.run("CREATE TABLE IF NOT EXISTS jobs (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			ref VARCHAR(255) NOT NULL,
 			user_id INT NOT NULL,
@@ -148,23 +148,23 @@ def init_db(db)
 			status_msg TEXT,
 
 			INDEX ref (ref)
-			)"]
+			)")
 
-	db["CREATE TABLE IF NOT EXISTS job_mandatory_splayds (
+	db.run("CREATE TABLE IF NOT EXISTS job_mandatory_splayds (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			job_id INT NOT NULL,
 			splayd_id INT NOT NULL
-			)"]
+			)")
 
-	db["CREATE TABLE IF NOT EXISTS splayd_jobs (
+	db.run("CREATE TABLE IF NOT EXISTS splayd_jobs (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
 			status ENUM('RESERVED','WAITING','RUNNING') DEFAULT 'RESERVED',
 			INDEX splayd_id (splayd_id)
-			)"]
+			)")
 
-	db["CREATE TABLE IF NOT EXISTS splayd_selections (
+	db.run("CREATE TABLE IF NOT EXISTS splayd_selections (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
@@ -177,14 +177,14 @@ def init_db(db)
 			port INT NOT NULL,
 			INDEX splayd_id (splayd_id),
 			INDEX job_id (job_id)
-			)"]
+			)")
 
-	db["CREATE TABLE IF NOT EXISTS blacklist_hosts (
+	db.run("CREATE TABLE IF NOT EXISTS blacklist_hosts (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			host VARCHAR(255)
-			)"]
+			)")
 
-	db["CREATE TABLE IF NOT EXISTS actions (
+	db.run("CREATE TABLE IF NOT EXISTS actions (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
@@ -194,27 +194,27 @@ def init_db(db)
 			position INT,
 			INDEX splayd_id (splayd_id),
 			INDEX job_id (job_id)
-			)"]
+			)")
 
-	db["CREATE TABLE IF NOT EXISTS local_log (
+	db.run("CREATE TABLE IF NOT EXISTS local_log (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
 			data TEXT,
 			INDEX splayd_id (splayd_id),
 			INDEX job_id (job_id)
-			)"]
+			)")
 
-	db["CREATE TABLE IF NOT EXISTS locks (
+	db.run("CREATE TABLE IF NOT EXISTS locks (
 			id INT NOT NULL,
 			job_reservation INT NOT NULL DEFAULT '0'
-			) engine=innodb"]
+			) engine=innodb")
 
-	db["INSERT INTO locks SET
+	db.run("INSERT INTO locks SET
 			id='1',
-			job_reservation='0'"]
+			job_reservation='0'")
 
-	db["CREATE TABLE IF NOT EXISTS users (
+	db.run("CREATE TABLE IF NOT EXISTS users (
 			id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			login varchar(255) default NULL,
 			email varchar(255) default NULL,
@@ -226,7 +226,7 @@ def init_db(db)
 			remember_token_expires_at datetime default NULL,
 			admin int(11) default '0',
 			demo int(11) default '1'
-			);"]
+			);")
 
 end
 

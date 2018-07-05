@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 docker-compose kill
+docker-compose rm -f
 docker-compose build 
 docker-compose up -d db 
 sleep 20
