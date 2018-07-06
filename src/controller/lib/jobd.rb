@@ -184,11 +184,10 @@ class Jobd
 	# the query.
 	# (query should return values with splayd_id)
 	def self.send_all_list(job, query)
-		m_s_s = $db.do(query)
+		m_s_s = $db[query]
 		
 		case job[:list_type]
 		when 'HEAD' # simple head list of job['list_size'] element
-
 			list_json = head_list(job, m_s_s)
 			q_act = ""
 			pos = 1
