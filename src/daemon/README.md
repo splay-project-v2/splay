@@ -1,5 +1,5 @@
-# Splay Daemon
+# SPLAY Daemon
 
 For more informations and documentation, please visit : 
 
-[http://www.splay-project.org/]
+[web_page](http://www.splay-project.org/)
