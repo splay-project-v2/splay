@@ -29,7 +29,7 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 local socket = require"socket"
 local http   = require"socket.http"
 --for the JSON encoding/decoding
-local json   = require"json" or require"lib.json"
+local json   = require"lib.json"
 --for hashing
 sha1_lib = loadfile("./lib/sha1.lua")
 sha1_lib()
@@ -37,34 +37,50 @@ common_lib = loadfile("./lib/common.lua")
 common_lib()
 
 -- END LIBRARIES
-
 function add_usage_options()
-	table.insert(usage_options, "-l\tSpecify the lib name that we use to filter the list ")
+	table.insert(usage_options, "-l \tLIB_NAME\t\tRemove all libs by the name, it is mandatory")
+	table.insert(usage_options, "-lv \tLIB_VERSION\t\tFilter the libs to remove by their version")
+	table.insert(usage_options, "-a \tLIB_ARCH\t\tFilter the libs to remove by their architecture")
+	table.insert(usage_options, "-o \tLIB_OS\t\t\tFilter the libs to remove by their os target")
+	table.insert(usage_options, "-s \tLIB_SHA1\t\tRemove only one lib with the specific sha1")
 end
-
 
 function parse_arguments()
 	local i = 1
-	if #arg > 0 then
+	print(#arg)
+	while i<=#arg do
 		if arg[i] == "-l" then
 			i = i + 1
 			lib_name = arg[i]
-		else
-			print_usage()
+		elseif arg[i] == "-lv" then
+			i = i + 1
+			lib_version = arg[i]
+		elseif arg[i] == "-a" then
+			i = i + 1
+			lib_arch = arg[i]
+		elseif arg[i] == "-o" then
+			i = i + 1
+			lib_os = arg[i]
+		elseif arg[i] == "-s" then
+			i = i + 1
+			lib_sha1 = arg[i]
 		end
-	else
-		lib_name=""
+		i = i + 1
+	end
+	if lib_name == "" then
+		print_usage()
 	end
 end
-function send_list_libs(cli_server_url, lib_name, session_id)
+
+function send_remove_lib(cli_server_url, lib_name, session_id)
 	
 	print("SESSION_ID     = "..session_id)
 	print("CLI SERVER URL = "..cli_server_url)
 	print("LIB NAME = "..lib_name)
 	--prepares the body of the message
 	local body = json.encode({
-		method = "ctrl_api.list_libs",
-		params = {lib_name, session_id}
+		method = "ctrl_api.remove_lib",
+		params = {lib_name, lib_version, lib_arch, lib_os, lib_sha1, session_id}
 	})
 	
 	--prints that it is sending the message
@@ -75,10 +91,8 @@ function send_list_libs(cli_server_url, lib_name, session_id)
 	
 	if check_response(response) then
 		local json_response = json.decode(response)
-		print("Libs list : number of items "..#json_response.result.libs_list)
-		for _,v in ipairs(json_response.result.libs_list) do
-			print("Lib name ="..v.lib_name.." Version="..v.lib_version.." Arch="..v.lib_arch.." OS="..v.lib_os.." SHA1="..v.lib_sha1)
-		end
+		print("Controller :")
+		print(json_response.result.message)
 	end
 end
 --MAIN FUNCTION:
@@ -86,12 +100,16 @@ end
 cli_server_url = nil
 session_id = nil
 lib_name = ""
+lib_version = ""
+lib_arch = ""
+lib_os = ""
+lib_sha1 = ""
 cli_server_url_from_conf_file = nil
 
 cli_server_as_ip_addr = false
 min_arg_ok = false
 
-command_name = "splay_list_libs"
+command_name = "splay_remove_lib"
 other_mandatory_args = ""
 usage_options = {}
 
@@ -108,14 +126,14 @@ end
 add_usage_options()
 
 print()
-
+command_name="splay-remove-lib"
 parse_arguments()
 
---check_min_arg()
+check_min_arg()
 
 check_cli_server()
 
 check_session_id()
 
 --calls send_list_splayds
-send_list_libs(cli_server_url, lib_name, session_id)
+send_remove_lib(cli_server_url, lib_name, session_id)

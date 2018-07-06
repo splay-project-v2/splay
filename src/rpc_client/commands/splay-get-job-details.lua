@@ -22,7 +22,7 @@ You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
--- JSON-RPC over HTTP client for SPLAY controller -- "KILL JOB" command
+-- JSON-RPC over HTTP client for SPLAY controller -- "GET JOB DETAILS" command
 -- Created by José Valerio
 
 -- BEGIN LIBRARIES
@@ -30,7 +30,7 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 local socket = require"socket"
 local http   = require"socket.http"
 --for the JSON encoding/decoding
-local json   = require"json" or require"lib.json"
+local json   = require"lib.json"
 --for hashing
 sha1_lib = loadfile("./lib/sha1.lua")
 sha1_lib()
@@ -47,7 +47,7 @@ function parse_arguments()
 	local i = 1
 	while i<=#arg do
 		if arg[i] == "--help" or arg[i] == "-h" then
-			print_line(QUIET, "send \"KILL JOB\" command to the SPLAY CLI server; forces the controller to send a KILL signal to a job\n")
+			print_line(QUIET, "send \"GET JOB DETAILS\" command to the SPLAY RPC server; retrieves details about a previously submitted job and prints them on the screen\n")
 			print_usage()
 		--if argument is "-q" or "--quiet"
 		elseif arg[i] == "--quiet" or arg[i] == "-q" then
@@ -75,8 +75,8 @@ function parse_arguments()
 	end
 end
 
---function send_kill_job: sends a "KILL JOB" command to the SPLAY RPC server
-function send_kill_job(job_id, cli_server_url, session_id)
+--function send_get_job_details: sends a "GET JOB DETAILS" command to the SPLAY CLI server
+function send_get_job_details(job_id, cli_server_url, session_id)
 	--prints the arguments
 	print_line(VERBOSE, "JOB_ID         = "..job_id)
 	print_line(VERBOSE, "SESSION_ID     = "..session_id)
@@ -84,7 +84,7 @@ function send_kill_job(job_id, cli_server_url, session_id)
 
 	--prepares the body of the message
 	local body = json.encode({
-		method = "ctrl_api.kill_job",
+		method = "ctrl_api.get_job_details",
 		params = {job_id, session_id}
 	})
 
@@ -92,10 +92,30 @@ function send_kill_job(job_id, cli_server_url, session_id)
 	print_line(VERBOSE, "\nSending command to "..cli_server_url.."...\n")
 
 	--sends the command as a POST
-	local response = http.request(cli_server_url.."/kill_job", body)
+	local response = http.request(cli_server_url.."/get_job_details", body)
 
 	if check_response(response) then
-			print_line(NORMAL, "KILL command successfully sent")
+		local json_response = json.decode(response)
+		if json_response.result.name then
+			print_line(QUIET, "Name        = "..json_response.result.name)
+		else
+			print_line(QUIET, "Name        = ")
+		end
+		if json_response.result.description then
+			print_line(QUIET, "Description = "..json_response.result.description)
+		else
+			print_line(QUIET, "Description = ")
+		end
+		print_line(QUIET, "Ref         = "..json_response.result.ref)
+		print_line(QUIET, "Status      = "..json_response.result.status)
+		if json_response.result.user_id then
+			print_line(QUIET, "User ID     = "..json_response.result.user_id)
+		end
+		print_line(QUIET, "Host list = ")
+		for _,v in ipairs(json_response.result.host_list) do
+			print_line(QUIET, "\tsplayd_id="..v.splayd_id..", ip="..v.ip..", port="..v.port)
+		end
+		print_line(QUIET, "")
 	end
 
 end
@@ -103,7 +123,7 @@ end
 
 --MAIN FUNCTION:
 --initializes the variables
-command_name = "splay_kill_job"
+command_name = "splay_get_job_details"
 other_mandatory_args = "JOB_ID "
 
 --maximum HTTP payload size is 10MB (overriding the max 2KB set in library socket.lua)
@@ -123,5 +143,5 @@ check_cli_server()
 
 check_session_id()
 
---calls send_list_hosts
-send_kill_job(job_id, cli_server_url, session_id)
+--calls send_get_job_details
+send_get_job_details(job_id, cli_server_url, session_id)

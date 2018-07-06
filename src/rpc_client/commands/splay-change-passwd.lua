@@ -22,7 +22,7 @@ You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
--- JSON-RPC over HTTP client for SPLAY controller -- "REMOVE USER" command
+-- JSON-RPC over HTTP client for SPLAY controller -- "CHANGE PASSWORD" command
 -- Created by José Valerio
 
 -- BEGIN LIBRARIES
@@ -30,7 +30,7 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 local socket = require"socket"
 local http   = require"socket.http"
 --for the JSON encoding/decoding
-local json   = require"json" or require"lib.json"
+local json   = require"lib.json"
 --for hashing
 sha1_lib = loadfile("./lib/sha1.lua")
 sha1_lib()
@@ -41,9 +41,9 @@ common_lib()
 -- FUNCTIONS
 
 function add_usage_options()
-	table.insert(usage_options, "-U, --admin_username=ADM_UNAME\tenters the administrator's username in the command line")
-	table.insert(usage_options, "-P, --admin_password=ADM_PASSWD\tenters the administrator's password in the command line")
-	table.insert(usage_options, "-u, --username=USERNAME\tenters the username of the new user in the command line")
+	table.insert(usage_options, "-u, --username=USERNAME\t\tenters the username in the command line")
+	table.insert(usage_options, "-p, --current_password=PASSWD\tenters the current password in the command line")
+	table.insert(usage_options, "-n, --new_password=PASSWD\tenters the new password in the command line")
 end
 
 function parse_arguments()
@@ -52,7 +52,7 @@ function parse_arguments()
 		--if argument is "-h" or "--help"
 		if arg[i] == "--help" or arg[i] == "-h" then
 			--prints a short explanation of what the program does
-			print_line(QUIET, "send \"REMOVE USER\" command to the SPLAY CLI server; removes a user (only for Administrators)")
+			print_line(QUIET, "send \"CHANGE PASSWORD\" command to the SPLAY CLI server; changes the password of a given user\n")
 			--prints the usage
 			print_usage()
 		--if argument is "-q" or "--quiet"
@@ -62,33 +62,33 @@ function parse_arguments()
 		elseif arg[i] == "--verbose" or arg[i] == "-v" then
 			--the print mode is "verbose"
 			print_mode = VERBOSE
-		--if argument is "-U"
-		elseif arg[i] == "-U" then
-			i = i + 1
-			--the Administrator's username is the next argument
-			admin_username = arg[i]
-		--if argument contains "--admin_username=" at the beginning
-		elseif string.find(arg[i], "^--admin_username=") then
-			--the Administrator's username is the other part of the argument
-			admin_username = string.sub(arg[i], 18)
-		--if argument is "-P"
-		elseif arg[i] == "-P" then
-			i = i + 1
-			--the Administrator's password is the next argument
-			admin_password = arg[i]
-		--if argument contains "--admin_password=" at the beginning
-		elseif string.find(arg[i], "^--admin_password=") then
-			--the Administrator's password is the other part of the argument
-			admin_password = string.sub(arg[i], 18)
 		--if argument is "-u"
 		elseif arg[i] == "-u" then
 			i = i + 1
-			--the new username is the next argument
+			--the username is the next argument
 			username = arg[i]
 		--if argument contains "--username=" at the beginning
 		elseif string.find(arg[i], "^--username=") then
-			--the new username is the other part of the argument
+			--the username is the other part of the argument
 			username = string.sub(arg[i], 12)
+		--if argument is "-p"
+		elseif arg[i] == "-p" then
+			i = i + 1
+			--the current password is the next argument
+			current_password = arg[i]
+		--if argument contains "--current_password=" at the beginning
+		elseif string.find(arg[i], "^--current_password=") then
+			--the current password is the other part of the argument
+			current_password = string.sub(arg[i], 12)
+		--if argument is "-n"
+		elseif arg[i] == "-n" then
+			i = i + 1
+			--the new password is the next argument
+			new_password = arg[i]
+		--if argument contains "--new_password=" at the beginning
+		elseif string.find(arg[i], "^--new_password=") then
+			--the current password is the other part of the argument
+			new_password = string.sub(arg[i], 12)
 		--if argument is "-i" or "--cli_server_as_ip_addr"
 		elseif arg[i] == "-i" or arg[i] == "--cli_server_as_ip_addr" then
 			--Flag cli_server_as_ip_addr is true
@@ -104,29 +104,31 @@ function parse_arguments()
 	end
 end
 
---function send_remove_user: sends a "REMOVE USER" command to the SPLAY CLI server
-function send_remove_user(username, cli_server_url,admin_username, admin_password)
+--function send_change_passwd: sends a "CHANGE PASSWORD" command to the SPLAY CLI server
+function send_change_passwd(username, current_password, new_password, cli_server_url)
 	--prints the arguments
-	print_username("ADMIN USERNAME      ", admin_username)
-	print_line(VERBOSE, "USERNAME TO REMOVE  = "..username)
-	print_cli_server(6)
+	print_username("USERNAME       ", username)
+	print_cli_server()
 
-	local admin_hashedpassword = sha1(admin_password)
+	local hashed_currentpassword = sha1(current_password)
+	local hashed_newpassword = sha1(new_password)
 
 	--prepares the body of the message
 	local body = json.encode({
-		method = "ctrl_api.remove_user",
-		params = {username, admin_username, admin_hashedpassword}
+		method = "change_passwd",
+		params = {username, hashed_currentpassword, hashed_newpassword}
 	})
+
 
 	--prints that it is sending the message
 	print_line(VERBOSE, "\nSending command to "..cli_server_url.."...\n")
 
 	--sends the command as a POST
-	local response = http.request(cli_server_url.."/remove_user", body)
+	local response = http.request(cli_server_url.."/change_passwd", body)
 
+	--if there is a response
 	if check_response(response) then
-		print_line(NORMAL, "User removed\n")
+		print_line(NORMAL, "Password changed\n")
 	end
 
 end
@@ -134,23 +136,9 @@ end
 
 --MAIN FUNCTION:
 --initializes the variables
-username = nil
-admin_username = nil
-admin_password = nil
-cli_server_url = nil
-
-cli_server_url_from_conf_file = nil
-username_from_conf_file = nil
-
-cli_server_as_ip_addr = false
-cli_server_taken_from_conf = false
-username_taken_from_conf = false
-password_taken_from_conf = false
-min_arg_ok = false
-
+current_password = nil
+new_password = nil
 command_name = "splay-change-passwd"
-other_mandatory_args = ""
-usage_options = {}
 
 --maximum HTTP payload size is 10MB (overriding the max 2KB set in library socket.lua)
 socket.BLOCKSIZE = 10000000
@@ -172,11 +160,11 @@ check_min_arg()
 
 check_cli_server()
 
-admin_username = check_username(admin_username, "Administrator's username")
+username = check_username(username, "Username")
 
-admin_password = check_password(admin_password, "Administrator's password")
+current_password = check_password(current_password, "Current password")
 
-username = check_username(username, "Username to remove")
+new_password = check_password(new_password, "New password")
 
---calls send_remove_user
-send_remove_user(username, cli_server_url, admin_username, admin_password)
+--calls send_change_passwd
+send_change_passwd(username, current_password, new_password, cli_server_url)
