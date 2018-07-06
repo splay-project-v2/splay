@@ -13,5 +13,6 @@ RUN update-alternatives --install /usr/bin/luac luac /usr/bin/luac5.3 10
 add commands/* ./
 add lib ./lib
 add install_check.lua ./
+add sample.lua ./
 
 run lua install_check.lua

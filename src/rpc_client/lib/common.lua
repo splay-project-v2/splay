@@ -31,6 +31,8 @@ other_mandatory_args = ""
 usage_options = {}
 print_mode = NORMAL
 
+local json = require("lib.json")
+
 --function print_line:
 function print_line(mode, str_to_print)
 	if print_mode >= mode then
