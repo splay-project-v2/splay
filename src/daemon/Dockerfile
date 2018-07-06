@@ -40,4 +40,11 @@ RUN export LUA_PATH=$(lua -e 'print(package.path)') ;\
 RUN chmod +x ./clean_src.sh ; \
     ./clean_src.sh
 
+# Not very useful for now
+RUN export LUA_PATH=$(lua -e 'print(package.path)') ;\
+    export LUA_PATH="${LUA_PATH};/usr/splay/lib/lua/?.lua" ;\
+    export LUA_CPATH=$(lua -e 'print(package.cpath)');\
+    export LUA_CPATH="${LUA_CPATH};/usr/splay/lib/c/?.so" ;\
+    cd ./lua_tests && lua all_tests.lua
+
 CMD ["./deploy.sh"]
