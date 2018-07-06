@@ -61,7 +61,7 @@ while true
 				a = gets.chomp
 				splayd = $db["SELECT id FROM splayds WHERE id='#{a}' OR ref='#{a}'"]
 				if splayd
-					selected_splayd = splayd['id']
+					selected_splayd = splayd[:id]
 					puts "Selected splayd ID: #{selected_splayd}"
 				else
 					puts "Splayd not found."
@@ -70,18 +70,18 @@ while true
 			when /a/
 				puts "Give splayd ref:"
 				ref = gets.chomp
-				$db["INSERT INTO splayds SET ref='#{ref}'"]
+				$db.run("INSERT INTO splayds SET ref='#{ref}'")
 				puts "Splayd added."
 				puts
 			when /l/
 				$db["SELECT * FROM splayds ORDER BY status, id"].each do |splayd|
-					puts "ID: #{splayd['id']} - ref: #{splayd['ref']} - #{splayd['status']}"
+					puts "ID: #{splayd[:id]} - ref: #{splayd[:ref]} - #{splayd[:status]}"
 				end
 				puts
 			when /s/
 				if selected_splayd
-					$db["SELECT * FROM splayd_jobs WHERE splayd_id='#{selected_splayd}'"].each do |_|
-						puts "Job ID: #{mm['job_id']} - status: #{mm['status']}"
+					$db["SELECT * FROM splayd_jobs WHERE splayd_id='#{selected_splayd}'"].each do |mm|
+						puts "Job ID: #{mm[:job_id]} - status: #{mm[:status]}"
 					end
 				else
 					puts "Select a splayd first."
@@ -89,7 +89,7 @@ while true
 				puts
 			when /k/
 				if selected_splayd
-					$db["INSERT INTO actions SET splayd_id='#{selected_splayd}', command='KILL'"]
+					$db.run("INSERT INTO actions SET splayd_id='#{selected_splayd}', command='KILL'")
 					puts "Sended."
 				else
 					puts "Select a splayd first."
@@ -98,7 +98,7 @@ while true
 			when /c/
 				if selected_splayd
 					$db["SELECT * FROM actions WHERE splayd_id='#{selected_splayd}'"].each do |action|
-						puts "ID: #{action['id']} - cmd: #{action['command']}"
+						puts "ID: #{action[:id]} - cmd: #{action[:command]}"
 					end
 				else
 					puts "Select a splayd first."
@@ -108,10 +108,10 @@ while true
 				if selected_splayd
 					m = $db["SELECT * FROM splayds WHERE id='#{selected_splayd}'"].first
 					
-					puts "Splayd #{m['ref']} (#{m['id']})"
-					puts "#{m['name']} - #{m['localization']}"
-					puts "Host: #{m['os']}, #{m['bits']} bits, #{m['endianness']} endian"
-					puts "IP: #{m['ip']} - #{m['status']}"
+					puts "Splayd #{m[:ref]} (#{m[:id]})"
+					puts "#{m[:name]} - #{m[:localization]}"
+					puts "Host: #{m[:os]}, #{m[:bits]} bits, #{m[:endianness]} endian"
+					puts "IP: #{m[:ip]} - #{m[:status]}"
 				else
 					puts "Select a splayd first."
 				end
@@ -141,15 +141,15 @@ while true
 				a = gets.chomp
 				job = $db["SELECT id FROM jobs WHERE id='#{a}' OR ref='#{a}'"].first
 				if job
-					selected_job = job['id']
-					puts "Selected job ID: #{selected_job} - #{job['status']}"
+					selected_job = job[:id]
+					puts "Selected job ID: #{selected_job} - #{job[:status]}"
 				else
 					puts "Job not found."
 				end
 				puts
 			when /l/
 				$db[:jobs].each do |job|
-					puts "ID: #{job['id']} - ref: #{job['ref']} - #{job['status']}"
+					puts "ID: #{job[:id]} - ref: #{job[:ref]} - #{job[:status]}"
 				end
 				puts
 			when /a/
@@ -166,15 +166,15 @@ while true
 				end
 				puts "Enter how many splayds do you want:"
 				nb_splayds = get
-				$db["INSERT INTO jobs SET
+				$db.run("INSERT INTO jobs SET
 						ref='#{ref}',
 						code='#{addslashes(code)}',
-						nb_splayds='#{nb_splayds}'"]
+						nb_splayds='#{nb_splayds}'")
 				puts "Job submitted"
 				puts
 			when /k/
 				if selected_job
-					$db["UPDATE jobs SET command='KILL' WHERE id='#{selected_job}'"]
+					$db.run("UPDATE jobs SET command='KILL' WHERE id='#{selected_job}'")
 					puts "Job killed."
 				else
 					puts "Select a job first."
@@ -188,14 +188,14 @@ while true
 					$db["SELECT * FROM splayd_selections
 							WHERE job_id='#{selected_job}' ORDER BY splayd_id"].each do |ms|
 
-						m = $db["SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'"].first
+						m = $db["SELECT * FROM splayds WHERE id='#{ms[:splayd_id]}'"].first
 						s = $db["SELECT * FROM splayd_jobs
 								WHERE job_id='#{selected_job}' AND
-								splayd_id='#{ms['splayd_id']}' AND
+								splayd_id='#{ms[:splayd_id]}' AND
 								status!='RESERVED'"].first
 
 						if s
-							puts "#{m['id']} #{m['name']} [#{m['ip']} #{m['status']}] => RUNNING"
+							puts "#{m[:id]} #{m[:name]} [#{m[:ip]} #{m[:status]}] => RUNNING"
 							c_running += 1
 						else
 							#puts "#{m['name']} [#{m['ip']} #{m['status']}] => ENDED"
@@ -217,13 +217,13 @@ while true
 				old_status = "LOCAL"
 				while j['status'] != "ENDED" and j['status'] != "NO_RESSOURCES" and j['status'] != "REGISTER_TIMEOUT"
 					j = $db["SELECT * FROM jobs WHERE ref='#{ref}'"].first
-					if j['status'] != old_status
-						puts j['status']
-						if j['status'] == "NO_RESSOURCES"
-							puts j['status_msg']
+					if j[:status] != old_status
+						puts j[:status]
+						if j[:status] == "NO_RESSOURCES"
+							puts j[:status_msg]
 						end
 					end
-					old_status = j['status']
+					old_status = j[:status]
 					sleep(1)
 				end
 			when /x/

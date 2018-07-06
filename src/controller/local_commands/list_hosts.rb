@@ -33,6 +33,6 @@ end
 job_id = ARGV[0]
 
 $db["SELECT * FROM splayd_selections WHERE job_id='#{job_id}' AND selected='TRUE'"].each do |ms|
-	m = $db["SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'"].first
-	puts "#{m['ip']} #{ms['start_port']}"
+	m = $db["SELECT * FROM splayds WHERE id='#{ms[:splayd_id]}'"].first
+	puts "#{m[:ip]} #{ms[:start_port]}"
 end

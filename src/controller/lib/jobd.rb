@@ -115,7 +115,7 @@ class Jobd
 
 	def self.raw_list(job, m_s_s, max = 0)
 		list = {}
-		list['ref'] = job['ref']
+		list['ref'] = job[:ref]
 		list['nodes'] = []
 		c = 1
 		m_s_s.each do |m_s|
@@ -124,18 +124,18 @@ class Jobd
 				if c > max then break end
 				c += 1
 			end
-			res = $db["SELECT ip FROM splayds WHERE id='#{m_s['splayd_id']}'"].first
+			res = $db["SELECT ip FROM splayds WHERE id='#{m_s[:splayd_id]}'"].first
 			el = {}
-			el['id'] = m_s['splayd_id']
-			el['ip'] = res['ip']
-			el['port'] = m_s['port']
+			el['id'] = m_s[:splayd_id]
+			el['ip'] = res[:ip]
+			el['port'] = m_s[:port]
 			list['nodes'] << el
 		end
 		return list
 	end
 
 	def self.head_list(job, m_s_s)
-		return my_json(raw_list(job, m_s_s, job['list_size'])) # a string now...
+		return my_json(raw_list(job, m_s_s, job[:list_size])) # a string now...
 	end
 
 	# Return an array of  random list of job['list_size'] elements for each node
@@ -145,15 +145,15 @@ class Jobd
 		lists = {}
 		pos = 0
 
-		size = job['list_size']
-		if job['list_size'] == 0 # all
+		size = job[:list_size]
+		if size == 0 # all
 			size = job_list['nodes'].size - 1 # without the node receiving the list
 		end
 		if size > job_list['nodes'].size - 1
 			size = job_list['nodes'].size - 1
 		end
 
-		m_s_s.each do |m_s|
+		m_s_s.each do |_|
 
 			nodes = job_list['nodes'].dup
 
@@ -162,7 +162,7 @@ class Jobd
 
 			# new list for nodes 'me'
 			list = {}
-			list['ref'] = job['ref']
+			list['ref'] = job[:ref]
 			list['type'] = 'random'
 			# in a rand list, it doesn't means position in nodes
 			# but overall position in job
@@ -186,21 +186,21 @@ class Jobd
 	def self.send_all_list(job, query)
 		m_s_s = $db.do(query)
 		
-		case job['list_type']
+		case job[:list_type]
 		when 'HEAD' # simple head list of job['list_size'] element
 
 			list_json = head_list(job, m_s_s)
 			q_act = ""
 			pos = 1
 			m_s_s.each do |m_s|
-				q_act = q_act + "('#{m_s['splayd_id']}','#{job['id']}','LIST','#{pos}','TEMP'),"
+				q_act = q_act + "('#{m_s[:splayd_id]}','#{job[:id]}','LIST','#{pos}','TEMP'),"
 				pos = pos + 1
 			end
 			q_act = q_act[0, q_act.length - 1]
 			$db.run("INSERT INTO actions (splayd_id, job_id, command, position, status)
 					VALUES #{q_act}")
 			$db.run("UPDATE actions SET data='#{list_json}', status='WAITING'
-					WHERE job_id='#{job['id']}' AND command='LIST' AND status='TEMP'")
+					WHERE job_id='#{job[:id]}' AND command='LIST' AND status='TEMP'")
 		when 'RANDOM' # random list of job['list_size'] element
 
 			lists = random_lists(job, m_s_s)
@@ -209,7 +209,7 @@ class Jobd
 			# TODO split in multiple request
 			q_act = ""
 			lists.each do |splayd_id, json|
-				q_act += "('#{splayd_id}','#{job['id']}','LIST', '#{json}'),"
+				q_act += "('#{splayd_id}','#{job[:id]}','LIST', '#{json}'),"
 			end
 			if q_act.size > 0 
 				q_act = q_act[0, q_act.length - 1]
@@ -224,7 +224,7 @@ class Jobd
 		m_s_s = $db.run(query)
 		q_act = ""
 		m_s_s.each do |m_s|
-			q_act = q_act + "('#{m_s[:splayd_id]}','#{job['id']}','START', '#{job['ref']}'),"
+			q_act = q_act + "('#{m_s[:splayd_id]}','#{job[:id]}','START', '#{job[:ref]}'),"
 		end
 		q_act = q_act[0, q_act.length - 1]
 		$db.run("INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}")
@@ -233,85 +233,85 @@ class Jobd
 	def self.create_filter_query(job)
 
 		version_filter = ""
-		if job['splayd_version']
-			version_filter += " AND version='#{job['splayd_version']}' "
+		if job[:splayd_version]
+			version_filter += " AND version='#{job[:splayd_version]}' "
 		end
 
 		distance_filter = ""
-		if job['distance'] and job['latitude'] and job['longitude']
+		if job[:distance] and job[:latitude] and job[:longitude]
 			distance_filter =
 					" AND longitude IS NOT NULL AND latitude IS NOT NULL AND
 				DEGREES(
 					ACOS(
 						( 
-							SIN(RADIANS(#{job['latitude']})) * SIN(RADIANS(latitude))
+							SIN(RADIANS(#{job[:latitude]})) * SIN(RADIANS(latitude))
 						)
 						+
 						( 
-							COS(RADIANS(#{job['latitude']}))
+							COS(RADIANS(#{job[:latitude]}))
 							*
 							COS(RADIANS(latitude))
 							*
-							COS(RADIANS(#{job['longitude']} - longitude))
+							COS(RADIANS(#{job[:longitude]} - longitude))
 						)
 					) * 60 * 1.1515 * 1.61
-				) <= '#{job['distance']}'  "
+				) <= '#{job[:distance]}'  "
 		end
 
 		localization_filter = ""
-		if job['localization']
+		if job[:localization]
 			# If its a continent code.
-			countries = countries_by_continent()
-			if countries[job['localization']]
+			countries = countries_by_continent
+			if countries[job[:localization]]
 				localization_filter = " AND ("
-				countries[job['localization']].each do |country|
+				countries[job[:localization]].each do |country|
 					localization_filter += "country='#{country}' OR "
 				end
-				localization_filter = localization_filter[0..(localization_filter.length() - 5)] + ") "
+				localization_filter = localization_filter[0..(localization_filter.length - 5)] + ") "
 			else
-				localization_filter += " AND country='#{job['localization']}' "
+				localization_filter += " AND country='#{job[:localization]}' "
 			end
 		end
 
 		bytecode_filter = ""
-		if job['code'][0,4] =~ /\x1BLua/ # Lua Bytecode
-			if job['code'][0,5] =~ /\x1BLuaQ/
-				bytecode_filter = " AND endianness='#{job['endianness']}' "
-				bytecode_filter += " AND bits='#{job['bits']}' "
+		if job[:code][0,4] =~ /\x1BLua/ # Lua Bytecode
+			if job[:code][0,5] =~ /\x1BLuaQ/
+				bytecode_filter = " AND endianness='#{job[:endianness]}' "
+				bytecode_filter += " AND bits='#{job[:bits]}' "
 			else
 				status_msg += "The bytecode isn't Lua 5.1 bytecode.\n"
-				set_job_status(job['id'], 'NO_RESSOURCES', status_msg)
+				set_job_status(job[:id], 'NO_RESSOURCES', status_msg)
 				#next TODO next
 			end
 		end
 		
 		hostmasks_filter = ""
-		if job['hostmasks']
+		if job[:hostmasks]
 			# TODO split with "|"
-			hm_t = job['hostmasks'].gsub(/\*/, "%")
+			hm_t = job[:hostmasks].gsub(/\*/, "%")
 			hostmasks_filter = " AND (ip LIKE '#{hm_t}' OR hostname LIKE '#{hm_t}') "
 		end
 
 		resources_filter = "AND splayds.status='AVAILABLE' AND
-					max_mem >= '#{job['max_mem']}' AND
-					disk_max_size >= '#{job['disk_max_size']}' AND
-					disk_max_files >= '#{job['disk_max_files']}' AND
-					disk_max_file_descriptors >= '#{job['disk_max_file_descriptors']}' AND
-					network_max_send >= '#{job['network_max_send']}' AND
-					network_max_receive >= '#{job['network_max_receive']}' AND
-					network_max_sockets >= '#{job['network_max_sockets']}' AND
-					network_max_ports >= '#{job['network_nb_ports']}' AND
-					network_send_speed >= '#{job['network_send_speed']}' AND
-					network_receive_speed >= '#{job['network_receive_speed']}' AND
-					load_5 <= '#{job['max_load']}' AND
-					start_time <= '#{Time.now.to_i - job['min_uptime']}' AND
+					max_mem >= '#{job[:max_mem]}' AND
+					disk_max_size >= '#{job[:disk_max_size]}' AND
+					disk_max_files >= '#{job[:disk_max_files]}' AND
+					disk_max_file_descriptors >= '#{job[:disk_max_file_descriptors]}' AND
+					network_max_send >= '#{job[:network_max_send]}' AND
+					network_max_receive >= '#{job[:network_max_receive]}' AND
+					network_max_sockets >= '#{job[:network_max_sockets]}' AND
+					network_max_ports >= '#{job[:network_nb_ports]}' AND
+					network_send_speed >= '#{job[:network_send_speed]}' AND
+					network_receive_speed >= '#{job[:network_receive_speed]}' AND
+					load_5 <= '#{job[:max_load]}' AND
+					start_time <= '#{Time.now.to_i - job[:min_uptime]}' AND
 					max_number > 0 "
 
 		# We don't take splayds already mandatory (see later)
 		mandatory_filter = ""
 		$db["SELECT * FROM job_mandatory_splayds
-				WHERE job_id='#{job['id']}'"].each do |mm|
-			mandatory_filter += " AND splayds.id!=#{mm['splayd_id']} "
+				WHERE job_id='#{job[:id]}'"].each do |mm|
+			mandatory_filter += " AND splayds.id!=#{mm[:splayd_id]} "
 		end
 
 		return "SELECT * FROM splayds WHERE
@@ -328,24 +328,24 @@ class Jobd
 
 	def self.create_job_json(job)
 			new_job = {}
-			new_job['ref'] = job['ref']
-			new_job['code'] = job['code']
-			new_job['script'] = job['script']
+			new_job['ref'] = job[:ref]
+			new_job['code'] = job[:code]
+			new_job['script'] = job[:script]
 			new_job['network'] = {}
-			new_job['network']['max_send'] = job['network_max_send']
-			new_job['network']['max_receive'] = job['network_max_receive']
-			new_job['network']['max_sockets'] = job['network_max_sockets']
-			new_job['network']['nb_ports'] = job['network_nb_ports']
-			if job['udp_drop_ratio'] != 0
-				new_job['network']['udp_drop_ratio'] = job['udp_drop_ratio']
+			new_job['network']['max_send'] = job[:network_max_send]
+			new_job['network']['max_receive'] = job[:network_max_receive]
+			new_job['network']['max_sockets'] = job[:network_max_sockets]
+			new_job['network']['nb_ports'] = job[:network_nb_ports]
+			if job[:udp_drop_ratio] != 0
+				new_job['network']['udp_drop_ratio'] = job[:udp_drop_ratio]
 			end
 			new_job['disk'] = {}
-			new_job['disk']['max_size'] = job['disk_max_size']
-			new_job['disk']['max_files'] = job['disk_max_files']
-			new_job['disk']['max_file_descriptors'] = job['disk_max_file_descriptors']
-			new_job['max_mem'] = job['max_mem']
-			new_job['keep_files'] = job['keep_files']
-			new_job['die_free'] = job['die_free']
+			new_job['disk']['max_size'] = job[:disk_max_size]
+			new_job['disk']['max_files'] = job[:disk_max_files]
+			new_job['disk']['max_file_descriptors'] = job[:disk_max_file_descriptors]
+			new_job['max_me'] = job[:max_mem]
+			new_job['keep_files'] = job[:keep_files]
+			new_job['die_free'] = job[:die_free]
 			return new_job.to_json
 	end
 

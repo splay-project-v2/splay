@@ -38,12 +38,12 @@ class Statusd
 
 					# If we have not already a pending command.
 					action = $db["SELECT * FROM actions WHERE
-							splayd_id='#{m_s['splayd_id']}' AND
+							splayd_id='#{m_s[:splayd_id]}' AND
 							command='STATUS'"].first
 
 					unless action
 						$db.run("INSERT INTO actions SET
-								splayd_id='#{m_s['splayd_id']}',
+								splayd_id='#{m_s[:splayd_id]}',
 								command='STATUS'")
 					end
 				end

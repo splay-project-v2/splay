@@ -264,29 +264,29 @@ class SplaydProtocol
 					sleep(rand(@@sleep_time * 2 * 100).to_f / 100)
 				else
 
-					$log.debug("#{@splayd}: Action #{action['command']}")
+					$log.debug("#{@splayd}: Action #{action[:command]}")
 
 					start_time = Time.now.to_f
-					@so.write action['command']
-					if action['data']
-						if action['command'] == 'LIST' and action['position']
-							action['data'] = action['data'].sub(/_POSITION_/, action['position'].to_s)
+					@so.write action[:command]
+					if action[:data]
+						if action[:command] == 'LIST' and action[:position]
+							action[:data] = action[:data].sub(/_POSITION_/, action[:position].to_s)
 						end
-						@so.write action['data']
+						@so.write action[:data]
 					end
 					reply_code = @so.read
 					if reply_code == "OK"
-						if action['command'] == "REGISTER"
+						if action[:command] == "REGISTER"
 							port = addslashes(@so.read)
 							reply_data = port
 						end
-						if action['command'] == "STATUS"
+						if action[:command] == "STATUS"
 							reply_data = @so.read # no addslashes (json)
 						end
-						if action['command'] == "LOADAVG"
+						if action[:command] == "LOADAVG"
 							reply_data = addslashes(@so.read)
 						end
-						if action['command'] == "HALT" or action['command'] == "KILL"
+						if action[:command] == "HALT" or action[:command] == "KILL"
 							running = false
 						end
 					end
@@ -302,41 +302,41 @@ class SplaydProtocol
 
 					# All the @db.s_j_* functions are replayable.
 
-					if action['command'] == "REGISTER"
+					if action[:command] == "REGISTER"
 						if reply_code == "OK"
 							# Update the job slot from RESERVED to WAITING
-							@splayd.s_j_register(action['job_id'])
-							@splayd.s_sel_reply(action['job_id'], reply_data, reply_time)
+							@splayd.s_j_register(action[:job_id])
+							@splayd.s_sel_reply(action[:job_id], reply_data, reply_time)
 						else
 							raise ProtocolError, "REGISTER not OK: #{reply_code}"
 						end
 					end
 
-					if action['command'] == "START"
+					if action[:command] == "START"
 						if reply_code == "OK" or reply_code == "RUNNING"
-							@splayd.s_j_start(action['job_id'])
+							@splayd.s_j_start(action[:job_id])
 						else
 							raise ProtocolError, "START not OK: #{reply_code}"
 						end
 					end
 
-					if action['command'] == "STOP"
+					if action[:command] == "STOP"
 						if reply_code == "OK" or reply_code == "NOT_RUNNING"
-							@splayd.s_j_stop(action['job_id'])
+							@splayd.s_j_stop(action[:job_id])
 						else
 							raise ProtocolError, "STOP not OK: #{reply_code}"
 						end
 					end
 
-					if action['command'] == "FREE"
-						@splayd.s_j_free(action['job_id'])
+					if action[:command] == "FREE"
+						@splayd.s_j_free(action[:job_id])
 					end
 
-					if action['command'] == "STATUS"
+					if action[:command] == "STATUS"
 						@splayd.s_j_status(reply_data)
 					end
 
-					if action['command'] == "LOADAVG"
+					if action[:command] == "LOADAVG"
 						@splayd.parse_loadavg(reply_data)
 					end
 
@@ -585,7 +585,7 @@ class Splayd
 	end
 
 	def remove_action action
-		$db.run("DELETE FROM actions WHERE id='#{action['id']}'")
+		$db.run("DELETE FROM actions WHERE id='#{action[:id]}'")
 	end
 
 	def update(field, value)
@@ -646,35 +646,37 @@ class Splayd
 		results = $db["SELECT * FROM actions WHERE status='FAILURE' AND splayd_id='#{@id}'"]
 
 		results.each do |action|
-			if action['command'] == 'REGISTER'
+			if action[:command] == 'REGISTER'
 				# We should put the FREE-REGISTER at the same place
 				# where REGISTER was. But, no other register action concerning
 				# this splayd and this job can exists (because registering is
 				# split into states), so, if we remove the REGISTER, we can safely
 				# add the FREE-REGISTER commands at the top of the
 				# actions.
-				job = $db["SELECT ref FROM jobs WHERE id='#{action['job_id']}'"].first
-				$db.run("DELETE FROM actions WHERE id='#{action['id']}'")
-				Splayd.add_action(action['splayd_id'], action['job_id'], 'FREE', job['ref'])
-				Splayd.add_action(action['splayd_id'], action['job_id'], 'REGISTER', addslashes(job['code']))
+				job = $db["SELECT ref FROM jobs WHERE id='#{action[:job_id]}'"].first
+				$db.run("DELETE FROM actions WHERE id='#{action[:id]}'")
+				Splayd.add_action(action[:splayd_id], action[:job_id], 'FREE', job[:ref])
+				Splayd.add_action(action[:splayd_id], action[:job_id], 'REGISTER', addslashes(job[:code]))
 			else
-				$db.run("UPDATE actions SET status='WAITING' WHERE id='#{action['id']}'")
+				$db.run("UPDATE actions SET status='WAITING' WHERE id='#{action[:id]}'")
 			end
 		end
 	end
 
 	# Return the next WAITING action and set status to SENDING.
 	def next_action
-		action = $db["SELECT * FROM actions WHERE splayd_id='#{@id}' ORDER BY id LIMIT 1"].first
-		if action 
-			if action['status'] == 'TEMP'
-				$log.info("INCOMPLETE ACTION: #{action['command']} " +
-							"(splayd: #{@id}, job: #{action['job_id']})")
+		$db["SELECT * FROM actions WHERE splayd_id='#{@id}' ORDER BY id"].each do |action|
+			$log.debug("NEW ACTION")
+			if action[:status] == 'TEMP'
+				$log.debug("TEMP")
+				$log.info("INCOMPLETE ACTION: #{action[:command]} " +
+							"(splayd: #{@id}, job: #{action[:job_id]})")
 			end
-			if action['status'] == 'WAITING'
+			if action[:status] == 'WAITING'
+				$log.debug("WAITING")
 				$db.run("UPDATE actions SET
 						status='SENDING'
-						WHERE id='#{action['id']}'")
+						WHERE id='#{action[:id]}'")
 				return action
 			end
 		end
@@ -717,21 +719,21 @@ class Splayd
 		results = $db["SELECT * FROM splayd_jobs WHERE splayd_id='#{@id}' AND status!='RESERVED'"]
 
 		results.each do |sj|
-			job = $db["SELECT ref FROM jobs WHERE id='#{sj['job_id']}'"].first
+			job = $db["SELECT ref FROM jobs WHERE id='#{sj[:job_id]}'"].first
 			# There is no difference in Lua between Hash and Array, so when it's
 			# empty (an Hash), we encoded it like an empy Array.
 			if data['jobs'].class == Hash and data['jobs'][job['ref']]
 				if data['jobs'][job['ref']]['status'] == "waiting"
-					$db.run("UPDATE splayd_jobs SET status='WAITING' WHERE id='#{sj['id']}'")
+					$db.run("UPDATE splayd_jobs SET status='WAITING' WHERE id='#{sj[:id]}'")
 				end
 				# NOTE normally no needed because already set to RUNNING when
 				# we send the START command.
 				if data['jobs'][job['ref']]['status'] == "running"
-					$db.run("UPDATE splayd_jobs SET status='RUNNING' WHERE id='#{sj['id']}'")
+					$db.run("UPDATE splayd_jobs SET status='RUNNING' WHERE id='#{sj[:id]}'")
 				end
 
 			else
-				$db.run("DELETE FROM splayd_jobs WHERE id='#{sj['id']}'")
+				$db.run("DELETE FROM splayd_jobs WHERE id='#{sj[:id]}'")
 			end
 			# it can't be new jobs in data['jobs'] that don't have already an
 			# entry in splayd_jobs

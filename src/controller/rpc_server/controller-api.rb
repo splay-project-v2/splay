@@ -39,12 +39,12 @@ class Ctrl_api
 		user = check_session_id(session_id)
 		#check_session_id returns false if the session ID is not valid; if user is not false (the session ID
 		# is valid)
-		if (user) then
-			#user_id is taken from the field 'id' from variable user
+		if user
+      #user_id is taken from the field 'id' from variable user
 			user_id = user['id']
 			#if the user is admin (can see all the jobs) or the job belongs to her
-			if ((user['admin'] == 1) or ($db.select_one("SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}"))) then
-				#opens the log file of the requested job
+			if (user['admin'] == 1) or ($db["SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}"].first)
+        #opens the log file of the requested job
 				log_file = File.open("../logs/"+job_id) 
 				#ok is true
 				ret['ok'] = true
@@ -69,7 +69,7 @@ class Ctrl_api
 		#error says that the session ID was invalid
 		ret['error'] = "Invalid or expired Session ID"
 		#returns ret
-		return ret
+    ret
 	end
 
 #function get_job_code: triggered when a "GET JOB CODE" message is received, returns the corresponding
@@ -80,19 +80,19 @@ class Ctrl_api
 		#checks the validity of the session ID and stores the returning value in the variable user
 		user = check_session_id(session_id)
 		#check_session_id returns false if the session ID is not valid; if user is not false (the session ID is valid)
-		if (user) then
-			#user_id is taken from the field 'id' from variable user
+		if user
+      #user_id is taken from the field 'id' from variable user
 			user_id = user['id']
 			#job is the record that matches the job_id
-			job = $db.select_one("SELECT * FROM jobs WHERE id=#{job_id}")
+			job = $db["SELECT * FROM jobs WHERE id=#{job_id}"].first
 			#if job exists
-			if job then
-				#if the user is admin (can see all the jobs) or the job belongs to her
-				if ((user['admin'] == 1) or (job['user_id'] == user_id)) then
-					#ok is true
+			if job
+        #if the user is admin (can see all the jobs) or the job belongs to her
+				if (user['admin'] == 1) or (job[:user_id] == user_id)
+          #ok is true
 					ret['ok'] = true
 					#code is a string containing the code
-					ret['code'] = job['code']
+					ret['code'] = job[:code]
 					#returns ret
 					return ret
 				end
@@ -111,7 +111,7 @@ class Ctrl_api
 		#error says that the session ID was invalid
 		ret['error'] = "Invalid or expired Session ID"
 		#returns ret
-		return ret
+    ret
 	end
 
 	#function kill_job: triggered when a "KILL JOB" message is received, sends a KILL command to a job
@@ -121,14 +121,14 @@ class Ctrl_api
 		#checks the validity of the session ID and stores the returning value in the variable user
 		user = check_session_id(session_id)
 		#check_session_id returns false if the session ID is not valid; if user is not false (the session ID is valid)
-		if (user) then
-			#user_id is taken from the field 'id' from variable user
+		if user
+      #user_id is taken from the field 'id' from variable user
 			user_id = user['id']
 			#if the user is admin (can see all the jobs) or the job belongs to her
-			if ((user['admin'] == 1) or ($db.select_one("SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}"))) then
-				#writes KILL in the field 'command' of table 'jobs'; the contoller takes this command as an order
+			if (user['admin'] == 1) or ($db["SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}"].first)
+        #writes KILL in the field 'command' of table 'jobs'; the contoller takes this command as an order
 				# to kill the job
-				$db.do("UPDATE jobs SET command='KILL' WHERE id='#{job_id}'")
+				$db.run("UPDATE jobs SET command='KILL' WHERE id='#{job_id}'")
 				#ok is true
 				ret['ok'] = true
 				#returns ret
@@ -144,7 +144,7 @@ class Ctrl_api
 		#error says that the session was not valid
 		ret['error'] = "Invalid or expired Session ID"
 		#returns ret
-		return ret
+    ret
 	end
 
 	#function submit_job: triggered when a "SUBMIT JOB" message is received, submits a job to the controller
@@ -154,47 +154,47 @@ class Ctrl_api
 		#checks the validity of the session ID and stores the returning value in the variable user
 		user = check_session_id(session_id)
 		#check_session_id returns false if the session ID is not valid; if user is not false (the session ID is valid)
-		if (user) then
-			ref = OpenSSL::Digest::MD5.hexdigest(rand(1000000).to_s)
+		if user
+      ref = OpenSSL::Digest::MD5.hexdigest(rand(1000000).to_s)
 			#user_id is taken from the field 'id' from variable user
 			user_id = user['id']
 			
-			time_now = Time.new().strftime("%Y-%m-%d %T")
+			time_now = Time.new.strftime("%Y-%m-%d %T")
 			
-			if options.class == Array then
-				options = Hash.new
+			if options.class == Array
+        options = Hash.new
 			end
-			if nb_splayds then
-				if (nb_splayds>0) then
-					options['nb_splayds'] = nb_splayds
+			if nb_splayds
+        if nb_splayds > 0
+          options['nb_splayds'] = nb_splayds
 				end
 			end
 			
-			if description == "" then
-				description_field = ""
+			if description == ""
+        description_field = ""
 			else
 				description_field = "description='#{description}',"
 			end
 			
-			if name == "" then
-				name_field = ""
+			if name == ""
+        name_field = ""
 			else
 				name_field = "name='#{name}',"
 			end
 
-                        # scheduled job
-                        if scheduled_at && (scheduled_at > 0) then
-                        	time_scheduled = Time.at(scheduled_at).strftime("%Y-%m-%d %T")
+      # scheduled job
+      if scheduled_at && (scheduled_at > 0)
+        time_scheduled = Time.at(scheduled_at).strftime("%Y-%m-%d %T")
 				options['scheduled_at'] = time_scheduled
-                        end
+      end
 
 			# strict job
-                        if strict == "TRUE" then
-				options['strict'] = strict 
-                        end
+      if strict == "TRUE"
+        options['strict'] = strict
+      end
 			
-			if churn_trace == "" then
-				churn_field = ""
+			if churn_trace == ""
+        churn_field = ""
 			else
 				options['nb_splayds'] = 0
 				churn_trace.lines do |line|
@@ -204,28 +204,28 @@ class Ctrl_api
 				churn_field = "die_free='FALSE', scheduler_description='#{addslashes(churn_trace)}',"
 			end
 
-			$db.do("INSERT INTO jobs SET ref='#{ref}' #{to_sql(options)}, #{description_field} #{name_field} #{churn_field} code='#{addslashes(code)}', user_id=#{user_id}, created_at='#{time_now}'")
+			$db.run("INSERT INTO jobs SET ref='#{ref}' #{to_sql(options)}, #{description_field} #{name_field} #{churn_field} code='#{addslashes(code)}', user_id=#{user_id}, created_at='#{time_now}'")
 
 			timeout = 30
 			while timeout > 0
 				sleep(1)
 				timeout = timeout - 1
-				job = $db.select_one("SELECT * FROM jobs WHERE ref='#{ref}'")
-				if job['status'] == "RUNNING" then
-					ret['ok'] = true
-					ret['job_id'] = job['id']
+				job = $db["SELECT * FROM jobs WHERE ref='#{ref}'"].first
+				if job[:status] == "RUNNING"
+          ret['ok'] = true
+					ret['job_id'] = job[:id]
 					ret['ref'] = ref
 					return ret
 				end
-				if job['status'] == "NO_RESSOURCES" then
-					ret['ok'] = false
-					ret['error'] = "JOB " + job['id'].to_s + ": " + job['status_msg']
+				if job[:status] == "NO_RESSOURCES"
+          ret['ok'] = false
+					ret['error'] = "JOB " + job[:id].to_s + ": " + job[:status_msg]
 					return ret
 				end
                                 # queued job behavior
-				if job['status'] == "QUEUED" then
-					ret['ok'] = true
-					ret['job_id'] = job['id']
+				if job[:status] == "QUEUED"
+          ret['ok'] = true
+					ret['job_id'] = job[:id]
 					ret['ref'] = ref
 					return ret
 				end
@@ -233,13 +233,13 @@ class Ctrl_api
 			#if timeout reached 0, ok is false
 			ret['ok'] = false
 			#error says that a timeout occured and suggests to check if the controller is running
-			ret['error'] = "JOB " + job['id'].to_s + ": timeout; please check if controller is running"
+			ret['error'] = "JOB " + job[:id].to_s + ": timeout; please check if controller is running"
 			#returns ret
 			return ret
 		end
 		ret['ok'] = false
 		ret['error'] = "Invalid or expired Session ID"
-		return ret
+    ret
 	end
 
 	#function get_job_details: triggered when a "GET JOB DETAILS" message is received, returns the description, status and
@@ -250,28 +250,28 @@ class Ctrl_api
 		#checks the validity of the session ID and stores the returning value in the variable user
 		user = check_session_id(session_id)
 		#check_session_id returns false if the session ID is not valid; if user is not false (the session ID is valid)
-		if (user) then
-			#user_id is taken from the field 'id' from variable user
+		if user
+      #user_id is taken from the field 'id' from variable user
 			user_id = user['id']
 			#if the user is admin (can see all the jobs) or the job belongs to her
-			if ((user['admin'] == 1) or ($db.select_one("SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}"))) then
-				host_list = Array.new
-				$db.select_all("SELECT * FROM splayd_selections WHERE job_id='#{job_id}' AND selected='TRUE'") do |ms|
-					m = $db.select_one("SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'")
+			if (user['admin'] == 1) or ($db["SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}"].first)
+        host_list = Array.new
+				$db["SELECT * FROM splayd_selections WHERE job_id='#{job_id}' AND selected='TRUE'"].each do |ms|
+					m = $db["SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'"].first
 					host = Hash.new
-					host['splayd_id'] = ms['splayd_id']
-					host['ip'] = m['ip']
-					host['port'] = ms['port']
+					host['splayd_id'] = ms[:splayd_id]
+					host['ip'] = m[:ip]
+					host['port'] = ms[:port]
 					host_list.push(host)
 				end
-				job = $db.select_one("SELECT * FROM jobs WHERE id=#{job_id}")
+				job = $db["SELECT * FROM jobs WHERE id=#{job_id}"].first
 				ret['ok'] = true
 				ret['host_list'] = host_list
-				ret['status'] = job['status']
-				ret['ref'] = job['ref']
-				ret['description'] = job['description']
-				if (user['admin'] == 1) then
-					ret['user_id'] = job['user_id']
+				ret['status'] = job[:status]
+				ret['ref'] = job[:ref]
+				ret['description'] = job[:description]
+				if user['admin'] == 1
+          ret['user_id'] = job[:user_id]
 				end
 				return ret
 			end
@@ -281,7 +281,7 @@ class Ctrl_api
 		end
 		ret['ok'] = false
 		ret['error'] = "Invalid or expired Session ID"
-		return ret
+    ret
 	end
 
 	#function list_jobs: triggered when a "LIS JOBS" message is received, returns the list of jobs that belong to
@@ -292,23 +292,23 @@ class Ctrl_api
 		#checks the validity of the session ID and stores the returning value in the variable user
 		user = check_session_id(session_id)
 		#check_session_id returns false if the session ID is not valid; if user is not false (the session ID is valid)
-		if (user) then
-			#user_id is taken from the field 'id' from variable user
+		if user
+      #user_id is taken from the field 'id' from variable user
 			user_id = user['id']
 			job_list = Array.new
-			if (user['admin'] == 1) then
-				$db.select_all("SELECT * FROM jobs") do |ms|
+			if user['admin'] == 1
+        $db["SELECT * FROM jobs"].each do |ms|
 					job = Hash.new
-					job['id'] = ms['id']
-					job['status'] = ms['status']
-					job['user_id'] = ms['user_id']
+					job['id'] = ms[:id]
+					job['status'] = ms[:status]
+					job['user_id'] = ms[:user_id]
 					job_list.push(job)
 				end
 			else
-				$db.select_all("SELECT * FROM jobs WHERE user_id=#{user_id}") do |ms|
+				$db["SELECT * FROM jobs WHERE user_id=#{user_id}"].each do |ms|
 					job = Hash.new
-					job['id'] = ms['id']
-					job['status'] = ms['status']
+					job['id'] = ms[:id]
+					job['status'] = ms[:status]
 					job_list.push(job)
 				end
 			end
@@ -318,7 +318,7 @@ class Ctrl_api
 		end
 		ret['ok'] = false
 		ret['error'] = "Invalid or expired Session ID"
-		return ret
+    ret
 	end
 
 	#function list_splayds: triggered when a "LIST SPLAYDS" message is received, returns a list of all registered
@@ -326,14 +326,14 @@ class Ctrl_api
 	def list_splayds(session_id)
 		#initializes the return variable
 		ret = Hash.new
-		if (check_session_id(session_id)) then
-			splayd_list = Array.new
-			$db.select_all("SELECT * FROM splayds") do |ms|
+		if check_session_id(session_id)
+      splayd_list = Array.new
+			$db["SELECT * FROM splayds"].each do |ms|
 				splayd=Hash.new
-				splayd['splayd_id']=ms['id']
-				splayd['ip']=ms['ip']
-				splayd['status']=ms['status']
-				splayd['key']=ms['key']
+				splayd['splayd_id']=ms[:id]
+				splayd['ip']=ms[:ip]
+				splayd['status']=ms[:status]
+				splayd['key']=ms[:key]
 				splayd_list.push(splayd)
 			end
 			ret['ok'] = true
@@ -342,7 +342,7 @@ class Ctrl_api
 		end
 		ret['ok'] = false
 		ret['error'] = "Invalid or expired Session ID"
-		return ret
+    ret
 	end
 
 	#function start_session: triggered when a "START SESSION" message is received, triggers the granting of a token or session
@@ -350,14 +350,14 @@ class Ctrl_api
 	def start_session(username, hashed_password)
 		#initializes the return variable
 		ret = Hash.new
-		user = $db.select_one "SELECT * FROM users WHERE login='#{username}'"
-		if (user) then
-			hashed_password_from_db = user['crypted_password']
-			if (hashed_password == hashed_password_from_db) then
-				time_tomorrow = Time.new + 3600*24
+		user = $db["SELECT * FROM users WHERE login='#{username}'"].first
+		if user
+      hashed_password_from_db = user[:crypted_password]
+			if hashed_password == hashed_password_from_db
+        time_tomorrow = Time.new + 3600*24
 				remember_token_expires_at = time_tomorrow.strftime("%Y-%m-%d %T")
 				remember_token = Digest::SHA1.hexdigest("#{username}--#{remember_token_expires_at}")
-				$db.do("UPDATE users SET remember_token='#{remember_token}', remember_token_expires_at='#{remember_token_expires_at}' WHERE login='#{username}'")
+				$db.run("UPDATE users SET remember_token='#{remember_token}', remember_token_expires_at='#{remember_token_expires_at}' WHERE login='#{username}'")
 				ret['ok'] = true
 				ret['session_id'] = remember_token
 				ret['expires_at'] = remember_token_expires_at
@@ -373,17 +373,17 @@ class Ctrl_api
 	def new_user(username, hashed_password, admin_username, admin_hashedpassword)
 		#initializes the return variable
 		ret = Hash.new
-		admin = $db.select_one("SELECT * FROM users WHERE login='#{admin_username}'")
-		if admin then
-			if ((admin['crypted_password'] == admin_hashedpassword) and (admin['admin'] == 1)) then
-				if not ($db.select_one("SELECT * FROM users WHERE login='#{username}'")) then
-					time_now = Time.new().strftime("%Y-%m-%d %T")
-					$db.do("INSERT INTO users SET login='#{username}', crypted_password='#{hashed_password}', created_at='#{time_now}'")
-					user = $db.select_one("SELECT * FROM users WHERE login='#{username}'")
-					ret['ok'] = true
-					ret['user_id'] = user['id']
-					return ret
-				end
+		admin = $db["SELECT * FROM users WHERE login='#{admin_username}'"].first
+		if admin
+      if (admin['crypted_password'] == admin_hashedpassword) and (admin[:admin] == 1)
+        unless $db["SELECT * FROM users WHERE login='#{username}'"].first
+          time_now = Time.new.strftime("%Y-%m-%d %T")
+          $db.run("INSERT INTO users SET login='#{username}', crypted_password='#{hashed_password}', created_at='#{time_now}'")
+          user = $db["SELECT * FROM users WHERE login='#{username}'"].first
+          ret['ok'] = true
+          ret['user_id'] = user[:id]
+          return ret
+        end
 				ret['ok'] = false
 				ret['error'] = "Username exists already"
 				return ret
@@ -398,14 +398,14 @@ class Ctrl_api
 	def list_users(admin_username, admin_hashedpassword)
 		#initializes the return variable
 		ret = Hash.new
-		admin = $db.select_one("SELECT * FROM users WHERE login='#{admin_username}'")
+		admin = $db["SELECT * FROM users WHERE login='#{admin_username}'"].first
 		if admin then
-			if ((admin['crypted_password'] == admin_hashedpassword) and (admin['admin'] == 1)) then
-				user_list = Array.new
-				$db.select_all("SELECT * FROM users") do |ms|
+			if (admin['crypted_password'] == admin_hashedpassword) and (admin[:admin] == 1)
+        user_list = Array.new
+				$db["SELECT * FROM users"].each do |ms|
 					user=Hash.new
-					user['id']=ms['id']
-					user['username']=ms['login']
+					user['id']=ms[:id]
+					user['username']=ms[:login]
 					user_list.push(user)
 				end
 				ret['ok'] = true
@@ -422,26 +422,26 @@ class Ctrl_api
 	def change_passwd(username, hashed_currentpassword, hashed_newpassword)
 		#initializes the return variable
 		ret = Hash.new
-		user = $db.select_one "SELECT * FROM users WHERE login='#{username}'"
-		hashed_password_from_db = user['crypted_password']
-		if (hashed_currentpassword == hashed_password_from_db) then
-			$db.do("UPDATE users SET crypted_password='#{hashed_newpassword}' WHERE login='#{username}'")
+		user = $db["SELECT * FROM users WHERE login='#{username}'"].first
+		hashed_password_from_db = user[:crypted_password]
+		if hashed_currentpassword == hashed_password_from_db
+			$db.run("UPDATE users SET crypted_password='#{hashed_newpassword}' WHERE login='#{username}'")
 			ret['ok'] = true
 			return ret
 		end
 		ret['ok'] = false
 		ret['error'] = "Not authenticated"
-		return ret
+    ret
 	end
 
 	#function remove_user: triggered when a "REMOVE USER" message is received, deletes a user from the user table. Only
 	#administrators can delete users
 	def remove_user(username, admin_username, admin_hashedpassword)
 		ret = Hash.new
-		admin = $db.select_one("SELECT * FROM users WHERE login='#{admin_username}'")
-		if admin then
-			if ((admin['crypted_password'] == admin_hashedpassword) and (admin['admin'] == 1)) then
-				$db.do("DELETE FROM users WHERE login='#{username}'")
+		admin = $db["SELECT * FROM users WHERE login='#{admin_username}'"].first
+		if admin
+			if (admin[:crypted_password] == admin_hashedpassword) and (admin[:admin] == 1)
+				$db.run("DELETE FROM users WHERE login='#{username}'")
 				ret['ok'] = true
 				return ret
 			end
@@ -455,23 +455,23 @@ class Ctrl_api
 	#function check_session_id: generic function that checks the validity of a session ID, and returns the corresponding
 	#user ID if the session ID is valid
 	def check_session_id(session_id)
-		user = $db.select_one("SELECT * FROM users WHERE remember_token='#{session_id}'")
-		if user then
-			expires_at = user['remember_token_expires_at']
+		user = $db["SELECT * FROM users WHERE remember_token='#{session_id}'"].first
+		if user
+			expires_at = user[:remember_token_expires_at]
 			expires_at_time_format = Time.local(expires_at.year, expires_at.month, expires_at.day, expires_at.hour, expires_at.min, expires_at.sec)
 			time_now = Time.new()
-			if (time_now < expires_at_time_format) then
+			if time_now < expires_at_time_format
 				ret = Hash.new
-				ret['id'] = user['id']
-				ret['admin'] = user['admin']
+				ret['id'] = user[:id]
+				ret['admin'] = user[:admin]
 				return ret
 			else
-				user_id = user['id']
-				$db.do("UPDATE users SET remember_token=NULL, remember_token_expires_at=NULL WHERE id=#{user_id}")
+				user_id = user[:id]
+				$db.run("UPDATE users SET remember_token=NULL, remember_token_expires_at=NULL WHERE id=#{user_id}")
 				return false
 			end
 		else
- 			return false
+			false
 		end
 	end
 end

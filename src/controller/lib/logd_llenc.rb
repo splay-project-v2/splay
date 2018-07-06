@@ -133,7 +133,7 @@ class Logd
 
 				if job
 					ll_so.set_timeout(24 * 3600)
-					fname = "#{@@log_dir}/#{job['id']}"
+					fname = "#{@@log_dir}/#{job[:id]}"
 					count = 0
 					begin
 #             file = File.open(fname, File::WRONLY|File::APPEND|File::CREAT, 0666) 
@@ -164,7 +164,7 @@ class Logd
 							t = Time.now
 							ms = (t.to_f - t.to_i).to_s[1,3]
 							pfix = "#{t.strftime("%H:%M:%S")}#{ms} " +
-									"(#{job['splayd_id']}) "
+									"(#{job[:splayd_id]}) "
 
 							count = count + msg.length
 							file.flock File::LOCK_EX # synchro between processes
@@ -174,7 +174,7 @@ class Logd
 						t = Time.now
 						ms = (t.to_f - t.to_i).to_s[1,3]
 						pfix = "#{t.strftime("%H:%M:%S")}#{ms} " +
-								"(#{job['splayd_id']}) "
+								"(#{job[:splayd_id]}) "
 
 						file.flock File::LOCK_EX # synchro between processes
 						file.puts "#{pfix} end_log (connection lost/closed/max_size)"

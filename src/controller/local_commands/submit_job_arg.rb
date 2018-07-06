@@ -55,7 +55,7 @@ $db.run("INSERT INTO jobs SET
 
 job = $db["SELECT * FROM jobs WHERE ref='#{ref}'"].first
 
-puts "Task transmitted to the controller: #{job['id']} (#{ref})"
+puts "Task transmitted to the controller: #{job[:id]} (#{ref})"
 puts
 if options.size != 0 then puts(to_human(options)) end
 
