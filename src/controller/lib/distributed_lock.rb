@@ -54,8 +54,8 @@ class DistributedLock
 				@@db.transaction do
 					locks = @@db["SELECT * FROM locks
 								WHERE id='1' FOR UPDATE"].first
-					if locks[name.to_sym]
-						if locks[name.to_sym] == 0
+					if locks[:name]
+						if locks[:name] == 0
 							@@db.run("UPDATE locks SET #{name.to_sym}='1' WHERE id ='1'")
 							ok = true
 						end
