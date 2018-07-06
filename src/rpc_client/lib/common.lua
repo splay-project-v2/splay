@@ -40,7 +40,7 @@ end
 
 --function load_config: loads the config file
 function load_config()
-	local config_file = loadfile("splay_cli_config.lua")
+	local config_file = loadfile("splay-cli-config.lua")
 	if pcall(config_file) then
 		cli_server_url_from_conf_file = config.cli_server_url
 		username_from_conf_file = config.username
@@ -155,7 +155,8 @@ function check_password(checked_password, password_type)
 		else
 			checked_password = ""
 			--asks for the password
-			print(password_type..":")
+			print(password_type..":") 
+			-- os.execute("stty -ixon")
 			os.execute("stty raw -echo")
 			--reads keystroke by keystroke until ENTER is pressed, in a silent way (is not displayed on screen)
 			while true do

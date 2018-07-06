@@ -22,7 +22,7 @@ You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
--- JSON-RPC over HTTP client for SPLAY controller -- "NEW USER" command
+-- JSON-RPC over HTTP client for SPLAY controller -- "REMOVE USER" command
 -- Created by José Valerio
 
 -- BEGIN LIBRARIES
@@ -30,7 +30,7 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 local socket = require"socket"
 local http   = require"socket.http"
 --for the JSON encoding/decoding
-local json   = require"json" or require"lib.json"
+local json   = require"lib.json"
 --for hashing
 sha1_lib = loadfile("./lib/sha1.lua")
 sha1_lib()
@@ -44,7 +44,6 @@ function add_usage_options()
 	table.insert(usage_options, "-U, --admin_username=ADM_UNAME\tenters the administrator's username in the command line")
 	table.insert(usage_options, "-P, --admin_password=ADM_PASSWD\tenters the administrator's password in the command line")
 	table.insert(usage_options, "-u, --username=USERNAME\tenters the username of the new user in the command line")
-	table.insert(usage_options, "-p, --password=PASSWD\tenters the password of the new user in the command line")
 end
 
 function parse_arguments()
@@ -53,7 +52,7 @@ function parse_arguments()
 		--if argument is "-h" or "--help"
 		if arg[i] == "--help" or arg[i] == "-h" then
 			--prints a short explanation of what the program does
-			print_line(QUIET, "send \"NEW USER\" command to the SPLAY CLI server; creates a new user (only for Administrators)")
+			print_line(QUIET, "send \"REMOVE USER\" command to the SPLAY CLI server; removes a user (only for Administrators)")
 			--prints the usage
 			print_usage()
 		--if argument is "-q" or "--quiet"
@@ -90,15 +89,6 @@ function parse_arguments()
 		elseif string.find(arg[i], "^--username=") then
 			--the new username is the other part of the argument
 			username = string.sub(arg[i], 12)
-		--if argument is "-p"
-		elseif arg[i] == "-p" then
-			i = i + 1
-			--the password of the new user is the next argument
-			password = arg[i]
-		--if argument contains "--password=" at the beginning
-		elseif string.find(arg[i], "^--password=") then
-			--the password of the new user is the other part of the argument
-			password = string.sub(arg[i], 12)
 		--if argument is "-i" or "--cli_server_as_ip_addr"
 		elseif arg[i] == "-i" or arg[i] == "--cli_server_as_ip_addr" then
 			--Flag cli_server_as_ip_addr is true
@@ -114,32 +104,29 @@ function parse_arguments()
 	end
 end
 
---function send_new_user: sends a "NEW USER" command to the SPLAY CLI server
-function send_new_user(username, password, cli_server_url,admin_username, admin_password)
+--function send_remove_user: sends a "REMOVE USER" command to the SPLAY CLI server
+function send_remove_user(username, cli_server_url,admin_username, admin_password)
 	--prints the arguments
-	print_username("ADMIN USERNAME ", admin_username)
-	print_line(VERBOSE, "NEW USERNAME   = "..username)
-	print_cli_server()
+	print_username("ADMIN USERNAME      ", admin_username)
+	print_line(VERBOSE, "USERNAME TO REMOVE  = "..username)
+	print_cli_server(6)
 
-	local hashed_password = sha1(password)
 	local admin_hashedpassword = sha1(admin_password)
 
 	--prepares the body of the message
 	local body = json.encode({
-		method = "ctrl_api.new_user",
-		params = {username, hashed_password, admin_username, admin_hashedpassword}
+		method = "ctrl_api.remove_user",
+		params = {username, admin_username, admin_hashedpassword}
 	})
 
 	--prints that it is sending the message
 	print_line(VERBOSE, "\nSending command to "..cli_server_url.."...\n")
 
 	--sends the command as a POST
-	local response = http.request(cli_server_url.."/new_user", body)
+	local response = http.request(cli_server_url.."/remove_user", body)
 
 	if check_response(response) then
-		local json_response = json.decode(response)
-		print_line(NORMAL, "User added")
-		print_line(NORMAL, "User ID = "..json_response.result.user_id.."\n")
+		print_line(NORMAL, "User removed\n")
 	end
 
 end
@@ -147,7 +134,23 @@ end
 
 --MAIN FUNCTION:
 --initializes the variables
+username = nil
+admin_username = nil
+admin_password = nil
+cli_server_url = nil
+
+cli_server_url_from_conf_file = nil
+username_from_conf_file = nil
+
+cli_server_as_ip_addr = false
+cli_server_taken_from_conf = false
+username_taken_from_conf = false
+password_taken_from_conf = false
+min_arg_ok = false
+
 command_name = "splay-change-passwd"
+other_mandatory_args = ""
+usage_options = {}
 
 --maximum HTTP payload size is 10MB (overriding the max 2KB set in library socket.lua)
 socket.BLOCKSIZE = 10000000
@@ -173,9 +176,7 @@ admin_username = check_username(admin_username, "Administrator's username")
 
 admin_password = check_password(admin_password, "Administrator's password")
 
-username = check_username(username, "New user's name")
+username = check_username(username, "Username to remove")
 
-password = check_password(password, "New user's password")
-
---calls send_new_user
-send_new_user(username, password, cli_server_url, admin_username, admin_password)
+--calls send_remove_user
+send_remove_user(username, cli_server_url, admin_username, admin_password)

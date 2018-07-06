@@ -22,7 +22,7 @@ You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
--- JSON-RPC over HTTP client for SPLAY controller -- "GET LOCAL LOG" command
+-- JSON-RPC over HTTP client for SPLAY controller -- "KILL JOB" command
 -- Created by José Valerio
 
 -- BEGIN LIBRARIES
@@ -30,7 +30,7 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 local socket = require"socket"
 local http   = require"socket.http"
 --for the JSON encoding/decoding
-local json   = require"json" or require"lib.json"
+local json   =  require"lib.json"
 --for hashing
 sha1_lib = loadfile("./lib/sha1.lua")
 sha1_lib()
@@ -41,14 +41,13 @@ common_lib()
 -- FUNCTIONS
 
 function add_usage_options()
-	table.insert(usage_options, "-o, --output-file=FILENAME\tthe code will be saved in the file FILENAME; default file is log_JOB_ID.txt")
 end
 
 function parse_arguments()
 	local i = 1
 	while i<=#arg do
 		if arg[i] == "--help" or arg[i] == "-h" then
-			print_line(QUIET, "send \"GET LOG\" command to the SPLAY CLI server; retrieves the log of a previously submitted job and saves it on the file log_\"JOB_ID\".txt\n")
+			print_line(QUIET, "send \"KILL JOB\" command to the SPLAY CLI server; forces the controller to send a KILL signal to a job\n")
 			print_usage()
 		--if argument is "-q" or "--quiet"
 		elseif arg[i] == "--quiet" or arg[i] == "-q" then
@@ -57,15 +56,6 @@ function parse_arguments()
 		elseif arg[i] == "--verbose" or arg[i] == "-v" then
 			--the print mode is "verbose"
 			print_mode = VERBOSE
-		--if argument is "-o"
-		elseif arg[i] == "-o" then
-			i = i + 1
-			--the name of the output file is the next argument
-			output_filename = arg[i]
-		--if argument contains "--output-file=" at the beginning
-		elseif string.find(arg[i], "^--output-file=") then
-			--the name of the output file is extracted from the rest of the argument
-			output_filename = string.sub(arg[i], 15)
 		--if argument is "-i" or "--cli_server_as_ip_addr"
 		elseif arg[i] == "-i" or arg[i] == "--cli_server_as_ip_addr" then
 			--Flag cli_server_as_ip_addr is true
@@ -85,8 +75,8 @@ function parse_arguments()
 	end
 end
 
---function send_get_log: sends a "GET LOG" command to the SPLAY CLI server
-function send_get_log(job_id, cli_server_url, session_id)
+--function send_kill_job: sends a "KILL JOB" command to the SPLAY RPC server
+function send_kill_job(job_id, cli_server_url, session_id)
 	--prints the arguments
 	print_line(VERBOSE, "JOB_ID         = "..job_id)
 	print_line(VERBOSE, "SESSION_ID     = "..session_id)
@@ -94,7 +84,7 @@ function send_get_log(job_id, cli_server_url, session_id)
 
 	--prepares the body of the message
 	local body = json.encode({
-		method = "ctrl_api.get_log",
+		method = "ctrl_api.kill_job",
 		params = {job_id, session_id}
 	})
 
@@ -102,20 +92,10 @@ function send_get_log(job_id, cli_server_url, session_id)
 	print_line(VERBOSE, "\nSending command to "..cli_server_url.."...\n")
 
 	--sends the command as a POST
-	local response = http.request(cli_server_url.."/get_log", body)
+	local response = http.request(cli_server_url.."/kill_job", body)
 
 	if check_response(response) then
-		local json_response = json.decode(response)
-		print_line(NORMAL, "Log from JOB "..job_id.." successfully retrieved")
-		--if the user specifies an output file
-		if not output_filename then
-			--the default output file is log_jobid.txt (e.g. for Job ID = 3, file = log_3.txt)
-			output_filename = "log_"..job_id..".txt"
-		end
-		local f1 = io.open(output_filename,"w")
-		f1:write(json_response.result.log)
-		f1:close()
-		print_line(NORMAL, "\nLog saved in file "..output_filename)
+			print_line(NORMAL, "KILL command successfully sent")
 	end
 
 end
@@ -123,7 +103,7 @@ end
 
 --MAIN FUNCTION:
 --initializes the variables
-command_name = "splay_get_log"
+command_name = "splay_kill_job"
 other_mandatory_args = "JOB_ID "
 
 --maximum HTTP payload size is 10MB (overriding the max 2KB set in library socket.lua)
@@ -143,5 +123,5 @@ check_cli_server()
 
 check_session_id()
 
---calls send_get_log
-send_get_log(job_id, cli_server_url, session_id)
+--calls send_list_hosts
+send_kill_job(job_id, cli_server_url, session_id)

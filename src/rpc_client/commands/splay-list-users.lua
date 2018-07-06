@@ -22,7 +22,7 @@ You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
--- JSON-RPC over HTTP client for SPLAY controller -- "GET JOB DETAILS" command
+-- JSON-RPC over HTTP client for SPLAY controller -- "LIST USERS" command
 -- Created by José Valerio
 
 -- BEGIN LIBRARIES
@@ -30,7 +30,7 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 local socket = require"socket"
 local http   = require"socket.http"
 --for the JSON encoding/decoding
-local json   = require"json" or require"lib.json"
+local json   = require"lib.json"
 --for hashing
 sha1_lib = loadfile("./lib/sha1.lua")
 sha1_lib()
@@ -41,14 +41,17 @@ common_lib()
 -- FUNCTIONS
 
 function add_usage_options()
+	table.insert(usage_options, "-U, --admin_username=ADM_UNAME\tenters the administrator's username in the command line")
+	table.insert(usage_options, "-P, --admin_password=ADM_PASSWD\tenters the administrator's password in the command line")
 end
 
 function parse_arguments()
 	local i = 1
 	while i<=#arg do
 		if arg[i] == "--help" or arg[i] == "-h" then
-			print_line(QUIET, "send \"GET JOB DETAILS\" command to the SPLAY RPC server; retrieves details about a previously submitted job and prints them on the screen\n")
+			print_line(QUIET, "send \"LIST USERS\" command to the SPLAY CLI server; lists all SPLAY users (only for Administrators)\n")
 			print_usage()
+		--if argument is "-U"
 		--if argument is "-q" or "--quiet"
 		elseif arg[i] == "--quiet" or arg[i] == "-q" then
 			--the print mode is "quiet"
@@ -56,66 +59,65 @@ function parse_arguments()
 		elseif arg[i] == "--verbose" or arg[i] == "-v" then
 			--the print mode is "verbose"
 			print_mode = VERBOSE
+		elseif arg[i] == "-U" then
+			i = i + 1
+			--the Administrator's username is the next argument
+			admin_username = arg[i]
+		--if argument contains "--admin_username=" at the beginning
+		elseif string.find(arg[i], "^--admin_username=") then
+			--the Administrator's username is the other part of the argument
+			admin_username = string.sub(arg[i], 18)
+		--if argument is "-P"
+		elseif arg[i] == "-P" then
+			i = i + 1
+			--the Administrator's password is the next argument
+			admin_password = arg[i]
+		--if argument contains "--admin_password=" at the beginning
+		elseif string.find(arg[i], "^--admin_password=") then
+			--the Administrator's password is the other part of the argument
+			admin_password = string.sub(arg[i], 18)
 		--if argument is "-i" or "--cli_server_as_ip_addr"
 		elseif arg[i] == "-i" or arg[i] == "--cli_server_as_ip_addr" then
 			--Flag cli_server_as_ip_addr is true
 			cli_server_as_ip_addr = true
-		elseif not job_id then
-			job_id = arg[i]
-			--if the cli_server_url was filled on the config file
-			if cli_server_url_from_conf_file then
-				--all the required arguments have been filled
-				min_arg_ok = true
-			end
+		--if cli_server_url is not yet filled
 		elseif not cli_server_url then
+			--RPC server URL is the argument
 			cli_server_url = arg[i]
+			--all the required arguments have been filled
 			min_arg_ok = true
 		end
 		i = i + 1
 	end
 end
 
---function send_get_job_details: sends a "GET JOB DETAILS" command to the SPLAY CLI server
-function send_get_job_details(job_id, cli_server_url, session_id)
+--function send_list_users: sends a "LIST USERS" command to the SPLAY CLI server
+function send_list_users(cli_server_url, admin_username, admin_password)
 	--prints the arguments
-	print_line(VERBOSE, "JOB_ID         = "..job_id)
-	print_line(VERBOSE, "SESSION_ID     = "..session_id)
-	print_cli_server()
+	print_username("ADMIN USERNAME   ", admin_username)
+	print_cli_server(3)
+
+	local admin_hashedpassword = sha1(admin_password)
 
 	--prepares the body of the message
 	local body = json.encode({
-		method = "ctrl_api.get_job_details",
-		params = {job_id, session_id}
+		method = "ctrl_api.list_users",
+		params = {admin_username, admin_hashedpassword}
 	})
 
 	--prints that it is sending the message
 	print_line(VERBOSE, "\nSending command to "..cli_server_url.."...\n")
 
 	--sends the command as a POST
-	local response = http.request(cli_server_url.."/get_job_details", body)
+	local response = http.request(cli_server_url.."/list_users", body)
 
 	if check_response(response) then
 		local json_response = json.decode(response)
-		if json_response.result.name then
-			print_line(QUIET, "Name        = "..json_response.result.name)
-		else
-			print_line(QUIET, "Name        = ")
+		print_line(NORMAL, "User List =")
+		for _,v in ipairs(json_response.result.user_list) do
+			print_line(QUIET, "\tid="..v.id..", username="..v.username)
 		end
-		if json_response.result.description then
-			print_line(QUIET, "Description = "..json_response.result.description)
-		else
-			print_line(QUIET, "Description = ")
-		end
-		print_line(QUIET, "Ref         = "..json_response.result.ref)
-		print_line(QUIET, "Status      = "..json_response.result.status)
-		if json_response.result.user_id then
-			print_line(QUIET, "User ID     = "..json_response.result.user_id)
-		end
-		print_line(QUIET, "Host list = ")
-		for _,v in ipairs(json_response.result.host_list) do
-			print_line(QUIET, "\tsplayd_id="..v.splayd_id..", ip="..v.ip..", port="..v.port)
-		end
-		print_line(QUIET, "")
+		print_line(NORMAL, "")
 	end
 
 end
@@ -123,13 +125,18 @@ end
 
 --MAIN FUNCTION:
 --initializes the variables
-command_name = "splay_get_job_details"
-other_mandatory_args = "JOB_ID "
+command_name = "splay-list-users"
 
 --maximum HTTP payload size is 10MB (overriding the max 2KB set in library socket.lua)
 socket.BLOCKSIZE = 10000000
 
 load_config()
+
+--if the CLI server was loaded from the config file
+if cli_server_url_from_conf_file then
+	--minimum arguments are filled
+	min_arg_ok = true
+end
 
 add_usage_options()
 
@@ -141,7 +148,9 @@ check_min_arg()
 
 check_cli_server()
 
-check_session_id()
+admin_username = check_username(admin_username, "Administrator's username")
 
---calls send_get_job_details
-send_get_job_details(job_id, cli_server_url, session_id)
+admin_password = check_password(admin_password, "Administrator's password")
+
+--calls send_list_users
+send_list_users(cli_server_url, admin_username, admin_password)

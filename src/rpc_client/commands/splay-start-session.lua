@@ -22,7 +22,7 @@ You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
--- JSON-RPC over HTTP client for SPLAY controller -- "CHANGE PASSWORD" command
+-- JSON-RPC over HTTP client for SPLAY controller -- "START SESSION" command
 -- Created by José Valerio
 
 -- BEGIN LIBRARIES
@@ -30,7 +30,7 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 local socket = require"socket"
 local http   = require"socket.http"
 --for the JSON encoding/decoding
-local json   = require"json" or require"lib.json"
+local json   = require"lib.json"
 --for hashing
 sha1_lib = loadfile("./lib/sha1.lua")
 sha1_lib()
@@ -42,8 +42,7 @@ common_lib()
 
 function add_usage_options()
 	table.insert(usage_options, "-u, --username=USERNAME\t\tenters the username in the command line")
-	table.insert(usage_options, "-p, --current_password=PASSWD\tenters the current password in the command line")
-	table.insert(usage_options, "-n, --new_password=PASSWD\tenters the new password in the command line")
+	table.insert(usage_options, "-p, --password=PASSWD\t\tenters the password in the command line")
 end
 
 function parse_arguments()
@@ -52,7 +51,7 @@ function parse_arguments()
 		--if argument is "-h" or "--help"
 		if arg[i] == "--help" or arg[i] == "-h" then
 			--prints a short explanation of what the program does
-			print_line(QUIET, "send \"CHANGE PASSWORD\" command to the SPLAY CLI server; changes the password of a given user\n")
+			print_line(QUIET, "send \"START SESSION\" command to the SPLAY CLI server; starts a session linked to a key, so the user need not type username-password at every command\n")
 			--prints the usage
 			print_usage()
 		--if argument is "-q" or "--quiet"
@@ -74,28 +73,19 @@ function parse_arguments()
 		--if argument is "-p"
 		elseif arg[i] == "-p" then
 			i = i + 1
-			--the current password is the next argument
-			current_password = arg[i]
-		--if argument contains "--current_password=" at the beginning
-		elseif string.find(arg[i], "^--current_password=") then
-			--the current password is the other part of the argument
-			current_password = string.sub(arg[i], 12)
-		--if argument is "-n"
-		elseif arg[i] == "-n" then
-			i = i + 1
-			--the new password is the next argument
-			new_password = arg[i]
-		--if argument contains "--new_password=" at the beginning
-		elseif string.find(arg[i], "^--new_password=") then
-			--the current password is the other part of the argument
-			new_password = string.sub(arg[i], 12)
+			--the password is the next argument
+			password = arg[i]
+		--if argument contains "--password=" at the beginning
+		elseif string.find(arg[i], "^--password=") then
+			--the password is the other part of the argument
+			password = string.sub(arg[i], 12)
 		--if argument is "-i" or "--cli_server_as_ip_addr"
 		elseif arg[i] == "-i" or arg[i] == "--cli_server_as_ip_addr" then
 			--Flag cli_server_as_ip_addr is true
 			cli_server_as_ip_addr = true
 		--if cli_server_url is not yet filled
 		elseif not cli_server_url then
-			--RPC server URL is the argument
+			--CLI server URL is the argument
 			cli_server_url = arg[i]
 			--all the required arguments have been filled
 			min_arg_ok = true
@@ -104,31 +94,36 @@ function parse_arguments()
 	end
 end
 
---function send_change_passwd: sends a "CHANGE PASSWORD" command to the SPLAY CLI server
-function send_change_passwd(username, current_password, new_password, cli_server_url)
+--function send_start_session: sends a "START SESSION" command to the SPLAY CLI server
+function send_start_session(username, password, cli_server_url)
 	--prints the arguments
 	print_username("USERNAME       ", username)
 	print_cli_server()
 
-	local hashed_currentpassword = sha1(current_password)
-	local hashed_newpassword = sha1(new_password)
+	local hashed_password = sha1(password)
 
 	--prepares the body of the message
 	local body = json.encode({
-		method = "change_passwd",
-		params = {username, hashed_currentpassword, hashed_newpassword}
+		method = "ctrl_api.start_session",
+		params = {username, hashed_password}
 	})
-
 
 	--prints that it is sending the message
 	print_line(VERBOSE, "\nSending command to "..cli_server_url.."...\n")
 
 	--sends the command as a POST
-	local response = http.request(cli_server_url.."/change_passwd", body)
+	local response = http.request(cli_server_url.."/start_session", body)
 
 	--if there is a response
 	if check_response(response) then
-		print_line(NORMAL, "Password changed\n")
+		local json_response = json.decode(response)
+		print_line(NORMAL, "Session started:")
+		print_line(NORMAL, "SESSION_ID = "..json_response.result.session_id)
+		print_line(NORMAL, "EXPIRES_AT = "..json_response.result.expires_at.."\n")
+		local hashed_cli_server_url = sha1(cli_server_url)
+		local session_file = io.open("."..hashed_cli_server_url..".session_id","w")
+		session_file:write(json_response.result.session_id)
+		session_file:close()
 	end
 
 end
@@ -136,9 +131,7 @@ end
 
 --MAIN FUNCTION:
 --initializes the variables
-current_password = nil
-new_password = nil
-command_name = "splay-change-passwd"
+command_name = "splay-start-session"
 
 --maximum HTTP payload size is 10MB (overriding the max 2KB set in library socket.lua)
 socket.BLOCKSIZE = 10000000
@@ -162,9 +155,7 @@ check_cli_server()
 
 username = check_username(username, "Username")
 
-current_password = check_password(current_password, "Current password")
+password = check_password(password, "Password")
 
-new_password = check_password(new_password, "New password")
-
---calls send_change_passwd
-send_change_passwd(username, current_password, new_password, cli_server_url)
+--calls start_session
+send_start_session(username, password, cli_server_url)
