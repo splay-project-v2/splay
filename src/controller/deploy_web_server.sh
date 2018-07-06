@@ -20,4 +20,4 @@
 set -o nounset                              # Treat unset variables as an error
 
 cd cli-server
-ruby -rubygems cli-server.rb
+ruby cli-server.rb
