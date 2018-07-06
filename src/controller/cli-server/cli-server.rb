@@ -49,7 +49,7 @@ class ChangePasswd < WEBrick::HTTPServlet::AbstractServlet
 		user = $db["SELECT * FROM users WHERE login='#{username}'"]
 		if user
 			user = user.first
-			hashed_password_from_db = user['crypted_password']
+			hashed_password_from_db = user[:crypted_password]
 			if hashed_currentpassword == hashed_password_from_db
 				$db.run("UPDATE users SET crypted_password='#{hashed_newpassword}' WHERE login='#{username}'")
 				return 200, 'text/plain', '{"result": {"ok": true}}'
@@ -81,8 +81,8 @@ class GetLog < WEBrick::HTTPServlet::AbstractServlet
 		user = check_session_id(session_id)
 		#check_session_id returns false if the session ID is not valid; if user is not false (the session ID
 		# is valid)
-		if (user) then
-			#user_id is taken from the field 'id' from variable user
+		if user
+      #user_id is taken from the field 'id' from variable user
 			user_id = user['id']
 			#if the user is admin (can see all the jobs) or the job belongs to her
 			if ($db["SELECT * FROM jobs WHERE id=#{job_id}"].first) and (user['admin'] == 1) or ($db["SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}"].first)
@@ -149,11 +149,11 @@ class GetJobCode < WEBrick::HTTPServlet::AbstractServlet
   			if job
           job = job.first
   				#if the user is admin (can see all the jobs) or the job belongs to her
-  				if (user['admin'] == 1) or (job['user_id'] == user_id)
+  				if (user['admin'] == 1) or (job[:user_id] == user_id)
 						#ok is true
   					ret['ok'] = true
   					#code is a string containing the code
-  					ret['code'] = job['code']
+  					ret['code'] = job[:code]
   					#returns ret
   					return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "code": ' + ret['code'] + '}}'
   				end
@@ -201,8 +201,8 @@ class KillJob < WEBrick::HTTPServlet::AbstractServlet
   		#checks the validity of the session ID and stores the returning value in the variable user
   		user = check_session_id(session_id)
   		#check_session_id returns false if the session ID is not valid; if user is not false (the session ID is valid)
-  		if (user) then
-  			#user_id is taken from the field 'id' from variable user
+  		if user
+        #user_id is taken from the field 'id' from variable user
   			user_id = user['id']
   			#if the user is admin (can see all the jobs) or the job belongs to her
   			if (user['admin'] == 1) or ($db["SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}"].first)
@@ -305,15 +305,15 @@ class SubmitJob < WEBrick::HTTPServlet::AbstractServlet
 				job = $db["SELECT * FROM jobs WHERE ref='#{ref}'"]
         if job
           job = job.first
-          if job['status'] == "RUNNING"
+          if job[:status] == "RUNNING"
             ret['ok'] = true
-            ret['job_id'] = job['id']
+            ret['job_id'] = job[:id]
             ret['ref'] = ref
             return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "job_id": ' + ret['job_id'].to_s + ', "ref": ' + ret['ref'].to_s + '}}'
           end
-          if job['status'] == "NO_RESSOURCES"
+          if job[:status] == "NO_RESSOURCES"
             ret['ok'] = false
-            ret['error'] = "JOB " + job['id'].to_s + ": " + job['status_msg']
+            ret['error'] = "JOB " + job[:id].to_s + ": " + job[:status_msg]
             return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
           end
         end
@@ -321,7 +321,7 @@ class SubmitJob < WEBrick::HTTPServlet::AbstractServlet
 			#if timeout reached 0, ok is false
 			ret['ok'] = false
 			#error says that a timeout occured and suggests to check if the controller is running
-			ret['error'] = "JOB " + job['id'].to_s + ": timeout; please check if controller is running"
+			ret['error'] = "JOB " + job[:id].to_s + ": timeout; please check if controller is running"
 			#returns ret
 			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
 		end
@@ -360,13 +360,13 @@ class GetJobDetails < WEBrick::HTTPServlet::AbstractServlet
   			if (user['admin'] == 1) or ($db.select_one("SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}")) then
   				host_list = Array.new
   				$db["SELECT * FROM splayd_selections WHERE job_id='#{job_id}' AND selected='TRUE'"].each do |ms|
-  					m = $db["SELECT * FROM splayds WHERE id='#{ms['splayd_id']}'"]
+  					m = $db["SELECT * FROM splayds WHERE id='#{ms[:splayd_id]}'"]
             if m
 							m = m.first
               host = Hash.new
-              host['splayd_id'] = ms['splayd_id']
-              host['ip'] = m['ip']
-              host['port'] = ms['port']
+              host['splayd_id'] = ms[:splayd_id]
+              host['ip'] = m[:ip]
+              host['port'] = ms[:port]
               host_list.push(host)
             end
   				end
@@ -379,13 +379,13 @@ class GetJobDetails < WEBrick::HTTPServlet::AbstractServlet
               str += h.to_json + ','
             end
             ret['host_list'] = '[' + str + ']'
-            ret['status'] = job['status']
-            ret['ref'] = job['ref']
-            ret['name'] = job['name']
-            ret['description'] = job['description']
+            ret['status'] = job[:status]
+            ret['ref'] = job[:ref]
+            ret['name'] = job[:name]
+            ret['description'] = job[:description]
             ret['user_id'] = "NO_ADMIN"
             if user['admin'] == 1
-              ret['user_id'] = job['user_id']
+              ret['user_id'] = job[:user_id]
             end
             return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "host_list": ' + ret['host_list'] + ', "status": ' + ret['status'].to_s + ', "ref": ' + ret['ref'].to_s + ', "name": ' + ret['name'].to_s + ', "description": ' + ret['description'].to_s + ', "user_id": ' + ret['user_id'].to_s + '}}'
           else
@@ -436,16 +436,16 @@ class ListJobs < WEBrick::HTTPServlet::AbstractServlet
 			if user['admin'] == 1
 				$db["SELECT * FROM jobs"].each do |ms|
 					job = Hash.new
-					job['id'] = ms['id']
-					job['status'] = ms['status']
-					job['user_id'] = ms['user_id']
+					job['id'] = ms[:id]
+					job['status'] = ms[:status]
+					job['user_id'] = ms[:user_id]
 					job_list.push(job)
 				end
 			else
 				$db["SELECT * FROM jobs WHERE user_id=#{user_id}"].each do |ms|
 					job = Hash.new
-					job['id'] = ms['id']
-					job['status'] = ms['status']
+					job['id'] = ms[:id]
+					job['status'] = ms[:status]
 					job_list.push(job)
 				end
 			end
@@ -527,12 +527,9 @@ class StartSession < WEBrick::HTTPServlet::AbstractServlet
   		#initializes the return variable
   		ret = Hash.new
   		user = $db["SELECT * FROM users WHERE login='#{username}'"]
-      $logger.debug("User is of type #{user.class}")
   		if user
 				user = user.first
   			hashed_password_from_db = user[:crypted_password]
-				$logger.debug user
-				$logger.debug hashed_password_from_db
   			if hashed_password == hashed_password_from_db
 					time_tomorrow = Time.new + 3600*24
   				remember_token_expires_at = time_tomorrow.strftime("%Y-%m-%d %T")
@@ -569,16 +566,16 @@ class NewUser < WEBrick::HTTPServlet::AbstractServlet
   	def new_user(username, hashed_password, admin_username, admin_hashedpassword)
   		#initializes the return variable
   		ret = Hash.new
-  		admin = $db.select_all("SELECT * FROM users WHERE login='#{admin_username}'")
+  		admin = $db["SELECT * FROM users WHERE login='#{admin_username}'"]
   		if admin
         admin = admin.first
-  			if (admin['crypted_password'] == admin_hashedpassword) and (admin['admin'] == 1)
+  			if (admin[:crypted_password] == admin_hashedpassword) and (admin[:admin] == 1)
 					unless $db["SELECT * FROM users WHERE login='#{username}'"].first
 						time_now = Time.new.strftime("%Y-%m-%d %T")
 						$db.run("INSERT INTO users SET login='#{username}', crypted_password='#{hashed_password}', created_at='#{time_now}'")
 						user = $db["SELECT * FROM users WHERE login='#{username}'"].first
 						ret['ok'] = true
-						ret['user_id'] = user['id']
+						ret['user_id'] = user[:id]
 						return 200, 'text/plain', '{"result": {"ok": ' + ret['ok'].to_s + ', "user_id": ' + ret['user_id'].to_s + '}}'
 					end
   				ret['ok'] = false
@@ -612,12 +609,12 @@ class ListUsers < WEBrick::HTTPServlet::AbstractServlet
   		admin = $db["SELECT * FROM users WHERE login='#{admin_username}'"]
   		if admin
         admin = admin.first
-  			if (admin['crypted_password'] == admin_hashedpassword) and (admin['admin'] == 1)
+  			if (admin[:crypted_password] == admin_hashedpassword) and (admin[:admin] == 1)
 					user_list = Array.new
   				$db["SELECT * FROM users"].each do |ms|
   					user=Hash.new
-  					user['id']=ms['id']
-  					user['username']=ms['login']
+  					user['id']=ms[:id]
+  					user['username']=ms[:login]
   					user_list.push(user)
   				end
   				ret['ok'] = true
@@ -657,7 +654,7 @@ class RemoveUser < WEBrick::HTTPServlet::AbstractServlet
   		admin = $db["SELECT * FROM users WHERE login='#{admin_username}'"]
   		if admin
 				admin = admin.first
-  			if (admin['crypted_password'] == admin_hashedpassword) and (admin['admin'] == 1)
+  			if (admin[:crypted_password] == admin_hashedpassword) and (admin[:admin] == 1)
 					user = $db["SELECT * FROM users WHERE login='#{username}'"].first
   				if user
 						$db.run("DELETE FROM users WHERE login='#{username}'")

@@ -221,10 +221,10 @@ class Jobd
 
 	# query should return values with splayd_id
 	def self.send_start(job, query)
-		m_s_s = $db.do(query)
+		m_s_s = $db.run(query)
 		q_act = ""
 		m_s_s.each do |m_s|
-			q_act = q_act + "('#{m_s['splayd_id']}','#{job['id']}','START', '#{job['ref']}'),"
+			q_act = q_act + "('#{m_s[:splayd_id]}','#{job['id']}','START', '#{job['ref']}'),"
 		end
 		q_act = q_act[0, q_act.length - 1]
 		$db.run("INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}")
