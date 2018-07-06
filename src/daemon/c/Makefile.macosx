@@ -1,3 +1,4 @@
+# Not update
 # Makefile for SPLAY using Mac OS X and fink-installed libraries
 
 CC= gcc
