@@ -1,3 +1,6 @@
+/*
+ * Add Compatible fonctions for lua5.3
+ */
 
 #include <lua.h>
 #include <lualib.h>

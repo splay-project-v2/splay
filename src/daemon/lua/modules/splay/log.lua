@@ -102,9 +102,9 @@ function _M.global_write(level, ...)
 end
 
 function _M.global_filter(self, level, ...)
-	local my_level = global_level or self.level
-	local my_out = self.out or global_out
-	local my_write = self.write or global_write
+	local my_level = self.level or _M.global_level
+	local my_out = self.out or _M.global_out
+	local my_write = self.write or _M.global_write
 	
 	if not (my_level and my_out and my_write) then
 		print("missing function(s)")

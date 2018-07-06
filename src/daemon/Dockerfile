@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-LABEL Description="TBD"
+LABEL Description="Splay - Daemon - daemon act as a node in the splay-project capable perform jobs"
 
 RUN mkdir -p /usr/splay/lib/c
 RUN mkdir -p /usr/splay/lib/lua

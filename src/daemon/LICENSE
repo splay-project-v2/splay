@@ -42,3 +42,9 @@ URL: http://json.luaforge.net/
 Authors: Roberto Ierusalimschy and André Carregal
 Licence: GPL compatible
 URL: http://coxpcall.luaforge.net/
+
+--[ json.lua ]--
+
+Authors: rix 
+Licence: MIT
+URL: https://github.com/rxi/json.lua

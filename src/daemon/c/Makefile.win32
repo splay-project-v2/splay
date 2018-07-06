@@ -1,3 +1,4 @@
+# Not update
 CC= gcc
 
 SO= dll
