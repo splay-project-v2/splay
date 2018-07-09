@@ -1,5 +1,5 @@
 --[[
-       Splay ### v1.0.6 ###
+       Splay ### v1.3 ###
        Copyright 2006-2011
        http://www.splay-project.org
 ]]
@@ -27,23 +27,32 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 
 --[[ DO YOUR SETTINGS CHANGE HERE ]]--
 
-splayd.settings.key = "local" -- received at the registration
+--splayd.settings.key = "local" -- received at the registration
 
-splayd.settings.name = "SPLAY_DAEMON_NAME"
+--splayd.settings.name = "my name"
 
-splayd.settings.controller.ip = "splay_controller"
-splayd.settings.controller.port = 11000
+--splayd.settings.controller.ip = "localhost"
+--splayd.settings.controller.port = 11000
+
+-- Set to "grid" to support native libs
+splayd.settings.protocol = "standard"
 
 -- all sizes are in bytes
 splayd.settings.job.max_number = 16
-splayd.settings.job.max_mem = 12 * 1024 * 1024 -- 12 Mo
+--
+splayd.settings.job.max_mem = 20 * 1024 * 1024 -- 12 Mo
+--
 splayd.settings.job.disk.max_size = 1024 * 1024 * 1024 -- 1 Go
 splayd.settings.job.disk.max_files = 1024
-splayd.settings.job.disk.max_file_descriptors = 64
+splayd.settings.job.disk.max_file_descriptors = 1024
 splayd.settings.job.network.max_send = 1024 * 1024 * 1024
 splayd.settings.job.network.max_receive = 1024 * 1024 * 1024
-splayd.settings.job.network.max_sockets = 64
-splayd.settings.job.network.max_ports = 2
+--
+splayd.settings.job.network.max_sockets = 1024
+--
+splayd.settings.job.network.max_ports = 10
+--
+
 splayd.settings.job.network.start_port = 22000
 splayd.settings.job.network.end_port = 32000
 
@@ -51,6 +60,7 @@ splayd.settings.job.network.end_port = 32000
 -- Enforce them with trickle or other tools
 splayd.settings.network.send_speed = 1024 * 1024
 splayd.settings.network.receive_speed = 1024 * 1024
+
 
 --[[ NOTES ABOUT LIMITATIONS
 
@@ -66,3 +76,7 @@ limitations you have choosed in network.send_speed and network.receive_speed.
 CPU limitations are not enforced by splayd, but you can give a low priority to
 the process using the 'nice' command.
 --]]
+
+--print("Edit settings.lua and comment out or remove these 2 lines...")
+--os.exit()
+splayd.settings.allow_outrange = true

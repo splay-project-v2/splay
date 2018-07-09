@@ -20,7 +20,6 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
-
 --[[
 NOTE:
 This program is normally called by splayd, but you can too run it standalone
@@ -33,15 +32,15 @@ local os = require"os"
 local string = require"string"
 local io = require"io"
 
-local json = require"json"
-local splay = require"splay"
-local misc = require("splay.misc")
+json=require"json"
+splay=require"splay"
+gettimeofday=splay.gettimeofday
 do
 	local p = print
 	print = function(...)
 		--p(...)
-		local s, u = misc.time()
-		p(s, ...) --local timestamp, used when controller configured with UseSplaydTimestamps
+		local s,u=gettimeofday()--splay.gettimeofday()
+		p(s,u, ...) --local timestamp, used when controller configured with UseSplaydTimestamps
 		io.flush()
 	end
 end
@@ -67,23 +66,39 @@ if not f then
 	os.exit()
 end
 --print(f:read("*a"))
-job = json.decode(f:read("*a"))
+--job = json.decode(f:read("*a"))
+local j_raw=f:read("*a")
+--print("Job json:\n",j_raw)
+job = json.decode(j_raw)
 f:close()
 
 if not job then
 	print("Invalid job file format.")
 	os.exit()
 end
+if job.network.list and type(job.network.list) == "string" then
+    local fh = io.open(job.network.list)
+    if not fh then
+        print("Error reading network list data")
+        os.exit()
+    end
+    local jnl_string = fh:read("*a")
+    fh:close()
+    job.network.list = json.decode(jnl_string)
+end
+
 
 if job.topology then
 	local t_f=io.open(job.topology)
 	local t_raw=t_f:read("*a")
 	t_f:close()
+	--local x= os.clock()
 	job.topology = json.decode(t_raw)
 end
 
 if job.remove_file then
-	os.execute("rm -fr "..job_file.." > /dev/null 2>&1")
+        print("Job file not deleted:", job_file)
+        --os.execute("rm -fr "..job_file.." > /dev/null 2>&1")
 end
 
 -- back to global
@@ -101,52 +116,57 @@ end
 
 -- aliases (job.me is already prepared by splayd)
 if job.network.list then
-	--read the path of the file, deserialize, and replace it with the same field
-	local l_f=io.open(job.network.list)
-	local l_json=l_f:read("*a")
-	l_f:close()
-	job.network.list = json.decode(l_json)
-	
-	job.position = tonumber(job.network.list.position)
+	job.position = job.network.list.position
 	job.nodes = job.network.list.nodes
 
 	-- now job.nodes is a function that gives an updated view of the nodes
-    job.get_live_nodes = function()
-            -- if there is a timeline (trace_alt type of job)
-            if job.network.list.timeline then
-                    -- time since the start of the job
-                    local elapsed_time = os.time() - job.network.list.start_time
-                    local live_nodes = {}
-                    -- initializes the event index (will hold the time on the timeline)
-                    local event_index = 0
-                    for i,v in ipairs(job.network.list.timeline) do
-                            -- if the time is bigger or equal to the elapsed_time
-                            if not (v.time < elapsed_time) then
-                                    -- if the time is strictly bigger
-                                    if v.time > elapsed_time then
-                                            -- takes the time before this one
-                                            event_index = i-1
-                                    else
-                                            -- takes that time
-                                            event_index = i
-                                    end
-                                    -- stop looking
-                                    break
-                            end
-                    end
-                    -- if event index is bigger than 0
-                    if event_index > 0 then
-                            -- insert all nodes in the list of current nodes
-                            for _,v in ipairs(job.network.list.timeline[event_index].nodes) do
-                                    table.insert(live_nodes, {position=v, ip=job.network.list.nodes[v].ip, port=job.network.list.nodes[v].port})
-                            end
-                    end
-                    return live_nodes
-            -- if there is no timeline, it is a normal job, returns job.network.list.nodes
-            else
-                    return job.network.list.nodes
-            end
-    end
+	job.get_live_nodes = function()
+		-- if there is a timeline (trace_alt type of job)
+		if job.network.list.timeline then
+			-- look how much time has passed already
+			local delayed_time = os.time() - job.network.list.start_time
+			-- initializes the list of current nodes
+			local current_nodes = {}
+			-- initializes the event index (will hold the time on the timeline
+			-- table that passed just before the delayed time)
+			local event_index = nil
+			-- for all "times"
+			for i,v in ipairs(job.network.list.timeline) do
+				-- if the time is bigger or equal to the delayed time
+				if not (v.time < delayed_time) then
+					-- if the time is strictly bigger
+					if v.time > delayed_time then
+						-- takes the time before this one
+						event_index = i-1
+					-- else ("time" exactly equal to delayed_time)
+					else
+						-- takes that time
+						event_index = i
+					end
+					-- stop looking
+					break
+				end
+			end
+			-- if event index is bigger than 0
+			if event_index > 0 then
+				-- insert all nodes in the list of current nodes
+				for i,v in ipairs(job.network.list.timeline[event_index].nodes) do
+					table.insert(current_nodes, {position=v, ip=job.network.list.nodes[v].ip, port=job.network.list.nodes[v].port})
+				end
+				-- return the filled table
+				return current_nodes
+			-- if event index <= 0 there was an error
+			else
+				print("ERROR")
+			end
+			-- returns nil
+			return nil
+		-- if there is no timeline, it is a normal job, returns job.network.list.nodes
+		else
+			return job.network.list.nodes
+		end
+	end
+
 
 	job.list_type = job.network.list.type -- head, random
 end
@@ -218,12 +238,89 @@ package.loaded['socket.core'] = socket
 -- This module requires debug, not allowed in sandbox
 require"splay.coxpcall"
 
+--[[ Sandbox]]--
 
-splay_code_function, err = load(job.code, "job code")
+_sand_check = true
+sandbox = require"splay.sandbox"
+local sd=sandbox.sandboxed_denied --stub for sand'ed functions
+local native_from_job = nil
+if job.lib_name ~= nil and job.lib_name ~= "" then
+	native_from_job = string.sub(job.lib_name,0,(#(job.lib_name) -3))
+	print("Using native lib: ",native_from_job,job.lib_version)
+end
+
+sandbox.protect_env({
+		io = job.disk, -- settings for restricted_io
+		globals = {"_G", "_VERSION", "_SPLAYD_VERSION", "job"},
+		allowed = {
+			"splay.base",
+			"splay.benc",
+			"splay.bits",
+			"splay.coxpcall",
+			"splay.data_bits",
+			"splay.data_bits_core",
+			"splay.events",
+			"splay.json",
+			"splay.llenc",
+			"splay.log",
+			"splay.net",
+			"splay.misc",
+			"splay.misc_core",
+			"splay.out",
+			"splay.queue",
+			"splay.rpc",
+			"splay.rpcq",
+			"splay.socket",
+			"splay.urpc",
+			"crypto",
+			"socket",
+			"socket.ftp",
+			"socket.http",
+			"socket.smtp",
+			"socket.tp",
+			"socket.url",
+			"mime",
+			"mime.core",
+			"ltn12",
+			"json",
+			"socket.core",
+			"splay.socket_events",
+			"splay.luasocket",
+			"splay.async_dns",
+		    "splay.topo_socket",
+		    "splay.token_bucket",
+			"splay.tree",
+			"splay.topo_gossip",
+			native_from_job
+		},
+		inits = {}
+	})
+
+collectgarbage()
+collectgarbage()
+
+  -----------------------
+-- The Sandbox Zone (tm) --
+  -----------------------
+
+print(">> Into sandbox !!!")
+print("> Memory: "..collectgarbage("count").." KBytes")
+print("> Checking sandbox...")
+
+-- Mini sandbox check
+if load~=sd or loadfile~=sd or dofile~=sd or newproxy~=sd or io.popen or os.execute
+		or _sand_check or _G._sand_check then
+	print("   > failed")
+	os.exit()
+else
+	print("   > passed")
+end
+print()
+
+splay_code_function, err = loadstring(job.code, "job code")
 job.code = nil -- to free some memory
 collectgarbage("collect")
-collectgarbage("collect")
-if splay_code_function then
+if splay_code_function then	
 	splay_code_function()
 else
 	print("Error loading code:", err)

@@ -1,5 +1,5 @@
 --[[
-       Splay ### v1.0.6 ###
+       Splay ### v1.3 ###
        Copyright 2006-2011
        http://www.splay-project.org
 ]]
@@ -33,13 +33,15 @@ local os = require"os"
 local string = require"string"
 local io = require"io"
 
-local splay = require"splay"
-local json = require"json"
-
+json=require"json"
+splay=require"splay"
+gettimeofday=splay.gettimeofday
 do
 	local p = print
 	print = function(...)
-		p(...)
+		--p(...)
+		local s,u=gettimeofday()--splay.gettimeofday()
+		p(s,u, ...) --local timestamp, used when controller configured with UseSplaydTimestamps
 		io.flush()
 	end
 end
@@ -73,6 +75,13 @@ if not job then
 	os.exit()
 end
 
+if job.topology then
+        local t_f=io.open(job.topology)
+        local t_raw=t_f:read("*a")
+        t_f:close()
+        job.topology = json.decode(t_raw)
+end
+
 if job.remove_file then
 	os.execute("rm -fr "..job_file.." > /dev/null 2>&1")
 end
@@ -92,10 +101,56 @@ end
 
 -- aliases (job.me is already prepared by splayd)
 if job.network.list then
-	job.position = job.network.list.position
-	job.nodes = job.network.list.nodes
+	--read the path of the file, deserialize, and replace it with the same field
+	local l_f=io.open(job.network.list)
+	local l_json=l_f:read("*a")
+	l_f:close()
+	job.network.list = json.decode(l_json)
+	
+	job.position = tonumber(job.network.list.position)
+	
+	job.nodes = job.network.list.nodes 
+
+    job.get_live_nodes = function()
+            -- if there is a timeline (trace_alt type of job)
+            if job.network.list.timeline then
+                    -- time since the start of the job
+                    local elapsed_time = os.time() - job.network.list.start_time
+                    local live_nodes = {}
+                    -- initializes the event index (will hold the time on the timeline)
+                    local event_index = 0
+                    for i,v in ipairs(job.network.list.timeline) do
+                            -- if the time is bigger or equal to the elapsed_time
+                            if not (v.time < elapsed_time) then
+                                    -- if the time is strictly bigger
+                                    if v.time > elapsed_time then
+                                            -- takes the time before this one
+                                            event_index = i-1
+                                    else
+                                            -- takes that time
+                                            event_index = i
+                                    end
+                                    -- stop looking
+                                    break
+                            end
+                    end
+                    -- if event index is bigger than 0
+                    if event_index > 0 then
+                            -- insert all nodes in the list of current nodes
+                            for _,v in ipairs(job.network.list.timeline[event_index].nodes) do
+                                    table.insert(live_nodes, {position=v, ip=job.network.list.nodes[v].ip, port=job.network.list.nodes[v].port})
+                            end
+                    end
+                    return live_nodes
+            -- if there is no timeline, it is a normal job, returns job.network.list.nodes
+            else
+                    return job.network.list.nodes
+            end
+    end
+
 	job.list_type = job.network.list.type -- head, random
 end
+package.cpath = package.cpath..";"..job.disk.lib_directory.."/?.so"
 
 print(">> Job settings:")
 print("Ref: "..job.ref)
@@ -105,6 +160,9 @@ print("Disk:")
 print("", "max "..job.disk.max_files.." files")
 print("", "max "..job.disk.max_file_descriptors.." file descriptors")
 print("", "max "..job.disk.max_size.." size in bytes")
+
+print("", "lib directoy ".. job.disk.lib_directory)
+print("", "cpath : "..package.cpath)
 print("Mem "..job.max_mem.." bytes of memory")
 print("Network:")
 print("", "max "..job.network.max_send.."/"..
