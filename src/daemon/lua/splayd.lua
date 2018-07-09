@@ -630,7 +630,11 @@ function n_log(so)
 	--print("LOG IP:PORT:",splayd.settings.log.ip, splayd.settings.log.port)
 	--TODO check that the IP is valid, if not refuse it
 	if not splayd.settings.log.ip or type(splayd.settings.log.ip)~="string" then
+		print("WARN : ip not send or incorrect type")
 		splayd.settings.log.ip = splayd.settings.controller.ip
+	end
+	if not splayd.settings.log.port or type(splayd.settings.log.port)~="number" then 
+		print("WARN : port not send or incorrect type")
 		splayd.settings.log.port = splayd.settings.controller.port
 	end
 	assert(so:send("OK"))
