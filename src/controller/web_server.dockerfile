@@ -1,5 +1,5 @@
 FROM ruby:2.5.1
-LABEL Description="TBD"
+LABEL Description="Splay - Web Server - Receive HTTP commands to interact with Controller"
 
 RUN mkdir -p /usr/splay
 
