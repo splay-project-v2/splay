@@ -255,7 +255,7 @@ function _M.secure_functions()
 	return {"assert",
 			"collectgarbage",
 			"error",
-			"gcinfo",
+			"collectgarbage",
 			"getmetatable",
 			"ipairs",
 			"next",

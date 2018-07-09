@@ -99,7 +99,7 @@ end
 function _M.mem(ret)
 	collectgarbage()
 	collectgarbage()
-	local s = gcinfo() .. " ko"
+	local s = collectgarbage("count") .. " ko"
 	if not ret then
 		print("Memory: " .. s)
 	else
