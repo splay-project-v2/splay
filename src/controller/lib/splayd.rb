@@ -313,8 +313,9 @@ class SplaydProtocol
 					end
 
 					if action[:command] == "START"
-						$log.debug("Starting the job")
+						$log.debug("DEBUG :: Start received")
 						if reply_code == "OK" or reply_code == "RUNNING"
+							$log.debug("DEBUG :: Starting the job")
 							@splayd.s_j_start(action[:job_id])
 						else
 							raise ProtocolError, "START not OK: #{reply_code}"

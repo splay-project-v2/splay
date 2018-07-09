@@ -39,6 +39,8 @@ class JobdStandard < Jobd
 		$db["SELECT * FROM jobs WHERE
 				scheduler='#{@@scheduler}' AND status='LOCAL'"].each do |job|
 
+			$log.debug("DEBUG : JOBG - Job found")
+
 
 			# Cache at the first call
 			unless c_splayd

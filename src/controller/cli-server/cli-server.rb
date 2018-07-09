@@ -108,14 +108,14 @@ class GetLog < WEBrick::HTTPServlet::AbstractServlet
 				ret['error'] = "Job does not exist for this user"
 			end
 			#returns ret
-			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
 		end
 		#if session ID wa+ ', "log": ' + ret['log']s not valid, ok is false
 		ret['ok'] = false
 		#error says that the session ID was invalid
 		ret['error'] = "Invalid or expired Session ID"
 		#returns ret
-		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
 	end
 end
 
@@ -170,14 +170,14 @@ class GetJobCode < WEBrick::HTTPServlet::AbstractServlet
   				ret['error'] = "Job does not exist for this user"
   			end
   			#returns ret
-  			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   		end
   		#if session ID was not valid, ok is false
   		ret['ok'] = false
   		#error says that the session ID was invalid
   		ret['error'] = "Invalid or expired Session ID"
   		#returns ret
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   	end
 end
 
@@ -229,7 +229,7 @@ class KillJob < WEBrick::HTTPServlet::AbstractServlet
   		#error says that the session was not valid
   		ret['error'] = "Invalid or expired Session ID"
   		#returns ret
-  		return 500, 'text/plain', '{"result": {"ok": ' + ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  		return 500, 'text/plain', '{"result": {"ok": ' + ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   	end
 end
 
@@ -391,7 +391,7 @@ class GetJobDetails < WEBrick::HTTPServlet::AbstractServlet
           else
             ret['ok'] = false
             ret['error'] = "Job does not exist for this user"
-            return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+            return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
           end
   			end
   			ret['ok'] = false
@@ -401,11 +401,11 @@ class GetJobDetails < WEBrick::HTTPServlet::AbstractServlet
   				#error says that the job doesn't exist
   				ret['error'] = "Job does not exist for this user"
   			end
-  			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   		end
   		ret['ok'] = false
   		ret['error'] = "Invalid or expired Session ID"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   	end
 end
 
@@ -459,7 +459,7 @@ class ListJobs < WEBrick::HTTPServlet::AbstractServlet
 		end
 		ret['ok'] = false
 		ret['error'] = "Invalid or expired Session ID"
-		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
 	end
 
 end
@@ -580,12 +580,12 @@ class NewUser < WEBrick::HTTPServlet::AbstractServlet
 					end
   				ret['ok'] = false
   				ret['error'] = "Username exists already"
-  				return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  				return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   			end
   		end
   		ret['ok'] = false
   		ret['error'] = "Not authenticated as admin"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   	end
 end
 
@@ -628,7 +628,7 @@ class ListUsers < WEBrick::HTTPServlet::AbstractServlet
   		end
   		ret['ok'] = false
   		ret['error'] = "Not authenticated as admin"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   	end
 
 end
@@ -663,12 +663,12 @@ class RemoveUser < WEBrick::HTTPServlet::AbstractServlet
   				end
   				ret['ok'] = false
   				ret['error'] = "User does not exist"
-  				return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  				return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   			end
   		end
   		ret['ok'] = false
   		ret['error'] = "Not authenticated as admin"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'] + '}}'
+  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
   	end
 end
 

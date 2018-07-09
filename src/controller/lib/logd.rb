@@ -30,7 +30,7 @@ class LogdServer
 	end
 
 	def run
-		return Thread.new() do
+		Thread.new() do
 			main
 		end
 	end
