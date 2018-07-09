@@ -26,14 +26,14 @@ This program is normally called by splayd, but you can too run it standalone
 to replay a job or to debug.
 ]]
 
-require"table"
-require"math"
-require"os"
-require"string"
-require"io"
+local table = require"table"
+local math = require"math"
+local os = require"os"
+local string = require"string"
+local io = require"io"
 
-require"splay"
-require"json"
+local splay = require"splay"
+local json = require"json"
 
 do
 	local p = print

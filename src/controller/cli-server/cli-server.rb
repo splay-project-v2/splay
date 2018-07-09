@@ -297,7 +297,7 @@ class SubmitJob < WEBrick::HTTPServlet::AbstractServlet
 			end
 
 			$db.run("INSERT INTO jobs SET ref='#{ref}' #{to_sql(options)}, #{description_field} #{name_field} #{churn_field} code='#{addslashes(code)}', user_id=#{user_id}, created_at='#{time_now}'")
-
+			
 			timeout = 30
 			while timeout > 0
 				sleep(1)
@@ -309,7 +309,7 @@ class SubmitJob < WEBrick::HTTPServlet::AbstractServlet
             ret['ok'] = true
             ret['job_id'] = job[:id]
             ret['ref'] = ref
-            return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "job_id": ' + ret['job_id'].to_s + ', "ref": ' + ret['ref'].to_s + '}}'
+            return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "job_id": ' + ret['job_id'].to_s + ', "ref": "' + ret['ref'].to_s + '"}}'
           end
           if job[:status] == "NO_RESSOURCES"
             ret['ok'] = false
