@@ -40,7 +40,7 @@ end
 events.thread(SPLAYschool)
 
 -- start the application
-events.loop()
+events.run()
 
 -- now, you can watch the logs of your job and enjoy ;-)
 -- try this job with multiple splayds and different parameters
