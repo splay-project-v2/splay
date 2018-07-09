@@ -220,7 +220,7 @@ class Jobd
 
 	# query should return values with splayd_id
 	def self.send_start(job, query)
-		m_s_s = $db.run(query)
+		m_s_s = $db[query]
 		q_act = ""
 		m_s_s.each do |m_s|
 			q_act = q_act + "('#{m_s[:splayd_id]}','#{job[:id]}','START', '#{job[:ref]}'),"

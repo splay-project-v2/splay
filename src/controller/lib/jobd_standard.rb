@@ -257,8 +257,7 @@ class JobdStandard < Jobd
 				# Create a symlink to the log dir
 				File.symlink("#{@@log_dir}/#{job[:id]}", "#{@@link_log_dir}/#{job[:ref]}.txt")
 
-				send_start(job, "SELECT * FROM splayd_selections WHERE
-						job_id='#{job[:id]}' AND selected='TRUE'")
+				send_start(job, "SELECT * FROM splayd_selections WHERE job_id='#{job[:id]}' AND selected='TRUE'")
 				
 
 			else
