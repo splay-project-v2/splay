@@ -313,6 +313,7 @@ class SplaydProtocol
 					end
 
 					if action[:command] == "START"
+						$log.debug("Starting the job")
 						if reply_code == "OK" or reply_code == "RUNNING"
 							@splayd.s_j_start(action[:job_id])
 						else

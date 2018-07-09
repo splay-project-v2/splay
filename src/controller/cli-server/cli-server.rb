@@ -297,7 +297,7 @@ class SubmitJob < WEBrick::HTTPServlet::AbstractServlet
 			end
 
 			$db.run("INSERT INTO jobs SET ref='#{ref}' #{to_sql(options)}, #{description_field} #{name_field} #{churn_field} code='#{addslashes(code)}', user_id=#{user_id}, created_at='#{time_now}'")
-			
+			$logger.debug("DEBUG - The job has been inserted")
 			timeout = 30
 			while timeout > 0
 				sleep(1)
