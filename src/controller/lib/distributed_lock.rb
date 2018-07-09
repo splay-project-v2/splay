@@ -52,11 +52,10 @@ class DistributedLock
 				# BEGIN and COMMIT
 				#$dbt.transaction do |dbt|
 				@@db.transaction do
-					locks = @@db["SELECT * FROM locks
-								WHERE id='1' FOR UPDATE"].first
+					locks = @@db.from(:locks).where(id: 1).first
 					if locks[name.to_sym]
 						if locks[name.to_sym] == 0
-							@@db.run("UPDATE locks SET #{name.to_sym}='1' WHERE id ='1'")
+							@@db.from(:locks).where(id: 1).update(name.to_sym => '1')
 							ok = true
 						end
 					else
