@@ -28,6 +28,10 @@ require 'digest/sha1'
 $logger = Logger.new(STDERR)
 $logger.level = Logger::DEBUG
 
+def json_result(ret)
+	return (JSON.generate({:result => ret})).to_str
+end
+
 class ChangePasswd < WEBrick::HTTPServlet::AbstractServlet
 
   def do_POST(request, response)
@@ -52,12 +56,11 @@ class ChangePasswd < WEBrick::HTTPServlet::AbstractServlet
 			hashed_password_from_db = user[:crypted_password]
 			if hashed_currentpassword == hashed_password_from_db
 				$db.run("UPDATE users SET crypted_password='#{hashed_newpassword}' WHERE login='#{username}'")
-				return 200, 'text/plain', '{"result": {"ok": true}}'
+				return 200, 'text/plain', json_result({"ok": true})
 			end
 		end
-		return 400, 'text/plain', '{"result": {"ok": false, "error": ""}}'
+		return 400, 'text/plain', json_result({"ok": false, "error": "User not found or hash fails"})
 	end
-
 end
 
 class GetLog < WEBrick::HTTPServlet::AbstractServlet
@@ -95,7 +98,7 @@ class GetLog < WEBrick::HTTPServlet::AbstractServlet
 				#closes the file
 				log_file.close
 				#returns ret
-				return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "log": ' + ret['log'].to_s + '}}'
+				return 200, 'text/plain', json_result(ret)
 			end
 			#if the 'if (user)' statement was true, the function would have ended with the return on the line above,
 			# if not, the following lines are processed
@@ -108,14 +111,14 @@ class GetLog < WEBrick::HTTPServlet::AbstractServlet
 				ret['error'] = "Job does not exist for this user"
 			end
 			#returns ret
-			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+			return 500, 'text/plain', json_result(ret)
 		end
 		#if session ID wa+ ', "log": ' + ret['log']s not valid, ok is false
 		ret['ok'] = false
 		#error says that the session ID was invalid
 		ret['error'] = "Invalid or expired Session ID"
 		#returns ret
-		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+		return 500, 'text/plain', json_result(ret)
 	end
 end
 
@@ -155,7 +158,7 @@ class GetJobCode < WEBrick::HTTPServlet::AbstractServlet
   					#code is a string containing the code
   					ret['code'] = job[:code]
   					#returns ret
-  					return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "code": ' + ret['code'] + '}}'
+  					return 200, 'text/plain', json_result(ret)
   				end
   			end
   			#if the 'if (user)' statement was true, the function would have ended with the return on the line above,
@@ -170,14 +173,14 @@ class GetJobCode < WEBrick::HTTPServlet::AbstractServlet
   				ret['error'] = "Job does not exist for this user"
   			end
   			#returns ret
-  			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  			return 500, 'text/plain', json_result(ret)
   		end
   		#if session ID was not valid, ok is false
   		ret['ok'] = false
   		#error says that the session ID was invalid
   		ret['error'] = "Invalid or expired Session ID"
   		#returns ret
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  		return 500, 'text/plain', json_result(ret)
   	end
 end
 
@@ -212,7 +215,7 @@ class KillJob < WEBrick::HTTPServlet::AbstractServlet
   				#ok is true
   				ret['ok'] = true
   				#returns ret
-  				return 200, 'text/plain', '{"result": {"ok": ' + ret['ok'].to_s + '}}'
+  				return 200, 'text/plain', json_result(ret)
   			end
   			#if the user is not admin and the job doesn't belong to her, ok is false
   			ret['ok'] = false
@@ -229,7 +232,7 @@ class KillJob < WEBrick::HTTPServlet::AbstractServlet
   		#error says that the session was not valid
   		ret['error'] = "Invalid or expired Session ID"
   		#returns ret
-  		return 500, 'text/plain', '{"result": {"ok": ' + ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  		return 500, 'text/plain', json_result(ret)
   	end
 end
 
@@ -309,12 +312,12 @@ class SubmitJob < WEBrick::HTTPServlet::AbstractServlet
             ret['ok'] = true
             ret['job_id'] = job[:id]
             ret['ref'] = ref
-            return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "job_id": ' + ret['job_id'].to_s + ', "ref": "' + ret['ref'].to_s + '"}}'
+            return 200, 'text/plain', json_result(ret)
           end
           if job[:status] == "NO_RESSOURCES"
             ret['ok'] = false
             ret['error'] = "JOB " + job[:id].to_s + ": " + job[:status_msg]
-            return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+            return 500, 'text/plain', json_result(ret)
           end
         end
 			end
@@ -323,11 +326,11 @@ class SubmitJob < WEBrick::HTTPServlet::AbstractServlet
 			#error says that a timeout occured and suggests to check if the controller is running
 			ret['error'] = "JOB " + job[:id].to_s + ": timeout; please check if controller is running"
 			#returns ret
-			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+			return 500, 'text/plain', json_result(ret)
 		end
 		ret['ok'] = false
 		ret['error'] = "Invalid or expired Session ID"
-		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+		return 500, 'text/plain', json_result(ret)
 	end
 
 end
@@ -374,11 +377,7 @@ class GetJobDetails < WEBrick::HTTPServlet::AbstractServlet
           if job
 						job = job.first
             ret['ok'] = true
-            str = ''
-            host_list.each do |h|
-              str += h.to_json + ','
-            end
-            ret['host_list'] = '[' + str + ']'
+            ret['host_list'] = host_list
             ret['status'] = job[:status]
             ret['ref'] = job[:ref]
             ret['name'] = job[:name]
@@ -387,11 +386,11 @@ class GetJobDetails < WEBrick::HTTPServlet::AbstractServlet
             if user['admin'] == 1
               ret['user_id'] = job[:user_id]
             end
-            return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "host_list": ' + ret['host_list'] + ', "status": ' + ret['status'].to_s + ', "ref": ' + ret['ref'].to_s + ', "name": ' + ret['name'].to_s + ', "description": ' + ret['description'].to_s + ', "user_id": ' + ret['user_id'].to_s + '}}'
+            return 200, 'text/plain', json_result(ret)
           else
             ret['ok'] = false
             ret['error'] = "Job does not exist for this user"
-            return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+            return 500, 'text/plain', json_result(ret)
           end
   			end
   			ret['ok'] = false
@@ -401,11 +400,11 @@ class GetJobDetails < WEBrick::HTTPServlet::AbstractServlet
   				#error says that the job doesn't exist
   				ret['error'] = "Job does not exist for this user"
   			end
-  			return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  			return 500, 'text/plain', json_result(ret)
   		end
   		ret['ok'] = false
   		ret['error'] = "Invalid or expired Session ID"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  		return 500, 'text/plain', json_result(ret)
   	end
 end
 
@@ -450,16 +449,12 @@ class ListJobs < WEBrick::HTTPServlet::AbstractServlet
 				end
 			end
 			ret['ok'] = true
-      str = ''
-      job_list.each do |j|
-        str += j.to_json + ','
-      end
-			ret['job_list'] = '[' + str + ']'
-			return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "job_list": ' + ret['job_list'] + '}}'
+			ret['job_list'] = job_list
+			return 200, 'text/plain', json_result(ret)
 		end
 		ret['ok'] = false
 		ret['error'] = "Invalid or expired Session ID"
-		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+		return 500, 'text/plain', json_result(ret)
 	end
 
 end
@@ -492,18 +487,12 @@ class ListSplayds < WEBrick::HTTPServlet::AbstractServlet
   				splayd_list.push(splayd)
   			end
   			ret['ok'] = true
-        str = ''
-        splayd_list.each do |spl|
-          str += spl.to_json + ','
-        end
-  			ret['splayd_list'] = '[' + str + ']'
-				$logger.debug "Good"
-  			return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "splayd_list": ' + ret['splayd_list'] + '}}'
+  			ret['splayd_list'] = splayd_list
+  			return 200, 'text/plain', json_result(ret)
   		end
   		ret['ok'] = false
   		ret['error'] = "Invalid or expired Session ID"
-			$logger.debug "NOK"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'].to_s + '}}'
+  		return 500, 'text/plain', json_result(ret)
   	end
 end
 
@@ -536,14 +525,14 @@ class StartSession < WEBrick::HTTPServlet::AbstractServlet
   				remember_token = Digest::SHA1.hexdigest("#{username}--#{remember_token_expires_at}")
   				$db.do("UPDATE users SET remember_token='#{remember_token}', remember_token_expires_at='#{remember_token_expires_at}' WHERE login='#{username}'")
   				ret['ok'] = true
-  				ret['session_id'] = '"' + remember_token + '"'
-  				ret['expires_at'] = '"' + remember_token_expires_at + '"'
-  				return 200, 'text/plain', '{"result": {"ok": ' + ret['ok'].to_s + ', "session_id": ' + ret['session_id'] + ', "expires_at": ' + ret['expires_at'] + '}}'
+  				ret['session_id'] = remember_token
+  				ret['expires_at'] = remember_token_expires_at
+  				return 200, 'application/json', json_result(ret)
   			end
   		end
   		ret['ok'] = false
   		ret['error'] = "Not authenticated"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": ' + ret['error'].to_s + '}}'
+  		return 500, 'text/plain', json_result(ret)
   	end
 end
 
@@ -576,16 +565,16 @@ class NewUser < WEBrick::HTTPServlet::AbstractServlet
 						user = $db["SELECT * FROM users WHERE login='#{username}'"].first
 						ret['ok'] = true
 						ret['user_id'] = user[:id]
-						return 200, 'text/plain', '{"result": {"ok": ' + ret['ok'].to_s + ', "user_id": ' + ret['user_id'].to_s + '}}'
+						return 200, 'text/plain', json_result(ret)
 					end
   				ret['ok'] = false
   				ret['error'] = "Username exists already"
-  				return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  				return 500, 'text/plain', json_result(ret)
   			end
   		end
   		ret['ok'] = false
   		ret['error'] = "Not authenticated as admin"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  		return 500, 'text/plain', json_result(ret)
   	end
 end
 
@@ -618,17 +607,13 @@ class ListUsers < WEBrick::HTTPServlet::AbstractServlet
   					user_list.push(user)
   				end
   				ret['ok'] = true
-          r = ''
-          user_list.each do |u|
-            r += u.to_json + ','
-          end
-  				ret['user_list'] = '[' + r + ']'
-  				return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "user_list": ' + ret['user_list'] + '}}'
+  				ret['user_list'] =  user_list
+  				return 200, 'text/plain', json_result(ret)
   			end
   		end
   		ret['ok'] = false
   		ret['error'] = "Not authenticated as admin"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  		return 500, 'text/plain', json_result(ret)
   	end
 
 end
@@ -659,16 +644,16 @@ class RemoveUser < WEBrick::HTTPServlet::AbstractServlet
   				if user
 						$db.run("DELETE FROM users WHERE login='#{username}'")
   					ret['ok'] = true
-  					return 200, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + '}}'
+  					return 200, 'text/plain', json_result(ret)
   				end
   				ret['ok'] = false
   				ret['error'] = "User does not exist"
-  				return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  				return 500, 'text/plain', json_result(ret)
   			end
   		end
   		ret['ok'] = false
   		ret['error'] = "Not authenticated as admin"
-  		return 500, 'text/plain', '{"result": {"ok": ' +ret['ok'].to_s + ', "error": "' + ret['error'] + '"}}'
+  		return 500, 'text/plain', json_result(ret)
   	end
 end
 
