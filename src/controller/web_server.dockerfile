@@ -1,17 +1,17 @@
 FROM ruby:2.5.1
-label Description="TBD"
+LABEL Description="TBD"
 
-run mkdir -p /usr/splay
+RUN mkdir -p /usr/splay
 
-workdir /usr/splay
+WORKDIR /usr/splay
 
-run apt-get update -qq
-run apt-get -y --no-install-recommends install \
+RUN apt-get update -qq
+RUN apt-get -y --no-install-recommends install \
   build-essential rubygems less mysql-client default-libmysqlclient-dev libssl-dev openssl
 
-run gem install json -v 2.1.0
-run gem install openssl mysql2 sequel Orbjson
+RUN gem install json -v 2.1.0
+RUN gem install openssl mysql2 sequel
 
-add cli-server ./cli-server
-add lib ./lib
-add deploy_web_server.sh .
+ADD cli-server ./cli-server
+ADD lib ./lib
+ADD deploy_web_server.sh .
