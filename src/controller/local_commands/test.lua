@@ -27,7 +27,7 @@ events.loop(function()
 
 	collectgarbage()
 	collectgarbage()
-	print("Memory: "..gcinfo().." ko")
+	print("Memory: "..collectgarbage("count").." ko")
 	print(_VERSION)
 	if _SPLAYD_VERSION then
 		print("Splayd v.".._SPLAYD_VERSION)
@@ -158,15 +158,15 @@ events.loop(function()
 	print("> Test 9: Mem:")
 	collectgarbage()
 	collectgarbage()
-	local m1 = gcinfo()
-	print("Memory: "..gcinfo().." ko")
+	local m1 = collectgarbage("count")
+	print("Memory: "..collectgarbage("count").." ko")
 	local a = "a"
 	for i = 1, 14 do -- 16 ko
 		a = a..a
 	end
 	collectgarbage()
 	collectgarbage()
-	local m2 = gcinfo()
+	local m2 = collectgarbage("count")
 	local mt = m1 + (string.len(a) / 1024)
 	if m2 >= mt and m2 <= mt + 1 then
 		print("OK: memory allocation count.")
@@ -177,7 +177,7 @@ events.loop(function()
 	a = nil
 	collectgarbage()
 	collectgarbage()
-	if gcinfo() == m1 or gcinfo() == m1 + 1 then
+	if collectgarbage("count") == m1 or collectgarbage("count") == m1 + 1 then
 		print("OK: memory deallocation.")
 	else
 		my_err = true
@@ -202,7 +202,7 @@ events.loop(function()
 	print()
 	collectgarbage()
 	collectgarbage()
-	print("Memory: "..gcinfo().." ko")
+	print("Memory: "..collectgarbage("count").." ko")
 
 	---- additionnal functions
 

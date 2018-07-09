@@ -30,11 +30,11 @@ SETTINGS section near the end of this file.
 _COPYRIGHT = "Copyright 2006 - 2011"
 _SPLAYD_VERSION = 1.2
 
-require"table"
-require"math"
-require"os"
-require"string"
-require"io"
+local table = require"table"
+local math = require"math"
+local os = require"os"
+local string = require"string"
+local io = require"io"
 
 json=require"json"
 splay=require"splay"
