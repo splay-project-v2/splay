@@ -73,7 +73,6 @@ class Jobd
 	# Update job status (and status time)
 	def self.set_job_status(id, status, status_msg = "")
 		$log.info("Job #{id}: #{status} #{status_msg}")
-		$log.debug("DEBUG : Job ")
 		$db.run("UPDATE jobs SET
 				status='#{status}',
 				status_time='#{Time.now.to_i}',
