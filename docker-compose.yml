@@ -49,8 +49,6 @@ services:
     container_name: splayweb
     ports:
       - "80:80"
-    depends_on:
-      db:
-        condition: service_healthy
+    depends_on: ["controller"]
     command: bundle exec rails s -p 80 -b '0.0.0.0'
 
