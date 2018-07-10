@@ -27,12 +27,12 @@
 require 'lib/all'
 
 def drop_db(db)
-	db["DROP TABLE IF EXISTS splayds"]
-	db["DROP TABLE IF EXISTS splayd_availabilities"]
+	db.run("DROP TABLE IF EXISTS splayds")
+	db.run("DROP TABLE IF EXISTS splayd_availabilities")
 end
 
 def init_db(db)
-	db["CREATE TABLE IF NOT EXISTS splayds (
+	db.run("CREATE TABLE IF NOT EXISTS splayds (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 
 			`key` VARCHAR(255) NOT NULL,
@@ -75,15 +75,15 @@ def init_db(db)
 			last_contact_time INT,
 			INDEX ip (ip),
 			INDEX `key` (`key`)
-			) type=innodb"]
+			) type=innodb")
 
-	db["CREATE TABLE IF NOT EXISTS splayd_availabilities (
+	db.run("CREATE TABLE IF NOT EXISTS splayd_availabilities (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			ip VARCHAR(255),
 			status ENUM('AVAILABLE','UNAVAILABLE','RESET') DEFAULT 'AVAILABLE',
 			time INT NOT NULL
-			)"]
+			)")
 end
 
 db = DBUtils::get_new

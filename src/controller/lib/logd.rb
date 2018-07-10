@@ -153,7 +153,6 @@ class Logd
 
 				if job
 					# TODO replace
-					$log.debug("DEBUG : LOG : Job FOUND")
 					#@so.set_timeout(24 * 3600)
 					fname = "#{@@log_dir}/#{job[:id]}"
 					count = 0

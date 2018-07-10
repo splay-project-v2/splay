@@ -36,11 +36,7 @@ class JobdStandard < Jobd
 		@@dlock_jr.get
 		c_splayd = nil
 
-		$db["SELECT * FROM jobs WHERE
-				scheduler='#{@@scheduler}' AND status='LOCAL'"].each do |job|
-
-			$log.debug("DEBUG : JOBG - Job found")
-
+		$db["SELECT * FROM jobs WHERE scheduler='#{@@scheduler}' AND status='LOCAL'"].each do |job|
 
 			# Cache at the first call
 			unless c_splayd

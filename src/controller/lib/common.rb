@@ -47,7 +47,6 @@ require "#{dir}/dbutils"
 
 #require "#{dir}/json" TODO Might be removed, as we have the gem
 require "#{dir}/llenc"
-require "#{dir}/array_rand"
 require "#{dir}/utils"
 require "#{dir}/distributed_lock"
 
@@ -56,7 +55,6 @@ if SplayControllerConfig::Localize
 end
 
 $db = DBUtils.get_new
-# $new_db = DBUtils.get_new_mysql
 
 BasicSocket.do_not_reverse_lookup = true
 $DEBUG = false

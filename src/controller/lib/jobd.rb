@@ -73,7 +73,6 @@ class Jobd
 	# Update job status (and status time)
 	def self.set_job_status(id, status, status_msg = "")
 		$log.info("Job #{id}: #{status} #{status_msg}")
-		$log.debug("DEBUG : Job ")
 		$db.run("UPDATE jobs SET
 				status='#{status}',
 				status_time='#{Time.now.to_i}',
@@ -173,7 +172,7 @@ class Jobd
 			(1..size).each do
 				list['nodes'] << nodes.slice!(rand(nodes.size))
 			end
-			
+
 			lists[me['id']] = my_json(list)
 			pos += 1
 		end
@@ -186,7 +185,7 @@ class Jobd
 	# (query should return values with splayd_id)
 	def self.send_all_list(job, query)
 		m_s_s = $db[query]
-		
+
 		case job[:list_type]
 		when 'HEAD' # simple head list of job['list_size'] element
 			list_json = head_list(job, m_s_s)
@@ -197,8 +196,7 @@ class Jobd
 				pos = pos + 1
 			end
 			q_act = q_act[0, q_act.length - 1]
-			$db.run("INSERT INTO actions (splayd_id, job_id, command, position, status)
-					VALUES #{q_act}")
+			$db.run("INSERT INTO actions (splayd_id, job_id, command, position, status) VALUES #{q_act}")
 			$db.run("UPDATE actions SET data='#{list_json}', status='WAITING'
 					WHERE job_id='#{job[:id]}' AND command='LIST' AND status='TEMP'")
 		when 'RANDOM' # random list of job['list_size'] element
@@ -211,10 +209,9 @@ class Jobd
 			lists.each do |splayd_id, json|
 				q_act += "('#{splayd_id}','#{job[:id]}','LIST', '#{json}'),"
 			end
-			if q_act.size > 0 
+			if q_act.size > 0
 				q_act = q_act[0, q_act.length - 1]
-				$db.run("INSERT INTO actions (splayd_id, job_id, command, data)
-						VALUES #{q_act}")
+				$db.run("INSERT INTO actions (splayd_id, job_id, command, data) VALUES #{q_act}")
 			end
 		end
 	end
@@ -284,7 +281,7 @@ class Jobd
 				#next TODO next
 			end
 		end
-		
+
 		hostmasks_filter = ""
 		if job[:hostmasks]
 			# TODO split with "|"
@@ -309,8 +306,7 @@ class Jobd
 
 		# We don't take splayds already mandatory (see later)
 		mandatory_filter = ""
-		$db["SELECT * FROM job_mandatory_splayds
-				WHERE job_id='#{job[:id]}'"].each do |mm|
+		$db["SELECT * FROM job_mandatory_splayds WHERE job_id='#{job[:id]}'"].each do |mm|
 			mandatory_filter += " AND splayds.id!=#{mm[:splayd_id]} "
 		end
 
@@ -365,6 +361,5 @@ class Jobd
 		countries['sa'] = %w(ar bo br cl co ec fk gf gy pe py sr uy ve)
 		return countries
 	end
-
 
 end
