@@ -23,7 +23,7 @@ local function getFiles(mask)
 end
 
 local function errorCall (x)
-    print(RED.." - Test Fail : "..x..NC)
+    print(RED.." - Test Fail : "..x.." : "..debug.traceback()..NC)
     fail = fail + 1
 end
 

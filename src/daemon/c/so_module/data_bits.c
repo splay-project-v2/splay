@@ -60,8 +60,8 @@ static const luaL_reg misc_funcs[] =
 
 LUA_API int luaopen_splay_data_bits_core(lua_State *L)
 {
-	luaL_openlib(L, DATA_BITS_LIBNAME, misc_funcs, 0);
-	return 0;
+	luaL_newlib(L, misc_funcs);
+    return 1;
 }
 
 int not(lua_State *L)
