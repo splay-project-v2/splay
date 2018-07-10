@@ -13,8 +13,6 @@ events.run(function()
 	l_o:print("pong reply:", pong_rep, "err", err)
 	assert(pong_rep==nil)
 	assert(err=="connection refused")
-	print("TEST_OK")
-	-- events.exit()
 	finish = true
 end)
 
@@ -24,7 +22,7 @@ function sleep(n)  -- seconds
   while clock() - t0 <= n and finish == false do end
 end
 
-sleep(1)
+sleep(2)
 
 if (finish == false) then
 	error("Test fail")	

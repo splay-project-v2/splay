@@ -31,7 +31,6 @@ local tostring = tostring
 local type = type
 local pairs = pairs
 
---module("splay.net")
 local _M = {}
 _M._COPYRIGHT   = "Copyright 2006 - 2011"
 _M._DESCRIPTION = "Network related functions, objects, .."

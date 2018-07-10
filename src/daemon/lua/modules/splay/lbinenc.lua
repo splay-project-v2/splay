@@ -10,7 +10,6 @@ local tonumber = tonumber
 local tostring = tostring
 local type = type
 
---module("splay.lbinenc")
 local _M = {}
 _M._COPYRIGHT   = "Copyright 2006 - 2011"
 _M._DESCRIPTION = "Binary encoding for Splay with https://github.com/agladysh/luabins"

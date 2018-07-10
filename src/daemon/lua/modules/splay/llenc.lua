@@ -32,9 +32,9 @@ functions directly.
 LLenc must be used with TCP (not useful with UDP, we receive whole datagrams).
 ]]
 
-local string = require"string"
-local math = require"math"
-local log = require"splay.log"
+local string = require("string")
+local math = require("math")
+local log = require("splay.log")
 
 local tostring = tostring
 local setmetatable = setmetatable
@@ -44,7 +44,6 @@ local type = type
 local tonumber = tonumber
 local print = print
 
---module("splay.llenc")
 local _M = {}
 _M._COPYRIGHT = "Copyright 2006 - 2011"
 _M._DESCRIPTION = "LLenc send and receive functions (socket wrapper or standalone)"

@@ -28,8 +28,8 @@ in that module (ie: if you want to debug a network or events problem, do
 not use network output).
 ]]
 
-local io = require"io"
-local socket = require"splay.socket"
+local io = require("io")
+local socket = require("splay.socket")
 
 local ori_print = print
 local tostring = tostring

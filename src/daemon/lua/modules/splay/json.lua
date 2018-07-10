@@ -21,8 +21,8 @@ You should have received a copy of the GNU General Public License
 along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
-local json = require"json"
-local string = require"string"
+local json = require("json")
+local string = require("string")
 
 local pcall = pcall
 local tostring = tostring
@@ -70,6 +70,7 @@ function _M.wrap(socket, err)
 		if type(socket[key]) ~= "function" then
 			return socket[key]
 		else
+			-- TODO : Doesn't work in lua 5.3 : too many C levels (limit is 200) in function
 			return function(self, ...)
 				return socket[key](socket, ...)
 			end

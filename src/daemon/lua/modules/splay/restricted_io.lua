@@ -62,13 +62,13 @@ file:write(...)
 
 ]]
 
-local math = require"math"
-local io = require"io"
-local os = require"os"
-local string = require"string"
-local crypto = require"crypto"
+local math = require("math")
+local io = require("io")
+local os = require("os")
+local string = require("string")
+local crypto = require("crypto")
 local evp = crypto.evp
-local log = require"splay.log"
+local log = require("splay.log")
 
 local setmetatable = setmetatable
 local unpack = unpack
