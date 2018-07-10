@@ -1,24 +1,9 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## TODO 
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- [ ] Decision should be taken concerning whether 
+SplayWeb OR the Controller is in charge of setting 
+up the DB. The solution for now is to adapt SplayWeb to 
+the existing DB without playing with ActiveRecord's migrations, which 
+is not really maintainable.
