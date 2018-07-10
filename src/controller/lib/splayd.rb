@@ -75,7 +75,6 @@ class SplaydServer
 		begin
 			loop do
 				so = server.accept
-				$log.debug("Connection received")
 				SplaydProtocol.new(so).run
 			end
 		rescue => e
@@ -313,9 +312,7 @@ class SplaydProtocol
 					end
 
 					if action[:command] == "START"
-						$log.debug("DEBUG :: Start received")
 						if reply_code == "OK" or reply_code == "RUNNING"
-							$log.debug("DEBUG :: Starting the job")
 							@splayd.s_j_start(action[:job_id])
 						else
 							raise ProtocolError, "START not OK: #{reply_code}"
@@ -668,14 +665,11 @@ class Splayd
 	# Return the next WAITING action and set status to SENDING.
 	def next_action
 		$db["SELECT * FROM actions WHERE splayd_id='#{@id}' ORDER BY id"].each do |action|
-			$log.debug("NEW ACTION")
 			if action[:status] == 'TEMP'
-				$log.debug("TEMP")
 				$log.info("INCOMPLETE ACTION: #{action[:command]} " +
 							"(splayd: #{@id}, job: #{action[:job_id]})")
 			end
 			if action[:status] == 'WAITING'
-				$log.debug("WAITING")
 				$db.run("UPDATE actions SET
 						status='SENDING'
 						WHERE id='#{action[:id]}'")

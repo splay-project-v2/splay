@@ -29,7 +29,7 @@ $logger = Logger.new(STDERR)
 $logger.level = Logger::DEBUG
 
 def json_result(ret)
-	return (JSON.generate({:result => ret})).to_str
+	(JSON.generate({:result => ret})).to_str
 end
 
 class ChangePasswd < WEBrick::HTTPServlet::AbstractServlet
@@ -49,7 +49,6 @@ class ChangePasswd < WEBrick::HTTPServlet::AbstractServlet
   #function change_passwd: triggered when a "CHANGE PASSWORD" message is received, modifies the password of a user
 	def change_passwd(username, hashed_currentpassword, hashed_newpassword)
 		#initializes the return variable
-		# ret = Hash.new
 		user = $db["SELECT * FROM users WHERE login='#{username}'"]
 		if user
 			user = user.first
@@ -301,7 +300,6 @@ class SubmitJob < WEBrick::HTTPServlet::AbstractServlet
 			end
 
 			$db.run("INSERT INTO jobs SET ref='#{ref}' #{to_sql(options)}, #{description_field} #{name_field} #{churn_field} code='#{addslashes(code)}', user_id=#{user_id}, created_at='#{time_now}'")
-			$logger.debug("DEBUG - The job has been inserted")
 			timeout = 30
 			while timeout > 0
 				sleep(1)
