@@ -11,7 +11,6 @@ RUN apt-get -y --no-install-recommends install \
 
 RUN gem install json -v 2.1.0
 RUN gem install minitest mysql2 sequel openssl
-#openssl-nonblock dbi dbd-mysql Orbjson
 
 ADD *.rb ./
 ADD lib ./lib
