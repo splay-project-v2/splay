@@ -42,3 +42,13 @@ services:
       context: ./src/rpc_client
     container_name: splay_terminal
     depends_on: ["web_server"]
+  splayweb:
+    build:
+      context: ./src/splayweb
+      dockerfile: Dockerfile
+    container_name: splayweb
+    ports:
+      - "80:80"
+    depends_on: ["db"]
+    command: bundle exec rails s -p 80 -b '0.0.0.0'
+
