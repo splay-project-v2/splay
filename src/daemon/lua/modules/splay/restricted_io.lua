@@ -65,13 +65,14 @@ file:write(...)
 local math = require("math")
 local io = require("io")
 local os = require("os")
+local table = require("table")
 local string = require("string")
 local crypto = require("crypto")
 local evp = crypto.evp
 local log = require("splay.log")
 
 local setmetatable = setmetatable
-local unpack = unpack
+local unpack = table.unpack
 local pairs = pairs
 local print = print
 

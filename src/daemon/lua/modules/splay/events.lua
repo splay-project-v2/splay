@@ -104,7 +104,7 @@ local type = type
 local ipairs = ipairs
 local print = print
 local tostring = tostring
-local unpack = unpack
+local unpack = table.unpack
 local time = misc.time
 
 --module("splay.events")
@@ -114,7 +114,7 @@ _M._DESCRIPTION = "Generic events dispatcher with timeouts using LuaSocket selec
 _M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-_M.l_o = log.new(5, "[splay.events]")
+l_o = log.new(1, "[splay.events]")
 
 ----------------------------------------[[ LOCKS ]]--
 
@@ -295,23 +295,23 @@ local function die(co, typ, event)
 	if typ == "end" then
 		unlock_die(co, false)
 		end_count = end_count + 1
-	  --_M.l_o:notice(name.." DIE (end)")
+	  	l_o:notice(name.." DIE (end)")
 
 	elseif typ == "error" then
 		unlock_die(co, true)
 		end_count = end_count + 1
-		_M.l_o:error(name.." DIE (error: "..tostring(event)..")")
-		_M.l_o:error(debuglib.traceback(co))
+		l_o:error(name.." DIE (error: "..tostring(event)..")")
+		l_o:error(debuglib.traceback(co))
 	
 	elseif typ == "kill" then
 		unlock_die(co, false)
 		kill_count = kill_count + 1
-		_M.l_o:notice(name.." DIE (kill)")
+		l_o:notice(name.." DIE (kill)")
 
 	elseif typ == "selfkill" then
 		unlock_die(co, false)
 		kill_count = kill_count + 1
-		_M.l_o:notice(name.." DIE (self kill)")
+		l_o:notice(name.." DIE (self kill)")
 	end
 	return true
 end
@@ -334,14 +334,14 @@ local function run_n_insert(co, ret, tm)
 
 	if ret then s_arg = ret.arg end
 
-	--_M.l_o:debug(tostring(co).." RUN with "..tostring(s_arg), "tm:", tm)
+	l_o:debug(tostring(co).." RUN with "..tostring(s_arg), "tm:", tm)
 	--arg is the arguments given to the coroutine 
 	if tm then
 		ok, event, arg, arg2 = coroutine.resume(co, false, "timeout")
 	else
 		ok, event, arg, arg2 = coroutine.resume(co, true, s_arg)
 	end
-	--_M.l_o:debug(tostring(co).." status:", coroutine.status(co), "event:", event, "arg:", arg, "arg2:", arg2)
+	l_o:debug(tostring(co).." status:", coroutine.status(co), "event:", event, "arg:", arg, "arg2:", arg2)
 	if coroutine.status(co) == "suspended" and event ~= "event:kill" then
 		
 		-- socket events
@@ -362,22 +362,22 @@ local function run_n_insert(co, ret, tm)
 			end
 		else
 			-- normal events
-			--_M.l_o:debug("handling normal events, event:", event)
+			l_o:debug("handling normal events, event:", event)
 			-- yield is the default action
 			if not event then event = "event:yield" end
 
 			timeout = arg
 			if not queue[event] then queue[event] = {} end
 			queue[event][#queue[event] + 1] = co
-			--_M.l_o:debug(tostring(co).." added to event_queue: ", event, " current queue_size:",#queue[event])
+			l_o:debug(tostring(co).." added to event_queue: ", event, " current queue_size:",#queue[event])
 		end
 		
 		if timeout then timeouts[co] = timeout + time() end
 
 		--if timeout then
-		--	_M.l_o:debug(tostring(co).." SUSPEND wait "..tostring(timeout).."s for: "..tostring(event))
+		--	l_o:debug(tostring(co).." SUSPEND wait "..tostring(timeout).."s for: "..tostring(event))
 		--else
-		--	_M.l_o:debug(tostring(co).." SUSPEND wait for: "..tostring(event))
+		--	l_o:debug(tostring(co).." SUSPEND wait for: "..tostring(event))
 		--end
 		
 	else
@@ -391,7 +391,7 @@ local function run_n_insert(co, ret, tm)
 			end
 		end
 	end
-	--_M.l_o:debug("run_n_insert end")
+	l_o:debug("run_n_insert end")
 end
 
 --[[
@@ -399,11 +399,11 @@ Say if some threads will be launched with the actual events.
 Including network ones.
 --]]
 local function eligible_threads(all)
-	--_M.l_o:debug("inside eligible_threads")
+	l_o:debug("inside eligible_threads")
 	-- "normal" events
 	for event, _ in pairs(events) do
 		if queue[event] then
-			--_M.l_o:debug("Eligible events found in queue ", event)
+			l_o:debug("Eligible events found in queue ", event)
 			return true
 		end
 	end
@@ -454,7 +454,7 @@ local function have_threads_timeouted(ct)
 	local min = math.huge
 	for co, t in pairs(timeouts) do
 		if t <= ct then
-			return true
+			return true, -1
 		else
 			if t < min then
 				min = t
@@ -465,7 +465,7 @@ local function have_threads_timeouted(ct)
 end
 
 local function single_thread(th)
-	--_M.l_o:debug("Creating single_thread for:",th,type(th))
+	l_o:debug("Creating single_thread for : ", th, type(th))
 	local co
 	new_count = new_count + 1
 	if type(th) == "thread" then
@@ -475,9 +475,9 @@ local function single_thread(th)
 	end
 	local name = tostring(co)
 	threads_ref[name] = co
-	--_M.l_o:notice(name.." NEW")
+	l_o:notice(name.." NEW")
 	new_threads[#new_threads + 1] = co
-	--_M.l_o:debug("#new_threads:",#new_threads,"threads_ref["..name.."]:",co, "STATUS:", coroutine.status(co))
+	l_o:debug("#new_threads:",#new_threads,"threads_ref["..name.."]:",co, "STATUS:", coroutine.status(co))
 	return name
 end
 
@@ -509,7 +509,8 @@ function _M.periodic(time, handler, force)
 	return _M.thread(function()
 		local h, t
 		while _M.sleep(time) do
-			--_M.l_o:notice("Periodic run "..tostring(handler).." ("..time..")")
+			
+			l_o:notice("Periodic run "..tostring(handler).." ("..time..")")
 			if not h or force or _M.dead(h) then
 				-- reset the backup
 				if h and t and _M.dead(h) then t = nil end
@@ -523,7 +524,7 @@ function _M.periodic(time, handler, force)
 					t = threads_ref[h]
 				end
 			else
-				_M.l_o:warning("Periodic: "..tostring(h).." from "..tostring(handler)..
+				l_o:warning("Periodic: "..tostring(h).." from "..tostring(handler)..
 						" is not dead, we wait")
 			end
 		end
@@ -614,15 +615,15 @@ function _M.fire(event, ...)
 		events[event] = {arg = {...}}
 		return true
 	else
---		_M.l_o:notice(tostring(coroutine.running()).." ALREADY FIRED: "..tostring(event))
+--		l_o:notice(tostring(coroutine.running()).." ALREADY FIRED: "..tostring(event))
 		return false
 	end
 end
 
 function _M.wait(event, timeout)
-	--_M.l_o:debug(tostring(coroutine.running()).." WAIT: "..tostring(event).." TM: "..tostring(timeout))
+	l_o:debug(tostring(coroutine.running()).." WAIT: "..tostring(event).." TM: "..tostring(timeout))
 	local ok, r = coroutine.yield(event, timeout)
-	--_M.l_o:debug(tostring(coroutine.running()).." YIELD: ",ok,r)
+	l_o:debug(tostring(coroutine.running()).." YIELD: ",ok,r)
 	if timeout then
 		if ok then
 			return ok, unpack(r)
@@ -670,37 +671,37 @@ function _M.run(th)
 	while true do
 
 		loop_count = loop_count + 1
-		--_M.l_o:debug("loop "..loop_count)
+		l_o:debug("loop "..loop_count)
 
 		--[[ RUN NEW THREADS ]]--	
 			
 		-- We need to run the new threads (and the new threads generated by the new
 		-- threads...)
 		while #new_threads > 0 do
-			--_M.l_o:debug("new_threads queue has ",#new_threads," threads, now removing head", new_threads)
+			l_o:debug("new_threads queue has ",#new_threads," threads, now removing head", new_threads)
 			run_n_insert(table.remove(new_threads, 1))
 		end
-		--_M.l_o:debug("no more threads in new_threads table, continuing..")
+		l_o:debug("no more threads in new_threads table, continuing..")
 		--[[ ADD THE "yield" EVENT ]]--
 		events["event:yield"] = {}
-		--_M.l_o:debug("event:yield event_queue created")		
+		l_o:debug("event:yield event_queue created")		
 		--[[ ADD NETWORK EVENTS (using select() or mark all as events) ]]--
 		
 		local status, ct = "timeout", time()
 		local aet = eligible_threads()
 		local htt, htt_time = have_threads_timeouted(ct)
 
-		--_M.l_o:debug("Status:", "aet", aet, "htt", htt, "htt_time", htt_time - ct)
+		l_o:debug("Status:", "aet", aet, "htt", htt, "htt_time", htt_time - ct)
 
 		if next(socket_queue["receive"]) or next(socket_queue["send"]) then
-			--_M.l_o:debug("Socket event in receive/send queue")
+			l_o:debug("Socket event in receive/send queue")
 			-- If there is already eligible threads or threads that have
 			-- already timeouted, we don't use select() to not slow down the
 			-- application.
 			if not aet and not htt then
 			-- to test without select() (active loop => 100% cpu):
 			--if false then
-				--_M.l_o:debug("not aet, not htt")
+				l_o:debug("not aet, not htt")
 				-- arrays for select()
 				local sr, ss, socks_r, socks_s = {}, {}
 				
@@ -714,7 +715,7 @@ function _M.run(th)
 				if #sr + #ss < 1024 then -- workaround FD_SETSIZE
 					-- don't seems to be necessary on recents systems
 				
-					--_M.l_o:debug("pre-select()", #sr, #ss)
+					l_o:debug("pre-select()", #sr, #ss)
 
 					select_count = select_count + 1
 
@@ -735,11 +736,11 @@ function _M.run(th)
 						-- between the previous call and here.
 						-- UPDATE normally not possible anymore
 						if tt > 0 then
-							--_M.l_o:debug("select()", tt)
+							l_o:debug("select()", tt)
 							socks_r, socks_s, status = socket.select(sr, ss, tt)
 						end
 					end
-					--_M.l_o:debug("post-select()",socks_r, socks_s, status)
+					l_o:debug("post-select()",socks_r, socks_s, status)
 					-- select() returned arrays are indexed in two ways:
 					-- num => socket
 					-- socket => num
@@ -763,7 +764,7 @@ function _M.run(th)
 				-- Be careful to not call sleep() with a negative value
 				if htt_time > ct then
 					-- We will sleep a little (until the next timeout)
-					--_M.l_o:debug("Sleeping: "..tostring(htt_time - ct))
+					l_o:debug("Sleeping: "..tostring(htt_time - ct))
 					socket.sleep(htt_time - ct)
 				end
 			end
@@ -772,7 +773,7 @@ function _M.run(th)
 		--[[ STOP ]]--
 
 		if not next(timeouts) and not eligible_threads(true) then
-			_M.l_o:notice("No threads to run with available events, we halt.")
+			l_o:notice("No threads to run with available events, we halt.")
 			-- if we use select() when we are here there is at least one event
 			-- (or we have something in timeout list).
 			--l_o:debug("count threads: ", count_threads())
@@ -780,7 +781,7 @@ function _M.run(th)
 		end
 
 		--[[ RUN ]]--
-		--_M.l_o:debug("Current status:", status)
+		l_o:debug("Current status:", status)
 		-- If not "timeout", that means that we have received a network event, that
 		-- means too that there was nothing else to execute so we can safely skip
 		-- this part.
@@ -804,14 +805,14 @@ function _M.run(th)
 					-- We copy and remove all thread for that event
 					local tmp = queue[event]
 					queue[event] = nil
-					--l_o:debug("Event removed: "..tostring(event))
+					l_o:debug("Event removed: "..tostring(event))
 
 					for _, thread in ipairs(tmp) do
 						run_n_insert(thread, events_tmp[event])
 					end
 
 				else -- no "event" for these threads, but timeout ?
-					--_M.l_o:debug("Iterating over threads in queue:",event)
+					l_o:debug("Iterating over threads in queue:",event)
 					for i, thread in ipairs(queue[event]) do
 						if timeouts[thread] and timeouts[thread] <= time() then
 							-- if an other timeouted thread is at the end

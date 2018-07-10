@@ -29,6 +29,8 @@ local log = require"splay.log"
 local llenc = require"splay.llenc"
 local enc = require"splay.benc"
 
+local table = require("table")
+
 local error = error
 local pairs = pairs
 local pcall = pcall
@@ -37,7 +39,7 @@ local setmetatable = setmetatable
 local tostring = tostring
 local tonumber = tonumber
 local type = type
-local unpack = unpack
+local unpack = table.unpack
 
 --module("splay.rpc")
 local _M={}

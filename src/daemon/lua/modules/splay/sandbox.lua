@@ -62,7 +62,6 @@ local print = print
 local setfenv = setfenv
 local type = type
 local assert = assert
-local loadstring = loadstring
 local tonumber = tonumber
 
 local misc = require"splay.misc"
@@ -220,19 +219,16 @@ function _M.generate_require(allowed, inits)
 	end
 end
 
---[[ Generate a loadstring function that refuse bytecode.
+--[[ Generate a load function that refuse bytecode.
 Apparently, there is no security problem with it.
 ]]
 function _M.loadstring_no_bytecode()
-
-	local ls = loadstring
-
 	return function(s)
 		-- \x1BLua
 		if string.sub(s, 1, 4) == string.char(27, 76, 117, 97) then
 			return nil, "Bytecode refused"
 		end
-		return ls(s)
+		return load(s)
 	end
 end
 	
@@ -243,7 +239,7 @@ function _M.secure_functions()
 	still denied:
 
 	loadfile
-	loadstring
+	load
 	load
 	dofile
 	getfenv
@@ -270,7 +266,7 @@ function _M.secure_functions()
 			"tonumber",
 			"tostring",
 			"type",
-			"unpack",
+			-- "unpack", 
 			"xpcall",
 			"gettimeofday"}
 end
@@ -288,7 +284,7 @@ function _M.secure_functions_global()
 	require
 	--]]
 	return misc.table_concat(_M.secure_functions(), {
-			"loadstring",
+			"load",
 			"getfenv",
 			"module",
 			"setfenv"})
@@ -387,8 +383,8 @@ function _M.protect_env(settings)
 	-- New (secure) require()
 	base.require = _M.generate_require(allowed, settings.inits)
 
-	-- New loadstring not accepting bytecode
-	--base.loadstring = loadstring_no_bytecode()
+	-- New load not accepting bytecode
+	--base.load = loadstring_no_bytecode()
 
 	-- Remove everything except authorized globals (and secure functions)
 	local sf = _M.secure_functions_global()
