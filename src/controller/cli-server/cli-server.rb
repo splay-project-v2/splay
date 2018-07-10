@@ -63,6 +63,7 @@ class ChangePasswd < WEBrick::HTTPServlet::AbstractServlet
 end
 
 class GetLog < WEBrick::HTTPServlet::AbstractServlet
+	@@log_dir = SplayControllerConfig::LogDir
 
   def do_POST(request, response)
     req = JSON.parse(request.body)
@@ -89,8 +90,7 @@ class GetLog < WEBrick::HTTPServlet::AbstractServlet
 			#if the user is admin (can see all the jobs) or the job belongs to her
 			if ($db["SELECT * FROM jobs WHERE id=#{job_id}"].first) and (user['admin'] == 1) or ($db["SELECT * FROM jobs WHERE id=#{job_id} AND user_id=#{user_id}"].first)
 				#opens the log file of the requested job
-				# TODO : Logs are not located on the WebServer but on the Controller !
-				log_file = File.open("../logs/"+job_id)
+				log_file = File.open("#{@@log_dir}/"+job_id)
 				#ok is true
 				ret['ok'] = true
 				#log is a string containing the log file
