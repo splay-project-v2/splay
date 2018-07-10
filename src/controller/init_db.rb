@@ -99,6 +99,7 @@ def init_db(db)
 			ref VARCHAR(255) NOT NULL,
 			user_id INT NOT NULL,
 			created_at datetime default NULL,
+			updated_at datetime default NULL,
 
 			name VARCHAR(255),
 			description VARCHAR(255),

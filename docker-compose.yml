@@ -22,7 +22,7 @@ services:
         condition: service_healthy
     command: ["./deploy_controller.sh"]
     volumes:
-      - ./logs:/usr/splay/logs
+      - /tmp/splaylogs/logs:/usr/splay/logs
   daemon:
     build:
       context: ./src/daemon
@@ -36,9 +36,19 @@ services:
     depends_on: ["controller"]
     command: ["./deploy_web_server.sh"]
     volumes:
-      - ./logs:/usr/splay/cli-server/logs
+      - /tmp/splaylogs/logs:/usr/splay/cli-server/logs
   terminal:
     build:
       context: ./src/rpc_client
     container_name: splay_terminal
     depends_on: ["web_server"]
+  splayweb:
+    build:
+      context: ./src/splayweb
+      dockerfile: Dockerfile
+    container_name: splayweb
+    ports:
+      - "80:80"
+    depends_on: ["controller"]
+    command: bundle exec rails s -p 80 -b '0.0.0.0'
+
