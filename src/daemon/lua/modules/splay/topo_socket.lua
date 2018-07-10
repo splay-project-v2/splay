@@ -69,8 +69,7 @@ local table = table
 local unpack=unpack
 local assert = assert
 
-module("splay.topo_socket")
-
+_M = {}
 
 --[[ DEBUG ]]--
 l_o = log.new(3, "[".._NAME.."]")
@@ -105,99 +104,99 @@ TCP_OVERHEAD = 0.949285
 UDP_OVERHEAD = 0.957087
 --[[ CONFIG ]]--
 local init_done = false
-function init(settings,nodes,topology,my_pos)
+function _M.init(settings,nodes,topology,my_pos)
 		if not init_done then
-				init_done = true	
-				pos=my_pos	
-				if not settings then return false, "no settings" end
-				if settings.in_delay~=nil and settings.in_delay>0 then	
-					in_delay=(settings.in_delay/2) --the /2 is to hack the splay RPC encoding
-				end 
-				if settings.out_delay~=nil and settings.out_delay >0 then
-					out_delay=(settings.out_delay/2)
+			init_done = true	
+			pos=my_pos	
+			if not settings then return false, "no settings" end
+			if settings.in_delay~=nil and settings.in_delay>0 then	
+				in_delay=(settings.in_delay/2) --the /2 is to hack the splay RPC encoding
+			end 
+			if settings.out_delay~=nil and settings.out_delay >0 then
+				out_delay=(settings.out_delay/2)
+			end
+			if settings.MAX_BLOCK_SIZE~=nil then
+				if settings.MAX_BLOCK_SIZE*1024>256*1024 then
+					l_o:warning("MAX_BLOCK_SIZE is too big. Max allowed is <= ",128*1024)
+				else
+					MAX_BLOCK_SIZE=settings.MAX_BLOCK_SIZE*1024
 				end
-				if settings.MAX_BLOCK_SIZE~=nil then
-					if settings.MAX_BLOCK_SIZE*1024>256*1024 then
-						l_o:warning("MAX_BLOCK_SIZE is too big. Max allowed is <= ",128*1024)
-					else
-						MAX_BLOCK_SIZE=settings.MAX_BLOCK_SIZE*1024
-					end
-				end
-				if settings.CHOPPING==true then
-					do_chopping=true
-				end
-				if settings.BW_SHARING~=nil and
-					(settings.BW_SHARING=="fair" or settings.BW_SHARING=="unfair") then
-					BW_SHARING=settings.BW_SHARING
-				end
-				if settings.TB_RATE~=nil then
-					TB_RATE = settings.TB_RATE
-				end
-				
-				
-				local total_bw_out=0
-				if topology then
-					raw_topology=misc.dup(topology) --save it for later
-					global_topology={}
-					for k,t in pairs(topology) do
-						--l_o:debug("Topology infos (pos:"..k..",ip:"..nodes[tonumber(k)].ip..",port:"..nodes[tonumber(k)].port.."):")
-						for dst,infos in pairs(t) do
-							--l_o:debug("Accessing nodes["..dst.."] ")
-							if nodes[tonumber(dst)]==nil then
-								l_o:error("Can't read topology informations for node in pos:",dst)
-								break
-							end
-							--l_o:debug(nodes[tonumber(dst)].port)
-							--l_o:debug(nodes[tonumber(dst)].ip)
+			end
+			if settings.CHOPPING==true then
+				do_chopping=true
+			end
+			if settings.BW_SHARING~=nil and
+				(settings.BW_SHARING=="fair" or settings.BW_SHARING=="unfair") then
+				BW_SHARING=settings.BW_SHARING
+			end
+			if settings.TB_RATE~=nil then
+				TB_RATE = settings.TB_RATE
+			end
+			
+			
+			local total_bw_out=0
+			if topology then
+				raw_topology=misc.dup(topology) --save it for later
+				global_topology={}
+				for k,t in pairs(topology) do
+					--l_o:debug("Topology infos (pos:"..k..",ip:"..nodes[tonumber(k)].ip..",port:"..nodes[tonumber(k)].port.."):")
+					for dst,infos in pairs(t) do
+						--l_o:debug("Accessing nodes["..dst.."] ")
+						if nodes[tonumber(dst)]==nil then
+							l_o:error("Can't read topology informations for node in pos:",dst)
+							break
+						end
+						--l_o:debug(nodes[tonumber(dst)].port)
+						--l_o:debug(nodes[tonumber(dst)].ip)
+					
+						if tonumber(infos[3][1])==my_pos then --keep only local topology informations (other infos can be used for router congestion emulation,requires changing datastructure)
+							--l_o:debug("raw path: ", table.concat(infos[3]," "))
+							--l_o:debug("kbps for hops in path: ", table.concat(infos[4]," "))
+							--l_o:debug("\t",nodes[tonumber(dst)].ip..":"..nodes[tonumber(dst)].port, "delay(ms):"..infos[1], "bw(kbps):"..infos[2].." (Kbps):"..infos[2]/8,"(bytes):"..infos[2]*128)
+							--infos[2] is in kbps, convert in bytes before initializing bucket
+							local bucket=tb.new(infos[2]*128, infos[2]*128 )
+							local dst_n=nodes[tonumber(dst)]
 						
-						    if tonumber(infos[3][1])==my_pos then --keep only local topology informations (other infos can be used for router congestion emulation,requires changing datastructure)
-								--l_o:debug("raw path: ", table.concat(infos[3]," "))
-						    	--l_o:debug("kbps for hops in path: ", table.concat(infos[4]," "))
-						    	--l_o:debug("\t",nodes[tonumber(dst)].ip..":"..nodes[tonumber(dst)].port, "delay(ms):"..infos[1], "bw(kbps):"..infos[2].." (Kbps):"..infos[2]/8,"(bytes):"..infos[2]*128)
-						    	--infos[2] is in kbps, convert in bytes before initializing bucket
-						    	local bucket=tb.new(infos[2]*128, infos[2]*128 )
-						    	local dst_n=nodes[tonumber(dst)]
-						    
-								--[[key: the ip:port of the node, value: topology-related infos to reach key
-								global_topology[k][1]=out-delay to k
-								global_topology[k][2]=max-bw to k (without path conflicts)
-								global_topology[k][3]=token-bucket initialized for this point-to-point transfer
-								global_topology[k][4]=the path from current node to dst, given as integers (int=position in job.nodes)
-								global_topology[k][5]=the max capacity of the phisical links on the path to dst, given in kilobits/s (static)
-								global_topology[k][6]=dynamically adjusted value for the outgoing bw. Initially set to g[k][5] but adjusted at runtime
-								global_topology[k].position=the position of this node in the original list of nodes (TODO: churn?)
-								--]]
-								global_topology[dst_n.ip..":"..dst_n.port]={infos[1],infos[2]*128,bucket,infos[3],infos[4],infos[2]*128,position=tonumber(dst)} --out-delay,out-bw,token_bucket,full-path,kbps_hops,current-out-bw
-								total_bw_out=total_bw_out+infos[2]
-								--build the tree rooted at this node based on the paths received by the controller.
-								add_nodes_to_tree(infos[3],infos[4])				
-							end
+							--[[key: the ip:port of the node, value: topology-related infos to reach key
+							global_topology[k][1]=out-delay to k
+							global_topology[k][2]=max-bw to k (without path conflicts)
+							global_topology[k][3]=token-bucket initialized for this point-to-point transfer
+							global_topology[k][4]=the path from current node to dst, given as integers (int=position in job.nodes)
+							global_topology[k][5]=the max capacity of the phisical links on the path to dst, given in kilobits/s (static)
+							global_topology[k][6]=dynamically adjusted value for the outgoing bw. Initially set to g[k][5] but adjusted at runtime
+							global_topology[k].position=the position of this node in the original list of nodes (TODO: churn?)
+							--]]
+							global_topology[dst_n.ip..":"..dst_n.port]={infos[1],infos[2]*128,bucket,infos[3],infos[4],infos[2]*128,position=tonumber(dst)} --out-delay,out-bw,token_bucket,full-path,kbps_hops,current-out-bw
+							total_bw_out=total_bw_out+infos[2]
+							--build the tree rooted at this node based on the paths received by the controller.
+							_M.add_nodes_to_tree(infos[3],infos[4])				
 						end
 					end
-				end	
-				
-				--l_o:debug("Tree size: ", dynamic_tree.size())
-				--for k,v in pairs(dynamic_tree.nodes) do
-				--	l_o:debug("Height of "..k.." => ", dynamic_tree.height_node(dynamic_tree.getnode(k)))
-				--end
-				
-				bw_out=settings.bw_out or 1024*1024*1024 -- by default 1Gb/sec, unlimited
-				bw_in=settings.bw_in or 1024*1024*1024 -- by default 1Gb/sec, unlimited
+				end
+			end	
 			
-				--l_o:debug("Settings:")
-				--l_o:debug("in_delay:", in_delay)
-				--l_o:debug("out_delay:", out_delay)
-				--l_o:debug("bw_out (max):", (bw_out/1024),"(Kb/s)")
-				--l_o:debug("bw_in (max):", (bw_in/1024),"(Kb/s)")
-				--l_o:debug("MAX_BLOCK_SIZE:",misc.bitcalc(MAX_BLOCK_SIZE).kilobits.."Kb/"..misc.bitcalc(MAX_BLOCK_SIZE).kilobytes.."KB")
-				--l_o:debug("Position:", my_pos)
-				
-				return true
+			--l_o:debug("Tree size: ", dynamic_tree.size())
+			--for k,v in pairs(dynamic_tree.nodes) do
+			--	l_o:debug("Height of "..k.." => ", dynamic_tree.height_node(dynamic_tree.getnode(k)))
+			--end
+			
+			bw_out=settings.bw_out or 1024*1024*1024 -- by default 1Gb/sec, unlimited
+			bw_in=settings.bw_in or 1024*1024*1024 -- by default 1Gb/sec, unlimited
+		
+			--l_o:debug("Settings:")
+			--l_o:debug("in_delay:", in_delay)
+			--l_o:debug("out_delay:", out_delay)
+			--l_o:debug("bw_out (max):", (bw_out/1024),"(Kb/s)")
+			--l_o:debug("bw_in (max):", (bw_in/1024),"(Kb/s)")
+			--l_o:debug("MAX_BLOCK_SIZE:",misc.bitcalc(MAX_BLOCK_SIZE).kilobits.."Kb/"..misc.bitcalc(MAX_BLOCK_SIZE).kilobytes.."KB")
+			--l_o:debug("Position:", my_pos)
+			
+			return true
 		else
 			return false, "init() already called"
 		end
 end
-function id_from_position(po)
+function _M.id_from_position(po)
 	for k,v in pairs(global_topology) do
 		--l_o:debug("k="..k,"v="..v.position,"po="..po,type(v.position),type(po))
 		if tonumber(po)==v.position then return k end
@@ -205,7 +204,7 @@ function id_from_position(po)
 	return nil
 end
 --add the nodes in the path to the dynamic_tree.
-function add_nodes_to_tree(path,link_capacities)
+function _M.add_nodes_to_tree(path,link_capacities)
 	--l_o:debug("Adding nodes to tree from path:", table.concat(path,"-"))
 	--l_o:debug("Hops capacities				 :", table.concat(link_capacities,"-"))
 	local root= path[1]
@@ -220,7 +219,7 @@ last_event_idx=0
 --when a new upload is starting toward 'node', the tree has to be
 --marked accordingly to check for contention of shared links with 
 --other streams.
-function mark_stream_to(node)
+function _M.mark_stream_to(node)
 	local pos_node=tostring(global_topology[node].position)
 	--l_o:debug("Marking stream to ",node, "position:",pos_node)
 	local n=dynamic_tree.getnode(pos_node)
@@ -235,7 +234,7 @@ end
 --when an upload toward 'node' finishes, the tree has to be
 --marked accordingly to check for contention of shared links with 
 --other streams.
-function unmark_stream_to(node)
+function _M.unmark_stream_to(node)
 	local pos_node=tostring(global_topology[node].position)
 	--l_o:debug("UnMarking stream to ",node, "position:",pos_node)
 	local n=dynamic_tree.getnode(pos_node)
@@ -248,7 +247,7 @@ function unmark_stream_to(node)
 	--l_o:debug("TB Rates adjusted")
 end
 
-function handle_tree_change_event(tevent)
+function _M.handle_tree_change_event(tevent)
 	if tevent[1]=="+" then f=dynamic_tree.incrementflowfromto
 	elseif tevent[1]=="-" then f=dynamic_tree.decrementflowfromto
 	else error("Cannot handle tree_change_event:", table.concat(tevent," ")) end
@@ -264,7 +263,7 @@ function handle_tree_change_event(tevent)
 end
 
 --adjust BW rates to LEAVES nodes
-function adjust_rates()
+function _M.adjust_rates()
 	local leaves=dynamic_tree.leaves()
 	for leaf,v in pairs(leaves) do
 		local lid=id_from_position(leaf)
@@ -720,7 +719,7 @@ local function tcp_sock_wrapper(sock)
 end
 
 
-function wrap(sock)
+function _M.wrap(sock)
 	if string.find(tostring(socket), "#TS") then
 		l_o:warn("Trying to topo-ify an already topo-socket "..tostring(socket))
 		return socket
@@ -778,3 +777,5 @@ function wrap(sock)
 	
 	return topo_sock
 end
+
+return _M

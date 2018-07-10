@@ -21,9 +21,9 @@
 #ifndef DATA_BITS_H
 #define DATA_BITS_H
 
-#define DATA_BITS_LIBNAME "splay.data_bits"
+#define DATA_BITS_LIBNAME "splay.data_bits_core"
 
-LUA_API int luaopen_splay_misc_core(lua_State *L);
+LUA_API int luaopen_splay_data_bits_core(lua_State *L);
 int not(lua_State *L);
 int or(lua_State *L);
 int and(lua_State *L);

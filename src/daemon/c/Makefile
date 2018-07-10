@@ -32,9 +32,6 @@ clean:
 	rm luacrypto/*.so
 
 cert:
-	#openssl genrsa -out key.pem 1024
-	#openssl req -new -key key.pem -out request.pem
-	#openssl req -x509 -days 30 -key key.pem -in request.pem -out client.pem
 	openssl req -newkey rsa:1024 -sha1 -keyout rootkey.pem -out rootreq.pem \
 		-nodes -config ./root.cnf -days 365 -batch
 	openssl x509 -req -in rootreq.pem -sha1 -extfile ./root.cnf \
@@ -71,7 +68,7 @@ jobd: jobd.o splay_lib.o compmod.o
 	strip jobd
 
 
-## Lua Extension modules
+# Lua Extension modules
 so_module: splay_core.so misc_core.so data_bits_core.so luacrypto/crypto.so lbase64/lbase64.so
 
 ### Splay module
