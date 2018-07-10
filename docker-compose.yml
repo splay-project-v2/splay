@@ -21,6 +21,8 @@ services:
       db:
         condition: service_healthy
     command: ["./deploy_controller.sh"]
+    volumes:
+      - ./logs:/usr/splay/logs
   daemon:
     build:
       context: ./src/daemon
@@ -33,6 +35,8 @@ services:
     ports: ["2222:2222"]
     depends_on: ["controller"]
     command: ["./deploy_web_server.sh"]
+    volumes:
+      - ./logs:/usr/splay/cli-server/logs
   terminal:
     build:
       context: ./src/rpc_client
