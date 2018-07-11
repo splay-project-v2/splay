@@ -1,0 +1,24 @@
+<h1>Your jobs</h1>
+
+<table id="table_list_jobs">
+
+  <tr>
+    <th class="id">ID</th>
+    <th class="created_at">Date</th>
+    <th class="nb_splayds">Splayds</th>
+    <th class="status">Status</th>
+    <th class="name">Name</th>
+  </tr>
+
+  <% @jobs.reverse.each do |job| %>
+  <tr>
+    <td class="id"><%=  job.id %></td>
+    <td class="created_at"><%=  job.created_at  %></td>
+    <td class="nb_splayds"><%=  job.nb_splayds  %></td>
+    <td class="status"><%=  job.status  %></td>
+    <td class="name"><%=  job.name  %></td>
+  </tr>
+  <% end %>
+</table>
+
+<br/>
