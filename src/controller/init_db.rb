@@ -49,6 +49,8 @@ def init_db(db)
 			hostname VARCHAR(255),
 			session VARCHAR(255),
 			name VARCHAR(255),
+			created_at datetime default NULL,
+			updated_at datetime default NULL,
 
 			country VARCHAR(2),
 			city VARCHAR(255),
@@ -90,10 +92,14 @@ def init_db(db)
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			splayd_id INT NOT NULL,
 			ip VARCHAR(255),
+			created_at datetime default NULL,
+			updated_at datetime default NULL,
 			status ENUM('AVAILABLE','UNAVAILABLE','RESET') DEFAULT 'AVAILABLE',
 			time INT NOT NULL
 			)")
 
+	# Some fields like "script" are not assigned when sumbitting
+	# and are required NOT NULL, fix this for 5.7
 	db.run("CREATE TABLE IF NOT EXISTS jobs (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			ref VARCHAR(255) NOT NULL,
@@ -154,7 +160,9 @@ def init_db(db)
 	db.run("CREATE TABLE IF NOT EXISTS job_mandatory_splayds (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			job_id INT NOT NULL,
-			splayd_id INT NOT NULL
+			splayd_id INT NOT NULL,
+			created_at datetime default NULL,
+			updated_at datetime default NULL
 			)")
 
 	db.run("CREATE TABLE IF NOT EXISTS splayd_jobs (
@@ -162,6 +170,8 @@ def init_db(db)
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
 			status ENUM('RESERVED','WAITING','RUNNING') DEFAULT 'RESERVED',
+			created_at datetime default NULL,
+			updated_at datetime default NULL,
 			INDEX splayd_id (splayd_id)
 			)")
 
@@ -176,13 +186,17 @@ def init_db(db)
 			replied ENUM('TRUE','FALSE') DEFAULT 'FALSE',
 			reply_time DECIMAL(8, 5) NULL,
 			port INT NOT NULL,
+			created_at datetime default NULL,
+			updated_at datetime default NULL,
 			INDEX splayd_id (splayd_id),
 			INDEX job_id (job_id)
-			)")
+			);")
 
 	db.run("CREATE TABLE IF NOT EXISTS blacklist_hosts (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			host VARCHAR(255)
+			host VARCHAR(255),
+			created_at datetime default NULL,
+			updated_at datetime default NULL
 			)")
 
 	db.run("CREATE TABLE IF NOT EXISTS actions (
@@ -194,7 +208,9 @@ def init_db(db)
 			status ENUM('TEMP', 'WAITING', 'SENDING', 'FAILURE') DEFAULT 'WAITING',
 			position INT,
 			INDEX splayd_id (splayd_id),
-			INDEX job_id (job_id)
+			INDEX job_id (job_id),
+			created_at datetime default NULL,
+			updated_at datetime default NULL
 			)")
 
 	db.run("CREATE TABLE IF NOT EXISTS local_log (
@@ -202,13 +218,17 @@ def init_db(db)
 			splayd_id INT NOT NULL,
 			job_id INT NOT NULL,
 			data TEXT,
+			created_at datetime default NULL,
+			updated_at datetime default NULL,
 			INDEX splayd_id (splayd_id),
 			INDEX job_id (job_id)
 			)")
 
 	db.run("CREATE TABLE IF NOT EXISTS locks (
 			id INT NOT NULL,
-			job_reservation INT NOT NULL DEFAULT '0'
+			job_reservation INT NOT NULL DEFAULT '0',
+			created_at datetime default NULL,
+			updated_at datetime default NULL
 			) engine=innodb")
 
 	db.run("INSERT INTO locks SET
@@ -227,7 +247,7 @@ def init_db(db)
 			remember_token_expires_at datetime default NULL,
 			admin int(11) default '0',
 			demo int(11) default '1'
-			);")
+			)")
 
 end
 

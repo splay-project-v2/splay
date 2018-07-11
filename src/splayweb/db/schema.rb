@@ -19,23 +19,30 @@ ActiveRecord::Schema.define(version: 0) do
     t.text "data"
     t.string "status", limit: 7, default: "WAITING"
     t.integer "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["job_id"], name: "job_id"
     t.index ["splayd_id"], name: "splayd_id"
   end
 
   create_table "blacklist_hosts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "host"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "job_mandatory_splayds", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "job_id", null: false
     t.integer "splayd_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "jobs", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "ref", null: false
     t.integer "user_id", null: false
     t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "name"
     t.string "description"
     t.string "localization", limit: 2
@@ -82,6 +89,8 @@ ActiveRecord::Schema.define(version: 0) do
     t.integer "splayd_id", null: false
     t.integer "job_id", null: false
     t.text "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["job_id"], name: "job_id"
     t.index ["splayd_id"], name: "splayd_id"
   end
@@ -89,11 +98,15 @@ ActiveRecord::Schema.define(version: 0) do
   create_table "locks", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "id", null: false
     t.integer "job_reservation", default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "splayd_availabilities", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "splayd_id", null: false
     t.string "ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "status", limit: 11, default: "AVAILABLE"
     t.integer "time", null: false
   end
@@ -102,6 +115,8 @@ ActiveRecord::Schema.define(version: 0) do
     t.integer "splayd_id", null: false
     t.integer "job_id", null: false
     t.string "status", limit: 8, default: "RESERVED"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["splayd_id"], name: "splayd_id"
   end
 
@@ -115,6 +130,8 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "replied", limit: 5, default: "FALSE"
     t.decimal "reply_time", precision: 8, scale: 5
     t.integer "port", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["job_id"], name: "job_id"
     t.index ["splayd_id"], name: "splayd_id"
   end
@@ -125,6 +142,8 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "hostname"
     t.string "session"
     t.string "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "country", limit: 2
     t.string "city"
     t.decimal "latitude", precision: 10, scale: 6
