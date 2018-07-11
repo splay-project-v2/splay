@@ -98,6 +98,8 @@ def init_db(db)
 			time INT NOT NULL
 			)")
 
+	# Some fields like "script" are not assigned when sumbitting
+	# and are required NOT NULL, fix this for 5.7
 	db.run("CREATE TABLE IF NOT EXISTS jobs (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			ref VARCHAR(255) NOT NULL,
@@ -160,7 +162,7 @@ def init_db(db)
 			job_id INT NOT NULL,
 			splayd_id INT NOT NULL,
 			created_at datetime default NULL,
-			updated_at datetime default NULL,
+			updated_at datetime default NULL
 			)")
 
 	db.run("CREATE TABLE IF NOT EXISTS splayd_jobs (
@@ -188,13 +190,13 @@ def init_db(db)
 			updated_at datetime default NULL,
 			INDEX splayd_id (splayd_id),
 			INDEX job_id (job_id)
-			)")
+			);")
 
 	db.run("CREATE TABLE IF NOT EXISTS blacklist_hosts (
 			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			host VARCHAR(255),
 			created_at datetime default NULL,
-			updated_at datetime default NULL,
+			updated_at datetime default NULL
 			)")
 
 	db.run("CREATE TABLE IF NOT EXISTS actions (
@@ -208,7 +210,7 @@ def init_db(db)
 			INDEX splayd_id (splayd_id),
 			INDEX job_id (job_id),
 			created_at datetime default NULL,
-			updated_at datetime default NULL,
+			updated_at datetime default NULL
 			)")
 
 	db.run("CREATE TABLE IF NOT EXISTS local_log (
@@ -226,7 +228,7 @@ def init_db(db)
 			id INT NOT NULL,
 			job_reservation INT NOT NULL DEFAULT '0',
 			created_at datetime default NULL,
-			updated_at datetime default NULL,
+			updated_at datetime default NULL
 			) engine=innodb")
 
 	db.run("INSERT INTO locks SET
@@ -245,7 +247,7 @@ def init_db(db)
 			remember_token_expires_at datetime default NULL,
 			admin int(11) default '0',
 			demo int(11) default '1'
-			);")
+			)")
 
 end
 
