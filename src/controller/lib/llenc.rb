@@ -52,10 +52,10 @@ class LLenc
 	end
 
 	def write datas
-		_log ">>> #{datas}"
-		
+		_log ">>> #{datas.length.to_s} - #{datas.bytesize()}B : #{datas}"
+		# datas.bytesize is a way to tavoid bug when there are no standard char
 		Timeout::timeout(@write_timeout, StandardError) do
-			@socket.write(datas.length.to_s + "\n" + datas)
+			@socket.write(datas.bytesize.to_s + "\n" + datas)
 		end
 	end
 
