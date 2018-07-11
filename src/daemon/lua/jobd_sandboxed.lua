@@ -317,7 +317,7 @@ else
 end
 print()
 
-splay_code_function, err = loadstring(job.code, "job code")
+splay_code_function, err = load(job.code, "job code")
 job.code = nil -- to free some memory
 collectgarbage("collect")
 if splay_code_function then	

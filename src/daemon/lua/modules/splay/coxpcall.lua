@@ -20,6 +20,8 @@
 local oldpcall, oldxpcall = pcall, xpcall
 local coroutine = require"coroutine"
 local debug = require"debug"
+local table = require("table")
+local unpack = table.unpack
 
 --module("splay.coxpcall")
 local _M={}

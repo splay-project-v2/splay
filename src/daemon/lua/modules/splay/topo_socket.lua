@@ -54,6 +54,7 @@ local misc=require"splay.misc"
 local log = require"splay.log"
 local tb=require"splay.token_bucket" --bandwidth-shaping tool
 local tree=require"splay.tree" --to model flow tree and dynamic BW adjustments
+local table = require("table")
 local tostring = tostring
 local setmetatable = setmetatable
 local type=type
@@ -66,7 +67,7 @@ local tonumber=tonumber
 local assert=assert
 local math=require"math"
 local table = table
-local unpack=unpack
+local unpack=table.unpack
 local assert = assert
 
 _M = {}

@@ -55,7 +55,7 @@ local setmetatable = setmetatable
 local tostring = tostring
 local time = misc.time
 local type = type
-local unpack = unpack
+local unpack = table.unpack
 
 --module("splay.socket_events")
 local _M = {}

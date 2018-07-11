@@ -35,7 +35,7 @@ local io, math, string, table, type =
       io, math, string, table, type;
 
 local ipairs, next, pairs, print, setmetatable, tostring, assert, error, unpack, select =
-      ipairs, next, pairs, print, setmetatable, tostring, assert, error, unpack, select;
+      ipairs, next, pairs, print, setmetatable, tostring, assert, error, table.unpack, select;
 
 local misc = require"splay.misc"
 local log = require"splay.log"

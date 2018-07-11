@@ -89,6 +89,7 @@ because the previous socket waiting is closed.
 
 local math = require"math"
 local string = require"string"
+local table = require"table"
 local crypto = require"crypto"
 local events = require"splay.events"
 local socket = require"splay.socket"
@@ -105,7 +106,7 @@ local print = print
 local setmetatable = setmetatable
 local tostring = tostring
 local type = type
-local unpack = unpack
+local unpack = table.unpack
 local tonumber = tonumber
 
 --module("splay.urpc")

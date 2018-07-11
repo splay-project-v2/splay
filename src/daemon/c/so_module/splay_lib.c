@@ -192,12 +192,20 @@ lua_State *new_lua()
 	return L;
 }
 
+static int error_handler(lua_State *L)
+{
+	fprintf(stderr, "C daemon: %s\n", lua_tostring(L, -1));
+	luaL_traceback(L, L, NULL, 1);
+	fprintf(stderr,"TRACE : %s\n", lua_tostring(L, -1));
+}
+
 void run_file(lua_State *L, char *file)
 {
-	int error = luaL_loadfile(L, file) || lua_pcall(L, 0, 0, 0);
+	lua_pushcfunction( L, error_handler);
+
+	int error = luaL_loadfile(L, file) || lua_pcall(L, 0, 0, lua_gettop(L) - 1);
 
 	if (error) {
-		fprintf(stderr, "C daemon: %s\n", lua_tostring(L, -1));
 		lua_pop(L, 1);
 	}
 	if (error == LUA_ERRMEM) {
@@ -207,7 +215,12 @@ void run_file(lua_State *L, char *file)
 
 void run_code(lua_State *L, const char *code)
 {
-	int error = luaL_loadbuffer(L, code, strlen(code), "line") || lua_pcall(L, 0, 0, 0);
+	int hpos = lua_gettop(L);
+	int error = 0;
+
+	lua_pushcfunction( L, error_handler);
+
+	error = luaL_loadbuffer(L, code, strlen(code), "line") || lua_pcall(L, 0, 0, hpos);
 
 	if (error) {
 		fprintf(stderr, "C daemon: %s\n", lua_tostring(L, -1));

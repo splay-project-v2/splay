@@ -29,7 +29,6 @@ local string = require"string"
 local assert = assert
 local error = error
 local ipairs = ipairs
-local loadstring = loadstring
 local next = next
 local pairs = pairs
 local pcall = pcall
@@ -38,7 +37,7 @@ local setmetatable = setmetatable
 local type = type
 local tonumber = tonumber
 local tostring = tostring
-local unpack = unpack
+local unpack = table.unpack
 
 math.randomseed(os.time())
 
@@ -435,7 +434,7 @@ end
 ]]
 function _M.call(procedure)
 	
-	local f, err = loadstring("return "..procedure[1], "call")
+	local f, err = load("return "..procedure[1], "call")
 	if not f then
 		return nil, err
 	end
@@ -459,7 +458,7 @@ function _M.call(procedure)
 end
 
 function _M.run(code)
-	local f, err = loadstring(code, "run")
+	local f, err = load(code, "run")
 	if not f then
 		return nil, err
 	end

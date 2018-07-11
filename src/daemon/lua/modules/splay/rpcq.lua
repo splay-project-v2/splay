@@ -55,7 +55,7 @@ local setmetatable = setmetatable
 local tostring = tostring
 local tonumber = tonumber
 local type = type
-local unpack = unpack
+local unpack = table.unpack
 
 --module("splay.rpcq")
 local _M = {}
