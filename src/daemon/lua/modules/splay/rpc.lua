@@ -28,6 +28,7 @@ local net = require"splay.net"
 local log = require"splay.log"
 local llenc = require"splay.llenc"
 local enc = require"splay.benc"
+local debug = require("debug")
 
 local table = require("table")
 
@@ -48,7 +49,7 @@ _M._DESCRIPTION = "Remote Procedure Call over TCP"
 _M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-_M.l_o = log.new(3, "[splay.rpc]")
+_M.l_o = log.new(1, "[splay.rpc]")
 
 _M.settings = {
 	max = nil, -- max outgoing RPCs
@@ -78,12 +79,12 @@ local function reply(s, data)
 end
 
 local function rpc_handler(s)
-	--_M.l_o:debug("rpc.rpc_handler on socket ",s)
+	_M.l_o:debug("rpc.rpc_handler on socket ",s)
 	if _M.settings.nodelay then s:setoption("tcp-nodelay", true) end
 	s = llenc.wrap(s)
-	--_M.l_o:debug("rpc_handler llenc'ed socket:",s)
+	_M.l_o:debug("rpc_handler llenc'ed socket:",s)
 	local data_s, err = s:receive()
-	--_M.l_o:debug("rpc_handler received data ",data_s)	
+	_M.l_o:debug("rpc_handler received data ",data_s)	
 	if data_s then
 		local ok, data = pcall(function() return enc.decode(data_s) end)
 		if ok then
@@ -161,12 +162,12 @@ local function do_call(ip, port, typ, call, timeout)
 	number = number + 1
 
 	local s, err = socket.tcp()
-	--_M.l_o:debug("TCP client socket created:",s,err)
+	_M.l_o:debug("TCP client socket created:",s,err)
 	if s then
 		if timeleft then s:settimeout(timeleft) end
 		s = llenc.wrap(s)
 		local r, err = s:connect(ip, port)
-		--_M.l_o:debug("Connect to ", ip, port," risult:",r)
+		_M.l_o:debug("Connect to ", ip, port," result:",r)
 		if r then
 			if _M.settings.nodelay then s:setoption("tcp-nodelay", true) end
 
@@ -224,12 +225,12 @@ local function do_call(ip, port, typ, call, timeout)
 		else
 			s:close()
 			if call_s then call_s:unlock() end
-			_M.l_o:warn(err_prefix.." connect("..ip..":"..port.."): "..err)
+			_M.l_o:warn(err_prefix.." connect("..ip..":"..port.."): "..err.." : "..debug.traceback())
 			return false, err
 		end
 	else
 		if call_s then call_s:unlock() end
-		_M.l_o:error(err_prefix.." tcp(): "..err)
+		_M.l_o:error(err_prefix.." tcp(): "..err.." : "..debug.traceback())
 		return false, err
 	end
 end

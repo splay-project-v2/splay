@@ -186,7 +186,7 @@ local function tcp_sock_wrapper(sock)
 	local mt = {
 		__index = function(table, key)
 			return function(self, ...)
-				--_M.l_o:debug("tcp."..key.."()")
+				_M.l_o:debug("tcp."..key.."()")
 				return sock[key](sock, ...)
 			end
 		end,
@@ -200,11 +200,11 @@ local function tcp_sock_wrapper(sock)
 
 	if sock.receive then
 		new_sock.receive = function(self, pattern, prefix)
-			--_M.l_o:debug("tcp.receive()")
+			_M.l_o:debug("tcp.receive()")
 			
 			if total_received > max_receive then
 				_M.l_o:warn("Receive restricted (total: "..total_received..")")
-				return nil, "restricted", ""
+				return nil, "restricted; max received", ""
 			end
 			
 			local data, msg, partial = sock:receive(pattern, prefix)
@@ -220,7 +220,7 @@ local function tcp_sock_wrapper(sock)
 	
 	if sock.send then
 		new_sock.send = function(self, data, start, stop)
-			--_M.l_o:debug("tcp.send()")
+			_M.l_o:debug("tcp.send()")
 
 			start = start or 1
 			stop = stop or #data
@@ -235,7 +235,7 @@ local function tcp_sock_wrapper(sock)
 
 			if total_sent + len > max_send then
 				_M.l_o:warn("Send restricted (total: "..total_sent..")")
-				return nil, "restricted", 0
+				return nil, "restricted; max send", 0
 			end
 
 			local n, status, last = sock:send(data, start, stop)
@@ -260,7 +260,7 @@ local function tcp_sock_wrapper(sock)
 
 	if sock.connect then
 		new_sock.connect = function(self, host, port, lip, lport)
-			--_M.l_o:debug("tcp.connect("..host..", "..tostring(port)..")")
+			_M.l_o:debug("tcp.connect("..host..", "..tostring(port)..")")
 
 			-- we only authorize our local connection on our port range
 			--if local_ip and host == local_ip then
@@ -271,13 +271,13 @@ local function tcp_sock_wrapper(sock)
 			--else
 				if not check_blacklist(host) then
 					_M.l_o:warn("Connect restricted (blacklist: "..host..")")
-					return nil, "restricted"
+					return nil, "restricted; blacklist"
 				end
 			--end
 
 			local s, m = sock:connect(host, port, lip, lport)
 
-			--if s == 1 then _M.l_o:debug("New peer: "..sock:getpeername()) end
+			if s == 1 then _M.l_o:debug("New peer: "..sock:getpeername()) end
 
 			return s, m
 		end
@@ -285,11 +285,11 @@ local function tcp_sock_wrapper(sock)
 
 	if sock.bind then
 		new_sock.bind = function(self, address, port, backlog)
-			--_M.l_o:debug("tcp.bind("..address..", "..tostring(port)..")")
+			_M.l_o:debug("tcp.bind("..address..", "..tostring(port)..")")
 
 			if port < start_port or port > end_port then
 				_M.l_o:warn("Bind restricted (port: "..port..") not in job range.")
-				return nil, "restricted"
+				return nil, "restricted; port range"
 			end
 			if local_ip then address = local_ip end
 
@@ -299,13 +299,13 @@ local function tcp_sock_wrapper(sock)
 
 	if sock.close then
 		new_sock.close = function(self)
-			--_M.l_o:debug("tcp.close()")
+			_M.l_o:debug("tcp.close()")
 
 			if not sock:getsockname() then
 				_M.l_o:notice("Closing an already closed socket.")
 			else
 				total_tcp_sockets = total_tcp_sockets - 1
-				--_M.l_o:debug("Peer closed, total TCP sockets: "..total_tcp_sockets)
+				_M.l_o:debug("Peer closed, total TCP sockets: "..total_tcp_sockets)
 				sock:close()
 			end
 		end
@@ -316,7 +316,7 @@ local function tcp_sock_wrapper(sock)
 	-- can't call the same function internally)
 	if sock.accept then
 		new_sock.accept = function(self)
-			--_M.l_o:debug("tcp.accept()")
+			_M.l_o:debug("tcp.accept()")
 			
 			-- We must accept the client first, if not, socket.select() will
 			-- select it every time we don't take it, but if the number of
@@ -331,8 +331,8 @@ local function tcp_sock_wrapper(sock)
 			end
 
 			total_tcp_sockets = total_tcp_sockets + 1
-			--_M.l_o:debug("Peer accepted, total TCP sockets: "..total_tcp_sockets)
-			--_M.l_o:debug("New peer: "..s:getpeername())
+			_M.l_o:debug("Peer accepted, total TCP sockets: "..total_tcp_sockets)
+			_M.l_o:debug("New peer: "..s:getpeername())
 			return tcp_sock_wrapper(s)
 		end
 	end
@@ -351,7 +351,7 @@ local function udp_sock_wrapper(sock)
 	local mt = {
 		__index = function(table, key)
 			return function(self, ...)
-				--_M.l_o:debug("udp."..key.."()")
+				_M.l_o:debug("udp."..key.."()")
 				return sock[key](sock, ...)
 			end
 		end,
@@ -365,7 +365,7 @@ local function udp_sock_wrapper(sock)
 
 	if sock.receive then
 		new_sock.receive = function(self, ...)
-			--_M.l_o:debug("udp.receive()")
+			_M.l_o:debug("udp.receive()")
 			
 			if total_received > max_receive then
 				_M.l_o:warn("Receive restricted (total: "..total_received..")")
@@ -381,7 +381,7 @@ local function udp_sock_wrapper(sock)
 
 	if sock.receivefrom then
 		new_sock.receivefrom = function(self, ...)
-			--_M.l_o:debug("udp.receivefrom()")
+			_M.l_o:debug("udp.receivefrom()")
 			
 			if total_received > max_receive then
 				_M.l_o:warn("Receive restricted (total: "..total_received..")")
@@ -399,7 +399,7 @@ local function udp_sock_wrapper(sock)
 		-- LuaSocket documentation is wrong here (say it returns 1 but
 		-- it returns length)
 		new_sock.send = function(self, data)
-			--_M.l_o:debug("udp.send()")
+			_M.l_o:debug("udp.send()")
 
 			local len = #data
 
@@ -427,7 +427,7 @@ local function udp_sock_wrapper(sock)
 		-- LuaSocket documentation is wrong here (say it returns 1 but
 		-- it returns length)
 		new_sock.sendto = function(self, data, ip, port)
-			--_M.l_o:debug("udp.sendto()")
+			_M.l_o:debug("udp.sendto()")
 
 			-- we only authorize our local connection on our port range
 			--if local_ip and ip == local_ip then
@@ -468,7 +468,7 @@ local function udp_sock_wrapper(sock)
 
 	if sock.setoption then
 		new_sock.setoption = function(self, ...)
-			--_M.l_o:debug("udp.setoption()")
+			_M.l_o:debug("udp.setoption()")
 
 			if udp_options then
 				return sock:setoption(...)
@@ -480,7 +480,7 @@ local function udp_sock_wrapper(sock)
 
 	if sock.setpeername then
 		new_sock.setpeername = function(self, ip, port)
-			--_M.l_o:debug("udp.setpeername()")
+			_M.l_o:debug("udp.setpeername()")
 			
 			if ip == "*" then
 				return sock:setpeername("*")
@@ -505,7 +505,7 @@ local function udp_sock_wrapper(sock)
 
 	if sock.setsockname then
 		new_sock.setsockname = function(self, address, port)
-			--_M.l_o:debug("udp.setsockname()")
+			_M.l_o:debug("udp.setsockname()")
 			
 			--if port < start_port or port > end_port then
 			--	_M.l_o:warn("Local connect restricted (port: "..port..") not in job range.")
@@ -519,13 +519,13 @@ local function udp_sock_wrapper(sock)
 
 	if sock.close then
 		new_sock.close = function(self)
-			--_M.l_o:debug("udp.close()")
+			_M.l_o:debug("udp.close()")
 
 			if not sock:getsockname() then
 				_M.l_o:notice("Closing an already closed socket.")
 			else
 				total_udp_sockets = total_udp_sockets - 1
-				--_M.l_o:debug("Total UDP sockets: "..total_udp_sockets)
+				_M.l_o:debug("Total UDP sockets: "..total_udp_sockets)
 				sock:close()
 			end
 		end
@@ -548,7 +548,7 @@ function _M.wrap(sock)
 		-- (sock) can't be taken from the metatable.
 		--mt.__index = sock
 		__index = function(table, key)
-			--_M.l_o:debug("sock."..key.."()")
+			_M.l_o:debug("sock."..key.."()")
 			return sock[key]
 		end,
 		__tostring = function()
@@ -596,7 +596,7 @@ function _M.wrap(sock)
 		_M.l_o:debug("tcp()")
 
 		if total_tcp_sockets >= max_sockets then
-			return nil, "restricted"
+			return nil, "restricted; max tcp sockets"
 		end
 
 		local stcp, err = sock.tcp()
@@ -611,10 +611,10 @@ function _M.wrap(sock)
 	end
 
 	new_sock.udp = function()
-		--_M.l_o:debug("udp()")
+		_M.l_o:debug("udp()")
 
 		if total_udp_sockets >= max_sockets then
-			return nil, "restricted"
+			return nil, "restricted; max udp sockets"
 		end
 
 		local sudp, err = sock.udp()
@@ -622,7 +622,7 @@ function _M.wrap(sock)
 			return nil, err
 		else
 			total_udp_sockets = total_udp_sockets + 1
-			--_M.l_o:debug("Total UDP sockets: "..total_udp_sockets)
+			_M.l_o:debug("Total UDP sockets: "..total_udp_sockets)
 
 			return udp_sock_wrapper(sudp)
 		end

@@ -35,15 +35,16 @@ local math = require"math"
 local os = require"os"
 local string = require"string"
 local io = require"io"
+local debug = require"debug"
 
-json=require"json"
-splay=require"splay"
-crypto = require"crypto"
-evp = crypto.evp
-socket=require"socket"
-llenc = require"splay.llenc"
+local json=require"json"
+local splay=require"splay"
+local crypto = require"crypto"
+local evp = crypto.evp
+local socket=require"socket"
+local llenc = require"splay.llenc"
 
-require"base64"
+local base64 = require"base64"
 math.randomseed(os.time())
 
 do
@@ -948,90 +949,101 @@ function trace_end(so)
 	so:settimeout(so_timeout)
 end
 
+local function one_loop(so)
+	splayd.last_connection_time = os.time()
+
+	local msg = so:receive()
+
+	-- if there is a msg (msg can be empty when using non-blocking sockets - when the churn coroutine is active)
+	if msg then
+		print("Command: "..msg)
+		if msg == "PING" then
+			-- blocking socket
+			so:settimeout(nil)
+			assert(so:send("OK"))
+			-- restablish timeout
+			so:settimeout(so_timeout)
+		elseif msg == "BLACKLIST" then
+			blacklist(so)
+		elseif msg == "REGISTER" then
+			register(so)
+		elseif msg == "FREE" then
+			n_free(so)
+		elseif msg == "UNREGISTER" then -- deprecated
+			n_free(so)
+		elseif msg == "LOG" then
+			n_log(so)
+		elseif msg == "LOCAL_LOG" then
+			local_log(so)
+		elseif msg == "LIST" then
+			list(so)
+		elseif msg == "RESET" then
+			n_reset(so)
+		elseif msg == "START" then
+			n_start(so)
+		elseif msg == "RESTART" then
+			restart(so)
+		elseif msg == "STOP" then
+			n_stop(so)
+		elseif msg == "INFOS" then
+			infos(so)
+		elseif msg == "STATUS" then
+			status(so)
+		elseif msg == "TRACE_END" then
+			trace_end(so)
+		elseif msg == "LOADAVG" then
+			loadavg(so)
+		elseif msg == "HALT" then
+			if (halt(so)) then
+				return false
+			end
+		elseif msg == "KILL" then
+			running = false
+			return false
+		elseif msg == "ERROR" then
+			return false
+
+		--[[ Next one(s) are for testing only ]]--
+		elseif msg == "TEST" then
+			-- blocking socket
+			so:settimeout(nil)
+			assert(so:send("OK"))
+			-- restablish timeout
+			so:settimeout(so_timeout)
+			test(so)
+		else
+			print("Unknow command.")
+			return false
+		end
+	end
+	-- if there is a churn coroutine
+	if co_churn then
+		-- if the coroutine is not dead
+		if coroutine.status(co_churn) ~= "dead" then
+			-- yield (if the coroutine is dead, no need to yield)
+			coroutine.yield()
+		else
+			-- if churn coroutine is dead set the socket timeout to nil (blocking socket)
+			so:settimeout(nil)
+			so_timeout = nil
+		end
+	end
+	return true
+end
+
+local function error_cmd_handler(x)
+    print("ERROR : "..x.." : "..debug.traceback())
+end
+
 function server_loop(so)
-		while true do
-			splayd.last_connection_time = os.time()
-
-			local msg = so:receive()
-
-			-- if there is a msg (msg can be empty when using non-blocking sockets - when the churn coroutine is active)
-			if msg then
-
-				print("Command: "..msg)
-				if msg == "PING" then
-					-- blocking socket
-					so:settimeout(nil)
-					assert(so:send("OK"))
-					-- restablish timeout
-					so:settimeout(so_timeout)
-				elseif msg == "BLACKLIST" then
-					blacklist(so)
-				elseif msg == "REGISTER" then
-					register(so)
-				elseif msg == "FREE" then
-					n_free(so)
-				elseif msg == "UNREGISTER" then -- deprecated
-					n_free(so)
-				elseif msg == "LOG" then
-					n_log(so)
-				elseif msg == "LOCAL_LOG" then
-					local_log(so)
-				elseif msg == "LIST" then
-					list(so)
-				elseif msg == "RESET" then
-					n_reset(so)
-				elseif msg == "START" then
-					n_start(so)
-				elseif msg == "RESTART" then
-					restart(so)
-				elseif msg == "STOP" then
-					n_stop(so)
-				elseif msg == "INFOS" then
-					infos(so)
-				elseif msg == "STATUS" then
-					status(so)
-				elseif msg == "TRACE_END" then
-					trace_end(so)
-				elseif msg == "LOADAVG" then
-					loadavg(so)
-				elseif msg == "HALT" then
-					if (halt(so)) then
-						break
-					end
-				elseif msg == "KILL" then
-					running = false
-					break
-				elseif msg == "ERROR" then
-					break
-
-				--[[ Next one(s) are for testing only ]]--
-				elseif msg == "TEST" then
-					-- blocking socket
-					so:settimeout(nil)
-					assert(so:send("OK"))
-					-- restablish timeout
-					so:settimeout(so_timeout)
-					test(so)
-				else
-					print("Unknow command.")
-					break
-				end
-			end
-
-			-- if there is a churn coroutine
-			if co_churn then
-				-- if the coroutine is not dead
-				if coroutine.status(co_churn) ~= "dead" then
-					-- yield (if the coroutine is dead, no need to yield)
-					coroutine.yield()
-				else
-					-- if churn coroutine is dead set the socket timeout to nil (blocking socket)
-					so:settimeout(nil)
-					so_timeout = nil
-				end
-			end
-
-    end
+	while true do
+		local status, ret = xpcall(one_loop, error_cmd_handler, so)
+		if status then 
+			if not ret then return false end
+		else 
+			return false
+		end
+	end
 end
 
 -- to calculate the size of a table (not array)

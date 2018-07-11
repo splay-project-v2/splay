@@ -114,7 +114,7 @@ _M._DESCRIPTION = "Generic events dispatcher with timeouts using LuaSocket selec
 _M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-l_o = log.new(1, "[splay.events]")
+l_o = log.new(4, "[splay.events]")
 
 ----------------------------------------[[ LOCKS ]]--
 

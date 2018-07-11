@@ -5,4 +5,4 @@ docker kill $(docker ps -q)
 docker rm $(docker ps -a -q)
 docker-compose build 
 docker-compose up -d web_server
-docker-compose scale daemon=1
+docker-compose scale daemon=5
