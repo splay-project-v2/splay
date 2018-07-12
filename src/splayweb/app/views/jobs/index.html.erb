@@ -8,6 +8,7 @@
     <th class="nb_splayds">Splayds</th>
     <th class="status">Status</th>
     <th class="name">Name</th>
+    <th class="kill">Kill</th>
   </tr>
 
   <% @jobs.reverse.each do |job| %>
@@ -17,6 +18,11 @@
     <td class="nb_splayds"><%=  job.nb_splayds  %></td>
     <td class="status"><%=  job.status  %></td>
     <td class="name"><%=  job.name  %></td>
+    <td class="kill">
+      <% if job.status=='RUNNING' or job.status=='QUEUED' %>
+        <%= link_to 'KILL', job_path(job), method: 'delete', id: job %>
+      <% end %>
+    </td>
   </tr>
   <% end %>
 </table>
