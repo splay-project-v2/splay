@@ -391,9 +391,10 @@ function register(so)
 	so:settimeout(nil)
 	local s = splayd.settings.job
 	local job_json=assert(so:receive())
-	--print("job_json received:", job_json)
+
+	-- print("job_json received "..#job_json.." : "..job_json)
 	local job = json.decode(job_json)
-	--print("job_json decoded")
+	-- print("job_json decoded")
 	local ref = job.ref
 	
 	if splayd.jobs[ref] then

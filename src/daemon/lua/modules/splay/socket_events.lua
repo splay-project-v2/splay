@@ -81,8 +81,8 @@ local function receive(socket, pattern, part, timeout)
 	end
 	local start_download=time()
 	while true do
-		--_M.l_o:debug("socket:receive",pattern)
-		data, err, part = socket:receive(pattern, part,start_download)
+		_M.l_o:debug("socket:receive",pattern)
+		data, err, part = socket:receive(pattern, part, start_download)
 
 		if data then
 			return data, err, part
