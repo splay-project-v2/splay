@@ -1,11 +1,10 @@
+# Tested only on ubuntu 18.04 contenair
+
 CC= gcc
 
 # Since Lua 5.1, lua and lualib are merged.
-#INCLUDE= -I/usr/include/lua5.1 -I/usr/local/openssl/include
 INCLUDE= -I/usr/include/lua5.3
 
-# For static linking, but loading dynamic modules will not work then.
-#LIBS= -L/usr/lib -llua5.1 -lm -ldl
 LIBS= -L/usr/lib -llua5.3 -lm
 OPENSSL_LIBS= -L/usr/local/openssl/lib -lcrypto -lssl
 
