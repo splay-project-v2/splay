@@ -15,11 +15,11 @@
     <td class="status">
     <%=
       if splayd.status == "AVAILABLE"
-      "<span style='color: green'>#{splayd.status}</span>"
+        "<span style='color: green'>#{splayd.status}</span>".html_safe
       elsif splayd.status == "UNAVAILABLE"
-      "<span style='color: orange'>#{splayd.status}</span>"
+        "<span style='color: orange'>#{splayd.status}</span>".html_safe
       elsif splayd.status == "RESET"
-      "<span style='color: red'>#{splayd.status}</span>"
+        "<span style='color: red'>#{splayd.status}</span>".html_safe
       end
     %>
     </td>
