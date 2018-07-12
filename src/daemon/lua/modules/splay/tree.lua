@@ -32,7 +32,7 @@ local tonumber=tonumber
 --module("splay.tree")
 --THIS IS NOT RELATED TO http://en.wikipedia.org/wiki/Splay_tree 
 local _M = {}
-_M.l_o = log.new(1, "[splay.tree]")
+_M.l_o = log.new(3, "[splay.tree]")
 _M._COPYRIGHT   = "Copyright 2006 - 2013"
 _M._DESCRIPTION = "N-Ary Tree object and flow operations used by SplayNet."
 _M._VERSION     = 1.0

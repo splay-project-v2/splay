@@ -62,7 +62,7 @@ _M._DESCRIPTION = "Sockets with events (to work with Events)"
 _M._VERSION     = 1.0
 _M._NAME = "splay.socket_events"
 --[[ DEBUG ]]--
-local l_o = log.new(4, "[".._M._NAME.."]")
+local l_o = log.new(3, "[".._M._NAME.."]")
 
 -- Try to receive and yield if needed.
 --

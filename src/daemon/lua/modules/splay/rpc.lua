@@ -49,7 +49,7 @@ _M._DESCRIPTION = "Remote Procedure Call over TCP"
 _M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-local l_o = log.new(3, "[splay.rpc]")
+local l_o = log.new(1, "[splay.rpc]")
 
 _M.settings = {
 	max = nil, -- max outgoing RPCs
@@ -166,7 +166,7 @@ local function do_call(ip, port, typ, call, timeout)
 	if s then
 		if timeleft then s:settimeout(timeleft) end
 		s = llenc.wrap(s)
-		local r, err = s:connect(ip, port)
+		local r, err = s.super:connect(ip, port)
 		l_o:debug("Connect to ", ip, port," result:",r)
 		if r then
 			if _M.settings.nodelay then s:setoption("tcp-nodelay", true) end
@@ -264,6 +264,7 @@ function _M.acall(ip, port, call, timeout)
 
 	return do_call(ip, port, "call", call, timeout)
 end
+
 -- DEPRECATED
 --function _M.a_call(...) return acall(...) end
 
