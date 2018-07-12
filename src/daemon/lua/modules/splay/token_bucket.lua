@@ -18,7 +18,7 @@ local setmetatable = setmetatable
 local _M = {}
 
 --[[ DEBUG ]]--
-local l_o = log.new(1, "[splay.token_bucket]")
+local l_o = log.new(3, "[splay.token_bucket]")
 
 function _M.new(toks,rate,cap)
 	

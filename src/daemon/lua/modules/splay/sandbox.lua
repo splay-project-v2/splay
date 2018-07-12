@@ -73,7 +73,7 @@ _M._DESCRIPTION = "Sandbox"
 _M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-_M.l_o = log.new(3, "[splay.sandbox]")
+local l_o = log.new(3, "[splay.sandbox]")
 
 --[[ CODE ]]--
 
@@ -102,7 +102,7 @@ function _M.generate_require(allowed, inits)
 			if not path[part] then 
 				path[part] = {}
 				if i == #sa then
-					_M.l_o:debug("Creating global for "..modname)
+					l_o:debug("Creating global for "..modname)
 					path[part] = base.package.loaded[modname]
 				end
 			end
@@ -115,7 +115,7 @@ function _M.generate_require(allowed, inits)
 		if inits[modname] and
 				type(base.package.loaded[modname]) == "table" and
 				base.package.loaded[modname].init then
-			_M.l_o:debug(modname.." initialization.")
+			l_o:debug(modname.." initialization.")
 			base.package.loaded[modname].init(inits[modname])
 		end
 	end
@@ -135,7 +135,7 @@ function _M.generate_require(allowed, inits)
 	-- 2) Load what is in preload table (user modules)
 	-- 3) Copy already loaded libraries (maybe they have additional restrictions)
 	return function(modname)
-		_M.l_o:debug("require() "..modname)
+		l_o:debug("require() "..modname)
 
 		-- creation of the new base.package that will NOT be directly used by
 		-- module()
@@ -158,7 +158,7 @@ function _M.generate_require(allowed, inits)
 		-- if the module is in preload table, is an user module, we will load it
 		-- anyway
 		if base.package.preload[modname] then
-			_M.l_o:notice("User module "..modname.." preloaded.")
+			l_o:notice("User module "..modname.." preloaded.")
 			base.package.preload[modname]()
 			-- we call the function, that contain module(), that will load the
 			-- module into the global "modname" and in package.loaded[modname]
@@ -174,23 +174,23 @@ function _M.generate_require(allowed, inits)
 			end
 		end
 		if not found then
-			_M.l_o:warn("Require of "..modname.." refused")
+			l_o:warn("Require of "..modname.." refused")
 			return nil, "not permitted"
 		end
-		_M.l_o:notice("Require of "..modname.." autorized")
+		l_o:notice("Require of "..modname.." autorized")
 
 		-- package already loaded in the sandbox
 		-- Normally it's the loader[1] but it return a string if not found and I
 		-- don't like that.
 		if base.package.loaded[modname] then
-			_M.l_o:notice(modname.." already loaded.")
+			l_o:notice(modname.." already loaded.")
 			return base.package.loaded[modname]
 		end
 
 		-- package not loaded but existing in pack (previous env)
 		-- (yes we could do that in the form of an additionnal loader)
 		if pack.loaded[modname] then
-			_M.l_o:notice(modname.." already loaded in previous env.")
+			l_o:notice(modname.." already loaded in previous env.")
 			return finalize(modname)
 		end
 
@@ -204,7 +204,7 @@ function _M.generate_require(allowed, inits)
 		for i, loader in pairs(pack.loaders) do
 			local p = loader(modname)
 			if p and type(p) == "function" then
-				_M.l_o:debug(modname.." loader "..i)
+				l_o:debug(modname.." loader "..i)
 				-- will modify pack.loaded[modname]
 				local r = p()
 				-- return instead of directly setting pack.loaded[modname]
@@ -342,7 +342,7 @@ function _M.clean_env(keep_list)
 		end
 	end
 	for _, name in pairs(remove_list) do
-		_M.l_o:notice("removing: "..name.." (type: "..type(base[name])..")")
+		l_o:notice("removing: "..name.." (type: "..type(base[name])..")")
 		base[name] = _M.load_sandboxed_func(name)
 	end
 end

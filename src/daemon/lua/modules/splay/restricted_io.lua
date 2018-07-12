@@ -83,17 +83,17 @@ _M._DESCRIPTION = "Restricted IO"
 _M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-_M.l_o = log.new(3, "[splay.restricted_io]")
+local l_o = log.new(3, "[splay.restricted_io]")
 
 -- Dangerous functions
-popen = io.popen
+local popen = io.popen
 
-stdin = io.stdin
-stdout = io.stdout
-stderr = io.stderr
+local stdin = io.stdin
+local stdout = io.stdout
+local stderr = io.stderr
 
-default_input_file = io.stdin
-default_output_file = io.stdout
+local default_input_file = io.stdin
+local default_output_file = io.stdout
 
 --[[ Config ]]--
 

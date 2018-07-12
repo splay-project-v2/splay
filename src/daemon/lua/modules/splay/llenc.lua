@@ -49,7 +49,7 @@ _M._COPYRIGHT = "Copyright 2006 - 2011"
 _M._DESCRIPTION = "LLenc send and receive functions (socket wrapper or standalone)"
 _M._VERSION     = 1.3
 --[[ DEBUG ]]--
-_M.l_o = log.new(3, "[splay.llenc]")
+local l_o = log.new(3, "[splay.llenc]")
 
 function _M.encode(data)
 	if type(data) ~= "string" then

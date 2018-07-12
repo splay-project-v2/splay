@@ -41,7 +41,6 @@ local unpack = table.unpack
 
 math.randomseed(os.time())
 
---module("splay.misc")
 local _M= {}
 _M._COPYRIGHT   = "Copyright 2006 - 2011"
 _M._DESCRIPTION = "Some useful functions."

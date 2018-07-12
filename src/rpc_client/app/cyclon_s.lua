@@ -90,7 +90,7 @@ function shuffle()
 	sent_set[#sent_set + 1] = {ip = job.me.ip, port = job.me.port, age = 0}
 	
 	-- 4: send the subset
-	local ok, r = rpc.a_call(selected, {"receive_set", sent_set}, rpc_timeout)
+	local ok, r = rpc.acall(selected, {"receive_set", sent_set}, rpc_timeout)
 	if ok then
 		table.remove(sent_set)
 		cyclon_insert(r[1], sent_set) -- 6 & 7
@@ -105,7 +105,7 @@ function receive_set(rec_set)
 	return sent_set
 end
 
-events.loop(function()
+events.run(function()
 	if not rpc.server(job.me) then
 		log:error("Bind error: "..job.me.port)
 		return

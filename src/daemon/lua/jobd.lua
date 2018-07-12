@@ -215,10 +215,6 @@ socket = rs.wrap(socket)
 -- Replace socket.core, unload the other
 package.loaded['socket.core'] = socket
 
--- This module requires debug, not allowed in sandbox
-require"splay.coxpcall"
-
-
 splay_code_function, err = load(job.code, "job code")
 job.code = nil -- to free some memory
 collectgarbage("collect")

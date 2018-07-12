@@ -37,12 +37,6 @@ Author: Craig Mason-Jones
 Licence: GPL2
 URL: http://json.luaforge.net/
 
---[  Coxpcall ]--
-
-Authors: Roberto Ierusalimschy and André Carregal
-Licence: GPL compatible
-URL: http://coxpcall.luaforge.net/
-
 --[ json.lua ]--
 
 Authors: rix 

@@ -26,9 +26,11 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 -- there is no memory to win, not loading them directly.
 --]]
 
-coxpcall = require"splay.coxpcall"
-pcall = coxpcall.pcall
-xpcall = coxpcall.xpcall
+-- https://github.com/keplerproject/coxpcall :
+-- no more usefull for lua version > 5.2 : "Lua 5.2 was extended with the Coxpcall functionality and hence it is no longer required"
+-- coxpcall = require"splay.coxpcall"
+-- pcall = coxpcall.pcall
+-- xpcall = coxpcall.xpcall
 
 -- socket_events is a global too
 socket = require"splay.socket"

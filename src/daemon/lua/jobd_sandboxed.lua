@@ -235,8 +235,6 @@ socket = rs.wrap(socket)
 -- Replace socket.core, unload the other
 package.loaded['socket.core'] = socket
 
--- This module requires debug, not allowed in sandbox
-require"splay.coxpcall"
 
 --[[ Sandbox]]--
 
@@ -256,7 +254,6 @@ sandbox.protect_env({
 			"splay.base",
 			"splay.benc",
 			"splay.bits",
-			"splay.coxpcall",
 			"splay.data_bits",
 			"splay.data_bits_core",
 			"splay.events",

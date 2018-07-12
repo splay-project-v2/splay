@@ -73,22 +73,22 @@ local assert = assert
 _M = {}
 
 --[[ DEBUG ]]--
-l_o = log.new(3, "[".._NAME.."]")
+local l_o = log.new(3, "[".._NAME.."]")
 
-in_delay=0
-out_delay=0
-bw_out=nil
-bw_in =nil
+local in_delay=0
+local out_delay=0
+local bw_out=nil
+local bw_in =nil
 --token_bucket_upload   = nil 
 --token_bucket_download = nil 
-TB_RATE = 1
-MAX_BLOCK_SIZE=1024*1024 --1024kilobits/128kilobytes
-do_chopping=false
-global_topology=nil
-current_downloads={}
-current_downloads_counter=0
-raw_topology=nil
-pos=nil
+local TB_RATE = 1
+local MAX_BLOCK_SIZE=1024*1024 --1024kilobits/128kilobytes
+local do_chopping=false
+local global_topology=nil
+local current_downloads={}
+local current_downloads_counter=0
+local raw_topology=nil
+local pos=nil
 --[[
 The dynamic_tree represents the tree rooted at this node. It is initialized
 from the static model sent by the controller. The weights on the edges
@@ -97,12 +97,12 @@ are incremented by one. For every edge used by more than one transfer, a conflic
 resolution process allocates the fair amount of bandwidth to each one.
 The tree is a n-ary tree, where each node can have 0 to N subtrees. 
 ]]--
-dynamic_tree=tree.new()
-BW_SHARING="fair"
+local dynamic_tree=tree.new()
+local BW_SHARING="fair"
 
 --PROTOCOL OVERHEADS, values from http://sd.wareonearth.com/~phil/net/overhead/ 
-TCP_OVERHEAD = 0.949285
-UDP_OVERHEAD = 0.957087
+local TCP_OVERHEAD = 0.949285
+local UDP_OVERHEAD = 0.957087
 --[[ CONFIG ]]--
 local init_done = false
 function _M.init(settings,nodes,topology,my_pos)
@@ -140,20 +140,20 @@ function _M.init(settings,nodes,topology,my_pos)
 				raw_topology=misc.dup(topology) --save it for later
 				global_topology={}
 				for k,t in pairs(topology) do
-					--l_o:debug("Topology infos (pos:"..k..",ip:"..nodes[tonumber(k)].ip..",port:"..nodes[tonumber(k)].port.."):")
+					l_o:debug("Topology infos (pos:"..k..",ip:"..nodes[tonumber(k)].ip..",port:"..nodes[tonumber(k)].port.."):")
 					for dst,infos in pairs(t) do
-						--l_o:debug("Accessing nodes["..dst.."] ")
+						l_o:debug("Accessing nodes["..dst.."] ")
 						if nodes[tonumber(dst)]==nil then
 							l_o:error("Can't read topology informations for node in pos:",dst)
 							break
 						end
-						--l_o:debug(nodes[tonumber(dst)].port)
-						--l_o:debug(nodes[tonumber(dst)].ip)
+						l_o:debug(nodes[tonumber(dst)].port)
+						l_o:debug(nodes[tonumber(dst)].ip)
 					
 						if tonumber(infos[3][1])==my_pos then --keep only local topology informations (other infos can be used for router congestion emulation,requires changing datastructure)
-							--l_o:debug("raw path: ", table.concat(infos[3]," "))
-							--l_o:debug("kbps for hops in path: ", table.concat(infos[4]," "))
-							--l_o:debug("\t",nodes[tonumber(dst)].ip..":"..nodes[tonumber(dst)].port, "delay(ms):"..infos[1], "bw(kbps):"..infos[2].." (Kbps):"..infos[2]/8,"(bytes):"..infos[2]*128)
+							l_o:debug("raw path: ", table.concat(infos[3]," "))
+							l_o:debug("kbps for hops in path: ", table.concat(infos[4]," "))
+							l_o:debug("\t",nodes[tonumber(dst)].ip..":"..nodes[tonumber(dst)].port, "delay(ms):"..infos[1], "bw(kbps):"..infos[2].." (Kbps):"..infos[2]/8,"(bytes):"..infos[2]*128)
 							--infos[2] is in kbps, convert in bytes before initializing bucket
 							local bucket=tb.new(infos[2]*128, infos[2]*128 )
 							local dst_n=nodes[tonumber(dst)]
@@ -176,7 +176,7 @@ function _M.init(settings,nodes,topology,my_pos)
 				end
 			end	
 			
-			--l_o:debug("Tree size: ", dynamic_tree.size())
+			l_o:debug("Tree size: ", dynamic_tree.size())
 			--for k,v in pairs(dynamic_tree.nodes) do
 			--	l_o:debug("Height of "..k.." => ", dynamic_tree.height_node(dynamic_tree.getnode(k)))
 			--end
@@ -184,13 +184,13 @@ function _M.init(settings,nodes,topology,my_pos)
 			bw_out=settings.bw_out or 1024*1024*1024 -- by default 1Gb/sec, unlimited
 			bw_in=settings.bw_in or 1024*1024*1024 -- by default 1Gb/sec, unlimited
 		
-			--l_o:debug("Settings:")
-			--l_o:debug("in_delay:", in_delay)
-			--l_o:debug("out_delay:", out_delay)
-			--l_o:debug("bw_out (max):", (bw_out/1024),"(Kb/s)")
-			--l_o:debug("bw_in (max):", (bw_in/1024),"(Kb/s)")
-			--l_o:debug("MAX_BLOCK_SIZE:",misc.bitcalc(MAX_BLOCK_SIZE).kilobits.."Kb/"..misc.bitcalc(MAX_BLOCK_SIZE).kilobytes.."KB")
-			--l_o:debug("Position:", my_pos)
+			l_o:debug("Settings:")
+			l_o:debug("in_delay:", in_delay)
+			l_o:debug("out_delay:", out_delay)
+			l_o:debug("bw_out (max):", (bw_out/1024),"(Kb/s)")
+			l_o:debug("bw_in (max):", (bw_in/1024),"(Kb/s)")
+			l_o:debug("MAX_BLOCK_SIZE:",misc.bitcalc(MAX_BLOCK_SIZE).kilobits.."Kb/"..misc.bitcalc(MAX_BLOCK_SIZE).kilobytes.."KB")
+			l_o:debug("Position:", my_pos)
 			
 			return true
 		else
@@ -199,15 +199,15 @@ function _M.init(settings,nodes,topology,my_pos)
 end
 function _M.id_from_position(po)
 	for k,v in pairs(global_topology) do
-		--l_o:debug("k="..k,"v="..v.position,"po="..po,type(v.position),type(po))
+		l_o:debug("k="..k,"v="..v.position,"po="..po,type(v.position),type(po))
 		if tonumber(po)==v.position then return k end
 	end
 	return nil
 end
 --add the nodes in the path to the dynamic_tree.
 function _M.add_nodes_to_tree(path,link_capacities)
-	--l_o:debug("Adding nodes to tree from path:", table.concat(path,"-"))
-	--l_o:debug("Hops capacities				 :", table.concat(link_capacities,"-"))
+	l_o:debug("Adding nodes to tree from path:", table.concat(path,"-"))
+	l_o:debug("Hops capacities				 :", table.concat(link_capacities,"-"))
 	local root= path[1]
 	dynamic_tree.addnode(root,nil) --the root	
 	for i=2,#path do
@@ -215,37 +215,37 @@ function _M.add_nodes_to_tree(path,link_capacities)
 	end
 end
 --store all the local graph events 
-tree_events={}
-last_event_idx=0
+local tree_events={}
+local last_event_idx=0
 --when a new upload is starting toward 'node', the tree has to be
 --marked accordingly to check for contention of shared links with 
 --other streams.
 function _M.mark_stream_to(node)
 	local pos_node=tostring(global_topology[node].position)
-	--l_o:debug("Marking stream to ",node, "position:",pos_node)
+	l_o:debug("Marking stream to ",node, "position:",pos_node)
 	local n=dynamic_tree.getnode(pos_node)
 	dynamic_tree.incrementflowto(n,raw_topology)
 	last_event_idx=last_event_idx+1
 	local plus_ev="+ "..table.concat(dynamic_tree.pathtoroot(n)," ")
 	tree_events[last_event_idx]=plus_ev	
-	--l_o:debug("Last Added event:", plus_ev)	
+	l_o:debug("Last Added event:", plus_ev)	
 	adjust_rates()
-	--l_o:debug("TB Rates adjusted")	
+	l_o:debug("TB Rates adjusted")	
 end
 --when an upload toward 'node' finishes, the tree has to be
 --marked accordingly to check for contention of shared links with 
 --other streams.
 function _M.unmark_stream_to(node)
 	local pos_node=tostring(global_topology[node].position)
-	--l_o:debug("UnMarking stream to ",node, "position:",pos_node)
+	l_o:debug("UnMarking stream to ",node, "position:",pos_node)
 	local n=dynamic_tree.getnode(pos_node)
 	dynamic_tree.decrementflowto(n, raw_topology)	
 	last_event_idx=last_event_idx+1
 	local less_ev="- "..table.concat(dynamic_tree.pathtoroot(n)," ")
 	tree_events[last_event_idx]=less_ev
-	--l_o:debug("Last Added event:", less_ev)
+	l_o:debug("Last Added event:", less_ev)
 	adjust_rates()
-	--l_o:debug("TB Rates adjusted")
+	l_o:debug("TB Rates adjusted")
 end
 
 function _M.handle_tree_change_event(tevent)
@@ -260,7 +260,7 @@ function _M.handle_tree_change_event(tevent)
 		f(dynamic_tree.getnode(tevent[i]),dynamic_tree.getnode(tevent[i-1]),flowdest, flowsource, raw_topology)		
 	end
 	adjust_rates()
-	--l_o:debug("TB Rates adjusted")
+	l_o:debug("TB Rates adjusted")
 end
 
 --adjust BW rates to LEAVES nodes
@@ -269,9 +269,9 @@ function _M.adjust_rates()
 	for leaf,v in pairs(leaves) do
 		local lid=id_from_position(leaf)
 		local current_rate_to_leaf= global_topology[lid][6]		
-		--l_o:debug("[adjust-rates] Current rate to leaf "..lid,current_rate_to_leaf, "Kb:"..misc.bitcalc(current_rate_to_leaf).kilobits,"Mb:"..misc.bitcalc(current_rate_to_leaf).megabits )
+		l_o:debug("[adjust-rates] Current rate to leaf "..lid,current_rate_to_leaf, "Kb:"..misc.bitcalc(current_rate_to_leaf).kilobits,"Mb:"..misc.bitcalc(current_rate_to_leaf).megabits )
 		local max_rate_to_leaf= global_topology[lid][2]	
-		--l_o:debug("[adjust-rates] MAX     rate to leaf "..lid,max_rate_to_leaf,"Kb:"..misc.bitcalc(max_rate_to_leaf).kilobits,"Mb:"..misc.bitcalc(max_rate_to_leaf).megabits )
+		l_o:debug("[adjust-rates] MAX     rate to leaf "..lid,max_rate_to_leaf,"Kb:"..misc.bitcalc(max_rate_to_leaf).kilobits,"Mb:"..misc.bitcalc(max_rate_to_leaf).megabits )
 		local max_bw_available_to_bw
 		
 		local args={lid=lid,leaf=leaf,topology=global_topology,raw_topology=raw_topology}
@@ -283,7 +283,7 @@ function _M.adjust_rates()
 			max_bw_available_to_bw= dynamic_tree.unfairmaxavailbwto(dynamic_tree.getnode(leaf),args)
 		end
 		local max_rate_allowed= math.min( max_rate_to_leaf, max_bw_available_to_bw)	
-		--l_o:debug("[adjust-rates] MAX rate allowed to leaf "..lid, max_rate_allowed )	
+		l_o:debug("[adjust-rates] MAX rate allowed to leaf "..lid, max_rate_allowed )	
 		--TODO to distinguish TCP/UDP and associated overheads the DCM protocol must ship the type of
 		--the traffic associated with a given flow. for now let's stick with TCP...
 		--TODO consider TCP-ReverseACK load on revese link
@@ -305,7 +305,7 @@ local function udp_sock_wrapper(sock)
 	local mt = {
 		__index = function(table, key)
 			return function(self, ...)
-				--l_o:debug("udp."..key.."()")
+				l_o:debug("udp."..key.."()")
 				return sock[key](sock, ...)
 			end
 		end,
@@ -327,7 +327,7 @@ local function udp_sock_wrapper(sock)
 			end
 			local data, msg = sock:receive(...)
 		
-			--l_o:debug("receive",data,msg)
+			l_o:debug("receive",data,msg)
 			accept_datagram=true
 		
 			if not accept_datagram then
@@ -369,17 +369,17 @@ local function udp_sock_wrapper(sock)
 			local delay=out_delay --default value, specific for this node and for any outgoing message
 			local bw=bw_out
 			local peer_ip,peer_port=self:getpeername()
-			--l_o:debug("Socket peername:",peer_ip..":"..peer_port)		
+			l_o:debug("Socket peername:",peer_ip..":"..peer_port)		
 			local dst=peer_ip..":"..peer_port
 			if global_topology[dst]~=nil then
-				--l_o:debug("Emulating connection with delay and kbps:",global_topology[dst][1],global_topology[dst][2])
+				l_o:debug("Emulating connection with delay and kbps:",global_topology[dst][1],global_topology[dst][2])
 				delay=tonumber(global_topology[dst][1]/1000.0)
-				--l_o:debug("Delay toward "..dst.." "..delay.."(s)")
+				l_o:debug("Delay toward "..dst.." "..delay.."(s)")
 				--convert kbps to Kbps
 				bw=global_topology[dst][2]/8	
-				--l_o:debug("BW toward (kbps/Kbps)"..dst,global_topology[dst][2],bw)	
+				l_o:debug("BW toward (kbps/Kbps)"..dst,global_topology[dst][2],bw)	
 			end
-			--l_o:debug("udp.send()")
+			l_o:debug("udp.send()")
 			if delay>0 then
 				local w0=misc.time()
 				local ok, r = coroutine.yield("event:sleep", delay) --tied to splay "event:sleep" event
@@ -394,25 +394,25 @@ local function udp_sock_wrapper(sock)
 	if sock.sendto then
 		
 		new_sock.sendto = function(self, data, ip, port)
-			--l_o:debug("udp.sendto()")
-			--l_o:debug("sendto,  "..ip..":"..port)
+			l_o:debug("udp.sendto()")
+			l_o:debug("sendto,  "..ip..":"..port)
 			local delay=out_delay --default value, specific for this node and for any outgoing message
 			local bw=bw_out
 			local dst=ip..":"..port
 			local dest_tb=nil -- token_bucket for the partner
 			if global_topology[dst]~=nil then  --on UDP, ack packets are sent on different PORT 			
-				--l_o:debug("Emulating connection with delay and kbps:",global_topology[dst][1],global_topology[dst][2])
+				l_o:debug("Emulating connection with delay and kbps:",global_topology[dst][1],global_topology[dst][2])
 				delay=tonumber(global_topology[dst][1]/1000.0)
-				--l_o:debug("Delay toward "..dst.." "..delay.."(s)")
+				l_o:debug("Delay toward "..dst.." "..delay.."(s)")
 				--convert kbps to Kbp/s
 				bw=global_topology[dst][2]/8	
-				--l_o:debug("BW toward (kbps/Kbps)"..dst,global_topology[dst][2],bw)
+				l_o:debug("BW toward (kbps/Kbps)"..dst,global_topology[dst][2],bw)
 				
 				dest_tb=global_topology[dst][3]
 				local data_bytes=#data
 				local expected_upload_time=(data_bytes/1024)/bw --in seconds
 
-				--l_o:debug(">",ip,port,"BW (Kbps)=",bw,"data Kbytes=",data_bytes/1024)
+				l_o:debug(">",ip,port,"BW (Kbps)=",bw,"data Kbytes=",data_bytes/1024)
 				
 				local ris, err = nil
 				local sent=false
@@ -422,7 +422,7 @@ local function udp_sock_wrapper(sock)
 				while not sent do --
 					--if there are enough tokens, send it, otherwise wait for the next round
 					if dest_tb.consume(data_bytes) then --try to consume #(data_bytes) token
-						--l_o:debug("Got tokens:",dest_tb.get_tokens())	
+						l_o:debug("Got tokens:",dest_tb.get_tokens())	
 						--got tokens, now emulate latency before sending over the wire
 						if delay >0 then
 							local w0=misc.time()
@@ -441,7 +441,7 @@ local function udp_sock_wrapper(sock)
 				end
 				--local w1=misc.time()
 				--local eff_upload_time=w1-w0
-				--l_o:debug("udp.sendto() ideal upload_time:",expected_upload_time," effective_upload_time:",eff_upload_time,"RATIO UP_EFF/UP_IDEAL:",(eff_upload_time/expected_upload_time))
+				l_o:debug("udp.sendto() ideal upload_time:",expected_upload_time," effective_upload_time:",eff_upload_time,"RATIO UP_EFF/UP_IDEAL:",(eff_upload_time/expected_upload_time))
 				return ris, err
 			else
 				--no mappings in the global_topology, send rightaway
@@ -493,7 +493,7 @@ local function tcp_sock_wrapper(sock)
 	local mt = {
 		__index = function(table, key)
 			return function(self, ...)
-				--l_o:debug("tcp."..key.."()")
+				l_o:debug("tcp."..key.."()")
 				return sock[key](sock, ...)
 			end
 		end,
@@ -511,15 +511,15 @@ local function tcp_sock_wrapper(sock)
 		speed.
 		]]
 		new_sock.receive = function(self, pattern, prefix,start_time)			
-			--l_o:debug("tcp.receive()")
+			l_o:debug("tcp.receive()")
 			if in_delay>0 then
 				local w0=misc.time()
 				local ok, r = coroutine.yield("event:sleep", in_delay)
 				local w1=misc.time()
-				--l_o:debug("tcp.receive(), effective in_delay:",w1-w0)
+				l_o:debug("tcp.receive(), effective in_delay:",w1-w0)
 			end			
 			
-			--l_o:debug("Receiving data from", self:getpeername())
+			l_o:debug("Receiving data from", self:getpeername())
 			
 			local data, msg, partial = sock:receive(pattern, prefix)
 			return data, msg, partial
@@ -528,11 +528,11 @@ local function tcp_sock_wrapper(sock)
 	
 	if sock.send then
 		new_sock.send = function(self, data, start, stop)
-			--l_o:debug("tcp.send()",data,start,stop)			
+			l_o:debug("tcp.send()",data,start,stop)			
 			local delay=out_delay 
 
 			local peer_ip,peer_port=self:getpeername()
-			--l_o:debug("Socket peername:",peer_ip..":"..peer_port)		
+			l_o:debug("Socket peername:",peer_ip..":"..peer_port)		
 			local dst=peer_ip..":"..peer_port
 			--when server  socket sends back ACK on splay RPC, the destination is 
 			--the client_socket which is not known in advance for TCP or default UDP, answer sent back at raw speed.
@@ -549,7 +549,7 @@ local function tcp_sock_wrapper(sock)
 				nature of the TCP sockets.
 				--]]
 				delay=tonumber(global_topology[dst][1]/1000.0) * 2 
-				--l_o:debug("Delay toward "..dst.." "..delay.."(ms)")							
+				l_o:debug("Delay toward "..dst.." "..delay.."(ms)")							
 				if delay>0 then
 					local w0=misc.time()
 					local ok, r = coroutine.yield("event:sleep", delay) --tied to splay "event:sleep" event
@@ -561,7 +561,7 @@ local function tcp_sock_wrapper(sock)
 			local data_bytes=#data
 			l_o:debug("Total bytes to send:", data_bytes)					
 			local n=start			
-			--l_o:debug("Start index: ", n)			
+			l_o:debug("Start index: ", n)			
 			--START BANDWIDTH LIMITATION			
 			if global_topology[dst]~=nil then 
 				mark_stream_to(dst) --useful for DCM
@@ -579,12 +579,12 @@ local function tcp_sock_wrapper(sock)
 					tbu.get_tokens()
 				
 					if do_chopping then
-						--l_o:debug("Chopping. Datasize:",misc.bitcalc(size).kilobits,"Kb", "Chopsize:",misc.bitcalc(MAX_BLOCK_SIZE).kilobits,"Kb")
+						l_o:debug("Chopping. Datasize:",misc.bitcalc(size).kilobits,"Kb", "Chopsize:",misc.bitcalc(MAX_BLOCK_SIZE).kilobits,"Kb")
 						local chops_counter=0  
 						while size > 0 do
 							l_o:debug("Remaining data to send bytes: "..size, "Kb: "..misc.bitcalc(size).kilobits,"current-chop:", chops_counter)
 							local s=n --beginning of this block
-							--l_o:debug("Block start index:", s)
+							l_o:debug("Block start index:", s)
 							local block_to_send= math.ceil(math.min(MAX_BLOCK_SIZE, size))
 							l_o:debug("SIZE of BLOCK block-to-snd:", block_to_send)
 							l_o:debug("SEND INDICES", "i: ".. n, "j: "..n+block_to_send)									
@@ -607,9 +607,9 @@ local function tcp_sock_wrapper(sock)
 								end
 							end							
 						end
-						--l_o:debug("chops_counter sent:", chops_counter)
+						l_o:debug("chops_counter sent:", chops_counter)
 					else
-						--l_o:debug("No Chopping. Datasize:",misc.bitcalc(size).kilobits.."Kb")
+						l_o:debug("No Chopping. Datasize:",misc.bitcalc(size).kilobits.."Kb")
 						local s=n
 						--no more than #data, at most #size bytes sent
 						local block_to_send=math.ceil(math.min(data_bytes,size))
@@ -641,14 +641,14 @@ local function tcp_sock_wrapper(sock)
 			--END BANDWIDTH LIMITATION
 			
 			--n, status,last = sock:send(data,start, stop) --use to debug vanilla
-			--l_o:debug("returning ",#data,status,last)
+			l_o:debug("returning ",#data,status,last)
 			return #data,status,last
 		end
 	end
 
 	if sock.connect then
 		new_sock.connect = function(self, ip, port)
-			--l_o:debug("tcp.connect("..ip..", "..tostring(port)..")")
+			l_o:debug("tcp.connect("..ip..", "..tostring(port)..")")
 			assert(ip,"IP to sock:connect(..) is nil")
 			assert(port,"Port to sock:connect(..) is nil")
 			--[[
@@ -661,14 +661,14 @@ local function tcp_sock_wrapper(sock)
 				nature of the TCP sockets.
 				--]]
 				delay=tonumber(global_topology[dst][1]/1000.0)
-				--l_o:debug("Delay toward "..dst.." "..delay.."(ms)")
+				l_o:debug("Delay toward "..dst.." "..delay.."(ms)")
 			
 				if delay~=nil and delay>0 then
 					local w0=misc.time()
 					local ok, r = coroutine.yield("event:sleep", delay) --tied to splay "event:sleep" event
 					local w1=misc.time()
 					local eff_delay=w1-w0
-					--l_o:debug("tcp.connect(), effective delay:",eff_delay,"RATIO_EFF_DELAY:",(eff_delay/delay))
+					l_o:debug("tcp.connect(), effective delay:",eff_delay,"RATIO_EFF_DELAY:",(eff_delay/delay))
 				end
 			end
 			local s, m = sock:connect(ip, port)
@@ -679,19 +679,19 @@ local function tcp_sock_wrapper(sock)
 	--this function doesn't generate any traffic on the network
 	if sock.bind then
 		new_sock.bind = function(self, address, port, backlog)
-			--l_o:debug("tcp.bind("..address..", "..tostring(port)..")")
+			l_o:debug("tcp.bind("..address..", "..tostring(port)..")")
 			return sock:bind(address, port, backlog)
 		end
 	end
 
 	if sock.close then
 		new_sock.close = function(self)
-			--l_o:debug("tcp.close()")
+			l_o:debug("tcp.close()")
 
 			if not sock:getsockname() then
 				l_o:notice("Closing an already closed socket.")
 			else
-				--l_o:debug("Peer closed, total TCP sockets: "..total_tcp_sockets)
+				l_o:debug("Peer closed, total TCP sockets: "..total_tcp_sockets)
 				sock:close()
 			end
 		end
@@ -702,7 +702,7 @@ local function tcp_sock_wrapper(sock)
 	-- can't call the same function internally)
 	if sock.accept then
 		new_sock.accept = function(self)
-			--l_o:debug("tcp.accept()")			
+			l_o:debug("tcp.accept()")			
 			-- We must accept the client first, if not, socket.select() will
 			-- select it every time we don't take it, but if the number of
 			-- socket is too high, we will close the socket immediately.
@@ -712,7 +712,7 @@ local function tcp_sock_wrapper(sock)
 			if accept_connection then 	return tcp_sock_wrapper(s)
 			else return nil, err end
 			
-			--l_o:debug("New peer: "..s:getpeername())
+			l_o:debug("New peer: "..s:getpeername())
 			return tcp_sock_wrapper(s)
 		end
 	end	
@@ -734,7 +734,7 @@ function _M.wrap(sock)
 		-- (sock) can't be taken from the metatable.
 		--mt.__index = sock
 		__index = function(table, key)
-			--l_o:debug("sock."..key.."()")
+			l_o:debug("sock."..key.."()")
 			return sock[key]
 		end,
 		__tostring = function()
@@ -756,7 +756,7 @@ function _M.wrap(sock)
 	end
 	
 	topo_sock.udp = function()
-		--l_o:debug("udp()")
+		l_o:debug("udp()")
 		local sudp, err = sock.udp()
 		
 		if not sudp then
@@ -767,7 +767,7 @@ function _M.wrap(sock)
 	end
 	
 	topo_sock.tcp = function()
-		--l_o:debug("tcp()")
+		l_o:debug("tcp()")
 		local stcp, err = sock.tcp()
 		if not stcp then
 			return nil, err

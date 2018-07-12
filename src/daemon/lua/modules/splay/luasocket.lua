@@ -60,7 +60,7 @@ _M._VERSION     = 1.0
 _M._NAME = "luasocket"
 
 --[[ DEBUG ]]--
-l_o = log.new(3, "[".._M._NAME.."]")
+local l_o = log.new(3, "[".._M._NAME.."]")
 
 --[[
 Set use_async_dns=false to use the default LuaSocket's blocking DNS resolution.
@@ -176,7 +176,7 @@ function _M.wrap(socket, err)
 					elseif field=='ptr' then full.name=first end
 					full.alias={} --TODO
 					full.ip={}
-					--l_o:debug("Content of full.answer, to be filled in full.ip:")
+					l_o:debug("Content of full.answer, to be filled in full.ip:")
 					for k,v in pairs(full.answer) do
 						full.ip[k]= v[field]
 					end

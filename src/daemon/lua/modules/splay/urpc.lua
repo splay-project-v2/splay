@@ -234,14 +234,14 @@ end
 local function sender(s)
 	while true do
 
-		--_M.l_o:debug("sender() loop")
+		_M.l_o:debug("sender() loop")
 		local q = {}
 		local now, next_wakeup = misc.time()
 
 		for key, data in pairs(messages) do
 			if data.next_try <= now then
 			
-				--_M.l_o:debug("try", data.nb_try, data.key)
+				_M.l_o:debug("try", data.nb_try, data.key)
 
 				-- add to the send queue
 				q[#q + 1] = misc.dup(data)
@@ -276,10 +276,10 @@ local function sender(s)
 		end
 
 		if next_wakeup then
-			--_M.l_o:debug("wait", next_wakeup - now)
+			_M.l_o:debug("wait", next_wakeup - now)
 			events.wait("urpc:sender", next_wakeup - now)
 		else
-			--_M.l_o:debug("wait")
+			_M.l_o:debug("wait")
 			events.wait("urpc:sender")
 		end
 	end

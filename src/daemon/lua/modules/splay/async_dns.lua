@@ -22,7 +22,7 @@ along with Splayd. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
 -- Original  code from lua@ztact.com
--- Modified by Prosody IM http://hg.prosody.im/trunk/raw-file/tip/net/dns.lua
+-- Modified by Prosody IM http://hg.prosody.im/trunk/raw-file/tip/net/_M.lua
 
 -- reference: http://tools.ietf.org/html/rfc1035
 -- reference: http://tools.ietf.org/html/rfc1876 (LOC)
@@ -41,12 +41,13 @@ local misc = require"splay.misc"
 local log = require"splay.log"
 
 --module('splay.async_dns')
-local dns = {} --return this table, usually _M
+local _M = {} --return this table, usually _M
 
-dns._DESCRIPTION = "A pure-Lua DNS protocol implementation"
-dns.VERSION = 1.0
-dns._NAME = "splay.async_dns"
-dns.l_o = log.new(3, "["..dns._NAME.."]")
+_M._DESCRIPTION = "A pure-Lua DNS protocol implementation"
+_M.VERSION = 1.0
+_M._NAME = "splay.async_dns"
+
+local l_o = log.new(3, "[".._M._NAME.."]")
 
 local default_timeout = 15
 
@@ -74,14 +75,14 @@ function set (parent, ...)    --- - - - - - - - - - - - - - - - - - - - - - set
 
 function get (parent, ...)    --- - - - - - - - - - - - - - - - - - - - - - get
 	local len = select ('#', ...)
-	--l_o:debug("get() - len:", len)
+	l_o:debug("get() - len:", len)
 	for i=1,len do
 	  parent = parent[select (i, ...)]
 	  if parent == nil then  break  end
 	end
-	--l_o:debug("get() parent:")
-	--l_o:debug( parent )
-	--l_o:debug("get() -- end print parent")
+	l_o:debug("get() parent: ")
+	l_o:debug( parent )
+	l_o:debug("get() -- end print parent")
 	return parent
 end
 
@@ -115,24 +116,23 @@ local function encode (t)    -- - - - - - - - - - - - - - - - - - - - -  encode
 	return code;
 end
 
-dns.types = {
+_M.types = {
 	'A', 'NS', 'MD', 'MF', 'CNAME', 'SOA', 'MB', 'MG', 'MR', 'NULL', 'WKS',
 	'PTR', 'HINFO', 'MINFO', 'MX', 'TXT',
 	[ 28] = 'AAAA', [ 29] = 'LOC',   [ 33] = 'SRV',
 	[252] = 'AXFR', [253] = 'MAILB', [254] = 'MAILA', [255] = '*' };
 
 
-dns.classes = { 'IN', 'CS', 'CH', 'HS', [255] = '*' };
-
-dns.type      = augment (dns.types);
-dns.class     = augment (dns.classes);
-dns.typecode  = encode  (dns.types);
-dns.classcode = encode  (dns.classes);
+_M.classes = { 'IN', 'CS', 'CH', 'HS', [255] = '*' };
+_M.type      = augment (_M.types);
+_M.class     = augment (_M.classes);
+_M.typecode  = encode  (_M.types);
+_M.classcode = encode  (_M.classes);
 
 local function standardize(qname, qtype, qclass)    -- - - - - - - standardize
 	if string.byte(qname, -1) ~= 0x2E then qname = qname..'.';  end
 	qname = string.lower(qname);
-	return qname, dns.type[qtype or 'A'], dns.class[qclass or 'IN'];
+	return qname, _M.type[qtype or 'A'], _M.class[qclass or 'IN'];
 end
 
 local function prune(rrs, time, soft)    -- - - - - - - - - - - - - - -  prune
@@ -222,16 +222,16 @@ end
 -- packet layer -------------------------------------------------- packet layer
 
 
-function dns.random(...)    -- - - - - - - - - - - - - - - - - - -  dns.random
+function _M.random(...)    -- - - - - - - - - - - - - - - - - - -  _M.random
 	math.randomseed(math.floor(10000*misc.time()));
-	dns.random = math.random;
-	return dns.random(...);
+	_M.random = math.random;
+	return _M.random(...);
 end
 
 
 local function encodeHeader(o)    -- - - - - - - - - - - - - - -  encodeHeader
 	o = o or {};
-	o.id = o.id or dns.random(0, 0xffff); -- 16b	(random) id
+	o.id = o.id or _M.random(0, 0xffff); -- 16b	(random) id
 
 	o.rd = o.rd or 1;		--  1b  1 recursion desired
 	o.tc = o.tc or 0;		--  1b	1 truncated response
@@ -285,8 +285,8 @@ end
 
 local function encodeQuestion(qname, qtype, qclass)    -- - - - encodeQuestion
 	qname  = encodeName(qname);
-	qtype  = dns.typecode[qtype or 'a'];
-	qclass = dns.classcode[qclass or 'in'];
+	qtype  = _M.typecode[qtype or 'a'];
+	qclass = _M.classcode[qclass or 'in'];
 	return qname..qtype..qclass;
 end
 
@@ -378,8 +378,8 @@ end
 function resolver:question()    -- - - - - - - - - - - - - - - - - -  question
 	local q = {};
 	q.name  = self:name();
-	q.type  = dns.type[self:word()];
-	q.class = dns.class[self:word()];
+	q.type  = _M.type[self:word()];
+	q.class = _M.class[self:word()];
 	return q;
 end
 
@@ -493,8 +493,8 @@ function resolver:rr()    -- - - - - - - - - - - - - - - - - - - - - - - -  rr
 	local rr = {};
 	setmetatable(rr, rr_metatable);
 	rr.name     = self:name(self);
-	rr.type     = dns.type[self:word()] or rr.type;
-	rr.class    = dns.class[self:word()] or rr.class;
+	rr.type     = _M.type[self:word()] or rr.type;
+	rr.class    = _M.class[self:word()] or rr.class;
 	rr.ttl      = 0x10000*self:word() + self:word();
 	rr.rdlength = self:word();
 
@@ -505,7 +505,7 @@ function resolver:rr()    -- - - - - - - - - - - - - - - - - - - - - - - -  rr
 	--end
 
 	local remember = self.offset;
-	local rr_parser = self[dns.type[rr.type]];
+	local rr_parser = self[_M.type[rr.type]];
 	if rr_parser then rr_parser(self, rr); end
 	self.offset = remember;
 	rr.rdata = self:sub(rr.rdlength);
@@ -532,7 +532,7 @@ function resolver:decode(packet, force)    -- - - - - - - - - - - - - - decode
 		append(response.question, self:question());
 	end
 	response.question.raw = string.sub(self.packet, offset, self.offset - 1);
-	--l_o:debug("decode() response.question.raw", response.question.raw)
+	l_o:debug("decode() response.question.raw", response.question.raw)
 	if not force then
 		if not self.active[response.header.id] or not self.active[response.header.id][response.question.raw] then
 			return nil;
@@ -601,7 +601,7 @@ function resolver:remember(rr, type)    -- - - - - - - - - - - - - -  remember
 	if type ~= '*' then
 		type = qtype
 		local all = get(self.cache, qclass, '*', qname);
-		--l_o:debug('remember all', all);
+		l_o:debug('remember all', all);
 		if all then append(all, rr); end
 	end
 
@@ -620,14 +620,14 @@ end
 
 
 function resolver:peek(qname, qtype, qclass)    -- - - - - - - - - - - -  peek
-	--l_o:debug("resolver:peek", qname, qtype, qclass)
+	l_o:debug("resolver:peek", qname, qtype, qclass)
 	qname, qtype, qclass = standardize(qname, qtype, qclass)
-	--l_o:debug("peek(), self.cache:", self.cache)
+	l_o:debug("peek(), self.cache:", self.cache)
 	local rrs = get(self.cache, qclass, qtype, qname)
-	--l_o:debug("peek(), rrs: ", rrs)
+	l_o:debug("peek(), rrs: ", rrs)
 	if not rrs then return nil end
 	if prune(rrs, misc.time()) and qtype == '*' or not next(rrs) then
-		--l_o:debug("call set() from peek()")
+		l_o:debug("call set() from peek()")
 		set(self.cache, qclass, qtype, qname, nil)
 		return nil
 	end
@@ -663,8 +663,8 @@ local hints = {    -- - - - - - - - - - - - - - - - - - - - - - - - - - - hints
 	z  = { [0]='(reserved)' },
 	rcode = { [0]='no error', 'format error', 'server failure', 'name error', 'not implemented' },
 
-	type = dns.type,
-	class = dns.class
+	type = _M.type,
+	class = _M.class
 };
 
 
@@ -714,15 +714,15 @@ end
 function resolver:decode_and_cache(packet)
 	if packet then
 		response = self:decode(packet,true)
-		--l_o:debug("response", response)
-		--l_o:debug("response.question.raw",response.question.raw)
-		--l_o:debug("self.active[response.header.id]", self.active[response.header.id])
-		--l_o:debug("self.active[response.header.id][response.question.raw]", self.active[response.header.id][response.question.raw])
+		l_o:debug("response", response)
+		l_o:debug("response.question.raw",response.question.raw)
+		l_o:debug("self.active[response.header.id]", self.active[response.header.id])
+		l_o:debug("self.active[response.header.id][response.question.raw]", self.active[response.header.id][response.question.raw])
 		if response and self.active[response.header.id]
 			and self.active[response.header.id][response.question.raw] then
 			for j,rr in pairs(response.answer) do
 				if rr.name:sub(-#response.question[1].name, -1) == response.question[1].name then
-					--l_o:debug("Remembering ", rr, response.question[1].type)
+					l_o:debug("Remembering ", rr, response.question[1].type)
 					self:remember(rr, response.question[1].type)
 				end
 			end
@@ -738,14 +738,14 @@ function resolver:decode_and_cache(packet)
 end
 
 function resolver:encode_q(qname, qtype, qclass)
-	--l_o:debug("resolver:encode_q", qname, qtype, qclass)
+	l_o:debug("resolver:encode_q", qname, qtype, qclass)
 	qname, qtype, qclass = standardize(qname, qtype, qclass)
 	local peek = self:peek(qname, qtype, qclass)
 	if peek then 
-		--l_o:debug("Result of DNS Query from cache.",peek)
+		l_o:debug("Result of DNS Query from cache.",peek)
 		return peek,true 
 	end
-	--l_o:debug("Respose not in cache, peek failed.")
+	l_o:debug("Respose not in cache, peek failed.")
 	if not self.server then self:adddefaultnameservers() end
 	
 	local question = encodeQuestion(qname, qtype, qclass)
@@ -768,7 +768,7 @@ end
 
 -- module api ------------------------------------------------------ module api
 
-function dns.resolver()    -- - - - - - - - - - - - - - - - - - - - - resolver
+function _M.resolver()    -- - - - - - - - - - - - - - - - - - - - - resolver
 	local r = { active = {}, cache = {}, unsorted = {}, wanted = {}, yielded = {}, best_server = 1 };
 	setmetatable (r, resolver);
 	setmetatable (r.cache, cache_metatable);
@@ -776,16 +776,16 @@ function dns.resolver()    -- - - - - - - - - - - - - - - - - - - - - resolver
 	return r;
 end
 
-local _resolver = dns.resolver();
-dns._resolver = _resolver;
+local _resolver = _M.resolver();
+_M._resolver = _resolver;
 
-function dns.encode_q(q,t)
-	l_o:debug("dns.encode_q", q, t)
+function _M.encode_q(q,t)
+	l_o:debug("_M.encode_q", q, t)
 	return _resolver.encode_q(q,t)
 end
-function dns.decode_q(r)
-	l_o:debug("dns.decode_q",r)
+function _M.decode_q(r)
+	l_o:debug("_M.decode_q",r)
 	return _resolver.decode_and_cache(r)
 end
 
-return dns
+return _M

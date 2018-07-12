@@ -37,7 +37,7 @@ _M._DESCRIPTION = "Network related functions, objects, .."
 _M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-_M.l_o = log.new(3, "[splay.net]")
+local l_o = log.new(3, "[splay.net]")
 
 _M.settings = {
 	timeout = 600,
@@ -68,7 +68,7 @@ local function async(sc, handler, s_s, connect)
 		if handler.initialize then
 			local ok, msg = pcall(function() handler.initialize(sc, connect) end)
 			if not ok or msg == false then init = false end
-			if not ok then _M.l_o:warning("async initialize: "..msg) end
+			if not ok then l_o:warning("async initialize: "..msg) end
 		end
 
 		if init then
@@ -76,7 +76,7 @@ local function async(sc, handler, s_s, connect)
 			if handler.receive then
 				t_r = events.thread(function()
 					local ok, msg = pcall(function() handler.receive(sc, connect) end)
-					if not ok then _M.l_o:warning("async receive: "..msg) end
+					if not ok then l_o:warning("async receive: "..msg) end
 					events.fire("net:wait_"..sc_string)
 				end)
 			end
@@ -94,11 +94,11 @@ local function async(sc, handler, s_s, connect)
 				events.kill({t_r, t_s})
 			end
 			
-			_M.l_o:notice("async end: "..sc_string)
+			l_o:notice("async end: "..sc_string)
 
 			if handler.finalize then
 				local ok, msg = pcall(function() handler.finalize(sc, connect) end)
-				if not ok then _M.l_o:warning("async finalize: "..msg) end
+				if not ok then l_o:warning("async finalize: "..msg) end
 			end
 		end
 
@@ -147,7 +147,7 @@ function _M.server(port, handler, max, filter, backlog)
 	if filter and type(filter) ~= "function" then
 		no_close = filter
 		filter = nil
-		_M.l_o:warn("net.server() option 'no_close' is no more supported, check doc")
+		l_o:warn("net.server() option 'no_close' is no more supported, check doc")
 	end
 	local ip="*"
 	if type(port) == "table" then
@@ -155,9 +155,9 @@ function _M.server(port, handler, max, filter, backlog)
 		port = port.port
 	end
 	local s, err = socket.bind(ip, port, backlog)
-	_M.l_o:debug("socket.bind successful on ",ip, port)
+	l_o:debug("socket.bind successful on ",ip, port)
 	if not s then
-		_M.l_o:warn("server bind("..port.."): "..err)
+		l_o:warn("server bind("..port.."): "..err)
 		return nil, err
 	end
 	if _s_s[port] then
@@ -169,9 +169,9 @@ function _M.server(port, handler, max, filter, backlog)
 		if max then s_s = events.semaphore(max) end
 		while true do
 			if s_s then s_s:lock() end
-			--_M.l_o:debug("Server socket on accept()",tostring(s))
+			l_o:debug("Server socket on accept()",tostring(s))
 			local sc, err = s:accept()
-			--_M.l_o:debug("Server socket accepted incoming connection", sc:getpeername(), err)			
+			l_o:debug("Server socket accepted incoming connection", sc:getpeername(), err)			
 			if sc then
 				local ok = true
 				
@@ -179,16 +179,16 @@ function _M.server(port, handler, max, filter, backlog)
 					local ip, port = sc:getpeername()
 					ok = filter(ip, port)
 					if not ok then
-						_M.l_o:notice("Refused by filter", ip, port)
+						l_o:notice("Refused by filter", ip, port)
 					end
 				end
 				if ok then
 					_s_s[port].clients[sc] = true
 					if type(handler) == "function" then
-						--_M.l_o:debug("Preparing thread for rpc_handler..")
+						l_o:debug("Preparing thread for rpc_handler..")
 						events.thread(function()
 							local ok, msg = pcall(function() handler(sc) end)
-							if not ok then _M.l_o:warning("handler: "..msg) end
+							if not ok then l_o:warning("handler: "..msg) end
 							if _s_s[port] then
 								_s_s[port].clients[sc] = nil
 							end
@@ -209,11 +209,11 @@ function _M.server(port, handler, max, filter, backlog)
 			else
 				if s_s then s_s:unlock() end
 				if _s_s[port].stop then
-					_M.l_o:warn("server on port "..port.." stopped")
+					l_o:warn("server on port "..port.." stopped")
 					_s_s[port] = nil
 					break
 				else
-					_M.l_o:warn("server accept(): "..err)
+					l_o:warn("server accept(): "..err)
 				end
 				events.yield()
 			end

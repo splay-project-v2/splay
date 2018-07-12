@@ -107,14 +107,13 @@ local tostring = tostring
 local unpack = table.unpack
 local time = misc.time
 
---module("splay.events")
 local _M={}
 _M._COPYRIGHT   = "Copyright 2006 - 2011"
 _M._DESCRIPTION = "Generic events dispatcher with timeouts using LuaSocket select()"
 _M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-l_o = log.new(4, "[splay.events]")
+local l_o = log.new(4, "[splay.events]")
 
 ----------------------------------------[[ LOCKS ]]--
 

@@ -31,7 +31,7 @@ local _M = {}
 _M._COPYRIGHT   = "Copyright 2006 - 2011"
 _M._DESCRIPTION = "Bits manipulation"
 _M._VERSION     = 1.0
-_M.l_o = log.new(3, "[splay.bits")
+local l_o = log.new(3, "[splay.bits")
 
 function _M.init(bits, size)
 	for i = 1, size do

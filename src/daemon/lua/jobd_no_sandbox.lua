@@ -216,8 +216,6 @@ socket = rs.wrap(socket)
 package.loaded['socket.core'] = socket
 
 -- This module requires debug, not allowed in sandbox
-require"splay.coxpcall"
-
 
 splay_code_function, err = load(job.code, "job code")
 job.code = nil -- to free some memory

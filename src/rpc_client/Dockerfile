@@ -14,6 +14,6 @@ ADD commands/* ./
 ADD lib ./lib
 ADD install_check.lua ./
 ADD sample.lua ./
-ADD ./applications ./app
+ADD ./app ./app
 
 RUN lua install_check.lua

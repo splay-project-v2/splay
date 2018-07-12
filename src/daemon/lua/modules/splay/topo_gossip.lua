@@ -7,13 +7,13 @@ local log = require"splay.log"
 local misc= require"splay.misc"
 _M = {}
 --[[ DEBUG ]]--
-l_o = log.new(3, "[topo_gossip]")
+local l_o = log.new(3, "[topo_gossip]")
 
-nodes=nil
-me=nil
-gossip_udp_port=nil
-u=nil
-last_proposed=nil
+local nodes=nil
+local me=nil
+local gossip_udp_port=nil
+local u=nil
+local last_proposed=nil
 
 function _M.same_peer(a,b)
 	return a.ip == b.ip and a.port == b.port

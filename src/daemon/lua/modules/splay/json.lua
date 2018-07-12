@@ -33,7 +33,7 @@ local _M = {}
 _M._DESCRIPTION = "Json send and receive functions (socket wrapper) for Json4Lua"
 _M._COPYRIGHT   = "Copyright 2006 - 2011"
 _M._VERSION     = 1.0
-_M.l_o = log.new(3, "[splay.json]")
+local l_o = log.new(3, "[splay.json]")
 
 function _M.send(socket, data)
 	return socket:send(json.encode(data).."\n")
