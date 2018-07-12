@@ -8,7 +8,7 @@ class JobsController < ApplicationController
     if job.update(command: 'KILL')
       flash[:notice] = 'Job was killed.'
     else
-      flash[:notice] = 'Problem killing job.'
+      flash[:alert] = 'Problem killing job.'
     end
     redirect_to action: 'index'
   end
