@@ -17,7 +17,7 @@ URL: http://www.lua.org
 
 Author: Diego Nehab
 License: MIT
-URL: http://www.tecgraf.puc-rio.br/luasocket/
+URL: https://github.com/diegonehab/luasocket
 
 --[ LuaSec ]--
 
@@ -30,12 +30,6 @@ URL: http://www.inf.puc-rio.br/~brunoos/luasec/
 Author: Keith Howe
 License: MIT
 URL: http://luacrypto.luaforge.net/
-
---[ JSON4Lua ]--
-
-Author: Craig Mason-Jones
-Licence: GPL2
-URL: http://json.luaforge.net/
 
 --[ json.lua ]--
 

@@ -273,33 +273,23 @@ class SplaydProtocol
 						end
 						@so.write action[:data]
 					end
-					$log.debug("DEBUG | 1")
 					reply_code = @so.read
-					$log.debug("DEBUG | 2")
 					if reply_code == "OK"
-						$log.debug("DEBUG | 3")
 						if action[:command] == "REGISTER"
-							$log.debug("DEBUG | 4")
 							port = addslashes(@so.read)
 							reply_data = port
 						end
 						if action[:command] == "STATUS"
-							$log.debug("DEBUG | 5")
 							reply_data = @so.read # no addslashes (json)
 						end
 						if action[:command] == "LOADAVG"
-							$log.debug("DEBUG | 6")
 							reply_data = addslashes(@so.read)
 						end
 						if action[:command] == "HALT" or action[:command] == "KILL"
-							$log.debug("DEBUG | 7")
 							running = false
 						end
 					end
-					$log.debug("DEBUG | 8")
 					reply_time = Time.now.to_f - start_time
-
-
 
 					# We tolerate some errors because one command
 					# can be sent twice if there is a controller failure
@@ -308,9 +298,7 @@ class SplaydProtocol
 					# FREE then REGISTER again to avoid that.
 
 					# All the @db.s_j_* functions are replayable.
-					$log.debug("DEBUG | 9")
 					if action[:command] == "REGISTER"
-						$log.debug("DEBUG | 10")
 						if reply_code == "OK"
 							# Update the job slot from RESERVED to WAITING
 							@splayd.s_j_register(action[:job_id])
