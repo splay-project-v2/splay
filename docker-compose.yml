@@ -12,6 +12,8 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 2s
       retries: 100
+    ports:
+      - "3306:3306"
   controller:
     build:
       context: ./src/controller
