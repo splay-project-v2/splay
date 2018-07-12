@@ -31,6 +31,7 @@ local enc = require"splay.benc"
 local debug = require("debug")
 
 local table = require("table")
+local math = require("math")
 
 local error = error
 local pairs = pairs
@@ -49,7 +50,7 @@ _M._DESCRIPTION = "Remote Procedure Call over TCP"
 _M._VERSION     = 1.0
 
 --[[ DEBUG ]]--
-local l_o = log.new(1, "[splay.rpc]")
+local l_o = log.new(3, "[splay.rpc]")
 
 _M.settings = {
 	max = nil, -- max outgoing RPCs
@@ -160,7 +161,8 @@ local function do_call(ip, port, typ, call, timeout)
 	end
 
 	number = number + 1
-
+	-- Avoid float number which create a error 
+	port = math.floor(port)
 	local s, err = socket.tcp()
 	l_o:debug("TCP client socket created:",s,err)
 	if s then

@@ -97,6 +97,7 @@ function shuffle()
 	else
 		log:error("ERROR receiving from "..selected.ip..":"..selected.port.." : "..r)
 	end
+	log:print("Subset sended")
 end
 
 function receive_set(rec_set)
