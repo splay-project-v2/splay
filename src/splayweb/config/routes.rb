@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   root to: 'home#index'
   resources :jobs, only: [:index, :destroy]
   resources :splayds, only: [:index, :show, :destroy]
+  resources :users, only: [:new, :create]
 end

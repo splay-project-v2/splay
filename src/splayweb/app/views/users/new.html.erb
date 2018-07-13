@@ -1,0 +1,16 @@
+<h1>New User</h1>
+<%= form_for @user, url: {action: "create"} do |user| %>
+  <p><label for="login">Login</label><br/>
+    <%= user.text_field :login %></p>
+
+  <p><label for="email">Email</label><br/>
+    <%= user.text_field :email %></p>
+
+  <p><label for="password">Password</label><br/>
+    <%= user.password_field :password %></p>
+
+  <p><label for="password_confirmation">Confirm Password</label><br/>
+    <%= user.password_field :password_confirmation %></p>
+
+  <p><%= user.submit 'Sign Up' %></p>
+<% end %>
