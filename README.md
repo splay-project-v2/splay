@@ -45,10 +45,47 @@ To submit job, you can use the splayweb (not finish) or use cli_client contenair
 `docker run -it splay_terminal`
 and you can now excecute some lua scripts on this terminal.
 
-To tests the all stuff run `test_cyclon` (Will kill/remove all your docker images)
+To tests the all stuff run `test_cyclon.sh` (Will kill/remove all your docker images)
 
 ## Improve TODO
 
+- Allow job creation on SplayWeb
+SplayWeb doesn't implement all the features present on the old website.
+- CSS and JavaScript on SplayWeb 
+- Some useful changes might have been done on the Splayd Controller, 
+and weren't applied on our rework and update as we started 
+everything again from 
+some last commit in 2011. Therefore, some things might 
+be missing and we encounter now and then little bugs such as a 
+Daemon being refused by the Controller. 
+- Unify the user management, the way it is done now isn't 
+very secure and really cumbersome to work with in Rails. (see Devise)
 
 
 ## Major change Idea
+
+During our rework on the whole Splay project, we thought about what was pleasant 
+and what was more unpleasant to us, and therefore imagined some ways 
+to transform this project using different architecture or technologies.
+
+### Lessen the DB usage 
+
+The fact that the DB is used as the main communication component feels 
+wrong, the Controller polling constantly the DB with `SELECT` on the 
+job table appear to us like something that shouldn't be done.
+
+Maybe the CLIServer and SplayWeb should talk directly with the Controller 
+instead of just writing things on it. Of course it might still use the 
+DB for data retrieving. 
+
+### Merge cli_server and splayweb
+
+The SplayWeb is in fact redoing exactly what CLIServer is offering to CLIClient, 
+unifying the two of them by providing a JSON API within SplayWeb, besides the 
+front-end application, would avoid code duplication and centralize the logic. 
+
+### Usage of Erlang/Elixir
+
+Maybe some parts of the project could be rewritten using Elixir, which is 
+very adapted for building distributed application and provide easy-to-use 
+libraries for communication.
