@@ -43,7 +43,12 @@ Then you can launch some daemon which accept jobs later : `docker-compose scale 
 
 To submit job, you can use the splayweb (not finish) or use cli_client contenaire :
 `docker run -it splay_terminal`
-and you can now excecute some lua scripts on this terminal
+and you can now excecute some lua scripts on this terminal.
 
+To tests the all stuff run `test_cyclon` (Will kill/remove all your docker images)
 
 ## Improve TODO
+
+
+
+## Major change Idea
