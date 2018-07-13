@@ -28,8 +28,7 @@ The SplayNet MIDDLEWARE'13 is available as [PDF](http://members.unine.ch/valerio
 
 There 6 main parts : daemon, controller, Db (MySql5.5), cli_server, cli_client and splayweb.
 
-*TODO : Schema*
-
+![Schema of Splay](doc/schema.png)
 
 
 ## HOW TO LAUNCH
