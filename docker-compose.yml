@@ -38,7 +38,7 @@ services:
     depends_on: ["controller"]
     command: ["./deploy_cli_server.sh"]
     volumes:
-      - /tmp/splaylogs/logs:/usr/splay/cli-server/logs
+      - /tmp/splaylogs/logs:/usr/splay/cli_server/logs
   cli_client:
     build:
       context: ./src/cli_client

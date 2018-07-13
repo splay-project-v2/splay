@@ -1,6 +1,6 @@
 # SPLAY RPC client 
 
-- Allow to apply some command on cli-server
+- Allow to apply some command on cli_server
 
 For more informations and documentation, please visit : 
 
