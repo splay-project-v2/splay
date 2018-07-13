@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   resources :jobs, only: [:index, :destroy]
   resources :splayds, only: [:index, :show, :destroy]
   resources :users, only: [:new, :create]
+  resources :sessions, only: [:new, :destroy]
 end

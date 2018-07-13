@@ -52,7 +52,7 @@ class User < ApplicationRecord
   def forget_me
     self.remember_token_expires_at = nil
     self.remember_token            = nil
-    save(false)
+    self.save
   end
 
   protected

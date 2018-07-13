@@ -19,7 +19,7 @@
       <% if logged_in? %>
       <li class="navbar-brand"><%=  current_user.login  %></li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Logout</a>
+        <%= link_to 'Logout', session_path(@current_user.id) , method: 'delete', 'data-purpose': 'disconnect_button' %>
       </li>
       <% else %>
       <li><%=   link_to 'Register', new_user_path, method: 'get', 'data-purpose': 'register_form'   %></li>
