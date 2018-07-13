@@ -16,3 +16,35 @@ SplayNet implements topology emulation features for SPLAY. It has been published
 The SPLAY NSDI'09 paper is available as a [web page](https://www.usenix.org/legacy/event/nsdi09/tech/full_papers/leonini/leonini_html/) or as a [PDF](http://members.unine.ch/etienne.riviere/publications/LeoRivFel-NSDI-09.pdf).
 
 The SplayNet MIDDLEWARE'13 is available as [PDF](http://members.unine.ch/valerio.schiavoni/publications/splaynet_middleware13.pdf).
+
+# Update By Monroe Samuel && Voet Rémy (UCL)
+
+- We have upgrade the version :
+    - of ruby for splayweb and the controller from 1.8.6 to 2.5.1 .
+    - of lua for the daemon and the rpc_client from 5.1 to 5.3 .
+    - of rails for splayweb form 2.1.0 to 5.2.0
+
+## Current Model
+
+There 6 main parts : daemon, controller, Db (MySql5.5), cli_server, cli_client and splayweb.
+
+*TODO : Schema*
+
+
+
+## HOW TO LAUNCH
+
+The 5 part are dockerized (need Docker), to build containers, run : `docker-compose build`
+When build finish, you can launch every mandatory part :
+```
+docker-compose up -d cli_server
+docker-compose up -d splayweb
+```
+Then you can launch some daemon which accept jobs later : `docker-compose scale daemon=5`
+
+To submit job, you can use the splayweb (not finish) or use cli_client contenaire :
+`docker run -it splay_terminal`
+and you can now excecute some lua scripts on this terminal
+
+
+## Improve TODO
