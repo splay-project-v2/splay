@@ -22,7 +22,7 @@
 
 require 'webrick'
 require 'rubygems'
-require '../lib/common.rb'
+require './lib/common.rb'
 require 'digest/sha1'
 
 $logger = Logger.new(STDERR)

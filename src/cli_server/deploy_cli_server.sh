@@ -19,5 +19,4 @@
 
 set -o nounset                              # Treat unset variables as an error
 
-cd cli_server
 ruby cli_server.rb

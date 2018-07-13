@@ -35,7 +35,7 @@ services:
     ports: ["2222:2222"]
     depends_on: ["controller"]
     volumes:
-      - /tmp/splaylogs/logs:/usr/splay/cli_server/logs
+      - /tmp/splaylogs/logs:/usr/splay/logs
   cli_client:
     build:
       context: ./src/cli_client

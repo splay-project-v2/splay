@@ -1,8 +1,8 @@
 FROM ruby:2.5.1
-LABEL Description="Splay - Web Server - Receive HTTP commands to interact with Controller"
+LABEL Description="Splay - Web Server - Receive HTTP commands to interact with DB (send msg to controller througt DB)"
 
 RUN mkdir -p /usr/splay
-RUN mkdir -p /usr/splay/cli_server/logs
+RUN mkdir -p /usr/splay/logs
 
 WORKDIR /usr/splay
 
@@ -13,7 +13,8 @@ RUN apt-get -y --no-install-recommends install \
 RUN gem install json -v 2.1.0
 RUN gem install openssl mysql2 sequel
 
-ADD cli_server/*.rb ./cli_server
+# The context is the parent directory
+ADD cli_server/*.rb ./
 ADD controller/lib ./lib
 ADD cli_server/deploy_cli_server.sh ./
 
