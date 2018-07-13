@@ -17,3 +17,5 @@ ADD lib ./lib
 ADD deploy_controller.sh .
 
 RUN mkdir -p links
+
+CMD ["./deploy_controller.sh"]

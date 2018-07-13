@@ -17,12 +17,10 @@ services:
   controller:
     build:
       context: ./src/controller
-      dockerfile: controller.dockerfile
     container_name: splay_controller
     depends_on:
       db:
         condition: service_healthy
-    command: ["./deploy_controller.sh"]
     volumes:
       - /tmp/splaylogs/logs:/usr/splay/logs
   daemon:
@@ -31,12 +29,11 @@ services:
     depends_on: ["controller"]
   cli_server:
     build:
-      context: ./src/controller
-      dockerfile: cli_server.dockerfile
+      context: ./src/
+      dockerfile: cli_server/Dockerfile
     container_name: splay_cli_server
     ports: ["2222:2222"]
     depends_on: ["controller"]
-    command: ["./deploy_cli_server.sh"]
     volumes:
       - /tmp/splaylogs/logs:/usr/splay/cli_server/logs
   cli_client:
