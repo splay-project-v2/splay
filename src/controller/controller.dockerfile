@@ -15,5 +15,5 @@ RUN gem install minitest mysql2 sequel openssl
 ADD *.rb ./
 ADD lib ./lib
 ADD deploy_controller.sh .
-# add deploy_web_server.sh .
+
 RUN mkdir -p links

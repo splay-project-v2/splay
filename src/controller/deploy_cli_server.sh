@@ -1,9 +1,9 @@
 #!/bin/bash -
 #===============================================================================
 #
-#          FILE: deploy_web_server.sh
+#          FILE: deploy_cli_server.sh
 #
-#         USAGE: ./deploy_web_server.sh
+#         USAGE: ./deploy_cli_server.sh
 #
 #   DESCRIPTION:
 #

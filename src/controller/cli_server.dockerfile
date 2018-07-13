@@ -14,4 +14,4 @@ RUN gem install openssl mysql2 sequel
 
 ADD cli-server ./cli-server
 ADD lib ./lib
-ADD deploy_web_server.sh .
+ADD deploy_cli_server.sh .
