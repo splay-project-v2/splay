@@ -2,12 +2,15 @@
 
 
 <table id="table_list_splayds">
+  <!-- HEADERS -->
   <tr>
     <th class="id">Name</th>
     <th class="ip">IP</th>
     <th class="status">Status</th>
     <th class="show">Show</th>
+    <th class="delete">Delete</th>
   </tr>
+
   <% @splayds.each do |splayd| %>
   <tr>
     <td class="id"><%=  splayd.name  %></td>
@@ -20,10 +23,13 @@
         "<span style='color: orange'>#{splayd.status}</span>".html_safe
       elsif splayd.status == "RESET"
         "<span style='color: red'>#{splayd.status}</span>".html_safe
+      elsif splayd.status == "DELETED"
+        "<span style='color: red'>#{splayd.status}</span>".html_safe
       end
     %>
     </td>
-    <td class="show"><%= link_to 'Show', :action => 'show', :id => splayd %></td>
+    <td class="show"><%= link_to 'Show', action: 'show', id: splayd %></td>
+    <td class="show"><%= link_to 'Delete', splayd_path(splayd), method: 'delete', id: splayd %></td>
   </tr>
   <% end %>
 </table>
