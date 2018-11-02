@@ -1,0 +1,143 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{mdframed}
+\usepackage{tikz} % used for drawing
+\usepackage{listings} % used for programming code
+\usepackage{float}
+\usepackage[a4paper]{geometry}
+\usepackage{pythonhighlight} % for python
+\usepackage{minted} % for bash
+
+\lstset{numbers=left,frame=leftline}
+
+\title{Splay : Basics}
+\author{Rémy Voet & Samuel Monroe}
+
+\date{\today}
+
+\geometry{hscale=0.70,vscale=0.85,centering}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+  This document contains our first thoughts on the future of the Splay project
+  and the direction we would like to take for our thesis.\\
+
+  We'll first approach the architecture modifications we would like to
+  make, and why these would make sense within the project.\\
+  This will be followed by our first \textbf{User Scenarios}, how we
+  would like the application to be used and thus giving us precise goal and
+  specifications for further work.\\
+
+  This document will end with a section about some thoughts about the
+  application not directly concerning the user scenarios goals but
+  worthing, in our opinion, to be discussed.
+
+\section{Architecture Modifications}
+
+  This is the current architecture of Splay as it is today : \\
+
+  \begin{figure}[H]
+   \caption{\label{curr_arch} Current Splay Architecture}
+   \includegraphics[scale=0.6]{images/curr_arch.png}
+  \end{figure}
+
+  During our part-time job on upgrading Splay version, we found out
+  that \textbf{CLI Server} and \textbf{SplayWeb} were a huge place
+  of code duplication. Indeed, they provide the same kind of interactions
+  with the DB, except one is in a web interface and the other is in a
+  command-line interface.\\
+
+  We would therefore like to change the architecture for this one : \\
+
+  \begin{figure}[H]
+   \caption{\label{new_arch} Desired Splay Architecture}
+   \includegraphics[scale=0.6]{images/new_arch.png}
+  \end{figure}
+
+  The interactions with the DB would then be unified and would make
+  lighter clients both for the web and CLI part, just making use of
+  the available JSON API.\\
+
+  Basically, that refactor would be easy to implement as it would be the
+  matter of setting up the now-called \textbf{CLI Server} as our
+  controller with the JSON API, then slightly refactoring the CLI client
+  and building a lightweight web app around it (it may also be a refactoring
+  of the current Rails app).\\
+
+\section{User Scenarios}
+
+\section{Thoughts and Ideas on Splay - Further Evolutions}
+
+  \subsection{DB as the communication center}
+
+    Currently, the Mysql database is the centralized and unique way for
+    a user to interact with the SplaydServer and SplaydDaemons.\\
+
+    Our major concerns about this are : \\
+    \begin{itemize}
+      \item That DB is a potential bottleneck in the view of scaling the
+      application for a web and wide usage, with a lot of SplayServer being
+      created by user and relying on the DB to accomplish their job.
+      \item The Splayds and SplaydServer are constantly polling and
+      querying that DB, and interact between themselves, assign jobs, basically
+      do everything. Once again, this might be totally suitable for local usage,
+      but scaling options are very limited.
+    \end{itemize}
+
+    As said before, this way of doing things will be perfect for a low-scaled
+    usage on a raspberry cluster, which is in the end one of the main goal
+    of our thesis.\\
+    But options like Redis \cite{redispubsub} for replacing the communication channel with a
+    Publish/Subscribe service might be somehow an idea of improvement.
+
+  \subsection{Rewriting part of the application}
+
+    As said during the first meeting, rewriting parts of the application
+    is certainly not a priority for this thesis, as we might get caught up in
+    some infernal trap of being unable to rewrite in reasonable times.\\
+
+    But we do still believe that a functional language like Elixir \cite{elixir}, which
+    is based on Erlang \cite{erlang}, might be more than suitable for this project.\\
+    Indeed, the language doesn't solve the whole problem, but being able to
+    work with a functional language, built to scale up and blow away concurrency
+    problems, and providing the awesome OTP library \cite{otp}.\\
+
+    Indeed we can sum up our needs by the following : \\
+    \begin{itemize}
+      \item We want a centralized way for the user to push jobs to some service
+      knowing which machines it has access to (in this case, the raspberries).
+      \item The service (controller) should be able to send the jobs to the workers,
+      monitor what's going on on each worker, and have realtime feedback on the
+      running jobs and the worker state.
+      \item The worker should be able to talk to each other to accomplish the
+      given job.
+      \item We want the system to be resilient, but also to have complete
+      control on the way jobs are accomplish (for instance, to make them
+      crash on one worker and see that the \textit{leader election} algorithm
+      is still accomplished by valid nodes).
+      \item We want the cluster to be resilient, a crashed node should not stay crashed
+      and force the user to restart the whole thing.
+    \end{itemize}
+
+    Elixir's OTP would be a way to achieve this and provide real scaling advantages
+    if the system was to be put on the Cloud for wide access.\\
+    A registered user could just log in the application, and ask for a job to be
+    done. The system would spawn erlang processes dedicated to that task without
+    even slowing down the other's experience.\\
+
+    On the local cluster, the distributed system could be supervised by
+    OTP's Supervisor \cite{elixirsupervisor} functionality, so that it never
+    totally crash.\\
+
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{bibli}
+
+\end{document}
