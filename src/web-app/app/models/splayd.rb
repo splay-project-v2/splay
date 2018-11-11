@@ -1,2 +1,0 @@
-class Splayd < ApplicationRecord
-end
