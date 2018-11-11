@@ -1,26 +1,31 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{amsmath,amsthm,amssymb}
-\usepackage{mdframed}
+
 \usepackage{tikz} % used for drawing
 \usepackage{listings} % used for programming code
 \usepackage{float}
 \usepackage[a4paper]{geometry}
-\usepackage{pythonhighlight} % for python
-\usepackage{minted} % for bash
 
-\lstset{numbers=left,frame=leftline}
+\lstset{frame=leftline}
+
+\lstdefinelanguage{Gherkin}{
+  keywords={When, Then, Given, And},
+  ndkeywords={Feature, Scenario},
+  sensitive=false,
+  comment=[l]{\#},
+  morestring=[b]',
+  morestring=[b]"
+}
 
 \title{Splay : Basics}
-\author{Rémy Voet & Samuel Monroe}
+\author{Rémy Voet \& Samuel Monroe}
 
 \date{\today}
 
 \geometry{hscale=0.70,vscale=0.85,centering}
 
 \begin{document}
-
 \maketitle
 
 \section{Introduction}
@@ -44,11 +49,12 @@
 
   \begin{figure}[H]
    \caption{\label{curr_arch} Current Splay Architecture}
+   \centering
    \includegraphics[scale=0.6]{images/curr_arch.png}
   \end{figure}
 
   During our part-time job on upgrading Splay version, we found out
-  that \textbf{CLI Server} and \textbf{SplayWeb} were a huge place
+  that \textbf{CLI Server} and \textbf{SplayWeb} (into backend) were a huge place
   of code duplication. Indeed, they provide the same kind of interactions
   with the DB, except one is in a web interface and the other is in a
   command-line interface.\\
@@ -57,7 +63,8 @@
 
   \begin{figure}[H]
    \caption{\label{new_arch} Desired Splay Architecture}
-   \includegraphics[scale=0.6]{images/new_arch.png}
+   \centering
+   \includegraphics[scale=0.6]{images/NewSplay.png}
   \end{figure}
 
   The interactions with the DB would then be unified and would make
@@ -72,19 +79,78 @@
 
 \section{User Scenarios}
 
+  The main use scenario we want to focus on is the student usage
+  through the raspberry cluster, allowing him to test his distributed
+  algorithm and browse statistics about the nodes and the algorithm result.\\
+
+    \begin{lstlisting}[language=Gherkin]
+    Feature: As student
+             In order to test my distributed algorithm
+             I want to submit it to the application and receive stats about it
+
+      Scenario: A registered student submit his algorithm through the web-app
+        Given I am registered and logged in
+        When I go on the algorithm submission page
+        And I paste my algorithm
+        And I submit the form
+        Then I am prompted with a confirmation
+        When the algorithm is done
+        Then I can see stats about the algorithm execution on the nodes
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=Gherkin]
+    Feature: As student
+             In order to test my distributed algorithm resilience
+             I want to be able to configure failure parameters for the execution
+
+      Scenario: A registered student submit his algorithm through the web-app
+        Given I am registered and logged in
+        When I go on the algorithm submission page
+        And I paste my algorithm
+        And I select failure option on nodes or the network
+        And I submit the form
+        Then I am prompted with a confirmation
+        When the execution is done
+        Then I can see the result and statistics of it
+        And I can see how the failure parameters influenced the execution
+  \end{lstlisting}
+
+
 \section{Thoughts and Ideas on Splay - Further Evolutions}
+
+  \subsection{Testing}
+
+    This is, for us, a mandatory change that must be introduced in the project.\\
+
+    Currently, there are only few tests available for the Splay project,
+    and they're not really usable or useful.\\
+    We therefore would like to introduce two types of testing : \\
+    \begin{itemize}
+      \item Unit testing for particular parts of the code, and in
+      every project's parts.
+      \item Behaviour Driven Development testing. Creating test reproducing
+      user interaction with the application would greatly ease the development
+      by creating precise scenarios with Gherkin notation, and would help
+      to test the application in a broader way.
+    \end{itemize}
+
+    Moreover, having a solid test-suite would make us more confident for
+    pursuing new changes and improvements, but also making the application
+    more maintainable in the future.
+
+
 
   \subsection{DB as the communication center}
 
-    Currently, the Mysql database is the centralized and unique way for
-    a user to interact with the SplaydServer and SplaydDaemons.\\
+    Currently, the MySQL (v5.5) database is the centralized and unique way for
+    a user to interact with the Controller and Daemons.\\
 
     Our major concerns about this are : \\
     \begin{itemize}
       \item That DB is a potential bottleneck in the view of scaling the
-      application for a web and wide usage, with a lot of SplayServer being
+      application for a web and wide usage, with a lot of Controller being
       created by user and relying on the DB to accomplish their job.
-      \item The Splayds and SplaydServer are constantly polling and
+      \item The controller are constantly polling and
       querying that DB, and interact between themselves, assign jobs, basically
       do everything. Once again, this might be totally suitable for local usage,
       but scaling options are very limited.
