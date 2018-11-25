@@ -27,27 +27,26 @@ services:
     build:
       context: ./src/daemon
     depends_on: ["controller"]
-  cli_server:
+  backend:
     build:
       context: ./src/
-      dockerfile: cli_server/Dockerfile
-    container_name: splay_cli_server
+      dockerfile: backend/Dockerfile
+    container_name: splay_backend
     ports: ["2222:2222"]
     depends_on: ["controller"]
     volumes:
       - /tmp/splaylogs/logs:/usr/splay/logs
   cli_client:
     build:
-      context: ./src/cli_client
+      context: ./src/cli
     container_name: splay_cli_client
-    depends_on: ["cli_server"]
+    depends_on: ["backend"]
   splayweb:
     build:
-      context: ./src/splayweb
+      context: ./src/web-app
       dockerfile: Dockerfile
     container_name: splayweb
     ports:
       - "80:80"
     depends_on: ["controller"]
     command: bundle exec rails s -p 80 -b '0.0.0.0'
-
