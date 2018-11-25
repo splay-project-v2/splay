@@ -43,10 +43,12 @@ services:
     depends_on: ["backend"]
   splayweb:
     build:
-      context: ./src/web-app
+      context: ./src/web_app
       dockerfile: Dockerfile
     container_name: splayweb
     ports:
       - "80:80"
     depends_on: ["controller"]
     command: bundle exec rails s -p 80 -b '0.0.0.0'
+    volumes:
+      - "./src/web_app/:/myapp"
