@@ -11,5 +11,5 @@
 	path = src/daemon
 	url = git@github.com:splay-project-v2/daemon.git
 [submodule "src/web_app"]
-	path = src/web-app
+	path = src/web_app
 	url = git@github.com:splay-project-v2/web_app.git
