@@ -1,15 +1,15 @@
 [submodule "src/backend"]
 	path = src/backend
-	url = https://github.com/splay-project-v2/backend.git
+	url = git@github.com:splay-project-v2/backend.git
 [submodule "src/cli"]
 	path = src/cli
-	url = https://github.com/splay-project-v2/cli.git
+	url = git@github.com:splay-project-v2/cli.git
 [submodule "src/controller"]
 	path = src/controller
-	url = https://github.com/splay-project-v2/controller.git
+	url = git@github.com:splay-project-v2/controller.git
 [submodule "src/daemon"]
 	path = src/daemon
-	url = https://github.com/splay-project-v2/daemon.git
+	url = git@github.com:splay-project-v2/daemon.git
 [submodule "src/web-app"]
 	path = src/web-app
-	url = https://github.com/splay-project-v2/web-app.git
+	url = git@github.com:splay-project-v2/web-app.git
