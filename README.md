@@ -1,6 +1,6 @@
 # SPLAY v2
 
-This is the official github repository of the Splay project.
+This is the official github repository of the Splay project version 2.
 
 ## Overview
 
@@ -40,7 +40,7 @@ When build finish, you can launch every mandatory part :
 
 ```bash
 docker-compose up -d cli_server
-docker-compose up -d splayweb
+docker-compose up -d web_app
 ```
 
 Then you can launch some daemon which accept jobs later : `docker-compose scale daemon=5`

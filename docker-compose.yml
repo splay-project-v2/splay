@@ -36,16 +36,16 @@ services:
     depends_on: ["controller"]
     volumes:
       - /tmp/splaylogs/logs:/usr/splay/logs
-  cli_client:
+  cli:
     build:
       context: ./src/cli
-    container_name: splay_cli_client
+    container_name: splay_cli
     depends_on: ["backend"]
-  splayweb:
+  web_app:
     build:
       context: ./src/web_app
       dockerfile: Dockerfile
-    container_name: splayweb
+    container_name: splay_web_app
     ports:
       - "80:80"
     depends_on: ["controller"]
