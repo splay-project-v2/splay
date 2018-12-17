@@ -14,11 +14,21 @@ The source code of SPLAY is available under the General Public License (GPLv3) a
 
 The main research paper that describes SPLAY, evaluates its performances and presents several typical experiments has been published in the proceedings of the 6th USENIX Symposium on Networked Systems Design and Implementation (NSDI'09).
 
-SplayNet implements topology emulation features for SPLAY. It has been published in the Proceedings of the 14th ACM/IFIP/USENIX International Middleware Conference (MIDDLEWARE'13). 
+SplayNet implements topology emulation features for SPLAY. It has been published in the Proceedings of the 14th ACM/IFIP/USENIX International Middleware Conference (MIDDLEWARE'13).
 
 The SPLAY NSDI'09 paper is available as a [web page](https://www.usenix.org/legacy/event/nsdi09/tech/full_papers/leonini/leonini_html/) or as a [PDF](http://members.unine.ch/etienne.riviere/publications/LeoRivFel-NSDI-09.pdf).
 
 The SplayNet MIDDLEWARE'13 is available as [PDF](http://members.unine.ch/valerio.schiavoni/publications/splaynet_middleware13.pdf).
+
+## Authors
+
+- Pascal Felber
+- Lorenzo Leonini (original author)
+- Etienne Riviere
+- Valerio Schiavoni
+- José Valerio
+- Monroe Samuel
+- Voet Rémy
 
 # Update By Monroe Samuel && Voet Rémy (UCL)
 
@@ -60,28 +70,28 @@ To tests the all stuff run `test_cyclon.sh` (Will kill/remove all your docker im
 
 ## Major change Idea
 
-During our rework on the whole Splay project, we thought about what was pleasant 
-and what was more unpleasant to us, and therefore imagined some ways 
+During our rework on the whole Splay project, we thought about what was pleasant
+and what was more unpleasant to us, and therefore imagined some ways
 to transform this project using different architecture or technologies.
 
 ### Lessen the DB usage
 
-The fact that the DB is used as the main communication component feels 
-wrong, the Controller polling constantly the DB with `SELECT` on the 
+The fact that the DB is used as the main communication component feels
+wrong, the Controller polling constantly the DB with `SELECT` on the
 job table appear to us like something that shouldn't be done.
 
-Maybe the CLIServer and SplayWeb should talk directly with the Controller 
-instead of just writing things on it. Of course it might still use the 
+Maybe the CLIServer and SplayWeb should talk directly with the Controller
+instead of just writing things on it. Of course it might still use the
 DB for data retrieving.
 
 ### Merge cli_server and splayweb
 
-The SplayWeb is in fact redoing exactly what CLIServer is offering to CLIClient, 
-unifying the two of them by providing a JSON API within SplayWeb, besides the 
-front-end application, would avoid code duplication and centralize the logic. 
+The SplayWeb is in fact redoing exactly what CLIServer is offering to CLIClient,
+unifying the two of them by providing a JSON API within SplayWeb, besides the
+front-end application, would avoid code duplication and centralize the logic.
 
 ### Usage of Erlang/Elixir
 
-Maybe some parts of the project could be rewritten using Elixir, which is 
-very adapted for building distributed application and provide easy-to-use 
+Maybe some parts of the project could be rewritten using Elixir, which is
+very adapted for building distributed application and provide easy-to-use
 libraries for communication.
