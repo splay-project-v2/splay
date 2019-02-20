@@ -1,5 +1,6 @@
-version: "2.1"
+version: "2.2"
 services:
+  # IMAGE : MySql database - the first to be launch
   db:
     image: mysql:5.5
     container_name: splay_db
@@ -14,41 +15,58 @@ services:
       retries: 100
     ports:
       - "3306:3306"
-  controller:
+
+  # IMAGE : BACKEND JsonAPI  - also create the database/tables with active record
+  backend:
     build:
-      context: ./src/controller
-    container_name: splay_controller
+      context: ./src/backend
+      dockerfile: Dockerfile
+    container_name: splay_backend
+    ports: ["8081:3000"]
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - /tmp/splaylogs/logs:/usr/splay/logs
-  daemon:
+
+  # IMAGE : Controller - need waiting backend to create database (and table)
+  controller:
+    cpus: 2.5 # Reduce problemen when performance bug accured (see Trello)
     build:
-      context: ./src/daemon
-    depends_on: ["controller"]
-  backend:
-    build:
-      context: ./src/
-      dockerfile: backend/Dockerfile
-    container_name: splay_backend
-    ports: ["2222:2222"]
-    depends_on: ["controller"]
+      context: ./src/controller
+    container_name: splay_controller
+    depends_on:
+      backend:
+        condition: service_started
+      db:
+        condition: service_healthy
     volumes:
       - /tmp/splaylogs/logs:/usr/splay/logs
-  cli:
+
+  # IMAGE : Daemon - splaydaemon 
+  daemon:
+    cpus: 0.2 # Reduce problemen when performance bug accured (see Trello)
     build:
-      context: ./src/cli
-    container_name: splay_cli
-    depends_on: ["backend"]
+      context: ./src/daemon
+    depends_on: []
+
+  # IMAGE : Single page app to monitor splay. (use backend api service)
   web_app:
+    #cpus: 0.5
     build:
       context: ./src/web_app
       dockerfile: Dockerfile
     container_name: splay_web_app
     ports:
-      - "80:80"
-    depends_on: ["controller"]
-    command: bundle exec rails s -p 80 -b '0.0.0.0'
+      - "8080:80"
+    depends_on: ["backend"]
     volumes:
-      - "./src/web_app/:/myapp"
+      - "./src/web_app/:/app"
+
+  # IMAGE : Command line interface using backed (tested purpose)
+  cli:
+    build:
+      context: ./src/cli
+    container_name: splay_cli
+    depends_on: ["backend"]
+  
