@@ -28,6 +28,7 @@ services:
         condition: service_healthy
     volumes:
       - /tmp/splaylogs/logs:/usr/splay/logs
+      - .:/backend_app
 
   # IMAGE : Controller - need waiting backend to create database (and table)
   controller:
@@ -43,7 +44,7 @@ services:
     volumes:
       - /tmp/splaylogs/logs:/usr/splay/logs
 
-  # IMAGE : Daemon - splaydaemon 
+  # IMAGE : Daemon - splaydaemon
   daemon:
     cpus: 0.2 # Reduce problemen when performance bug accured (see Trello)
     build:
@@ -69,4 +70,3 @@ services:
       context: ./src/cli
     container_name: splay_cli
     depends_on: ["backend"]
-  
