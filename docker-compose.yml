@@ -69,4 +69,8 @@ services:
     build:
       context: ./src/cli
     container_name: splay_cli
-    depends_on: ["backend"]
+    # depends_on: ["backend"]
+    volumes:
+      - "./src/cli/commands:/usr/splay/"
+      - "./src/cli/lib:/usr/splay/lib"
+      - "./src/cli/app:/usr/splay/app"
