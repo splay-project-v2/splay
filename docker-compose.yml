@@ -32,7 +32,7 @@ services:
 
   # IMAGE : Controller - need waiting backend to create database (and table)
   controller:
-    cpus: 2.5 # Reduce problemen when performance bug accured (see Trello)
+    cpus: 2.0 # Reduce problemen when performance bug accured (see Trello)
     build:
       context: ./src/controller
     container_name: splay_controller
@@ -71,6 +71,5 @@ services:
     container_name: splay_cli
     depends_on: ["backend"]
     volumes:
-      - "./src/cli/commands:/usr/splay/"
-      - "./src/cli/lib:/usr/splay/lib"
-      - "./src/cli/app:/usr/splay/app"
+      - "./src/cli/algorithms:/usr/splay/algorithms"
+      - "./src/cli/src:/usr/splay/src"
