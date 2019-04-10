@@ -42,7 +42,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - /tmp/splaylogs/logs:/usr/splay/logs
+      - /tmp/splaylogs/logs:/app/log/splay
 
   # IMAGE : Daemon - splaydaemon
   daemon:
