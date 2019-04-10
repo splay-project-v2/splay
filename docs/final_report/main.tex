@@ -1,5 +1,6 @@
 % EPL master thesis covers template
 \documentclass{eplmastersthesis}
+\usepackage{float}
 
 % Please fill in the following boxes
 % Title of the thesis
@@ -33,8 +34,8 @@
 \degreetitle{Master [120] in Computer Science}
 
 % Name of the supervisor(s)
-\supervisor{Firstname \textsc{Lastname}}
-\secondsupervisor{Firstname \textsc{Lastname}}		% remove if not applicable
+\supervisor{Étienne \textsc{Rivière}}
+%\secondsupervisor{Firstname \textsc{Lastname}}		% remove if not applicable
 %\thirdsupervisor{Firstname \textsc{Lastname}}		% remove if not applicable
 
 % Name of the reader(s)
@@ -95,15 +96,29 @@
 
   \chapter{Software Architecture}
 
-    About all the Splay software parts.
+    % About all the Splay software parts.
+    
 
     \section{Legacy Architecture}
 
       How Splay was design.
 
+      % Figure of the old architecture, TODO : remake with technologies used
+      \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.6]{figures/prev_arch.png}
+        \caption{\label{prev_arch} Previous Splay Architecture}
+      \end{figure}
+
+
     \section{Renewed Architecture}
 
       How we changed Splay.
+      \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.105]{figures/new_arch.png}
+        \caption{\label{new_arch} New Splay Architecture}
+      \end{figure}
 
   \chapter{Hardware Architecture}
 
@@ -140,9 +155,12 @@
 
     \section{Rework of the CLI to use new Backend}
 
+      All the Command line interface has been redone in Python more clearly and concise.
+
     \section{Topology creation through Javascript Interface}
 
-
+    \section{Fault injection}
+    
   \chapter{Testing and Validation}
 
     We wanted to reach 100\% LOC testing with feature testing, unit testing,

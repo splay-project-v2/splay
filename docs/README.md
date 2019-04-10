@@ -1,4 +1,4 @@
-# Documentation of splay
+# Documentation of Splay V2
 
 ## User documentation
 
