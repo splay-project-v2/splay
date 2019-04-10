@@ -38,7 +38,7 @@ services:
     container_name: splay_controller
     depends_on:
       backend:
-        condition: service_started
+        condition: service_healthy
       db:
         condition: service_healthy
     volumes:
@@ -49,7 +49,9 @@ services:
     cpus: 0.2 # Reduce problemen when performance bug accured (see Trello)
     build:
       context: ./src/daemon
-    depends_on: []
+    depends_on:
+      controller:
+        condition: service_started
 
   # IMAGE : Single page app to monitor splay. (use backend api service)
   web_app:
