@@ -1,6 +1,6 @@
 # SPLAY v2
 
-This is the official github repository of the Splay project version 2.
+This is the official github repository of the Splay project version 2. The version 1 (unstable) can be found [here](https://github.com/splay-project/splay).
 
 ## Overview
 
@@ -30,10 +30,10 @@ The SplayNet MIDDLEWARE'13 is available as [PDF](http://members.unine.ch/valerio
 - Monroe Samuel
 - Voet Rémy
 
-# Update By Monroe Samuel && Voet Rémy (UCL)
+## Update By Monroe Samuel && Voet Rémy (UCL)
 
-- We have upgrade the version :
-  - of ruby for splayweb and the controller from 1.8.6 to 2.5.1 .
+- We have upgrade the version of languages and packages :
+  - of ruby for splayweb and the controller from 1.8.6 to 2.5.3 .
   - of lua for the daemon and the rpc_client from 5.1 to 5.3 .
   - of rails for splayweb form 2.1.0 to 5.2.0
 
@@ -41,7 +41,7 @@ The SplayNet MIDDLEWARE'13 is available as [PDF](http://members.unine.ch/valerio
 
 There 6 main parts : daemon, controller, Db (MySql5.5), cli_server, cli_client and splayweb.
 
-![Schema of Splay](doc/schema.png)
+![Schema of Splay](doc/final_report/figures/prev_schema.png)
 
 ## HOW TO LAUNCH
 
