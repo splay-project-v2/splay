@@ -27,7 +27,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - /tmp/splaylogs/logs:/usr/splay/logs
+      - /tmp/splaylogs/logs:/app/log/splay
       - ./src/backend/:/app
 
   # IMAGE : Controller - need waiting backend to create database (and table)
@@ -42,7 +42,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - /tmp/splaylogs/logs:/app/log/splay
+      - /tmp/splaylogs/logs:/usr/splay/logs
 
   # IMAGE : Daemon - splaydaemon
   daemon:
