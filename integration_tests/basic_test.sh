@@ -2,48 +2,38 @@
 DIR="${BASH_SOURCE%/*}"
 source "$DIR/functions.sh"
 
-step "Begin basic integration test of Splay"
-
-# -- 
-step "Clean (kill and rm) docker service"
-docker kill $(docker-compose ps -q) # &> /dev/null
-docker rm $(docker-compose ps -q) # &> /dev/null
-
-# -- 
-step "Build images of docker-compose"
-docker-compose build
-checkError 'Fail to build images from docker-compose configuration'
-
-# -- 
-step "Run controller - cli (db, backend also)"
-docker-compose up -d controller cli
-checkError "Fail to run controller - cli (db, backend also)"
-
-# -- 
-step "Run two splay daemons"
-docker-compose up -d --scale daemon=2
-checkError "Fail to run daemons"
-
-# -- 
-step "Register a test user"
-docker-compose exec cli python cli.py new-user Test test@test.com 123456789 123456789
-checkError "Fail to register a test user - backend had crash ?"
-
-# -- 
-step "See the list of splayds"
-docker-compose exec cli python cli.py list-splayds
-checkError "Fail to print the list of splay daemon"
+# before execute this one execute the build_run script
+# bash integration_tests/build_run.sh 
 
 #--
-step "Submit the a simple job"
-docker-compose exec cli python cli.py submit-job -n "TEST" -s 2 app_test/simple.lua
-checkError "Fail to submit the job"
+step "Submit a simple job"
+JOB_RES=$(docker-compose exec cli python cli.py submit-job -n "TEST" -s 2 app_test/simple.lua)
+check "Fail to submit the job" "\n" "${JOB_RES[@]}"
 
+ID_JOB=$(echo "${JOB_RES[@]}" | grep -oP "Job ID\s+:\s\K(\d+)")
 #--
-step "Wait few second and fetch list of jobs"
+step "Wait few seconds and fetch list of jobs"
 sleep 2
-docker-compose exec cli python cli.py list-jobs
-checkError "Fail to get the list of jobs"
+JOBS=$(docker-compose exec cli python cli.py list-jobs)
+check "Fail to get the list of jobs"
+
+step "Check list of jobs (id_job = $ID_JOB)"
+if [[ ${JOBS[@]} != *"{'id': ${ID_JOB},"* ]]; then
+    echo "${JOBS[@]}"
+    error "The log doesn't contain the correct result"
+fi
 
 #--
-step "Get logs of the job and find if the correct result is into"
+step "Wait few seconds and get logs of the job (id_job = $ID_JOB)"
+sleep 2
+LOGS=$(docker-compose exec cli python cli.py get-job-logs $ID_JOB)
+check "Fail to get the logs"
+
+#--
+step "Verify the logs"
+if [[ ${LOGS[@]} != *"SIMPLE.LUA START"* || ${LOGS[@]} != *"SIMPLE.LUA EXIT"* ]]; then
+    echo "${LOGS[@]}"
+    error "The logs don't contain the correct result"
+fi
+
+step "The Basic Test is successful"
