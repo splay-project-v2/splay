@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-docker kill $(docker ps -q)
-docker rm $(docker ps -a -q)
+docker kill $(docker-compose ps -q) # &> /dev/null
+docker rm $(docker-compose ps -q) # &> /dev/null
 
 # !!! CLEAN all cache (careful with this one)
 # docker rmi -f $(docker images -q)
