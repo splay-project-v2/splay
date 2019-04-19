@@ -3,6 +3,13 @@ NORMAL="\e[39m"
 RED="\e[31m"
 BLUE="\e[34m"
 
+shopt -s expand_aliases # Let non-interactive shell use aliases
+
+if [[ "$OSTYPE" == "darwin"* ]]
+then
+  alias grep="ggrep"
+fi
+
 function big_step () {
     echo -e ">>>> $BLUE$1$NORMAL <<<<"
 }
