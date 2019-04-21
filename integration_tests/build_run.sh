@@ -15,13 +15,13 @@ docker-compose build
 check 'Fail to build images from docker-compose configuration'
 
 # -- 
-step "Run controller - cli (db, backend also)"
-docker-compose up -d controller cli
-check "Fail to run controller - cli (db, backend also)"
+step "Run controller - cli - web_app (not tested) (db, backend also)"
+docker-compose up -d controller cli web_app
+check "Fail to run controller - cli - web_app (not tested) (db, backend also)"
 
 # -- 
-step "Run two splay daemons"
-docker-compose up -d --scale daemon=5
+step "Run multiple splay daemons"
+docker-compose up -d --scale daemon=2
 check "Fail to run daemons"
 
 # -- 

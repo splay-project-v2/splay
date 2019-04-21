@@ -25,7 +25,7 @@ fi
 
 #--
 step "Wait some seconds and get logs of the job (id_job = $ID_JOB)"
-sleep 10
+sleep 14
 LOGS=$(docker-compose exec cli python cli.py get-job-logs $ID_JOB)
 check "Fail to get the logs"
 
