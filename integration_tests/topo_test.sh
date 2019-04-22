@@ -6,28 +6,14 @@ source "$DIR/functions.sh"
 # bash integration_tests/build_run.sh 
 
 #--
-step "Submit a job using network sockets"
-JOB_RES=$(docker-compose exec cli python cli.py submit-job -n "TEST" -s 2 app_test/simple_topo.lua -t app_test/topo_2.xml)
-check "Fail to submit the job" "\n" "${JOB_RES[@]}"
-
-ID_JOB=$(echo "${JOB_RES[@]}" | grep -oP "Job ID\s+:\s\K(\d+)")
-#--
-step "Wait few seconds and fetch list of jobs"
-sleep 1
-JOBS=$(docker-compose exec cli python cli.py list-jobs)
-check "Fail to get the list of jobs"
-
-step "Check list of jobs (id_job = $ID_JOB)"
-if [[ ${JOBS[@]} != *"{'id': ${ID_JOB},"* ]]; then
-    echo "${JOBS[@]}"
-    error "The list of jobs doesn't contain the new job"
-fi
+JOB="app_test/simple_topo.lua"
+TOPO="app_test/topo_2.xml"
 
 #--
-step "Wait some seconds and get logs of the job (id_job = $ID_JOB)"
-sleep 14
-LOGS=$(docker-compose exec cli python cli.py get-job-logs $ID_JOB)
-check "Fail to get the logs"
+submit $JOB $TOPO
+
+#--
+get_logs 14
 
 #--
 step "Verify the logs (1)"
