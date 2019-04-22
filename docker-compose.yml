@@ -13,8 +13,8 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 2s
       retries: 100
-    ports:
-      - "3306:3306"
+    expose:
+      - "3306"
 
   # IMAGE : BACKEND JsonAPI  - also create the database/tables with active record
   backend:
