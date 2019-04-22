@@ -1,5 +1,0 @@
-services:
-  - docker
-
-script:
-  - bash integration_tests/all_tests.sh
