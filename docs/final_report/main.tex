@@ -80,6 +80,14 @@
       Discussion about what was available when we started the rework of
       the Splay project.
 
+      \subsection{Legacy Splay Project}
+
+        The SPlay Project at the origin.
+
+      \subsection{A first update}
+
+        About our part-time job on splay and what we have done there.
+
     \section{Objectives}
 
       Detailed objectives of the system and our update.
@@ -96,12 +104,23 @@
 
   \chapter{Software Architecture}
 
-    % About all the Splay software parts.
-    
+    It is important here to discuss about the software architecture of the
+    Splay Project as it has impacts on the way we achieved this work
 
     \section{Legacy Architecture}
 
-      How Splay was design.
+      The old Splay architecture was composed of :
+
+      \begin{itemize}
+        \item The \textbf{Controller} : The core part of Splay, waits for jobs
+        and dispatch them to the daemons.
+        \item \textbf{Daemons} : Workers registering to the controller and waiting
+        for jobs to achieve.
+        \item A \textbf{MySQL DB} : The communication piece of Splay, allowing
+        communication between the user and the system.
+        \item A \textbf{MySQL DB} : 
+        \item A \textbf{MySQL DB} :
+      \end{itemize}
 
       % Figure of the old architecture, TODO : remake with technologies used
       \begin{figure}[H]
@@ -160,7 +179,9 @@
     \section{Topology creation through Javascript Interface}
 
     \section{Fault injection}
-    
+
+
+
   \chapter{Testing and Validation}
 
     We wanted to reach 100\% LOC testing with feature testing, unit testing,
