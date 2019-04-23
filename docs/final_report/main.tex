@@ -118,8 +118,9 @@
         for jobs to achieve.
         \item A \textbf{MySQL DB} : The communication piece of Splay, allowing
         communication between the user and the system.
-        \item A \textbf{MySQL DB} : 
-        \item A \textbf{MySQL DB} :
+        \item A \textbf{CLI Server, CLI Client, SplayWeb} : Pair of CLI tools
+        and a web application made in Rails to let user interact with
+        Splay through communication with the MySQL Database.
       \end{itemize}
 
       % Figure of the old architecture, TODO : remake with technologies used
@@ -129,10 +130,65 @@
         \caption{\label{prev_arch} Previous Splay Architecture}
       \end{figure}
 
+      Que cela soit à travers l'utilisation du CLI ou de l'application SplayWeb,
+      un utilisateur pouvait intéragir avec Splay et y envoyer ses jobs, récupérer
+      des informations telles que les logs ou l'état des Splayds.\\
+
+      Le fait que la base de données soit l'élément central de communication entre
+      le contrôleur et les applications utilisteurs était un choix de design
+      que nous avons choisi de respecter. En effet, le \textbf{Controller} est
+      l'élément central du projet Splay, vouloir apporter un changement dans ce choix
+      de design et opter pour un remplacement de la façon de communication aurait
+      impliqué plus que certainement une réécriture quasi totale du contrôleur.\\
+
+      Cela dit, nous n'étions pas satisfaits par les possibilités d'interactions
+      offertes à l'utilisateur. En effet, l'application Ruby on Rails était assez
+      vieille, et la paire client/server du command-line-interface possédait une
+      codebase difficile à maintenir et trop imposante pour les features qu'elle
+      devait proposer.\\
+
+      Nous avons donc choisi d'opérer des changements majeurs sur cette partie
+      du projet Splay, afin d'en plus d'opérer les changements et ajouts de features,
+      proposer une bonne expérience utilisateur.
 
     \section{Renewed Architecture}
 
-      How we changed Splay.
+      Le principal problème du côté de l'architecture des services utilisateurs
+      était la duplication de code, ou du moins une duplications des solutions
+      apportées pour un seul et même problème. L'application web Rails et le
+      serveur CLI avaient en commun la manipulation de la base de données pour
+      transmettre et récupérer les informations au \textbf{Controller} pour
+      le compte de l'utilisateur.\\
+
+      La première décision à prendre pour pallier à ce problème était de
+      fusionner ces deux services en un seul et de l'appeler selon sa responsabilité
+      au sein du système, le \textbf{backend} d'un point de vue client.\\
+      Ce backend aurait pour ambition de proposer une API sécurisée via
+      JsonWebToken et permettant ainsi la construction de services autour de
+      ce backend, en l'occurence une application web et un client en ligne
+      de commande.\\
+
+      L'application web utiliserait donc une technologie JavaScript récente
+      permettant des interactions dynamiques avec l'utilisateur, et le CLI
+      une technologie simple et adaptée, les deux consommant l'API fournie
+      par le backend. Ce backend resterait quant à lui dans l'écosystème Ruby,
+      pour garder une consistance avec le projet tel qu'il était.\\
+
+      On obtiendrait donc l'architecture retravaillée suivante :
+
+      \begin{itemize}
+        \item The \textbf{Controller} : The core part of Splay, waits for jobs
+        and dispatch them to the daemons.
+        \item \textbf{Daemons} : Workers registering to the controller and waiting
+        for jobs to achieve.
+        \item A \textbf{MySQL DB} : The communication piece of Splay, allowing
+        communication between the user and the system.
+        \item \textbf{Backend} : The backend of the client side Splay app
+        \item A \textbf{Web-app} : The single-page application
+        \item A \textbf{CLI} : The command-line interface
+      \end{itemize}
+
+
       \begin{figure}[H]
         \centering
         \includegraphics[scale=0.105]{figures/new_arch.png}
@@ -190,6 +246,10 @@
 
 
   \chapter{Conclusion}
+
+  \nocite{*}
+  \bibliographystyle{plain}
+  \bibliography{biblio.bib}
 
 
 
