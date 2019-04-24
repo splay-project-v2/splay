@@ -240,8 +240,43 @@
 
   \chapter{Testing and Validation}
 
-    We wanted to reach 100\% LOC testing with feature testing, unit testing,
-    and testing the whole system with rock solid test suite, must explain this.
+    Nous allons dans cette section aborder la façon dont nous avons voulu assurer
+    le testing et la validation de projet Splay, que ce soit au niveau du système
+    ou des fonctionnalités utilisateurs, en ciblant à chaque fois une des
+    composantes du projet.\\
+
+    Le fait est que le projet Splay dans l'état où nous l'avons repris disposait
+    de très peu de tests, ce qui ne nous a évidemment pas facilité la tâche puisque
+    nous avançions dans l'ombre, chaque changement pouvant créer de nouveaux
+    dysfonctionnements que nous pourrions remarquer seulemenet longtemps plus tard.\\
+
+    L'écriture des tests s'est déroulée pendant toute la phase de refonte
+    architecturale décrite dans la section correspondante, afin de s'assurer
+    de la maintenabilité du nouveau code, mais aussi de doter progressivement
+    le core de Splay avec des tests pour pouvoir obtenir au final un ensemble
+    maintenable.\\
+
+    \section{Backend}
+
+      Pour rappel, le backend tel que nous l'avons conçu a les rôles suivants :
+      \begin{itemize}
+        \item Responsabilité de la base de données, notamment au niveau de
+        la définition de sa structure
+        \item Fourni une API JSON permettant à d'autres applications d'interagir
+        avec le système
+      \end{itemize}
+
+      Le backend étant écrit en Rails, nous avons accès à l'ORM ActiveRecord, qui
+      permet une manipulation des données de la database sous forme de modèles.
+      Ces modèles sont donc dotés d'attributs, de contraintes à respecter sur
+      ces attributs par rapport au schéma de la base de données, mais aussi de
+      méthodes. Cette modélisation des données nous permettent donc de faire
+      du model testing.\\
+
+      Le fait que le rôle du backend soit de 
+
+
+
 
 
 
