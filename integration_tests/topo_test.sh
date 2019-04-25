@@ -6,8 +6,8 @@ source "$DIR/functions.sh"
 # bash integration_tests/build_run.sh 
 
 #--
-JOB="app_test/simple_topo.lua"
-TOPO="app_test/topo_2.xml"
+JOB="app_test/simple_topo_lat.lua"
+TOPO="app_test/topo_2_lat.xml"
 
 #--
 submit $JOB $TOPO
@@ -36,12 +36,18 @@ step "Verify the RTT (need to be greater 1.25, check topology used)"
 RTT=$(echo ${LOGS[@]} | grep -oP -m 1 "FINAL RTT : \K[0-9]+\.[0-9]+" | head -1)
 check "Can't get the RTT"
 
-
 echo "RTT = ${RTT} sec"
-
 if [ $(bc -l <<< "${RTT} > 1.2499") -eq 0 ]; then
     echo "${LOGS[@]}"
     error "RTT Can't be smaller than 1.2499, topo_socket doesn't work ?"
 fi
 
-step "The Topology Test is successful"
+#--
+step "Test the speed of a topology"
+
+#--
+JOB="app_test/simple_topo_speed.lua"
+TOPO="app_test/topo_2_speed.xml"
+
+#--
+submit $JOB $TOPO

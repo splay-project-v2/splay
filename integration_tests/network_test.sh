@@ -24,6 +24,3 @@ if [[ ${LOGS[@]} != *"I received : I AM 1"* || ${LOGS[@]} != *"I received : I AM
     echo "${LOGS[@]}"
     error "The logs don't contain the correct result (received data)"
 fi
-
-
-step "The Network Test is successful"

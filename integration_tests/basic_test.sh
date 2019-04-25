@@ -17,5 +17,3 @@ if [[ ${LOGS[@]} != *"SIMPLE.LUA START"* || ${LOGS[@]} != *"SIMPLE.LUA EXIT"* ]]
     echo "${LOGS[@]}"
     error "The logs don't contain the correct result"
 fi
-
-step "The Basic Test is successful"
