@@ -28,3 +28,38 @@ function check () {
         error $*
     fi
 }
+
+function submit () {
+    local JOB=$1
+    local TOPO=$2
+    if [ ! -z "$TOPO" ]; then
+        step "Submit a job ${JOB} with ${TOPO}"
+        JOB_RES=$(docker-compose exec cli python cli.py submit-job -n "TEST" -s 2 ${JOB} -t ${TOPO})
+        check "Fail to submit the job" "\n" "${JOB_RES[@]}"
+    else 
+        step "Submit a job ${JOB} with ${TOPO}"
+        JOB_RES=$(docker-compose exec cli python cli.py submit-job -n "TEST" -s 2 ${JOB})
+        check "Fail to submit the job" "\n" "${JOB_RES[@]}"
+    fi
+
+    ID_JOB=$(echo "${JOB_RES[@]}" | grep -oP "Job ID\s+:\s\K(\d+)")
+    #--
+    step "Wait few seconds and fetch list of jobs"
+    sleep 1
+    JOBS=$(docker-compose exec cli python cli.py list-jobs)
+    check "Fail to get the list of jobs"
+
+    step "Check list of jobs (id_job = $ID_JOB)"
+    if [[ ${JOBS[@]} != *"{'id': ${ID_JOB},"* ]]; then
+        echo "${JOBS[@]}"
+        error "The list of jobs doesn't contain the new job"
+    fi
+}
+
+function get_logs () {
+    #--
+    step "Wait $1 seconds and get logs of the job (id_job = $ID_JOB)"
+    sleep $1
+    LOGS=$(docker-compose exec cli python cli.py get-job-logs $ID_JOB)
+    check "Fail to get the logs : $LOGS"
+}

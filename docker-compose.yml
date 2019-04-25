@@ -2,7 +2,7 @@ version: "2.2"
 services:
   # IMAGE : MySql database - the first to be launch
   db:
-    image: mysql:5.5
+    image: mysql:5.7
     container_name: splay_db
     environment:
       MYSQL_ROOT_PASSWORD: "splay"
