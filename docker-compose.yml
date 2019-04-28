@@ -29,7 +29,7 @@ services:
     volumes:
       - /tmp/splaylogs/logs:/app/log/splay
       - ./src/backend/:/app
-      - /app/tmp/pids/
+      - /app/tmp/
 
   # IMAGE : Controller - need waiting backend to create database (and table)
   controller:
