@@ -261,9 +261,9 @@
       Pour rappel, le backend tel que nous l'avons conçu a les rôles suivants :
       \begin{itemize}
         \item Responsabilité de la base de données, notamment au niveau de
-        la définition de sa structure
+        la définition de sa structure.
         \item Fourni une API JSON permettant à d'autres applications d'interagir
-        avec le système
+        avec le système.
       \end{itemize}
 
       Le backend étant écrit en Rails, nous avons accès à l'ORM ActiveRecord, qui
@@ -273,11 +273,100 @@
       méthodes. Cette modélisation des données nous permettent donc de faire
       du model testing.\\
 
-      Le fait que le rôle du backend soit de 
+      Le rôle du backend étant uniquement de fournir une JSON API
+      aux différents services clients à travers une authentification utilisant
+      JSON Web Token, une suite de request testing devait venir valider
+      notre ensemble d'endpoints ainsi que les méchanismes d'authentification.
+      Les données étant renvoyées aux applications sous forme de réponses
+      JSON, une sérialization des modèles devait aussi être appliquée et donc
+      également sujette à une série de tests.
 
+      \subsection{RSpec}
 
+        RSpec est une librairie destinée au Behaviour Driven Development
+        pour Ruby. Le BDD était une pratique que nous voulions suivre pour
+        la reprise du développement de Splay, nous permettant d'adopter
+        un cycle red-green-refactor mais aussi de pouvoir nous concentrer sur
+        la rédaction de scénarios en langage naturels et ensuite de les
+        traduire en scénarios de tests.
 
+        \subsubsection{Model Testing}
 
+          Comme explicité plus haut, la couche ORM de Rails nous offre un
+          reflet des contraintes présentes dans la base de données en représentant
+          ses tables sous forme de modèles dotés d'attributs, que nous pouvons en
+          plus doter d'attributs supplémentaires, de méthodes et d'une surcouche
+          de validations supplémentaires (par exemple sur des combinaisons d'attributs,
+          ou des contraintes plus complexes inter-tables).\\
+
+          Cette abstraction supplémentaire nécessite en effet d'être couverte par
+          un ensemble suffisant de validation, ce que nous avons fait à travers
+          du \textbf{Model Testing}, en mettant à l'épreuve la surcouche appliquée
+          aux modèles mais aussi les contraintes de bases explicitées dans le
+          schéma de la base de données.\\
+
+          Cet ensemble de tests offrent donc une double validation sur les contraintes
+          de champs, mais aussi une validation sur la logique business ajoutée
+          dans l'application.
+
+        \subsubsection{Request Testing}
+
+          Les tests de requêtes au sein du Backend sont les tests les plus
+          importants que nous avons réalisés, en termes de couverture de la
+          codebase mais aussi en termes d'exploration des features implémentées
+          au sein de ce service de Splay.\\
+
+          Les "requests specs" au sein de RSpec sont faites pour simuler un
+          comportement d'application utilisateur faisant appel à tout le stack
+          de Rails (un framework web MVC).
+          Chaque requête passe donc au travers des éléments suivants :\\
+
+          % INSERT SCHEMA HERE
+          \begin{figure}[H]
+            \centering
+            \includegraphics[scale=0.6]{figures/request_test.png}
+            \caption{\label{new_arch} Request Lifetime in Backend Service}
+          \end{figure}
+
+          Chaque route de l'application est testée, en explorant différent
+          scénarios possibles (token d'authentification invalide, action
+          non autorisée pour l'utilisateur). On a donc une série de tests
+          qui mettent en oeuvre l'intégralité de l'application, avec simplement
+          un envoi de requêtes et une comparaison sur les réponses attendues
+          de la part de l'application.
+
+      \subsection{Code Coverage - Simple Cov}
+
+        Nous avons choisi d'utiliser Simple Cov en combinaison du testing appliqué
+        au Backend. Cet outil permet de mesure le code coverage d'une application
+        Ruby et de fournir des informations utiles grâce à une analyse des
+        exécutions des tests.\\
+
+        Notre ambition sur la partie utilisateur de Splay ayant été une refonte
+        des services en services plus simples et maintenables, il était dès lors
+        simple et évident d'atteindre une couverture totale avec une suite de tests,
+        et avons décidé d'utiliser cet outil.
+
+      \subsection{Code Quality - Rubocop}
+
+        Dernière partie de l'ensemble d'outils destinés à assurer la qualité du
+        service, nous avons utilisé Rubocop, un outil d'analyse statique du code
+        (linter) permettant de détecter les enfreintes à une série de codes
+        de conduites en termes de style et pratiques (méthodes trop longues,
+        trop d'instanciations de variables, trop d'embranchements dans le code, ...).
+
+      \subsection{Integration Continue}
+
+        Encore dans un soucis de qualité, le service a été placé sur la plateforme
+        d'intégration continue Travis CI, le but étant de se servir des hooks
+        fournis par Travis sur l'exécution des tests.\\
+
+        Splay étant un projet open source, et que nous espérons voir évoluer, son
+        développment collaboratif se fera inévitablement à travers l'organisation
+        Github dans laquelle les repositories se trouvent.\\
+        Les hooks Travis permettent, dans le cadre d'une pull request, d'obtenir
+        une review de l'exécution de tests sur la branche qui demande à être
+        mergée, et de s'assurer que le build est sain.
 
 
   \chapter{Conclusion}
