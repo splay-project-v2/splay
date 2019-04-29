@@ -20,8 +20,8 @@ docker-compose up -d controller cli web_app
 check "Fail to run controller - cli - web_app (not tested) (db, backend also)"
 
 # -- 
-step "Run multiple splay daemons"
-docker-compose up -d --scale daemon=2
+step "Run multiple (4) splay daemons"
+docker-compose up -d --scale daemon=4
 check "Fail to run daemons"
 
 # -- 

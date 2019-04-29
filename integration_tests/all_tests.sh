@@ -17,6 +17,9 @@ bash $DIR/network_test.sh
 big_step "Run the topology test"
 bash $DIR/topo_test.sh
 
+big_step "Run the crash point test"
+bash $DIR/crash_point_test.sh
+
 big_step "Run the raft test"
 bash $DIR/raft_test.sh
 

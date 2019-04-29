@@ -56,6 +56,12 @@ function submit () {
     fi
 }
 
+function kill_job () {
+    step "Kill a job"
+    KILL=$(docker-compose exec cli python cli.py kill-job ${ID_JOB})
+    check "Kill job fails : ${KILL}"
+}
+
 function get_logs () {
     #--
     step "Wait $1 seconds and get logs of the job (id_job = $ID_JOB)"
