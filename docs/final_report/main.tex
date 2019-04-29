@@ -235,12 +235,50 @@
           itérative et efficace.
         \end{itemize}
 
-      \section{Code Quality}
+      \section{Quality Assurance}
 
-        Ceci sera explicité plus en détail dans un chapitre suivant, mais ...
+        Ceci sera explicité plus en détail dans un chapitre suivant, mais nous
+        avons voulu nous assurer de maintenir un certain degré de qualité dans
+        notre travail sur Splay et plus spécifiquement au niveau du code, afin
+        aussi d'assurer la maintenabilité du projet. Nous nous sommes donc
+        fixés ce but à travers la mise en place des éléments suivants : \\
+
+        \begin{itemize}
+          \item \textbf{Testing suites} : Ensembles de tests unitaires et
+          d'intégration, intra-service et inter-services.
+          \item \textbf{Linter} : Analyse statique du code afin de satisfaire à
+          des exigeances de style de code et de bonnes pratiques.
+          \item \textbf{Coverage Analyzers} : Analyse du pourcentage de couverture
+          du code par les suites de tests.
+        \end{itemize}
 
       \section{Github and Gitflow}
 
+        Le projet et les divers services qui le composent sont versionnés
+        en utilisant le système de versionning \textit{Git} et hostés
+        sur le service en ligne \textit{Github}.
+        Nous avons donc organisés notre travail sur le modèle du Gitflow.
+        Chaque feature ou tâche que nous avions créée sur le kanban était
+        destinée à recevoir sa propre branche, partant de la branche principale.
+        Une fois la feature terminée et testée, une pull request était créée
+        demandant la fusion de la branche de feature sur la branche principale.
+        Le bénéfice premier étant évidemment de garder la branche principale
+        dans un état fonctionnel avec des features implémentées terminées et
+        saines.\\
+
+        Le deuxième atout de cette méthode de travail au sein de notre groupe
+        était de pouvoir, encore dans un but d'assurer la qualité, aisément
+        organiser du reviewing de code entre nous. Chaque fois qu'un de nous
+        finissait une tâche et effectuait une pull request, l'autre était
+        assigné en tant que reviewer et chargé d'accepter la pull request
+        et d'effectuer le merge, ou détecter des erreurs à l'issue de cette
+        review et de demander les changements adéquats au premier.\\
+        Outre le bénéfice premier de la review dans la réduction du nombre
+        de bugs ou d'erreurs, cela permettait aussi à chacun d'entre nous
+        de rester au courant de tous les changements au sein des différents
+        services, puisque nous ne pouvions pas décemment travailler ensemble
+        sur chaque service individuellement étant donné leur nombre et les
+        features inter-dépendantes à développer.
 
 
   \chapter{Implementation}
