@@ -287,7 +287,52 @@
 
     \section{Technology choices}
 
-      Details about the different technologies used.
+      \subsection{VueJS}
+
+        Puisque nous avions décidé que l'application web utilisateur se
+        destinait à être uniquement une application front-end tirant
+        parti d'un backend centralisé fournissant une JsonAPI complète, nous
+        voulions utiliser un framework web front-end qui satisferait aux
+        conditions suivantes : \\
+
+        \begin{itemize}
+          \item Léger
+          \item Facilité de développement et de maintenance
+          \item Accès à de nombreuses librairies tierces
+        \end{itemize}
+
+        Pour une application front-end, l'écosystème JavaScript était
+        évidemment évident, et nos avis se sont de fait tournés vers
+        les options ReactJS, Angular et VueJS, tous étant des framework
+        populaires et reconnus pour leurs qualités.\\
+        Nous avons vite évincé Angular car nous préférions l'orientation
+        composant des deux autres frameworks, moins lourds et évitant
+        ainsi de devoir composer avec une couche style MVC des apps Angular.
+        Bien qu'ayant eu tous deux une expérience préalable avec le React
+        durant nos cours de Cloud Computing au sein de l'UCL, nous avons
+        décidé d'opter pour Vue au lieu de React.\\
+
+        Le premier gros avantage de Vue étant sa légereté, nous avons
+        aussi pris en compte le fait que la technologie gagnait en popularité
+        depuis un certain nombres d'années pour être aujourd'hui un poids fort
+        dans les technologies web. De plus, ayant pris le temps de d'essayer
+        le développement d'une petite application test pour nous décider, nous
+        avons été grandement satisfaits par la simplicité de développement que
+        le framework Vue offre aux développeurs et nous permet d'être
+        totalement confiant dans le fait qu'opter pour cette technologie
+        permettra à tout contributeur de Splay de très vite pouvoir s'y
+        retrouver et participer au développement. En effet, l'application se
+        découpe sous forme de composants individuels possédant chacun leur
+        template HTML, leur styles CSS et le script JavaScript associé. Aucun
+        autre langage exotique n'est requis.\\
+        Le fait que le framework se trouve dans l'ecosystème JavaScript et
+        associé à NPM permet aussi de tirer profit de nombreuses librairies
+        existantes, que ce soit au niveau du testing, de librairies de
+        visualisation de données, etc...\\
+
+        Pour toutes ces raisons, Vue s'est révélé être le choix ideal pour
+        l'application web, et nous permettant en plus d'associer le bénéfice
+        d'un développement agréable sur de nouvelles technologies en plus
 
     \section{Github Repository Cleaning}
 
