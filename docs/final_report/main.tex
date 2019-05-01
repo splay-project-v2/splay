@@ -87,7 +87,45 @@
 
       \subsection{A first update}
 
-        About our part-time job on splay and what we have done there.
+        Nous avons eu la chance d'obtenir auprès de l'UCL un travail étudiant
+        en lien direct avec ce mémoire. Il s'agissait, à l'issue de dix jours
+        de travail, de mettre à jour la version des technologies utilisées par
+        Splay et par la même occasion acquérir une connaissance plus complète
+        du fonctionnement du projet.\\
+
+        Lors du début du travail, les derniers updates sur le projet dataient
+        de 2016, et un certain nombres de features et améliorations avaient
+        été développés jusque là. Cependant le projet n'était pas dans un
+        état stable et donc Raziel Carvajal Gomez (notre superviseur pour ce
+        travail contributeur de Splay) a préféré nous faire faire un fork
+        du projet sur un commit remontant en Septembre 2011.\\
+        Nous avions donc le bénéfice de repartir sur des bases saines et
+        un projet fonctionnel, mais avec une grande perte en ce qui concerne
+        le travail qui avait été accompli sur les cinq années qui séparent
+        2011 de 2016.\\
+        C'est là que nous avons relevé le premier problème
+        et élément que nous voulions absolument changer et intégrer dans notre
+        reprise de Splay: le projet avait été transferé depuis son ancien
+        système de versionning sur Git et uploadé sur Github en Juin 2011 mais
+        n'avait pas profité du système de tag de versions offert par Git pour
+        référencer dans l'histoire du projet des releases fonctionnelles
+        et stables, c'est donc quelque chose que nous mettrions en oeuvre
+        par la suite.\\
+
+        Partant de là, nous avons pu nous familiariser progressivement avec
+        le fonctionnement du projet et son architecture software, appréhender
+        les différents services qui le composaient et comprendre leurs
+        interactions. Une fois cette connaissance acquise, nous avons pu
+        commencer à upgrader les différentes versions des technologies
+        utilisées en commencant par le Ruby et le LUA, les deux plus importantes
+        et plus présentes technoloies du projet.\\
+        Avec des versions datant de 2011 maximum, et étant donné que nous voulions
+        transiter sur les versions les plus récentes disponibles, nous savions
+        pertinamment qu'au moment où nous changerions les versions, le projet
+        deviendrait totalement instables et que de nombreux appels de méthodes
+        ou fonctions dépréciées seraient à changer avant de récupérer un état
+        stable. Mais là aussi nous avons relevé un second problème.
+
 
   \chapter{Splay Version 2}
 
