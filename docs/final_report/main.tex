@@ -1,6 +1,7 @@
 % EPL master thesis covers template
 \documentclass{eplmastersthesis}
 \usepackage{float}
+\usepackage{xcolor}
 
 % Please fill in the following boxes
 % Title of the thesis
@@ -283,7 +284,11 @@
 
   \chapter{Implementation}
 
-    Implementation details  (following a story-telling approach?).
+    \begin{itemize}
+      \item Détails sur les choix d'implémentation
+      \item Story-telling sur le développement en lui-même
+      \item Détails de l'implementation, comment Splay fonctionne aujourd'hui
+    \end{itemize}
 
     \section{Technology choices}
 
@@ -337,6 +342,39 @@
 
       \subsection{Python - CLI}
 
+        L'ancienne paire de service destinés au CLI était écrite en LUA d'une
+        part pour le côté client, et le serveur CLI en Ruby. Etant donné que
+        la logique du serveur allait être déplacée dans le \textbf{Backend},
+        et que nous voulions garder une application en ligne de commande
+        pour des tests rapides de toute l'infrastructure, nous avons eu besoin
+        de réévaluer la pertinence de l'utilisation du LUA pour cette application.\\
+
+        Il est plus que probable que le LUA ait été utilisé à l'époque pour
+        des raisons de cohérence, et pour éviter de disperser Splay autour
+        de beaucoup trop de technologies différentes (bien que Ruby aurait
+        aussi pu être utilisé). Toujours est-il que ce choix n'était aujourd'hui
+        plus le plus pertinant pour une application de ce type, en effet notre
+        petite application CLI client devait être : \\
+
+        \begin{itemize}
+          \item Simple
+          \item Très concise
+          \item Ecrite dans un langage facile d'utilisation
+          \item Disposer dans l'idéal de librairies permettant la création
+          de ce genre d'application
+        \end{itemize}
+
+        Hors nous avions hérité d'une application décomposée sur de multiples
+        fichiers LUA, chacun représentant une commande. On avait donc
+        énormément de duplication de code au niveau de la façon de parser
+        les arguments et aussi dans la manière de contacter le serveur
+        via une librairie HTTP de LUA.\\
+        Ruby était évidemment une option valable si nous voulions restreindre
+        le nombre de technologies différentes utilisées, mais Python se prêtait
+        beaucoup plus à l'écriture d'un script simple tel que notre CLI, avec
+        à disposition des librairies éprouvées pour ce qui est des requêtes
+        HTTP et de la gestion de paramètres utilisateurs.
+
       \subsection{Ruby on Rails - Backend}
 
         Le controller et l'ancienne paire de services destinés au CLI ayant été
@@ -386,27 +424,33 @@
         serialization des données faisait vraiment de Rails la bonne technologie
         à choisir pour le Backend.
 
+    \section{Development}
 
-    \section{Github Repository Cleaning}
+      \subsection{Github Repository Cleaning}
 
-      First step was to clean the github repo
+        First step was to clean the github repo
 
-    \section{Centralization of Splay's Backend}
+      \subsection{Centralization of Splay's Backend}
 
-      How we moved the old rails app and cli server to a single backend
-      to serve any app wanting to connect with Splay.
+        How we moved the old rails app and cli server to a single backend
+        to serve any app wanting to connect with Splay.
 
-    \section{A new front-end application}
+      \subsection{A new front-end application}
 
-      As backend was available, development of a VueJS SPA.
+        As backend was available, development of a VueJS SPA.
 
-    \section{Rework of the CLI to use new Backend}
+      \subsection{Rework of the CLI to use new Backend}
 
-      All the Command line interface has been redone in Python more clearly and concise.
+        All the Command line interface has been redone in Python more clearly and concise.
 
-    \section{Topology creation through Javascript Interface}
+      \subsection{Topology creation through Javascript Interface}
 
-    \section{Fault injection}
+      \subsection{Fault injection}
+
+    \section{Implementation Details}
+
+      A precise description on how the Splay project works now?
+
 
   \chapter{Testing and Validation}
 
@@ -537,6 +581,49 @@
         Les hooks Travis permettent, dans le cadre d'une pull request, d'obtenir
         une review de l'exécution de tests sur la branche qui demande à être
         mergée, et de s'assurer que le build est sain.
+
+    \section{Tests fonctionnels}
+
+      Afin de pouvoir tester automatiquement le projet dans son ensemble, nous
+      avons aussi voulu développer des tests fonctionnels. Ces tests seraient
+      relativement simples mais suffisamment complets pour s'assurer de
+      tester de manière globale les features développées sur le système, et
+      il suffisait pour cela de transcrire nos scénarios d'utilisation en
+      scénarios de tests.\\
+
+      Pour ceux-ci, nous n'avons pas utilisé de technologie complexe et avons
+      estimé qu'une série de scripts en Bash était plus que suffisante pour
+      parvenir à nos fins. Bash ne permettrait pas de tester des scénarios
+      utilisateurs à travers l'application web, mais étant donné que celle-ci
+      utilise exactement la même API fournie par le Backend que l'application
+      CLI, nous pouvions donc simuler les actions utilisateurs via celui-ci (
+      et c'est en partie pour cette raison que nous avons conservé une
+      application CLI dans le projet).\\
+
+      Les tests d'intégration ont été placés dans un dossier spécifique à la
+      racine du projet Splay, et achèvent les actions suivantes pour chaque
+      test : \\
+
+      \begin{itemize}
+        \item Nettoyage des containers
+        \item Rebuild des différents services listés dans le docker-compose
+        \item Démarrage des services
+        \item Execution de commandes via le CLI
+        \item Vérification de la réponse retournée par le CLI et affichage du
+        succès ou de l'erreur de cette phase de test dans le terminal
+      \end{itemize}
+
+      {\color{red} Faire le lien avec les scénarios du début}\\
+
+      Cette manière de procéder et le fait d'utiliser nos scénarios utilisateurs
+      pour déterminer les actions décrites dans les tests nous permettent de
+      nous assurer et de valider que l'implémentation de nos features est
+      fonctionnelle tout au long du projet de la vie de Splay. De plus, ces
+      tests viennent ajouter une couche de validation supplémentaire par rapport
+      aux tests ciblant les différents services individuellement. On se retrouve
+      ici avec des tests qui font intervenir chaque service dans un cas concret
+      de fonctionnement du projet, et permet donc aussi de tester les interactions
+      entre ceux-ci.
 
   \chapter{Conclusion}
 
