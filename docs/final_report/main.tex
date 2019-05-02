@@ -124,7 +124,23 @@
         pertinamment qu'au moment où nous changerions les versions, le projet
         deviendrait totalement instables et que de nombreux appels de méthodes
         ou fonctions dépréciées seraient à changer avant de récupérer un état
-        stable. Mais là aussi nous avons relevé un second problème.
+        stable. Mais là aussi nous avons relevé un second problème et élément
+        primordial à intégrer pour les futures améliorations, le projet
+        manquait cruellement de tests, à quelque niveau que ce soit.\\
+        La conséquence de ceci était que nous devions réparer pas à pas le
+        projet suite au changement des versions des langages et frameworks en
+        devant nous baser sur notre compréhension globale du projet acquise
+        précédemment et sur des resultats finaux attendus lors de l'exécution
+        de divers scénarios utilisant le projet. Il nous était impossible d'être
+        certains que nos changements n'affectaient pas le fonctionnement interne
+        du projet de manière négative mais imperceptible, conséquences qui
+        étaient en fait inévitables mais que nous ne découvririons que par
+        la suite lors de l'implémentation de nouvelles features.\\
+        Il était dès lors évident pour nous que nous mettrions en place des
+        séries de tests à plusieurs niveaux lors des prochaines phases du
+        projet, afin de rendre celui-ci bien plus maintenable que dans l'état
+        où nous l'avons repris et de pouvoir garantir de futures améliorations
+        plus aisées.\\
 
 
   \chapter{Splay Version 2}
