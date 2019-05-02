@@ -127,6 +127,7 @@
         stable. Mais là aussi nous avons relevé un second problème et élément
         primordial à intégrer pour les futures améliorations, le projet
         manquait cruellement de tests, à quelque niveau que ce soit.\\
+
         La conséquence de ceci était que nous devions réparer pas à pas le
         projet suite au changement des versions des langages et frameworks en
         devant nous baser sur notre compréhension globale du projet acquise
@@ -142,6 +143,51 @@
         où nous l'avons repris et de pouvoir garantir de futures améliorations
         plus aisées.\\
 
+        Nous sommes donc parvenus à progressivement remettre en état de
+        fonctionnement tous les éléments composant Splay avec les nouvelles
+        versions, en mettant également à jour les librairies utilisées par
+        les différents langages. Les changements principaux en termes de
+        version de technologies sont les suivants :
+
+        \begin{itemize}
+          \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
+          \item \textbf{Lua}: 5.1 $\rightarrow$ 5.3
+          \item \textbf{Rails}: 2.1.0 $\rightarrow$ 5.2.0
+          \item \textbf{MySQL}: 5.5 $\rightarrow$ 5.7
+        \end{itemize}
+
+        Nous avions à l'issue de ces dix jours de travail une base saine et
+        mise à jour prête à être utilisée pour le travail concret de notre
+        mémoire.\\
+
+        En plus de ceci, une autre partie du travail a consisté, une fois les
+        updates réalisés, à mettre à jour la documentation du projet et y
+        décrire le fonctionnement des différents services ainsi que de prendre
+        du temps afin de réfléchir à des améliorations au niveau de
+        l'architecture du système et de son fonctionnement et avons émis
+        les réflexions suivantes :
+
+        \begin{itemize}
+          \item L'organisation du code n'était vraiment pas idéale et devrait
+          être changée. Le code des six différents services se trouvait dans
+          un seul même repository, ce qui rendait compliqués la navigation dans
+          l'arborescence du projet pendant le développement, le suivi des
+          commits et donc de l'évolution de ces différents services.
+          \item Le fait d'utiliser une database comme point de communication
+          entre le côté user et le \textbf{Controller} n'était peut-être
+          pas aujourd'hui la meilleure manière de procéder.
+          \item L'utilisation de Ruby comme langage pour le \textbf{Controller}
+          et de LUA pour les \textbf{Daemons} n'était peut-être plus
+          aujourd'hui un choix pertinant et des alternatives possibles
+          pour des applications multi-processus et concurrentielles telles
+          que Elixir demandaient analyse. Un différent choix de technologie
+          aurait aussi pu par la même occasion solutionner notre interrogation
+          précédente sur la base de données.
+        \end{itemize}
+
+        Ces réflexions ont été ensuite discutée avec Etienne Rivière, afin de
+        dresser ensuite le ligne directrice et les objectifs concrets à atteindre
+        pour la suite du projet et entammer la version 2 de Splay.
 
   \chapter{Splay Version 2}
 
