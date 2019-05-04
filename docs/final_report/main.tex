@@ -64,6 +64,8 @@
 
     \section{Context and Motivations}
 
+      {\color{red} Rewrite and complete this, placeholder right now}\\
+
       The process of learning distributed systems and algorithms is usually
       undermined by the difficulty of being able for one to test and apply
       what he learns.\\
@@ -77,13 +79,15 @@
       conditions for learning purposes.
 
     \section{About the Splay Project}
-
-      Discussion about what was available when we started the rework of
-      the Splay project.
+    
+      % Discussion about what was available when we started the rework of the Splay project.
+      The SPLAY project has initiated to solve the difficulty to test and develop distributed algorithm in a large scale. SPLAY is not a recent project (begin around 2006), and lot of features have been added during some years. The first version of SPLAY  was designed to "covers all aspects of the development and evaluation chain" of distributed application \cite{SPLAY}. \\
+      
+      After some years, a module has been constructed be to manage network topology, SplayNet \cite{SplayNet}. This middleware implements a easy way to set the topology network between the endpoints (machines).
 
       \subsection{Legacy Splay Project}
 
-        The SPlay Project at the origin.
+        When we begin our work on Splay, the project was ... % TODO
 
       \subsection{A first update}
 
@@ -188,14 +192,31 @@
         Ces réflexions ont été ensuite discutée avec Etienne Rivière, afin de
         dresser ensuite le ligne directrice et les objectifs concrets à atteindre
         pour la suite du projet et entammer la version 2 de Splay.
-
+        
   \chapter{Splay Version 2}
 
-    All about what we wanted to do exactly.
+    % All about what we wanted to do exactly.
+    Then, our goal for the new version of Splay, was first, stabilize and modernize the legacy project. Indeed, some parts was not updated or partially documented. All details is available in the next section.\\
+    
+    In a second step, we wanted to add our own features focus on the usage for the final user (student, professor or searcher). These features were a modern web application with Lua editor integrated, a graphical topology creator inside the web app and a way to inject some fault injection in the user code. We will details all of then in this chapter.
 
     \section{Objectives}
-
-      Detailed objectives of the system and our update.
+      
+      % Adding features of splayNet with 
+      Our Objectives can be easily cup in two parts, first the maintainability of the project and the new features added (next section). The section about our first update during a student job, explains the upgrade of language version but this upgrade was not covered all features of the legacy project (example: SplayNet). Then our first job was to complete these missing. \\
+      
+      % Clean code source - repo
+      Secondly, Splay is not a small project, and several technologies (services) orchestrated between then. For this reason, the source code architecture is very important for the project maintainability. In the legacy project all code was on a single git repository host on Github, but this one is a "mess". The documentation is not in the right place, the logic of the directory structure is too complex, ... Then we wanted to do a better management of the source code and documentation readable by someone finding our repository. \\
+      
+      % Easy installation : On click install : docker (independent of OS), installation script,  
+      balbal
+      
+      % Bug track - Solve issues of the old project
+      
+      
+      
+      
+      % -  We decided to redone clean git repositories for each services (see the section about the software architecture) and have a main repository which regroup all of then with git submodules.  
 
     \section{Features}
 
