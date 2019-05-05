@@ -206,6 +206,9 @@
       % Adding features of splayNet with 
       Our Objectives can be easily cup in two parts, first the maintainability of the project and the new features added (next section). The section about our first update during a student job, explains the upgrade of language version but this upgrade was not covered all features of the legacy project (example: SplayNet). Then our first job was to\textbf{ complete the missing features} done after  September 2011. \\
       
+            % Raspberry
+      The first idea of our master thesis was able to run Splay on a \textbf{cluster of Raspberry Pi}. The configuration of this cluster won't be trivial : one Raspberry need to be the master and able to control the rest of the cluster. Then the master need to run the controller and the web application and the other need to be handle to manage several Splay daemon (use as a machine for the distributed algorithms). \\
+      
       % Clean code source - repo
       Secondly, Splay is not a small project, and several technologies (services) orchestrated between then. For this reason, the source code architecture is very important for the project maintainability. In the legacy project all code was on a single git repository host on Github, but this one is a "mess". The documentation is not in the right place, the logic of the directory structure is too complex, ... Then we wanted to do a better \textbf{management of the source code} and documentation readable by someone finding our repository. \\
       
@@ -213,18 +216,28 @@
       During our first work on Splay, we noticed that the installation and the usage was not quite easy to handle. Some services were dockerize and a docker-compose file was implemented which facilitate the installation. But these docker images were not perfectly build : healthcheck missing, old base image in some cases or big distribution base image (slow and take place). Also there wasn't a proper \textbf{one-click install} script for making quick test. Then, one of our goal was to get clean, small and with updated libraries docker images. These images need to be fully integrated between then through the docker-compose. A automate install script and running script, will be appreciate and useful as a example for the user.\\
       
       % Bug track - Testing - Solve issues of the old project
-      Our first issues encounter with Splay, was the lack of \textbf{automatic tests} in all part of the project and because of this, there were a lot of silent bugs scattered in all the project. Accordingly, we wanted to upgrade the robustness of the project, it is means create specific test for critical parts and the main features of Splay. Two type of test can be created, local testing and integration testing. The first type allows to test a specific critical part or feature of one service (independently of others). The second kind is testing the global project by simulate a real user and getting real result from Splay (able to test the chain of service). The goal of these test is a better bug track and create maintainable project for future development.
+      Our first issues encounter with Splay, was the lack of \textbf{automatic tests} in all part of the project and because of this, there were a lot of silent bugs scattered in all the project. Accordingly, we wanted to upgrade the robustness of the project, it is means create specific test for critical parts and the main features of Splay. Two type of test can be created, local testing and integration testing. The first type allows to test a specific critical part or feature of one service (independently of others). The second kind is testing the global project by simulate a real user and getting real result from Splay (able to test the chain of service). The goal of these test is a better bug track and create maintainable project for future development.\\
       
-      % 
+      % Merge Web app and Cli server + new web app 
+      During our student job, we observed some code repetition and service repetition (cli server and the old web application). Then,we wanted to \textbf{avoid the repetition of job} (and code by extension) by change these services or merge it. Again, the purpose was the maintainability and refactor some old code.
+     
+      
+    \section{New features of Splay}
 
-    \section{Features}
-
-      The features available to the users (distributed algorithm editor on the
-      web-page, fault injection, topology).
+     To present our own new features of Splay, we will explain by some user scenarios and after explain in details the three features.
 
       \subsection{Scenarios}
 
         Scenarios of usage making use of the different features available.
+        % as a simple student using the a already installation of Splay (cluster of Rasp) to put in application his course of  distributed. 
+        
+        % as a professor testing some new protocol from a other paper in a existing installation of splay
+        
+        % as a employee from a cloud company who want test the robusness of their new Top Secret algorithm.
+        
+\subsection{   Details of features}
+
+
 
   \chapter{Architecture}
 
