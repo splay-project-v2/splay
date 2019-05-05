@@ -121,8 +121,8 @@
         les différents services qui le composaient et comprendre leurs
         interactions. Une fois cette connaissance acquise, nous avons pu
         commencer à upgrader les différentes versions des technologies
-        utilisées en commencant par le Ruby et le LUA, les deux plus importantes
-        et plus présentes technoloies du projet.\\
+        utilisées en commencant par le Ruby et le Lua, les deux plus importantes
+        et plus présentes technologies du projet.\\
         Avec des versions datant de 2011 maximum, et étant donné que nous voulions
         transiter sur les versions les plus récentes disponibles, nous savions
         pertinamment qu'au moment où nous changerions les versions, le projet
@@ -147,7 +147,7 @@
         où nous l'avons repris et de pouvoir garantir de futures améliorations
         plus aisées.\\
 
-        Nous sommes donc parvenus à progressivement remettre en état de
+        Nous sommes donc parvenus à progressivement remettre en état (partiellement avec la feature principal) de
         fonctionnement tous les éléments composant Splay avec les nouvelles
         versions, en mettant également à jour les librairies utilisées par
         les différents langages. Les changements principaux en termes de
@@ -157,7 +157,8 @@
           \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
           \item \textbf{Lua}: 5.1 $\rightarrow$ 5.3
           \item \textbf{Rails}: 2.1.0 $\rightarrow$ 5.2.0
-          \item \textbf{MySQL}: 5.5 $\rightarrow$ 5.7
+          % Eux, ça s'était après : 
+          % \item \textbf{MySQL}: 5.5 $\rightarrow$ 5.7 
         \end{itemize}
 
         Nous avions à l'issue de ces dix jours de travail une base saine et
@@ -203,20 +204,18 @@
     \section{Objectives}
       
       % Adding features of splayNet with 
-      Our Objectives can be easily cup in two parts, first the maintainability of the project and the new features added (next section). The section about our first update during a student job, explains the upgrade of language version but this upgrade was not covered all features of the legacy project (example: SplayNet). Then our first job was to complete these missing. \\
+      Our Objectives can be easily cup in two parts, first the maintainability of the project and the new features added (next section). The section about our first update during a student job, explains the upgrade of language version but this upgrade was not covered all features of the legacy project (example: SplayNet). Then our first job was to\textbf{ complete the missing features} done after  September 2011. \\
       
       % Clean code source - repo
-      Secondly, Splay is not a small project, and several technologies (services) orchestrated between then. For this reason, the source code architecture is very important for the project maintainability. In the legacy project all code was on a single git repository host on Github, but this one is a "mess". The documentation is not in the right place, the logic of the directory structure is too complex, ... Then we wanted to do a better management of the source code and documentation readable by someone finding our repository. \\
+      Secondly, Splay is not a small project, and several technologies (services) orchestrated between then. For this reason, the source code architecture is very important for the project maintainability. In the legacy project all code was on a single git repository host on Github, but this one is a "mess". The documentation is not in the right place, the logic of the directory structure is too complex, ... Then we wanted to do a better \textbf{management of the source code} and documentation readable by someone finding our repository. \\
       
       % Easy installation : On click install : docker (independent of OS), installation script,  
-      balbal
+      During our first work on Splay, we noticed that the installation and the usage was not quite easy to handle. Some services were dockerize and a docker-compose file was implemented which facilitate the installation. But these docker images were not perfectly build : healthcheck missing, old base image in some cases or big distribution base image (slow and take place). Also there wasn't a proper \textbf{one-click install} script for making quick test. Then, one of our goal was to get clean, small and with updated libraries docker images. These images need to be fully integrated between then through the docker-compose. A automate install script and running script, will be appreciate and useful as a example for the user.\\
       
-      % Bug track - Solve issues of the old project
+      % Bug track - Testing - Solve issues of the old project
+      Our first issues encounter with Splay, was the lack of \textbf{automatic tests} in all part of the project and because of this, there were a lot of silent bugs scattered in all the project. Accordingly, we wanted to upgrade the robustness of the project, it is means create specific test for critical parts and the main features of Splay. Two type of test can be created, local testing and integration testing. The first type allows to test a specific critical part or feature of one service (independently of others). The second kind is testing the global project by simulate a real user and getting real result from Splay (able to test the chain of service). The goal of these test is a better bug track and create maintainable project for future development.
       
-      
-      
-      
-      % -  We decided to redone clean git repositories for each services (see the section about the software architecture) and have a main repository which regroup all of then with git submodules.  
+      % 
 
     \section{Features}
 
