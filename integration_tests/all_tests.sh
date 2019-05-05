@@ -6,7 +6,11 @@ source "$DIR/functions.sh"
 # bash integration_tests/all_tests.sh
 
 big_step "Clean, Rebuild and Run docker images"
-bash $DIR/build_run.sh
+if [ "$1" == "prod" ]; then
+    bash $DIR/build_run.sh docker-compose.prod.yml
+else
+    bash $DIR/build_run.sh docker-compose.yml
+fi
 
 big_step "Run the basic test"
 bash $DIR/basic_test.sh

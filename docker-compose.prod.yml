@@ -13,16 +13,10 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 2s
       retries: 100
-    expose:
-      - "3306"
 
   # IMAGE : BACKEND JsonAPI  - also create the database/tables with active record
   backend:
-    environment:
-      - MASTER_KEY=devmasterkey
-    build:
-      context: ./src/backend
-      dockerfile: Dockerfile
+    image: willfrit/splay_backend
     container_name: splay_backend
     ports: ["8081:3000"]
     depends_on:
@@ -30,14 +24,11 @@ services:
         condition: service_healthy
     volumes:
       - /tmp/splaylogs/logs:/app/log/splay
-      - ./src/backend/:/app
-      - /app/tmp/
 
   # IMAGE : Controller - need waiting backend to create database (and table)
   controller:
     cpus: 2.0 # Reduce problemen when performance bug accured (see Trello)
-    build:
-      context: ./src/controller
+    image: willfrit/splay_controller
     container_name: splay_controller
     depends_on:
       backend:
@@ -50,29 +41,22 @@ services:
   # IMAGE : Daemon - splaydaemon
   daemon:
     cpus: 0.2 # Reduce problemen when performance bug accured (see Trello)
-    build:
-      context: ./src/daemon
+    image: willfrit/splay_daemon
     depends_on:
       controller:
         condition: service_started
 
   # IMAGE : Single page app to monitor splay. (use backend api service)
   web_app:
-    #cpus: 0.5
-    build:
-      context: ./src/web_app
-      dockerfile: dev.Dockerfile
+    image: willfrit/splay_web_app
     container_name: splay_web_app
     ports:
       - "8080:80"
     depends_on: ["backend"]
-    volumes:
-      - "./src/web_app/:/app"
 
   # IMAGE : Command line interface using backed (tested purpose)
   cli:
-    build:
-      context: ./src/cli
+    image: willfrit/splay_cli
     container_name: splay_cli
     depends_on: ["backend"]
     volumes:
