@@ -24,13 +24,13 @@ fi
 
 #--
 step "Verify the logs (2)"
-if [[ ${LOGS[@]} != *"RECOVERY CRASH : Rerun job 1"* ]]; then
+if [[ ${LOGS[@]} != *"RECOVERY CRASH 1"* ]]; then
     echo "${LOGS[@]}"
     error "Recovery crash not found"
 fi
 
 step "Verify the logs (3)"
-if [[ ${LOGS[@]} != *"STOP CRASH : Terminate job 2"* ]]; then
+if [[ ${LOGS[@]} != *"STOP CRASH 2"* ]]; then
     echo "${LOGS[@]}"
     error "Stop crash not found"
 fi

@@ -64,7 +64,7 @@ services:
       dockerfile: dev.Dockerfile
     container_name: splay_web_app
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on: ["backend"]
     volumes:
       - "./src/web_app/:/app"
