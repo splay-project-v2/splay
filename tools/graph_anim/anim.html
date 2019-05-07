@@ -1,110 +1,18 @@
 <!DOCTYPE html>
+
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-    <style> 
-    #network {
-        width: 1000px;
-        height: 500px;
-        border: 2px solid lightgray;
-    }
-    </style>
-   
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
     
+    <link rel="stylesheet" href="./style.css"></link>
+    <script type='text/javascript' src="./anim.js"></script>
 </head>
-<body>
+
+<body onload="graph()">
     <h1>Network during time</h1>
+    <!--<div> <button onclick="graph()">Replay</button></div>-->
     <h2 id="time"></h2>
     <div id="network">
 
     </div>
-    <script>
-        const sleep = (milliseconds) => {
-            return new Promise(resolve => setTimeout(resolve, milliseconds))
-        }
-
-        const timeline = [
-            {begin: 500, end: 10000, data: { type: "addNode", label:"1"}},
-            {begin: 1550, end: 12500, data: { type: "addNode", label:"2"}},
-            {begin: 1560, end: 15000, data: { type: "addNode", label:"3"}},
-
-            {begin: 1600, end: 86520, data: { type: "addEdge", to: 1, from: 2}},
-            {begin: 1600, end: 86520, data: { type: "addEdge", to: 2, from: 1}},
-            {begin: 1850, end: 86520, data: { type: "addEdge", to: 2, from: 3}},
-            {begin: 1855, end: 86520, data: { type: "addEdge", to: 3, from: 2}},
-            {begin: 2515, end: 86520, data: { type: "addEdge", to: 1, from: 3}},
-            {begin: 2519, end: 86520, data: { type: "addEdge", to: 3, from: 1}},
-
-            {begin: 55255, end: 155240, data: { type: "addNode", label:"Splayd 0002"}},
-        ];
-
-        var counter = 1;
-        // create an array with nodes
-        var nodes = new vis.DataSet([
-           
-        ]);
-
-        // create an array with edges
-        var edges = new vis.DataSet([
-            
-        ]);
-
-        // create a network
-        var container = document.getElementById('network');
-        var data = {
-            nodes: nodes,
-            edges: edges
-        };
-        var options = {
-           
-        };
-        var network = new vis.Network(container, data, options);
-
-        function launchPacket(from, to, time) {
-
-        }
-
-        function resolveOneTime(timedata, during) {
-            if (timedata.type == "addNode") {
-                const id_node = counter;
-                nodes.add({id: id_node, label: timedata.label})
-
-                counter += 1;
-                setTimeout(function(){ 
-                    nodes.remove(id_node)
-                }, during);
-            } else if (timedata.type == "addEdge") {
-                const id_node = counter;
-
-                edges.add({to: timedata.to, from: timedata.from})
-
-                setTimeout(function(){ 
-                    nodes.remove(id_node)
-                }, during);
-            }
-        }
-
-        const executeTimeline = async () => {
-            var timeHtml = document.getElementById("time");
-
-            console.log("start");
-            var date = new Date();
-            var beginTime = date.getTime();
-            index = 0;
-            while (timeline.length > index) {
-                var timestamp = Date.now();
-                timeHtml.innerHTML = "Time :" + (timestamp - beginTime)
-                timeToWait = timeline[index].begin - (timestamp - beginTime);
-                if (timeToWait >= 0){
-                    await sleep(timeToWait);
-                }
-                console.log("resolve at " + (Date.now() - beginTime) + " expected at " + timeline[index].begin)
-                resolveOneTime(timeline[index].data, timeline[index].end - timeline[index].begin);
-                index += 1;
-            }
-            console.log("end")
-        }
-
-        executeTimeline();
-    </script>
 </body>
