@@ -20,6 +20,9 @@ The SplayNet MIDDLEWARE'13 is available as [PDF](http://members.unine.ch/valerio
 
 A more recent version of SPLAY (Version 2) has been written with new technologies or more recent version. Also, the structure has been simplified and improved. Check the [docs](docs) to be more information 
 
+### Architecture V2
+
+![Schema of Splay](doc/final_report/figures/new_arch.png)
 
 ## HOW TO
 
@@ -51,12 +54,6 @@ Also there are some individual tests for some part/services of splay (daemon and
 ### Version 1
 
 Check old repository, [here](https://github.com/splay-project/splay).
-
-#### Model
-
-There 6 main parts : daemon, controller, Db (MySql5.5), cli_server, cli_client and splayweb.
-
-![Schema of Splay](doc/final_report/figures/prev_schema.png)
 
 ### Student Job (by Monroe Samuel && Voet Rémy (UCL))
 
@@ -94,10 +91,9 @@ The SplayWeb is in fact redoing exactly what CLIServer is offering to CLIClient,
 unifying the two of them by providing a JSON API within SplayWeb, besides the
 front-end application, would avoid code duplication and centralize the logic.
 
+### Master Thesis (by Monroe Samuel && Voet Rémy (UCL)) - Splay V2
 
-### Master Thesis (by Monroe Samuel && Voet Rémy (UCL))
-
-Check the [docs](docs)
+Check the [docs](docs). 
 
 ## Authors
 
