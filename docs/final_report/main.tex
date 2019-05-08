@@ -83,11 +83,11 @@
       % Discussion about what was available when we started the rework of the Splay project.
       The SPLAY project has initiated to solve the difficulty to test and develop distributed algorithm in a large scale. SPLAY is not a recent project (begin around 2006), and lot of features have been added during some years. The first version of SPLAY  was designed to "covers all aspects of the development and evaluation chain" of distributed application \cite{SPLAY}. \\
       
-      After some years, a module has been constructed be to manage network topology, SplayNet \cite{SplayNet}. This middleware implements a easy way to set the topology network between the endpoints (machines).
+      After some years, a module has been constructed be to manage network topology, SplayNet \cite{SplayNet}. This middleware implements a easy way to set the topology network between the endpoints (machines) and restrict the usage of the network depending of that. 
 
       \subsection{Legacy Splay Project}
 
-        When we begin our work on Splay, the project was ... % TODO
+        When we begin our work on Splay, the repository of the project \cite{SplayGit} was not consistent. Indeed, the master branch is unstable, ...
 
       \subsection{A first update}
 
@@ -206,7 +206,7 @@
       % Adding features of splayNet with 
       Our Objectives can be easily cup in two parts, first the maintainability of the project and the new features added (next section). The section about our first update during a student job, explains the upgrade of language version but this upgrade was not covered all features of the legacy project (example: SplayNet). Then our first job was to\textbf{ complete the missing features} done after  September 2011. \\
       
-            % Raspberry
+      % Raspberry
       The first idea of our master thesis was able to run Splay on a \textbf{cluster of Raspberry Pi}. The configuration of this cluster won't be trivial : one Raspberry need to be the master and able to control the rest of the cluster. Then the master need to run the controller and the web application and the other need to be handle to manage several Splay daemon (use as a machine for the distributed algorithms). \\
       
       % Clean code source - repo
@@ -230,9 +230,9 @@
 
         \textbf{First Scenario : } as a student, I want to put in practice my course on distributed application. The university provides a existing installation of Splay in the local network. The student just need to connect on the web server with its browser. The student, after registering, will able to create its own code with a complete Lua editor on the web page. Also a powerful and documented library facilitates the creation of distributed algorithm. When the code is finished, the student launch the job, the code will be automatically dispatch on several machines (depending of number of available daemon and the number choose by the student), and getting the log of each of then in the web page during/after the completion of the algorithm. Also, if it is too long the student can choose to kill the job. The student, through a simple web interface, can put in practice its course and see the result quickly via logs.\\
     
-    	  \textbf{Second scenario : } a professor wants to test a new approach to solve the problem of leader election between multiples nodes. A cluster of Raspberry is set up with Splay to make the experiment. The new approach is described in a paper with some pseudo-code and some difficult cases when the network topology is quite exotic. Then the professor need to rewrite the pseudo code in a actual one and create a simulation or truely the different exotic network topology to point the strength of this new approach. Unfortunately, He is very busy, and it time is very precious. It is case Splay can be the solution, it manages network topology transparently and give a topology creator in a web page. Also the library of Splay in the Lua side allow to quickly reproduce the pseudo-code. 
+    	\textbf{Second scenario : } a professor wants to test a new approach to solve the problem of leader election between multiples nodes. A cluster of Raspberry is set up with Splay to make the experiment. The new approach is described in a paper with some pseudo-code and some difficult cases when the network topology is quite exotic. Then the professor need to rewrite the pseudo code in a actual one and create a simulation or truely the different exotic network topology to point the strength of this new approach. Unfortunately, He is very busy, and it time is very precious. It is case Splay can be the solution, it manages network topology transparently and give a topology creator in a web page. Also the library of Splay in the Lua side allow to quickly reproduce the pseudo-code. 
         
-        \textbf{Third scenario : } A employee from a big cloud company want to test the robustness of their new Top Secret distributed algorithm. TODO
+        % \textbf{Third scenario : } A employee from a big cloud company want to test the robustness of their new Top Secret distributed algorithm. TODO
     
         % as a employee from a cloud company who want test the robusness of their new Top Secret algorithm.
         
@@ -577,10 +577,32 @@ To resume, the fault injection will allow (user) to choose when (in the executio
         à choisir pour le Backend.
 
     \section{Development}
+      
+      This section details all step of our develop begin by the cleaning and refactoring of the 
+      legacy project and finishing by adding our own features. Note that the sections isn't a timeline
+      of the final work, we didn't wait to finish one part to begin the next one (sort by work beginning), 
+      and some goal has been improved during the completion of the next one (or last one).
 
-      \subsection{Github Repository Cleaning}
+      \subsection{Github Repository}
 
-        First step was to clean the github repo
+        Our first goal was to get a clean github repository. We found the layout of the old project messy
+        and for a possible user, it is difficult to understand how to use Splay and moreover how to install it. \\
+
+        Our first solution idea was to fork the old project, arrange directories/files and add 
+        some documentation. After we did this, we felt that it wasn't good enougth. The project is big,
+        and there are multiple services dependent but not sharing anycode. Then we decided to create multiple 
+        repository for the project : one for the main project and one for each part. The main project, 
+        called splay, contains the others with the submodule \cite{GitSubmodules} feature of git.
+        These children repositories are 5, and represent the new architecture wanted : 
+        cli (command line interface), daemon (also called in the project splayd), backend 
+        (the merge of the cli\_server and the backend of the old web server), controller 
+        and one for the new front-end web application. \\
+
+        Besides, each repository is self-sufficient, contains a Dockerfile allowing to create a 
+        insolate environment and some readme file is scattered in repositories. 
+        Also, each master branch of repository expect the main one, is linked with 
+        Dockerhub, after a push on the master branch, Dockerhub will automatical create a new images from
+        the source and updated the lasted image \cite{DockerHubGithub}. 
 
       \subsection{Centralization of Splay's Backend}
 
@@ -621,6 +643,8 @@ To resume, the fault injection will allow (user) to choose when (in the executio
     de la maintenabilité du nouveau code, mais aussi de doter progressivement
     le core de Splay avec des tests pour pouvoir obtenir au final un ensemble
     maintenable.\\
+
+    % TODO : Travis ?
 
     \section{Backend}
 
@@ -778,6 +802,10 @@ To resume, the fault injection will allow (user) to choose when (in the executio
       entre ceux-ci.
 
   \chapter{Conclusion}
+
+    \section{Objective vs Done}
+
+    \section{}
 
   \chapter{Improvements}
 
