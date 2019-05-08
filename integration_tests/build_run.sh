@@ -17,13 +17,16 @@ check 'Fail to build images from docker-compose configuration'
 
 # -- 
 step "Run controller - cli - web_app (not tested) (db, backend also)"
-docker-compose up -d controller cli web_app
+docker-compose -f $DOCKER_FILE up -d controller cli web_app
 check "Fail to run controller - cli - web_app (not tested) (db, backend also)"
 
 # -- 
 step "Run multiple (4) splay daemons"
 docker-compose -f $DOCKER_FILE up -d --scale daemon=4
 check "Fail to run daemons"
+
+# For travis, it is slow to launch daemons
+sleep 2
 
 # -- 
 step "Register a test user"
