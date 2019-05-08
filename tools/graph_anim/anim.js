@@ -9,20 +9,36 @@ function graph() {
         {begin: 500, end: 25000, data: { type: "addNode", label:"Splayd 1", id: 1}},
         {begin: 1550, end: 32500, data: { type: "addNode", label:"Splayd 2", id: 2}},
         {begin: 1560, end: 35000, data: { type: "addNode", label:"Splayd 3", id: 3}},
+        {begin: 1560, end: 35000, data: { type: "addNode", label:"Splayd 4", id: 4}},
+        {begin: 1560, end: 35000, data: { type: "addNode", label:"Splayd 5", id: 5}},
+
     
         {begin: 1600, end: 15000, data: { type: "addEdge", to: 1, from: 2}},
         {begin: 1600, end: 15000, data: { type: "addEdge", to: 2, from: 1}},
+
+        {begin: 1600, end: 15000, data: { type: "addEdge", to: 1, from: 4}},
+        {begin: 1600, end: 15000, data: { type: "addEdge", to: 4, from: 1}},
         {begin: 1850, end: 15000, data: { type: "addEdge", to: 2, from: 3}},
+        {begin: 1850, end: 15000, data: { type: "addEdge", to: 5, from: 3}},
+        {begin: 1850, end: 15000, data: { type: "addEdge", to: 5, from: 1}},
+        {begin: 1850, end: 15000, data: { type: "addEdge", to: 5, from: 2}},
+        {begin: 1850, end: 15000, data: { type: "addEdge", to: 5, from: 4}},
+        {begin: 1850, end: 15000, data: { type: "addEdge", to: 4, from: 5}},
+        {begin: 1850, end: 15000, data: { type: "addEdge", to: 2, from: 5}},
+
         {begin: 1855, end: 15000, data: { type: "addEdge", to: 3, from: 2}},
+        {begin: 1855, end: 15000, data: { type: "addEdge", to: 3, from: 5}},
         {begin: 2515, end: 15000, data: { type: "addEdge", to: 1, from: 3}},
         {begin: 2519, end: 15000, data: { type: "addEdge", to: 3, from: 1}},
 
-        {begin: 5530, end: 5620, data: { type: "packet", to: 2, from: 3, color:"#AAAAAA"}},
-        {begin: 5540, end: 8620, data: { type: "packet", to: 3, from: 2, color:"#FFFFFF"}},
-        {begin: 5550, end: 9520, data: { type: "packet", to: 1, from: 3, color:"#555555"}},
 
-    
-        {begin: 12000, end: 15000, data: { type: "addNode", label:"Splayd 0002"}},
+        {begin: 2515, end: 15000, data: { type: "addEdge", to: 4, from: 3}},
+        {begin: 2519, end: 15000, data: { type: "addEdge", to: 3, from: 4}},
+
+        {begin: 5530, end: 5620, data: { type: "packet", to: 2, from: 3, color:"#000000"}},
+        {begin: 5540, end: 5550, data: { type: "packet", to: 3, from: 2, color:"#000000"}},
+        {begin: 5550, end: 5560, data: { type: "packet", to: 1, from: 3, color:"#000000"}},
+
     ];
     
     var counterNode = 1;
@@ -37,13 +53,17 @@ function graph() {
         edges: edges
     };
     var options = {
-       
+       physics: {
+        maxVelocity:10,
+        solver: 'repulsion',
+        repulsion: {
+            centralGravity: 0.5,
+            springConstant: 0.01,
+            nodeDistance: 150
+        }
+       }
     };
     var network = new vis.Network(container, data, options);
-    
-    function launchPacket(from, to, time) {
-    
-    }
     
     function resolveOneTime(timedata, during) {
         if (timedata.type == "addNode") {
@@ -56,7 +76,14 @@ function graph() {
             }, during);
         } else if (timedata.type == "addEdge") {
             const idEdge = "" + timedata.to +"-"+timedata.from
-            edges.add({to: timedata.to, from: timedata.from, arrows:"to", width: 2, id: idEdge, length:250})
+            edges.add({
+                to: timedata.to, 
+                from: timedata.from, 
+                arrows:"to", width: 2, 
+                id: idEdge, length:300,
+               // smooth: false
+
+            })
             
             setTimeout(function(){ 
                 edges.remove(idEdge)
@@ -65,7 +92,13 @@ function graph() {
         } else if (timedata.type == "packet") {
             const idEdge = "" + timedata.to +"-"+timedata.from
             
-            edges.update([{ width: 4, id: idEdge, color: null}])
+            edges.update([{ width: 4, id: idEdge, color: {
+                color: timedata.color,
+                highlight: timedata.color,
+                hover: timedata.color,
+                inherit: false,
+                opacity: 1.0
+            }}])
 
             setTimeout(function(){ 
                 edges.update([{ width: 2, id: idEdge, color: '#848484'}])
