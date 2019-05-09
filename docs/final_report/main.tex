@@ -644,6 +644,54 @@ To resume, the fault injection will allow (user) to choose when (in the executio
     le core de Splay avec des tests pour pouvoir obtenir au final un ensemble
     maintenable.\\
 
+    \section{Testing in Web App}
+
+      As we choosed Vue as our framework for the web application service,
+      all we had to deal with was components. As Vue is organised around
+      the use of components, the immediate reward of this was that we would
+      be able to write tests dedicated to isolated and simple components.
+
+      \subsection{Jest}
+
+        In order to test the components composing the application, we
+        went for the Jest \cite{jest} testing framework, which was advised
+        as unit testing framework during the project creation.\\
+
+        Testing JavaScript is not always the simplest thing to achieve, the
+        ecosystem being in constant evolution with diverse solutions emerging
+        trying to fit with the evolution and the apparition of a lot of
+        other JavaScript framework.\\
+        But Jest was a really good pick as testing framework, as it was
+        developped by Facebook and designed to fit with the majority of the
+        most used front-end framework and this with almost no configuration and
+        providing us with a really simple API.\\
+
+        In order to test the application using Jest, we created a directories
+        hierarchy reflecting the Vue components hierarchy we created, thus
+        a test file corresponding to a component file. In each of these
+        test specifications, we decided to target the core part of each
+        components : the methods.\\
+        Indeed, there is no need to test whether or not a click on a button
+        triggers the associated action as this is part of the Vue system. What
+        we wanted to test was the triggered action we wrote ourselves and
+        were simply functions.\\
+        Each file therefore tests that the related components can be
+        successfuly instanciated among the application, then run a serie
+        of \textbf{unit tests} validating the methods expected behaviour.
+
+      \subsection{ESLint}
+
+        Provided almost by default when creating a new Vue project, ESLint
+        \cite{eslint} is a JavaScript linter that allows the developper to
+        make sure he's not writing code inducing problematic patterns or not
+        respecting code guidelines.\\
+        This helps to keep a consistent codestyle as we were two people working
+        on this project, and increase the overall code quality and
+        maintainability. We chose not to change any preset of the shipped-in
+        ESLint confguration to ensure following common guidelines among the Vue
+        community and make sure any developper joining the Splay project will
+        be able to work on the web application seamlessly.
+
 
     \section{Testing in Backend}
 
@@ -742,9 +790,13 @@ To resume, the fault injection will allow (user) to choose when (in the executio
         service, nous avons utilisé Rubocop, un outil d'analyse statique du code
         (linter) permettant de détecter les enfreintes à une série de codes
         de conduites en termes de style et pratiques (méthodes trop longues,
-        trop d'instanciations de variables, trop d'embranchements dans le code, ...).
+        trop d'instanciations de variables, trop d'embranchements dans le code,
+        ...).
 
-    \section{Tests fonctionnels}
+    \section{Testing in Daemons}
+
+
+    \section{Integration Testing}
 
       Afin de pouvoir tester automatiquement le projet dans son ensemble, nous
       avons aussi voulu développer des tests fonctionnels. Ces tests seraient
@@ -788,7 +840,7 @@ To resume, the fault injection will allow (user) to choose when (in the executio
       entre ceux-ci.
 
 
-    \section{Integration Continue}
+    \section{Continuous Integration}
 
       Encore dans un soucis de qualité, les differents service ont été placés
       sur la plateforme d'intégration continue Travis CI, le but étant de se
@@ -803,6 +855,16 @@ To resume, the fault injection will allow (user) to choose when (in the executio
 
     \section{Overall Testing Suite}
 
+      Here is a figure detailing the whole Splay project with the different
+      test suites and procedures that have been described in the previous
+      sections so that the reader can get the grasp on the overall
+      organisation of this.
+
+      \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.6]{figures/global_testing.png}
+        \caption{\label{prev_arch} Global Testing in Splay}
+      \end{figure}
 
   \chapter{Conclusion}
 
