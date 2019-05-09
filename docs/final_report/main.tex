@@ -81,13 +81,23 @@
     \section{About the Splay Project}
 
       % Discussion about what was available when we started the rework of the Splay project.
-      The SPLAY project has initiated to solve the difficulty to test and develop distributed algorithm in a large scale. SPLAY is not a recent project (begin around 2006), and lot of features have been added during some years. The first version of SPLAY  was designed to "covers all aspects of the development and evaluation chain" of distributed application \cite{SPLAY}. \\
+      The SPLAY project has initiated to solve the difficulty to test and
+      develop distributed algorithm in a large scale. SPLAY is not a recent
+      project (begin around 2006), and lot of features have been added during
+      some years. The first version of SPLAY  was designed to "covers all
+      aspects of the development and evaluation chain" of distributed
+      application \cite{SPLAY}. \\
 
-      After some years, a module has been constructed be to manage network topology, SplayNet \cite{SplayNet}. This middleware implements a easy way to set the topology network between the endpoints (machines) and restrict the usage of the network depending of that.
+      After some years, a module has been constructed be to manage network
+      topology, SplayNet \cite{SplayNet}. This middleware implements a easy
+      way to set the topology network between the endpoints (machines) and
+      restrict the usage of the network depending of that.
 
       \subsection{Legacy Splay Project}
 
-        When we begin our work on Splay, the repository of the project \cite{SplayGit} was not consistent. Indeed, the master branch is unstable, ...
+        When we begin our work on Splay, the repository of the
+        project \cite{SplayGit} was not consistent. Indeed,
+        the master branch is unstable, ...
 
       \subsection{A first update}
 
@@ -194,69 +204,180 @@
         dresser ensuite le ligne directrice et les objectifs concrets à atteindre
         pour la suite du projet et entammer la version 2 de Splay.
 
-  \chapter{Splay Version 2}
+  \chapter{Splay Version 2} %TODO: Review - Rewrite
 
     % All about what we wanted to do exactly.
-    Then, our goal for the new version of Splay, was first, stabilize and modernize the legacy project. Indeed, some parts was not updated or partially documented. All details is available in the next section.\\
+    Then, our goal for the new version of Splay, was first, stabilize and
+    modernize the legacy project. Indeed, some parts was not updated or
+    partially documented. All details is available in the next section.\\
 
-    In a second step, we wanted to add our own features focus on the usage of the final user (student, professor or searcher). These features were a modern web application with Lua editor integrated, a graphical topology creator inside the web app and a way to inject some fault injection in the user code. We will details all of then in this chapter.
+    In a second step, we wanted to add our own features focus on the usage of
+    the final user (student, professor or searcher). These features were a
+    modern web application with Lua editor integrated, a graphical topology
+    creator inside the web app and a way to inject some fault injection in the
+    user code. We will details all of then in this chapter.
 
-    \section{Objectives}
+    \section{Objectives} %TODO: Review - Rewrite
 
       % Adding features of splayNet with
-      Our Objectives can be easily cup in two parts, first the maintainability of the project and the new features added (next section). The section about our first update during a student job, explains the upgrade of language version but this upgrade was not covered all features of the legacy project (example: SplayNet). Then our first job was to\textbf{ complete the missing features} done after  September 2011. \\
+      Our Objectives can be easily cup in two parts, first the maintainability
+      of the project and the new features added (next section). The section
+      about our first update during a student job, explains the upgrade of
+      language version but this upgrade was not covered all features of the
+      legacy project (example: SplayNet). Then our first job was to
+      \textbf{complete the missing features} done after  September 2011.\\
 
       % Raspberry
-      The first idea of our master thesis was able to run Splay on a \textbf{cluster of Raspberry Pi}. The configuration of this cluster won't be trivial : one Raspberry need to be the master and able to control the rest of the cluster. Then the master need to run the controller and the web application and the other need to be handle to manage several Splay daemon (use as a machine for the distributed algorithms). \\
+      The first idea of our master thesis was able to run Splay on a
+      \textbf{cluster of Raspberry Pi}. The configuration of this cluster won't
+      be trivial : one Raspberry need to be the master and able to control the
+      rest of the cluster. Then the master need to run the controller and the
+      web application and the other need to be handle to manage several Splay
+      daemon (use as a machine for the distributed algorithms). \\
 
       % Clean code source - repo
-      Secondly, Splay is not a small project, and several technologies (services) orchestrated between then. For this reason, the source code architecture is very important for the project maintainability. In the legacy project all code was on a single git repository host on Github, but this one is a "mess". The documentation is not in the right place, the logic of the directory structure is too complex, ... Then we wanted to do a better \textbf{management of the source code} and documentation readable by someone finding our repository. \\
+      Secondly, Splay is not a small project, and several technologies
+      (services) orchestrated between then. For this reason, the source code
+      architecture is very important for the project maintainability. In the
+      legacy project all code was on a single git repository host on Github,
+      but this one is a "mess". The documentation is not in the right place,
+      the logic of the directory structure is too complex, ... Then we wanted
+      to do a better \textbf{management of the source code} and documentation
+      readable by someone finding our repository. \\
 
       % Easy installation : On click install : docker (independent of OS), installation script,
-      During our first work on Splay, we noticed that the installation and the usage was not quite easy to handle. Some services were dockerize and a docker-compose file was implemented which facilitate the installation. But these docker images were not perfectly build : healthcheck missing, old base image in some cases or big distribution base image (slow and take place). Also there wasn't a proper \textbf{one-click install} script for making quick test. Then, one of our goal was to get clean, small and with updated libraries docker images. These images need to be fully integrated between then through the docker-compose. A automate install script and running script, will be appreciate and useful as a example for the user.\\
+      During our first work on Splay, we noticed that the installation and the
+      usage was not quite easy to handle. Some services were dockerize and a
+      docker-compose file was implemented which facilitate the installation.
+      But these docker images were not perfectly build : healthcheck missing,
+      old base image in some cases or big distribution base image (slow and
+      take place). Also there wasn't a proper \textbf{one-click install}
+      script for making quick test. Then, one of our goal was to get clean,
+      small and with updated libraries docker images. These images need to be
+      fully integrated between then through the docker-compose. A automate
+      install script and running script, will be appreciate and useful as a
+      example for the user.\\
 
       % Bug track - Testing - Solve issues of the old project
-      Our first issues encounter with Splay, was the lack of \textbf{automatic tests} in all part of the project and because of this, there were a lot of silent bugs scattered in all the project. Accordingly, we wanted to upgrade the robustness of the project, it is means create specific test for critical parts and the main features of Splay. Two type of test can be created, local testing and integration testing. The first type allows to test a specific critical part or feature of one service (independently of others). The second kind is testing the global project by simulate a real user and getting real result from Splay (able to test the chain of service). The goal of these test is a better bug track and create maintainable project for future development.\\
+      Our first issues encounter with Splay, was the lack of
+      \textbf{automatic tests} in all part of the project and because of this,
+      there were a lot of silent bugs scattered in all the project.
+      Accordingly, we wanted to upgrade the robustness of the project,
+      it is means create specific test for critical parts and the main features
+      of Splay. Two type of test can be created, local testing and integration
+      testing. The first type allows to test a specific critical part or
+      feature of one service (independently of others). The second kind is
+      testing the global project by simulate a real user and getting real
+      result from Splay (able to test the chain of service). The goal of these
+      test is a better bug track and create maintainable project for future
+      development.\\
 
       % Merge Web app and Cli server + new web app
-      During our student job, we observed some code repetition and service repetition (cli server and the old web application). Then,we wanted to \textbf{avoid the repetition of job} (and code by extension) by change these services or merge it. Again, the purpose was the maintainability and refactor some old code. Moreover, we wanted to modernize the web application of the legacy project and add some features on it (next section)
+      During our student job, we observed some code repetition and service
+      repetition (cli server and the old web application). Then,we wanted
+      to \textbf{avoid the repetition of job} (and code by extension) by
+      change these services or merge it. Again, the purpose was the
+      maintainability and refactor some old code. Moreover, we wanted to
+      modernize the web application of the legacy project and add some
+      features on it (next section)
 
 
-    \section{New features of Splay}
+    \section{New features of Splay} %TODO: Review - Rewrite
 
-     To present our own new features of Splay, we will explain by some user scenarios and after explain in details the three features.
+     To present our own new features of Splay, we will explain by some user
+     scenarios and after explain in details the three features.
 
-      \subsection{Scenarios}
+      \subsection{Scenarios} %TODO: Review - Rewrite
 
-        \textbf{First Scenario : } as a student, I want to put in practice my course on distributed application. The university provides a existing installation of Splay in the local network. The student just need to connect on the web server with its browser. The student, after registering, will able to create its own code with a complete Lua editor on the web page. Also a powerful and documented library facilitates the creation of distributed algorithm. When the code is finished, the student launch the job, the code will be automatically dispatch on several machines (depending of number of available daemon and the number choose by the student), and getting the log of each of then in the web page during/after the completion of the algorithm. Also, if it is too long the student can choose to kill the job. The student, through a simple web interface, can put in practice its course and see the result quickly via logs.\\
+        \textbf{First Scenario : } as a student, I want to put in practice my
+        course on distributed application. The university provides a existing
+        installation of Splay in the local network. The student just need to
+        connect on the web server with its browser. The student, after
+        registering, will able to create its own code with a complete Lua
+        editor on the web page. Also a powerful and documented library
+        facilitates the creation of distributed algorithm. When the code is
+        finished, the student launch the job, the code will be automatically
+        dispatch on several machines (depending of number of available daemon
+        and the number choose by the student), and getting the log of each of
+        then in the web page during/after the completion of the algorithm.
+        Also, if it is too long the student can choose to kill the job. The
+        student, through a simple web interface, can put in practice its course
+        and see the result quickly via logs.\\
 
-    	\textbf{Second scenario : } a professor wants to test a new approach to solve the problem of leader election between multiples nodes. A cluster of Raspberry is set up with Splay to make the experiment. The new approach is described in a paper with some pseudo-code and some difficult cases when the network topology is quite exotic. Then the professor need to rewrite the pseudo code in a actual one, and create a simulation for each different network topology to point the strength of this new approach. Unfortunately, He is very busy, and his/her time is very precious. It is the case where Splay can be the solution, it manages network topology transparently and give a topology creator in a web page. Also the library of Splay in the Lua side allow to quickly reproduce the pseudo-code.
+      	\textbf{Second scenario : } a professor wants to test a new approach to
+        solve the problem of leader election between multiples nodes. A cluster
+        of Raspberry is set up with Splay to make the experiment. The new
+        approach is described in a paper with some pseudo-code and some difficult
+        cases when the network topology is quite exotic. Then the professor need
+        to rewrite the pseudo code in a actual one, and create a simulation for
+        each different network topology to point the strength of this new
+        approach. Unfortunately, He is very busy, and his/her time is very
+        precious. It is the case where Splay can be the solution, it manages
+        network topology transparently and give a topology creator in a web page.
+        Also the library of Splay in the Lua side allow to quickly reproduce the
+        pseudo-code.
 
         % \textbf{Third scenario : } A employee from a big cloud company want to test the robustness of their new Top Secret distributed algorithm. TODO
 
         % as a employee from a cloud company who want test the robusness of their new Top Secret algorithm.
 
-\subsection{Details of features}
+      \subsection{Details of features}  %TODO: Review - Rewrite
 
-\subsubsection{Complete Lua editor on the website}
+        \subsubsection{Complete Lua editor on the website}  %TODO: Review - Rewrite
 
-Splay in version 1, had a web application, with some basics features : user connection, list of job, creation of job and a way to retrieve logs. This web application as explained before was very trivial with almost no CSS and poor in term of content. Then, we wanted to refactor completely and modernize the old web application. And, also in this purpose, the user could use a integrated Lua editor directly on the website. This editor should be standalone, with coloration for Lua language, error parsing and maybe some small auto-completion. This one need to be integrated into the form of the job creation.
+        Splay in version 1, had a web application, with some basics features :
+        user connection, list of job, creation of job and a way to retrieve
+        logs. This web application as explained before was very trivial with
+        almost no CSS and poor in term of content. Then, we wanted to refactor
+        completely and modernize the old web application. And, also in this
+        purpose, the user could use a integrated Lua editor directly on the
+        website. This editor should be standalone, with coloration for Lua
+        language, error parsing and maybe some small auto-completion. This one
+        need to be integrated into the form of the job creation.
 
-\subsubsection{Topology creator/visualisation}
+        \subsubsection{Topology creator/visualisation} %TODO: Review - Rewrite
 
-Also, the legacy project manages network topology. Indeed a user can defined its own network topology with different settings for each edge : the latency, the bandwidth and error dropping packet. Also it is possible to make more complex network by adding router between nodes and Splay will approximate the true parameters for each source-destination (Splay will not simulate the internal node of the network, for performance reason and simplicity). \\
+        Also, the legacy project manages network topology. Indeed a user can
+        defined its own network topology with different settings for each
+        edge : the latency, the bandwidth and error dropping packet. Also it
+        is possible to make more complex network by adding router between nodes
+        and Splay will approximate the true parameters for each
+        source-destination (Splay will not simulate the internal node of the
+        network, for performance reason and simplicity). \\
 
-The network settings is done on the legacy project by a XML file with a specific format (ModelNet \cite{ModelNet}). This format is not user friendly and hard to read, also the documentation is poor. For these reason, we decided to add a visualization and creation tool of the network graph. Then, it will be possible to create easily a visual topology with all type of setting and it will be transform automatically in the correct format of XML. But, the opposite will be possible, it means from a XML, see the topology into a graph representation.
+        The network settings is done on the legacy project by a XML file with a
+        specific format (ModelNet \cite{ModelNet}). This format is not user
+        friendly and hard to read, also the documentation is poor. For these
+        reason, we decided to add a visualization and creation tool of the
+        network graph. Then, it will be possible to create easily a visual
+        topology with all type of setting and it will be transform
+        automatically in the correct format of XML. But, the opposite will be
+        possible, it means from a XML, see the topology into a graph
+        representation.
 
-\subsubsection{Fault Injection}
+        \subsubsection{Fault Injection} %TODO: Review - Rewrite
 
-The creation of distributed algorithm is a difficult task, and moreover, it is hard to make real code who is reliable. Robustness and correctness of a distributed solution is the key point to test for a designed solution, and manually injection of fault is painful and can take some time. \\
+        The creation of distributed algorithm is a difficult task, and
+        moreover, it is hard to make real code who is reliable. Robustness
+        and correctness of a distributed solution is the key point to test
+        for a designed solution, and manually injection of fault is painful
+        and can take some time. \\
 
-With the legacy project and the dockerization, it was possible to crash a single daemon during the execution of a job. But the main problem of this solution, we can't control where the crash is done (in the execution tree). We wanted to improve this precision by adding a feature where the user is able to choose when a daemon (or several) crash during the execution of code. It need to convert the two main different, the hard crash (the nodes is destroyed) or a recovery crash (nodes crash but it is relaunch after some time). \\
+        With the legacy project and the dockerization, it was possible to
+        crash a single daemon during the execution of a job. But the main
+        problem of this solution, we can't control where the crash is done
+        (in the execution tree). We wanted to improve this precision by adding
+        a feature where the user is able to choose when a daemon (or several)
+        crash during the execution of code. It need to convert the two main
+        different, the hard crash (the nodes is destroyed) or a recovery crash
+        (nodes crash but it is relaunch after some time). \\
 
-To resume, the fault injection will allow (user) to choose when (in the execution tree) and where (one or several nodes) the crash is done in the daemon, specified the type of crash and act depending. This possibility for the user need to be user friendly and quick to make.
+        To resume, the fault injection will allow (user) to choose when (in
+        the execution tree) and where (one or several nodes) the crash is done
+        in the daemon, specified the type of crash and act depending. This
+        possibility for the user need to be user friendly and quick to make.
 
-% This for reason - 2 types of crash possible - can touch one or more than one in the same time - crash in middle 2 instruction.
+        % This for reason - 2 types of crash possible - can touch one or more than one in the same time - crash in middle 2 instruction.
 
   \chapter{Architecture}
 
@@ -577,14 +698,14 @@ To resume, the fault injection will allow (user) to choose when (in the executio
         serialization des données faisait vraiment de Rails la bonne technologie
         à choisir pour le Backend.
 
-    \section{Development}
+    \section{Development} %TODO: Review - Rewrite
 
       This section details all steps of our development, beginning by the cleaning and refactoring of the
       legacy project and finishing by adding our own features. Note that the sections isn't a timeline
       of the final work, we didn't wait to finish one part to begin the next one (sort by work beginning),
       and some goals/features have been improved during the completion of the next ones.
 
-      \subsection{Github Repository}
+      \subsection{Github Repository} %TODO: Review - Rewrite
 
         Our first goal was to get a clean github repository. We found the layout of the old project messy
         and for a possible user, it is difficult to understand how to use Splay and moreover how to install it. \\
@@ -610,47 +731,57 @@ To resume, the fault injection will allow (user) to choose when (in the executio
         How we moved the old rails app and cli server to a single backend
         to serve any app wanting to connect with Splay.
 
-      \subsection{A new front-end application}
+      \subsection{A new front-end application} %TODO: Review - Rewrite
 
         % maybe screen shots ??
+        
+        As the backend was available (previous section), we begon the
+        developement of the Single Page Application in VueJS. After removing
+        old files of the previous web site, we created a basic VueJS project
+        (version 2.5.X at this time) with the home page and the bootstrap-vue
+        package \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a
+        well know HTML, CSS, and JavaScript framework to create responsive and
+        modern web interface. The full integration of bootstrap in a Vue
+        project is done with the extension of bootstrap package, bootstrap-vue.
+        For us, Bootstrap is like a Swiss knife to make a web page with minimun
+        design and modernity. \\
 
-
-        As the backend was available (previous section), we begon the developement of 
-        the Single Page Application in VueJS. After removing old files of the previous web site, 
-        we created a basic VueJS project (version 2.5.X at this time) with the home page and 
-        the bootstrap-vue package \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a well know HTML, CSS, and 
-        JavaScript framework to create responsive and modern web interface. The full integration of bootstrap in 
-        a Vue project is done with the extension of bootstrap package, bootstrap-vue. For us, Bootstrap 
-        is like a Swiss knife to make a web page with minimun design and modernity. \\
-
-        The next step was to build a register and login page for the user management. To manage different page 
-        in the same Vue project, we installed the Vue-Router package. It is a extension of Vue to  
-        navigate through different pages (url) on the single page app (no reload with the server), and the user 
-        can switch page as he was on a regular website (backward/forward page, historic, ...). It is commonly
-        used in front end framework to give a better user experience. Then, we created a page for the user 
-        registering and connection, directly connected to the backend user API. For the json communication with
-        the backend, we used axios \cite{axios}, a popular HTTP Javascript client. At the end of this version 
-        of the web application, the user can create his/her account and connect to it, and the token of 
-        authentification (token based authentification) will be save on the client browser 
-        (auto-login for the next visit). \\
+        The next step was to build a register and login page for the user
+        management. To manage different page in the same Vue project, we
+        installed the Vue-Router package. It is a extension of Vue to navigate
+        through different pages (url) on the single page app (no reload with
+        the server), and the user can switch page as he was on a regular
+        website (backward/forward page, historic, ...). It is commonly used in
+        front end framework to give a better user experience. Then, we created
+        a page for the user registering and connection, directly connected to
+        the backend user API. For the json communication with the backend, we
+        used axios \cite{axios}, a popular HTTP Javascript client. At the end
+        of this version of the web application, the user can create his/her
+        account and connect to it, and the token of authentification (token
+        based authentification) will be save on the client browser (auto-login
+        for the next visit). \\
 
         % job - splayd list and job form
-        In order to get the same features as the legacy website, we created a monitor page, where important 
-        information is given with lists. Indeed, a list of splay daemon (create by controller) is retrieve 
-        from the backend and 
-        print with global information in a nice bootstrap table. Also, a second table, used for jobs 
-        (also via the backend service), is builded with general data. The user can choose to see more details
-        on one splay daemon or a job via a button. The creation of job is done with a simple form and it is 
-        automatically checked with vee-validate package \cite{VeeValidate} (also checked in the 
-        backend service of course). Vee-validate is a small package solutionning the problem of manual 
-        checking of form by adding some propreties to inputs, and it makes our code more compact and less messy.
-        At this step, we had almost all legacy feature (for the web application) but in much more nice way, 
-        with modern solution and maintenable code. Only the log retrivement was missing at this point. \\
+        In order to get the same features as the legacy website, we created a
+        monitor page, where important information is given with lists. Indeed,
+        a list of splay daemon (create by controller) is retrieve from the
+        backend and print with global information in a nice bootstrap table.
+        Also, a second table, used for jobs (also via the backend service), is
+        builded with general data. The user can choose to see more details on
+        one splay daemon or a job via a button. The creation of job is done
+        with a simple form and it is automatically checked with vee-validate
+        package \cite{VeeValidate} (also checked in the backend service of
+        course). Vee-validate is a small package solutionning the problem of
+        manual checking of form by adding some propreties to inputs, and it
+        makes our code more compact and less messy. At this step, we had
+        almost all legacy feature (for the web application) but in much more
+        nice way, with modern solution and maintenable code. Only the log
+        retrivement was missing at this point. \\
 
         % REM : Lua editor
 
 
-        % Log retrived 
+        % Log retrived
 
 
         % SAM: Topology creation
@@ -805,7 +936,7 @@ To resume, the fault injection will allow (user) to choose when (in the executio
           \begin{figure}[H]
             \centering
             \includegraphics[scale=0.6]{figures/request_test.png}
-            \caption{\label{new_arch} Request Lifetime in Backend Service}
+            \caption{\label{request_test} Request Lifetime in Backend Service}
           \end{figure}
 
           Chaque route de l'application est testée, en explorant différent
@@ -906,7 +1037,7 @@ To resume, the fault injection will allow (user) to choose when (in the executio
       \begin{figure}[H]
         \centering
         \includegraphics[scale=0.6]{figures/global_testing.png}
-        \caption{\label{prev_arch} Global Testing in Splay}
+        \caption{\label{global_testing} Global Testing in Splay}
       \end{figure}
 
   \chapter{Conclusion}
