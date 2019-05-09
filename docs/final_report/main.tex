@@ -230,7 +230,7 @@
 
         \textbf{First Scenario : } as a student, I want to put in practice my course on distributed application. The university provides a existing installation of Splay in the local network. The student just need to connect on the web server with its browser. The student, after registering, will able to create its own code with a complete Lua editor on the web page. Also a powerful and documented library facilitates the creation of distributed algorithm. When the code is finished, the student launch the job, the code will be automatically dispatch on several machines (depending of number of available daemon and the number choose by the student), and getting the log of each of then in the web page during/after the completion of the algorithm. Also, if it is too long the student can choose to kill the job. The student, through a simple web interface, can put in practice its course and see the result quickly via logs.\\
 
-    	\textbf{Second scenario : } a professor wants to test a new approach to solve the problem of leader election between multiples nodes. A cluster of Raspberry is set up with Splay to make the experiment. The new approach is described in a paper with some pseudo-code and some difficult cases when the network topology is quite exotic. Then the professor need to rewrite the pseudo code in a actual one and create a simulation or truely the different exotic network topology to point the strength of this new approach. Unfortunately, He is very busy, and it time is very precious. It is case Splay can be the solution, it manages network topology transparently and give a topology creator in a web page. Also the library of Splay in the Lua side allow to quickly reproduce the pseudo-code.
+    	\textbf{Second scenario : } a professor wants to test a new approach to solve the problem of leader election between multiples nodes. A cluster of Raspberry is set up with Splay to make the experiment. The new approach is described in a paper with some pseudo-code and some difficult cases when the network topology is quite exotic. Then the professor need to rewrite the pseudo code in a actual one, and create a simulation for each different network topology to point the strength of this new approach. Unfortunately, He is very busy, and his/her time is very precious. It is the case where Splay can be the solution, it manages network topology transparently and give a topology creator in a web page. Also the library of Splay in the Lua side allow to quickly reproduce the pseudo-code.
 
         % \textbf{Third scenario : } A employee from a big cloud company want to test the robustness of their new Top Secret distributed algorithm. TODO
 
@@ -456,6 +456,7 @@ To resume, the fault injection will allow (user) to choose when (in the executio
           \item Léger
           \item Facilité de développement et de maintenance
           \item Accès à de nombreuses librairies tierces
+          \item Assez populaire pour qu'il évolue encore pour un future developement
         \end{itemize}
 
         Pour une application front-end, l'écosystème JavaScript était
@@ -578,10 +579,10 @@ To resume, the fault injection will allow (user) to choose when (in the executio
 
     \section{Development}
 
-      This section details all step of our develop begin by the cleaning and refactoring of the
+      This section details all steps of our development, beginning by the cleaning and refactoring of the
       legacy project and finishing by adding our own features. Note that the sections isn't a timeline
       of the final work, we didn't wait to finish one part to begin the next one (sort by work beginning),
-      and some goal has been improved during the completion of the next one (or last one).
+      and some goals/features have been improved during the completion of the next ones.
 
       \subsection{Github Repository}
 
@@ -611,7 +612,49 @@ To resume, the fault injection will allow (user) to choose when (in the executio
 
       \subsection{A new front-end application}
 
-        As backend was available, development of a VueJS SPA.
+        % maybe screen shots ??
+
+
+        As the backend was available (previous section), we begon the developement of 
+        the Single Page Application in VueJS. After removing old files of the previous web site, 
+        we created a basic VueJS project (version 2.5.X at this time) with the home page and 
+        the bootstrap-vue package \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a well know HTML, CSS, and 
+        JavaScript framework to create responsive and modern web interface. The full integration of bootstrap in 
+        a Vue project is done with the extension of bootstrap package, bootstrap-vue. For us, Bootstrap 
+        is like a Swiss knife to make a web page with minimun design and modernity. \\
+
+        The next step was to build a register and login page for the user management. To manage different page 
+        in the same Vue project, we installed the Vue-Router package. It is a extension of Vue to  
+        navigate through different pages (url) on the single page app (no reload with the server), and the user 
+        can switch page as he was on a regular website (backward/forward page, historic, ...). It is commonly
+        used in front end framework to give a better user experience. Then, we created a page for the user 
+        registering and connection, directly connected to the backend user API. For the json communication with
+        the backend, we used axios \cite{axios}, a popular HTTP Javascript client. At the end of this version 
+        of the web application, the user can create his/her account and connect to it, and the token of 
+        authentification (token based authentification) will be save on the client browser 
+        (auto-login for the next visit). \\
+
+        % job - splayd list and job form
+        In order to get the same features as the legacy website, we created a monitor page, where important 
+        information is given with lists. Indeed, a list of splay daemon (create by controller) is retrieve 
+        from the backend and 
+        print with global information in a nice bootstrap table. Also, a second table, used for jobs 
+        (also via the backend service), is builded with general data. The user can choose to see more details
+        on one splay daemon or a job via a button. The creation of job is done with a simple form and it is 
+        automatically checked with vee-validate package \cite{VeeValidate} (also checked in the 
+        backend service of course). Vee-validate is a small package solutionning the problem of manual 
+        checking of form by adding some propreties to inputs, and it makes our code more compact and less messy.
+        At this step, we had almost all legacy feature (for the web application) but in much more nice way, 
+        with modern solution and maintenable code. Only the log retrivement was missing at this point. \\
+
+        % REM : Lua editor
+
+
+        % Log retrived 
+
+
+        % SAM: Topology creation
+
 
       \subsection{Rework of the CLI to use new Backend}
 
