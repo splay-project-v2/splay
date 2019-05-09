@@ -768,8 +768,48 @@
 
       \subsection{Centralization of Splay's Backend}
 
-        How we moved the old rails app and cli server to a single backend
-        to serve any app wanting to connect with Splay.
+        As said before in the technology choices section, one big thing
+        we wanted to achieve was the merge of the old CLI server and
+        the backend part from the full-stack old web application as those two
+        services were basically achieving the same work and holding the
+        same responsibilities.\\
+
+        We started with a fresh Ruby on Rails application, passing the
+        generator the \textit{--api} option so that we were provided with
+        a clean and simple Rails app without all the front-end dedicated
+        files, making it simpler and lighter.\\
+
+        Before writing any line of code, the following tools were added
+        to the project :
+
+        \begin{itemize}
+          \item \textbf{Rspec}: A performant and easy to use Ruby testing
+          framework to be able to begin development following the test
+          driven development approach.
+          \item \textbf{Rubocop}: A static code analyzer (linter) to follow
+          good codestyle conventions and avoid bad pattern right from the start.
+          \item \textbf{Travis}
+          \item \textbf{CodeCov} A test coverage tool to get further
+          information on the test suite.
+        \end{itemize}
+
+        Now that the app was ready for development, the major features
+        we wanted to provide were the one provided by the old CLI server and
+        were the following :
+
+        \begin{itemize}
+          \item User and session management (creation, login)
+          \item Job management (creation, deletion, listing, details)
+          \item Daemon querrying (listing, details)
+          \item Job logs querrying
+        \end{itemize}
+
+        Implementing those features would let us immediately reuse the old
+        CLI client for testing purposes and would provide sufficient actions
+        to start the development of the web application, which could unveil
+        need for new endpoints on the backend to provide user with more
+        actions in order to interact the system.\\
+        
 
       \subsection{A new front-end application} %TODO: Review - Rewrite
 
