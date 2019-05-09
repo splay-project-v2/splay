@@ -698,33 +698,73 @@
         serialization des données faisait vraiment de Rails la bonne technologie
         à choisir pour le Backend.
 
-    \section{Development} %TODO: Review - Rewrite
+    \section{Development}
 
-      This section details all steps of our development, beginning by the cleaning and refactoring of the
-      legacy project and finishing by adding our own features. Note that the sections isn't a timeline
-      of the final work, we didn't wait to finish one part to begin the next one (sort by work beginning),
-      and some goals/features have been improved during the completion of the next ones.
+      This section details in a story-telling way all the different part
+      of our work on the project, starting from the first big code cleaning
+      and refactors and ending with our latest features on the application.\\
 
-      \subsection{Github Repository} %TODO: Review - Rewrite
+      The organization of the section doesn't reflect a strict timeline of
+      our work but is organized by date of beginning. Indeed, some goals
+      and features needed further improvement over time.
 
-        Our first goal was to get a clean github repository. We found the layout of the old project messy
-        and for a possible user, it is difficult to understand how to use Splay and moreover how to install it. \\
+      \subsection{Github Repository Reorganization}
 
-        Our first solution idea was to fork the old project, arrange directories/files and add
-        some documentation. After we did this, we felt that it wasn't good enougth. The project is big,
-        and there are multiple services dependent but not sharing anycode. Then we decided to create multiple
-        repository for the project : one for the main project and one for each part. The main project,
-        called splay, contains the others with the submodule \cite{GitSubmodules} feature of git.
-        These children repositories are 5, and represent the new architecture wanted :
-        cli (command line interface), daemon (also called in the project splayd), backend
-        (the merge of the cli\_server and the backend of the old web server), controller
-        and one for the new front-end web application. \\
+        From our first analysis during our part-time job period on the Splay
+        project, we weren't satisfied about how it was maintained on Github so
+        far. Our major concern were the following :
 
-        Besides, each repository is self-sufficient, contains a Dockerfile allowing to create a
-        insolate environment and some readme file is scattered in repositories.
-        Also, each master branch of repository expect the main one, is linked with
-        Dockerhub, after a push on the master branch, Dockerhub will automatical create a new images from
-        the source and updated the lasted image \cite{DockerHubGithub}.
+        \begin{itemize}
+          \item Lack of version tagging to specify stable versions
+          \item The code organisation was not good and it was hard to
+          understand exactly where the different services were located,
+          everything was more or less in the same source folder.
+        \end{itemize}
+
+        From our last experience we also realized that the project was really
+        lacking of documentation in order to help and guide people interested
+        in Splay to install and run it.\\
+
+        We therefore started with forking the project in a personal repository,
+        allowing us to perform complete reorganization of all the directories
+        and files composing the project and adding some basic documentation.
+        Each service was successfuly placed in a distinct directory while
+        keeping the docker-compose file working.\\
+        The project was cleaner, however, we felt that this wasn't enough
+        and that we could achieve a better structure. The project is big and
+        consisting of multiple services interacting with each other but
+        not sharing any code. We therefore decided to create a new Github
+        organization called \textbf{The Splay Project V2} in which we created
+        a distinct repository for each service and one as the main repository
+        of the project.\\
+
+        The main repository called \textbf{Splay} contains all the other services
+        through the submodule \cite{GitSubmodules} feature of git. These
+        subrepositories representing the new architecture wanted :
+
+        \begin{itemize}
+          \item the cli (command line interface)
+          \item the daemon (also called \textit{splayd} in the project)
+          \item the backend (the merge of the cli\_server and the old web app backend)
+          \item The controller
+          \item The new web application
+        \end{itemize}
+
+        Each of these subrepositories is self-sufficient and contains a Dockerfile
+        allowing the user to create the related container and to use and test
+        the service alone, and therefore also has it's own documentation.\\
+
+        For each master branch of these subrepositories, a link with Dockerhub
+        has been made so that each push on master will trigger an automatic build
+        of a docker image using the source and uploading it on the Dockerhub \cite{DockerHubGithub}.
+        This was especially made to ease the integration testing using a
+        continuous integration service, which would have to build every single
+        image otherwise.\\
+
+        Now the services were clearly and logically separated in their
+        distinct repositories, it would be really easier for us to track
+        the changes made in each service and would ease further improvement
+        by Splay maintainers.
 
       \subsection{Centralization of Splay's Backend}
 
@@ -734,7 +774,7 @@
       \subsection{A new front-end application} %TODO: Review - Rewrite
 
         % maybe screen shots ??
-        
+
         As the backend was available (previous section), we begon the
         developement of the Single Page Application in VueJS. After removing
         old files of the previous web site, we created a basic VueJS project
