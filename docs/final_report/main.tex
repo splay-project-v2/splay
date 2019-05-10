@@ -848,7 +848,8 @@
         backend and print with global information in a nice bootstrap table.
         Also, a second table, used for jobs (also via the backend service), is
         builded with general data. The user can choose to see more details on
-        one splay daemon or a job via a button. The creation of job is done
+        one splay daemon or a job via a button. Also, he can choose to kill a 
+        job through a red button, the controller will do the rest. Moreover, The creation of job is done
         with a simple form and it is automatically checked with vee-validate
         package \cite{VeeValidate} (also checked in the backend service of
         course). Vee-validate is a small package solutionning the problem of
@@ -856,13 +857,26 @@
         makes our code more compact and less messy. At this step, we had
         almost all legacy feature (for the web application) but in much more
         nice way, with modern solution and maintenable code. Only the log
-        retrivement was missing at this point. \\
+        download was missing at this point. \\
 
-        % REM : Lua editor
+        % Lua editor
+        The backend was not ready for the log feature, then we worked on the Lua editor 
+        integration. The idea to build our-self entirely the editor was moved aside quickly, 
+        it will take too much time and it will be not evolutive. Then, we found a 
+        great package, named brace (a browserify version of Ace editor) \cite{Ace}. Ace 
+        can handle hundred type of programming language for the coloration, error handling and 
+        show line number. The integration of ace is the project was easy and light, Lua is 
+        colorize perfectly and a error is show when the syntax is wrong. But, there is not 
+        build-in auto-completion for Lua most likely because Lua is not very popular these days.
+        It is possible to add our own completer in the ace edito, but it is a long task 
+        for few results, then we decided to move on. \\
 
-
-        % Log retrived
-
+        % Log 
+        When the log API on the backend was enable, we readd this feature to the website with some
+        improvements. When the job running or endend, the user can see the log (with a button next to details)
+        of merge daemon log with time and daemon indication for each line of log. The user can choose to 
+        download as a text file (as before), copy to the clipboard or only verify the log in
+        the website checking for any error. \\
 
         % SAM: Topology creation
 
