@@ -889,6 +889,9 @@
 
       \subsection{Fault injection}
 
+        The implementation of the fault injection is designed to be easy to use and understand. TODO
+        
+
     \section{Implementation Details}
 
       A precise description on how the Splay project works now?
@@ -1133,6 +1136,19 @@
         \includegraphics[scale=0.6]{figures/global_testing.png}
         \caption{\label{global_testing} Global Testing in Splay}
       \end{figure}
+
+  \chapter{Use Case}
+  A student wants to test his raft implementation
+    \begin{itemize}
+      \item The student register or connect to the Splay web server
+      \item After doing the code of raft, he wants to try on several nodes (5), 
+      beginning without network topology (all nodes is directly connect). 
+      \item He sees the log to check if one node is leader and no more.
+      \item He wants to test the correctness of his code by making crash the leader essentialy, 
+      but also the other.
+      \item After checking his previous code, he repeats all process with and network topology.
+    \end{itemize}
+
 
   \chapter{Conclusion}
 
