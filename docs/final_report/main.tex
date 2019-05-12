@@ -402,34 +402,35 @@
           Splay through communication with the MySQL Database.
         \end{itemize}
 
-        % Figure of the old architecture, TODO : remake with technologies used
         \begin{figure}[H]
           \centering
           \includegraphics[scale=0.6]{figures/prev_arch.png}
           \caption{\label{prev_arch} Previous Splay Architecture}
         \end{figure}
 
-        Que cela soit à travers l'utilisation du CLI ou de l'application SplayWeb,
-        un utilisateur pouvait intéragir avec Splay et y envoyer ses jobs, récupérer
-        des informations telles que les logs ou l'état des Splayds.\\
+        Wheter through the usage of the CLI application or the web application,
+        the user was able to interact with the Splay system and to send his
+        jobs, and gather many informations such as the logs or the current
+        state of the running Splayds (the Splay daemons).
 
-        Le fait que la base de données soit l'élément central de communication entre
-        le contrôleur et les applications utilisteurs était un choix de design
-        que nous avons choisi de respecter. En effet, le \textbf{Controller} est
-        l'élément central du projet Splay, vouloir apporter un changement dans ce choix
-        de design et opter pour un remplacement de la façon de communication aurait
-        impliqué plus que certainement une réécriture quasi totale du contrôleur.\\
+        The fact that the database was the central piece of communication
+        between the controller and the user applications was a design choice
+        that we decided to respect and to keep working that way. Indeed, the
+        \textbf{Controller} is the central piece within the Splay project,
+        trying to push changes in that design choice and try to implement a
+        different way of communication than the database would have, more
+        than probably, implied a total rewrite of the controller.\\
 
-        Cela dit, nous n'étions pas satisfaits par les possibilités d'interactions
-        offertes à l'utilisateur. En effet, l'application Ruby on Rails était assez
-        vieille, et la paire client/server du command-line-interface possédait une
-        codebase difficile à maintenir et trop imposante pour les features qu'elle
-        devait proposer.\\
+        That being said, we weren't totally satisfied about the interaction
+        possibilities offered to the user. Indeed, the Ruby on Rails application
+        was quite old, and the client/server pair of the command line interface
+        stack had a hard to maintain and to huge codebase compared to the
+        features that it had to offer.\\
 
-        Nous avons donc choisi d'opérer des changements majeurs sur cette partie
-        du projet Splay, afin d'en plus d'opérer les changements et ajouts de features,
-        proposer une bonne expérience utilisateur.
-
+        We thus chose to operate major changes on this part of the Splay
+        project, in order to combine the arrival of our new features and
+        changes onto the core of Splay with a better user experience.
+        
       \subsection{Renewed Architecture}
 
         Le principal problème du côté de l'architecture des services utilisateurs
@@ -809,7 +810,7 @@
         to start the development of the web application, which could unveil
         need for new endpoints on the backend to provide user with more
         actions in order to interact the system.\\
-        
+
 
       \subsection{A new front-end application} %TODO: Review - Rewrite
 
@@ -848,7 +849,7 @@
         backend and print with global information in a nice bootstrap table.
         Also, a second table, used for jobs (also via the backend service), is
         builded with general data. The user can choose to see more details on
-        one splay daemon or a job via a button. Also, he can choose to kill a 
+        one splay daemon or a job via a button. Also, he can choose to kill a
         job through a red button, the controller will do the rest. Moreover, The creation of job is done
         with a simple form and it is automatically checked with vee-validate
         package \cite{VeeValidate} (also checked in the backend service of
@@ -860,21 +861,21 @@
         download was missing at this point. \\
 
         % Lua editor
-        The backend was not ready for the log feature, then we worked on the Lua editor 
-        integration. The idea to build our-self entirely the editor was moved aside quickly, 
-        it will take too much time and it will be not evolutive. Then, we found a 
-        great package, named brace (a browserify version of Ace editor) \cite{Ace}. Ace 
-        can handle hundred type of programming language for the coloration, error handling and 
-        show line number. The integration of ace is the project was easy and light, Lua is 
-        colorize perfectly and a error is show when the syntax is wrong. But, there is not 
+        The backend was not ready for the log feature, then we worked on the Lua editor
+        integration. The idea to build our-self entirely the editor was moved aside quickly,
+        it will take too much time and it will be not evolutive. Then, we found a
+        great package, named brace (a browserify version of Ace editor) \cite{Ace}. Ace
+        can handle hundred type of programming language for the coloration, error handling and
+        show line number. The integration of ace is the project was easy and light, Lua is
+        colorize perfectly and a error is show when the syntax is wrong. But, there is not
         build-in auto-completion for Lua most likely because Lua is not very popular these days.
-        It is possible to add our own completer in the ace edito, but it is a long task 
+        It is possible to add our own completer in the ace edito, but it is a long task
         for few results, then we decided to move on. \\
 
-        % Log 
+        % Log
         When the log API on the backend was enable, we readd this feature to the website with some
         improvements. When the job running or endend, the user can see the log (with a button next to details)
-        of merge daemon log with time and daemon indication for each line of log. The user can choose to 
+        of merge daemon log with time and daemon indication for each line of log. The user can choose to
         download as a text file (as before), copy to the clipboard or only verify the log in
         the website checking for any error. \\
 
@@ -890,7 +891,7 @@
       \subsection{Fault injection}
 
         The implementation of the fault injection is designed to be easy to use and understand. TODO
-        
+
 
     \section{Implementation Details}
 
@@ -1141,10 +1142,10 @@
   A student wants to test his raft implementation
     \begin{itemize}
       \item The student register or connect to the Splay web server
-      \item After doing the code of raft, he wants to try on several nodes (5), 
-      beginning without network topology (all nodes is directly connect). 
+      \item After doing the code of raft, he wants to try on several nodes (5),
+      beginning without network topology (all nodes is directly connect).
       \item He sees the log to check if one node is leader and no more.
-      \item He wants to test the correctness of his code by making crash the leader essentialy, 
+      \item He wants to test the correctness of his code by making crash the leader essentialy,
       but also the other.
       \item After checking his previous code, he repeats all process with and network topology.
     \end{itemize}
