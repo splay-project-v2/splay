@@ -430,31 +430,32 @@
         We thus chose to operate major changes on this part of the Splay
         project, in order to combine the arrival of our new features and
         changes onto the core of Splay with a better user experience.
-        
+
       \subsection{Renewed Architecture}
 
-        Le principal problème du côté de l'architecture des services utilisateurs
-        était la duplication de code, ou du moins une duplications des solutions
-        apportées pour un seul et même problème. L'application web Rails et le
-        serveur CLI avaient en commun la manipulation de la base de données pour
-        transmettre et récupérer les informations au \textbf{Controller} pour
-        le compte de l'utilisateur.\\
+        The main issue on the architecture of the user services was a code
+        duplication issue, or at least a duplication related to the solutions
+        created to resolve a common problem. The Rails web application and the
+        CLI server had the common role of letting the use manipulate the
+        database to transmit and gather informations to the \textbf{Controller}.\\
 
-        La première décision à prendre pour pallier à ce problème était de
-        fusionner ces deux services en un seul et de l'appeler selon sa responsabilité
-        au sein du système, le \textbf{backend} d'un point de vue client.\\
-        Ce backend aurait pour ambition de proposer une API sécurisée via
-        JsonWebToken et permettant ainsi la construction de services autour de
-        ce backend, en l'occurence une application web et un client en ligne
-        de commande.\\
+        The first decision to make in order to solve this problem was to
+        merge those two services into a single one and to call that new
+        service according his role among the system: the \textbf{backend},
+        according to the viewpoint of the client.\\
+        This backend would have the ambition to offer a secured API through
+        the usage of JWT \cite{JWT} and therefore allowing the development
+        of services around that backend, in our case a web application and
+        a command line interface application.\\
 
-        L'application web utiliserait donc une technologie JavaScript récente
-        permettant des interactions dynamiques avec l'utilisateur, et le CLI
-        une technologie simple et adaptée, les deux consommant l'API fournie
-        par le backend. Ce backend resterait quant à lui dans l'écosystème Ruby,
-        pour garder une consistance avec le projet tel qu'il était.\\
+        The web application would thus use a recent JavaScript technology
+        allowing dynamic interactions with the user, and the CLI would use
+        a simple and dedicated technology, those two services consuming the
+        same API offered by the backend. The backend, for its part, would
+        stay in the Ruby ecosystem, in order to keep a technology concistency
+        with the global project and the technologies already in use.\\
 
-        On obtiendrait donc l'architecture retravaillée suivante :
+        The resulting reworked architecture would therefore be the following :
 
         \begin{itemize}
           \item The \textbf{Controller} : The core part of Splay, waits for jobs
