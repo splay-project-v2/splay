@@ -623,38 +623,37 @@
 
       \subsection{Python - CLI}
 
-        L'ancienne paire de service destinés au CLI était écrite en LUA d'une
-        part pour le côté client, et le serveur CLI en Ruby. Etant donné que
-        la logique du serveur allait être déplacée dans le \textbf{Backend},
-        et que nous voulions garder une application en ligne de commande
-        pour des tests rapides de toute l'infrastructure, nous avons eu besoin
-        de réévaluer la pertinence de l'utilisation du LUA pour cette application.\\
+        The old pair of services intented to compose the CLI service was
+        written in LUA on the client side, and the CLI server was in Ruby. As
+        the server's logic would be moved and merged into the \textbf{Backend}
+        service, and as we wanted to keep a command line interfact application
+        in order to run tests of the global project, we needed to reevaluate
+        the relevance of the LUA usage for this application.\\
 
-        Il est plus que probable que le LUA ait été utilisé à l'époque pour
-        des raisons de cohérence, et pour éviter de disperser Splay autour
-        de beaucoup trop de technologies différentes (bien que Ruby aurait
-        aussi pu être utilisé). Toujours est-il que ce choix n'était aujourd'hui
-        plus le plus pertinant pour une application de ce type, en effet notre
-        petite application CLI client devait être : \\
+        It is more than probable that LUA was used for coherence reasons back
+        in the days, and to avoid to scatter Splay around too much different
+        technologies (although Ruby may have been used too instead of LUA).
+        Still, maybe today this choice was not the most relevant for a CLI
+        application. Indeed, our small client CLI had to be :
 
         \begin{itemize}
           \item Simple
-          \item Très concise
-          \item Ecrite dans un langage facile d'utilisation
-          \item Disposer dans l'idéal de librairies permettant la création
-          de ce genre d'application
+          \item Concise
+          \item Written in an easy-to-use language
+          \item Having conveniant libraries allowing to create simple CLI apps
         \end{itemize}
 
-        Hors nous avions hérité d'une application décomposée sur de multiples
-        fichiers LUA, chacun représentant une commande. On avait donc
-        énormément de duplication de code au niveau de la façon de parser
-        les arguments et aussi dans la manière de contacter le serveur
-        via une librairie HTTP de LUA.\\
-        Ruby était évidemment une option valable si nous voulions restreindre
-        le nombre de technologies différentes utilisées, mais Python se prêtait
-        beaucoup plus à l'écriture d'un script simple tel que notre CLI, avec
-        à disposition des librairies éprouvées pour ce qui est des requêtes
-        HTTP et de la gestion de paramètres utilisateurs.
+        However, we inherited of an application scattered in multiples LUA
+        files, each file representing a CLI command. We therefore had a huge
+        source of code duplication, each file was repeating the process
+        of parsing the user arguments when the program was called, and also
+        repeating the process of reaching the server through a HTTP library
+        in LUA.\\
+        Ruby was indeed a relevant option if we wanted to restrict the number
+        of different technologies in use among the project, but Python was
+        a better choice to write such a simple script as our CLI. Python has
+        a lot of very conveniant libraries to treat HTTP calls and to
+        manage and parse user arguments when creating a CLI application.
 
       \subsection{Ruby on Rails - Backend}
 
