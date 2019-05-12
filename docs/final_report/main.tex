@@ -481,34 +481,42 @@
 
   \chapter{Development Methodology}
 
-    Avant de parler des détails d'implémentation, il est utile de décrire la
-    façon dont nous nous sommes organisés afin de développer l'application, le
-    fait d'être deux à faire ce travail nécessitait forcément une façon de
-    s'organiser un peu plus sérieuse qu'un développement seul.\\
+    Before speaking about the implementation details, it may be useful to
+    describe the way we organized ourselves in order to develop the application.
+    The fact of being two student on this development project necessarily
+    implied a way of organizing ourselves a bit more serious than a
+    development project alone.\\
 
-    Grâce à des cours suivis pendant notre cursus au sujet de méthodologies
-    AGILES, et ayant tous deux eu l'occasion d'acquérir de l'expérience de manière
-    professionnelle au travers de stages et de part-times jobs, nous avons
-    voulu mettre à l'oeuvre ces connaissances et bonnes pratiques acquises dans
-    le domaine de la gestion de projet.
+    Thanks to the courses about AGILE methodologies we followed during our
+    scholarship, and the both of us having had the occasion of acquiring
+    experience in a professional way through internships and part-time jobs,
+    we wanted to put to work this knowledge and good practices acquired in
+    the project management domain.\\
 
       \section{Kanban}
+
+        The first tool we put in place, and this from the very beginning of
+        the update period of Splay about which we talked in the previous
+        sections, was a Kanban using the online website Trello \cite{trello}.
+        The kanban allowed us to : \\
 
         Le premier outil que nous avons mis en place, et ce dès notre période
         d'update de Splay dont nous avons parlé plus tôt, a été un Kanban en
         utilisant le site en ligne Trello. Le kanban nous a permis de : \\
 
         \begin{itemize}
-          \item Avoir une vue claire et précise sur les tâches à accomplir restantes
-          dans le backlog, ainsi que de l'état de développement des autres tâches.
-          \item Nous pousser à traduire les features à réaliser en cartes
-          suffisamment détaillées et explicites, pouvant aboutir à des clarifications
-          ou refontes de certaines features avant le début de leur développement.
-          \item Avoir un moyen de tracking de l'avancement du projet et fournir aux
-           personnes impliquées dans le projet Splay un moyen simple et efficace
-           de se tenir informer sur l'état de Splay.
-          \item Se concentrer sur des tâches spécifiques et travailler de manière
-          itérative et efficace.
+          \item Have a clear and precise view about the remaining tasks we had
+          to achieve in the backlog, and also about the development state of
+          all the other tasks.
+          \item Encourage and even oblige ourselves to translate the features
+          we had to implement into sufficiently detailed and explicit cards on
+          the kanban. This process has the benefit of refining or making
+          features the most explicit possible before starting the development.
+          \item Have a way of tracking the project's progression and offering
+          to all the people related to the project a simple and effective way
+          to keep themselves informed about Splay's state.
+          \item To focus ourselves on specific tasks and to work in an
+          iterative and efficient way.
         \end{itemize}
 
       \section{Quality Assurance}
@@ -530,32 +538,30 @@
 
       \section{Github and Gitflow}
 
-        Le projet et les divers services qui le composent sont versionnés
-        en utilisant le système de versionning \textit{Git} et hostés
-        sur le service en ligne \textit{Github}.
-        Nous avons donc organisés notre travail sur le modèle du Gitflow.
-        Chaque feature ou tâche que nous avions créée sur le kanban était
-        destinée à recevoir sa propre branche, partant de la branche principale.
-        Une fois la feature terminée et testée, une pull request était créée
-        demandant la fusion de la branche de feature sur la branche principale.
-        Le bénéfice premier étant évidemment de garder la branche principale
-        dans un état fonctionnel avec des features implémentées terminées et
-        saines.\\
+        The project and all the services composing it are versioned using the
+        \textit{Git} versioning system and are hosted on the online service
+        \textit{Github}.\\
+        We therefore organized our work on the Gitflow model. Each feature or
+        tasks we created on the kanban was meant to receive its very own
+        branch, starting from the main branch.
+        Once the feature finished and tested, a pull request was made asking
+        to merge the feature branch with the main branch.
+        The first benefit of this was obviously to keep the main branch in
+        a working state with healthy and finished features.\\
 
-        Le deuxième atout de cette méthode de travail au sein de notre groupe
-        était de pouvoir, encore dans un but d'assurer la qualité, aisément
-        organiser du reviewing de code entre nous. Chaque fois qu'un de nous
-        finissait une tâche et effectuait une pull request, l'autre était
-        assigné en tant que reviewer et chargé d'accepter la pull request
-        et d'effectuer le merge, ou détecter des erreurs à l'issue de cette
-        review et de demander les changements adéquats au premier.\\
-        Outre le bénéfice premier de la review dans la réduction du nombre
-        de bugs ou d'erreurs, cela permettait aussi à chacun d'entre nous
-        de rester au courant de tous les changements au sein des différents
-        services, puisque nous ne pouvions pas décemment travailler ensemble
-        sur chaque service individuellement étant donné leur nombre et les
-        features inter-dépendantes à développer.
-
+        The second benefit of this way of working on the project was to
+        permit, once again towards the goal of ensuring quality, code reviewing.
+        Each time one of us was done with the development of a task and was
+        issuing a pull request, the other was assigned as code reviewer and
+        was in charge of making this code review, accepting the pull request and
+        doing the merge, or to detect errors or bugs as the outcome of the
+        code review and therefore to ask for changes to the pull request issuer. \\
+        Besides the main code review's benefit of reducing the number of errors
+        or bugs, this process also allowed each of us to keep itself aware and
+        keep itself up to date with all the different changes happening on the
+        different services. Indeed, it was impossible for us to work together
+        in the mean time on each single service, because of the number of
+        services and inter-dependant features we had to develop.
 
   \chapter{Implementation}
 
