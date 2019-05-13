@@ -1008,22 +1008,22 @@
 
         \subsubsection{Model Testing}
 
-          Comme explicité plus haut, la couche ORM de Rails nous offre un
-          reflet des contraintes présentes dans la base de données en représentant
-          ses tables sous forme de modèles dotés d'attributs, que nous pouvons en
-          plus doter d'attributs supplémentaires, de méthodes et d'une surcouche
-          de validations supplémentaires (par exemple sur des combinaisons d'attributs,
-          ou des contraintes plus complexes inter-tables).\\
+          As we made it explicit in upper sections, the Rails ORM layer offers
+          a reflexion about the database constraints by representing its
+          tables under the form of models granted with attributes, that we can
+          enrich with additional attributes, methods and an overlay of
+          additional validations (such as validations on attributes
+          combinations, or more complex constraints between the models).\\
 
-          Cette abstraction supplémentaire nécessite en effet d'être couverte par
-          un ensemble suffisant de validation, ce que nous avons fait à travers
-          du \textbf{Model Testing}, en mettant à l'épreuve la surcouche appliquée
-          aux modèles mais aussi les contraintes de bases explicitées dans le
-          schéma de la base de données.\\
+          This additional abstraction therefore needs to be covered with a
+          sufficient validation set, which we did by applying
+          \textbf{Model Testing}, challenging that overlay applied to the 
+          models but also the basic constraints explicited in the database's
+          schema.\\
 
-          Cet ensemble de tests offrent donc une double validation sur les contraintes
-          de champs, mais aussi une validation sur la logique business ajoutée
-          dans l'application.
+          This testing set is therefore offering a double validation on the
+          database field constraints, but also validations on the business
+          logic we added in the application.
 
         \subsubsection{Request Testing}
 
@@ -1096,7 +1096,8 @@
 
       \begin{itemize}
         \item Cleaning the containers.
-        \item Rebuilding the different services listed in the docker-compose file.
+        \item Rebuilding the different services listed in the docker-compose
+        file.
         \item Starting up the services.
         \item Executing commands through the CLI.
         \item Checking the returned responsed sent by the CLI and displaying
@@ -1151,9 +1152,11 @@
       \item After doing the code of raft, he wants to try on several nodes (5),
       beginning without network topology (all nodes is directly connect).
       \item He sees the log to check if one node is leader and no more.
-      \item He wants to test the correctness of his code by making crash the leader essentialy,
+      \item He wants to test the correctness of his code by making crash the
+      leader essentialy,
       but also the other.
-      \item After checking his previous code, he repeats all process with and network topology.
+      \item After checking his previous code, he repeats all process with and
+      network topology.
     \end{itemize}
 
 
