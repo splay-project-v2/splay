@@ -351,7 +351,7 @@
         reason, we decided to add a visualization and creation tool of the
         network graph. Then, it will be possible to create easily a visual
         topology with all type of setting and it will be transform
-        automatically in the correct format of XML. But, the opposite will be
+        automatically in the correct format of XML. But`, the opposite will be
         possible, it means from a XML, see the topology into a graph
         representation.
 
@@ -974,28 +974,30 @@
 
     \section{Testing in Backend}
 
-      Pour rappel, le backend tel que nous l'avons conçu a les rôles suivants :
+      As a reminder, the Backend such as we conceived it has the following
+      roles :
+
       \begin{itemize}
-        \item Responsabilité de la base de données, notamment au niveau de
-        la définition de sa structure.
-        \item Fourni une API JSON permettant à d'autres applications d'interagir
-        avec le système.
+        \item It has the responsibility of handling the database and
+        defining its structure.
+        \item It must offer a JSON API allowing other application to interact
+        with the system.
       \end{itemize}
 
-      Le backend étant écrit en Rails, nous avons accès à l'ORM ActiveRecord, qui
-      permet une manipulation des données de la database sous forme de modèles.
-      Ces modèles sont donc dotés d'attributs, de contraintes à respecter sur
-      ces attributs par rapport au schéma de la base de données, mais aussi de
-      méthodes. Cette modélisation des données nous permettent donc de faire
-      du model testing.\\
+      The backend being written in Rails, we therefore have access to the
+      ActiveRecord ORM which allows manipulating the database by associating
+      tables to models. These models are thus granted with attributes,
+      constraints to comply with on these attributes following the constraints
+      listed in the database schema, but also granted with methods. This data
+      modelisation allow us to do model testing.
 
-      Le rôle du backend étant uniquement de fournir une JSON API
-      aux différents services clients à travers une authentification utilisant
-      JSON Web Token, une suite de request testing devait venir valider
-      notre ensemble d'endpoints ainsi que les méchanismes d'authentification.
-      Les données étant renvoyées aux applications sous forme de réponses
-      JSON, une sérialization des modèles devait aussi être appliquée et donc
-      également sujette à une série de tests.
+      The backend role being only to offer a JSON API to the different client
+      services through an authentication system using JSON Web tokens, a
+      request testing suite should be implemented to validate our set of
+      endpoints and the mechanism of authentication.
+      The data responses being sent to the calling applications under the form
+      of JSON responses, we had to serialize our models and therefore this
+      part was also subject to testing.
 
       \subsection{RSpec}
 
@@ -1017,7 +1019,7 @@
 
           This additional abstraction therefore needs to be covered with a
           sufficient validation set, which we did by applying
-          \textbf{Model Testing}, challenging that overlay applied to the 
+          \textbf{Model Testing}, challenging that overlay applied to the
           models but also the basic constraints explicited in the database's
           schema.\\
 
