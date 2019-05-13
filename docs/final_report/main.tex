@@ -1027,29 +1027,28 @@
 
         \subsubsection{Request Testing}
 
-          Les tests de requêtes au sein du Backend sont les tests les plus
-          importants que nous avons réalisés, en termes de couverture de la
-          codebase mais aussi en termes d'exploration des features implémentées
-          au sein de ce service de Splay.\\
+          The request tests inside the Backend service are the most important
+          tests we wrote, in terms or code coverage but also in terms of
+          testing the implemented features inside of this Splay service.\\
 
-          Les "requests specs" au sein de RSpec sont faites pour simuler un
-          comportement d'application utilisateur faisant appel à tout le stack
-          de Rails (un framework web MVC).
-          Chaque requête passe donc au travers des éléments suivants :\\
+          The request specs among the RSpec tool are made to simulate
+          the behaviour of a third-party application sending a request to
+          our service and therefore making the whole Rails stack running
+          to provide an answer to this request.\\
+          Each request is therefore going through those elements :\\
 
-          % INSERT SCHEMA HERE
           \begin{figure}[H]
             \centering
             \includegraphics[scale=0.6]{figures/request_test.png}
             \caption{\label{request_test} Request Lifetime in Backend Service}
           \end{figure}
 
-          Chaque route de l'application est testée, en explorant différent
-          scénarios possibles (token d'authentification invalide, action
-          non autorisée pour l'utilisateur). On a donc une série de tests
-          qui mettent en oeuvre l'intégralité de l'application, avec simplement
-          un envoi de requêtes et une comparaison sur les réponses attendues
-          de la part de l'application.
+          Each route of the application is tested, exploring different possible
+          scenarios for the incoming request (the idenfication token provided
+          is invalid, the token is valid but the requested action is not
+          authorized for the associated user). We therefore have a testing set
+          that uses the whole application, simply by sending request and
+          making expectations about the awaited response from the application.
 
       \subsection{Code Coverage - Simple Cov}
 
