@@ -1077,47 +1077,44 @@
 
     \section{Integration Testing}
 
-      Afin de pouvoir tester automatiquement le projet dans son ensemble, nous
-      avons aussi voulu développer des tests fonctionnels. Ces tests seraient
-      relativement simples mais suffisamment complets pour s'assurer de
-      tester de manière globale les features développées sur le système, et
-      il suffisait pour cela de transcrire nos scénarios d'utilisation en
-      scénarios de tests.\\
+      In order to automatically test the project as a whole, we also wanted to
+      develop a functional test suite. This test suite would be relatively
+      simple but complete enough to make sure that we could test the developed
+      features in a global way among the system, and to achieve this goal we
+      just had to translate our user scenarios into test scenarios.\\
 
-      Pour ceux-ci, nous n'avons pas utilisé de technologie complexe et avons
-      estimé qu'une série de scripts en Bash était plus que suffisante pour
-      parvenir à nos fins. Bash ne permettrait pas de tester des scénarios
-      utilisateurs à travers l'application web, mais étant donné que celle-ci
-      utilise exactement la même API fournie par le Backend que l'application
-      CLI, nous pouvions donc simuler les actions utilisateurs via celui-ci (
-      et c'est en partie pour cette raison que nous avons conservé une
-      application CLI dans le projet).\\
+      For these functional tests, we didn't use a complex technology and
+      thought that a Bash scripts serie would be more than sufficient to
+      reach our goal. Bash scripts could indeed not allow us to recreate user
+      behaviour using Splay through the web application, but as this
+      application is using the exact same API offered by the Backend than the
+      CLI application, we could simulate user behaviour through that CLI (and
+      that's partially the reason why the decided to keep a CLI application
+      within the project).\\
 
-      Les tests d'intégration ont été placés dans un dossier spécifique à la
-      racine du projet Splay, et achèvent les actions suivantes pour chaque
-      test : \\
+      The integration tests were placed in a dedicated directory at the Splay
+      project's root, and execute the following actions for each test :
 
       \begin{itemize}
-        \item Nettoyage des containers
-        \item Rebuild des différents services listés dans le docker-compose
-        \item Démarrage des services
-        \item Execution de commandes via le CLI
-        \item Vérification de la réponse retournée par le CLI et affichage du
-        succès ou de l'erreur de cette phase de test dans le terminal
+        \item Cleaning the containers.
+        \item Rebuilding the different services listed in the docker-compose file.
+        \item Starting up the services.
+        \item Executing commands through the CLI.
+        \item Checking the returned responsed sent by the CLI and displaying
+        whether the test phase has succeeded or failed in the terminal.
       \end{itemize}
 
-      {\color{red} Faire le lien avec les scénarios du début}\\
+      {\color{red} Link with scenarios}\\
 
-      Cette manière de procéder et le fait d'utiliser nos scénarios utilisateurs
-      pour déterminer les actions décrites dans les tests nous permettent de
-      nous assurer et de valider que l'implémentation de nos features est
-      fonctionnelle tout au long du projet de la vie de Splay. De plus, ces
-      tests viennent ajouter une couche de validation supplémentaire par rapport
-      aux tests ciblant les différents services individuellement. On se retrouve
-      ici avec des tests qui font intervenir chaque service dans un cas concret
-      de fonctionnement du projet, et permet donc aussi de tester les interactions
-      entre ceux-ci.
-
+      By proceeding this way and with the fact of using our user scenarios to
+      determine the actions described in the test suite, we can make sure
+      that the implementation of our features is functional and will stay
+      functional through the lifetime and evolutions of Splay. Moreover, those
+      tests are adding an additional validation layer compared to the tests
+      targeting the different services individually. We have here tests that
+      are involving each service in concrete scenarios and reflecting real
+      working conditions of the project, and also testing interactions
+      between the services.
 
     \section{Continuous Integration}
 
