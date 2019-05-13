@@ -1121,16 +1121,19 @@
 
     \section{Continuous Integration}
 
-      Encore dans un soucis de qualité, les differents service ont été placés
-      sur la plateforme d'intégration continue Travis CI, le but étant de se
-      servir des hooks fournis par Travis sur l'exécution des tests.\\
+      Once again in a way to ensure quality, the different services were placed
+      on the Travis CI \cite{travis} continuous integration platform. Travis
+      can be coupled with Github to detect any change on the branches and
+      automatically run a test procedure listed in a script and then offer
+      feedback on how the test suite went.\\
 
-      Splay étant un projet open source, et que nous espérons voir évoluer, son
-      développment collaboratif se fera inévitablement à travers l'organisation
-      Github dans laquelle les repositories se trouvent.\\
-      Les hooks Travis permettent, dans le cadre d'une pull request, d'obtenir
-      une review de l'exécution de tests sur la branche qui demande à être
-      mergée, et de s'assurer que le build est sain.
+      Splay being an open source project, that we hope to see growing in the
+      future, its collaborative development will inevitably happen through
+      the Github organization in which the different repositories are located.\\
+      The coupling of Travis with Github allow, in the case of a pull request,
+      gather the review about the test execution on the branch asking to be
+      merged with the main branch, and therefore to make sure the build is
+      clean and the test are passing before merging the new code.
 
     \section{Overall Testing Suite}
 
