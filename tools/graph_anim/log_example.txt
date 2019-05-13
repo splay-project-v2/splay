@@ -19,7 +19,7 @@
 2019-05-08 16:47:25.6340 (2)  
 2019-05-08 16:47:25.6356 (2)  [splay.restricted_socket] N: RS init : { ["list"] = { ["nodes"] = { [1] = { ["port"] = 11628,["ip"] = 172.18.0.9,} ,[2] = { ["port"] = 11628,["ip"] = 172.18.0.7,} ,[3] = { ["port"] = 11628,["ip"] = 172.18.0.10,} ,} ,["type"] = head,["position"] = 3,} ,["ip"] = 127.0.0.1,["max_send"] = 134217728,["start_port"] = 11628,["local_end_port"] = 12000,["nb_ports"] = 1,["max_sockets"] = 32,["local_ip"] = 172.18.0.10,["max_receive"] = 134217728,["end_port"] = 11628,["blacklist"] = { [1] = 127.0.0.1,[2] = localhost,} ,["local_start_port"] = 11000,} 
 2019-05-08 16:47:25.6415 (2)  EXECUTE USER LUA CODE (job = 3)
-2019-05-08 16:47:25.6417 (2)  ANIM START ON 3
+2019-05-08 16:47:25.6417 (2)  ANIM START 3
 2019-05-08 16:47:25.6703 (2)  ANIM STATE 3 : follower : 0
 2019-05-08 16:47:25.6705 (2)  Try to begin connection to 172.18.0.9:11628 - index 1
 2019-05-08 16:47:25.6710 (2)  [splay.net] W: Cannot connect peer 172.18.0.9:11628: connection refused
@@ -46,7 +46,7 @@
 2019-05-08 16:47:26.6235 (1)  
 2019-05-08 16:47:26.6250 (1)  [splay.restricted_socket] N: RS init : { ["max_send"] = 134217728,["local_start_port"] = 11000,["local_end_port"] = 12000,["local_ip"] = 172.18.0.7,["list"] = { ["nodes"] = { [1] = { ["ip"] = 172.18.0.9,["port"] = 11628,} ,[2] = { ["ip"] = 172.18.0.7,["port"] = 11628,} ,[3] = { ["ip"] = 172.18.0.10,["port"] = 11628,} ,} ,["position"] = 2,["type"] = head,} ,["end_port"] = 11628,["nb_ports"] = 1,["start_port"] = 11628,["blacklist"] = { [1] = 127.0.0.1,[2] = localhost,} ,["max_receive"] = 134217728,["ip"] = 127.0.0.1,["max_sockets"] = 32,} 
 2019-05-08 16:47:26.6717 (1)  EXECUTE USER LUA CODE (job = 2)
-2019-05-08 16:47:26.6717 (1)  ANIM START ON 2
+2019-05-08 16:47:26.6717 (1)  ANIM START 2
 2019-05-08 16:47:26.6784 (1)  ANIM STATE 2 : follower : 0
 2019-05-08 16:47:26.6786 (1)  Try to begin connection to 172.18.0.9:11628 - index 1
 2019-05-08 16:47:26.6793 (1)  [splay.net] W: Cannot connect peer 172.18.0.9:11628: connection refused
@@ -78,7 +78,7 @@
 2019-05-08 16:47:26.9286 (3)  
 2019-05-08 16:47:26.9303 (3)  [splay.restricted_socket] N: RS init : { ["list"] = { ["position"] = 1,["type"] = head,["nodes"] = { [1] = { ["port"] = 11628,["ip"] = 172.18.0.9,} ,[2] = { ["port"] = 11628,["ip"] = 172.18.0.7,} ,[3] = { ["port"] = 11628,["ip"] = 172.18.0.10,} ,} ,} ,["nb_ports"] = 1,["max_sockets"] = 32,["max_receive"] = 134217728,["local_ip"] = 172.18.0.9,["blacklist"] = { [1] = 127.0.0.1,[2] = localhost,} ,["max_send"] = 134217728,["end_port"] = 11628,["start_port"] = 11628,["ip"] = 127.0.0.1,["local_end_port"] = 12000,["local_start_port"] = 11000,} 
 2019-05-08 16:47:26.9767 (3)  EXECUTE USER LUA CODE (job = 1)
-2019-05-08 16:47:26.9769 (3)  ANIM START ON 1
+2019-05-08 16:47:26.9769 (3)  ANIM START 1
 2019-05-08 16:47:26.9813 (3)  ANIM STATE 1 : follower : 0
 2019-05-08 16:47:26.9816 (3)  Try to begin connection to 172.18.0.7:11628 - index 2
 2019-05-08 16:47:26.9823 (3)  Try to begin connection to 172.18.0.10:11628 - index 3
@@ -226,7 +226,7 @@
 2019-05-08 16:47:45.3067 (2)  ANIM SDATA 3 -> 2 : PWMAgJKyNuAnqJkWyZfY : HEARTBEAT 31
 2019-05-08 16:47:45.3074 (1)  ANIM RDATA 2 <- 3 : PWMAgJKyNuAnqJkWyZfY : HEARTBEAT 31
 2019-05-08 16:47:45.3069 (3)  ANIM RDATA 1 <- 3 : Qw9xfeo8ahUyegYTlDpC : HEARTBEAT 31
-2019-05-08 16:47:45.6709 (2)  ANIM EXIT ON 3
+2019-05-08 16:47:45.6709 (2)  ANIM EXIT 3
 2019-05-08 16:47:45.7720 (1)  ERROR : closed
 2019-05-08 16:47:45.7719 (2)  SPLAYD LUA END
 2019-05-08 16:47:45.7720 (3)  ERROR : closed
@@ -235,7 +235,7 @@
 2019-05-08 16:47:45.7705 (2)  END_LOG
 2019-05-08 16:47:45.7732 (1)  Closing: 172.18.0.10:11628 - index 3
 2019-05-08 16:47:45.7723 (3)  Closing: 172.18.0.10:11628 - index 3
-2019-05-08 16:47:46.6786 (1)  ANIM EXIT ON 2
+2019-05-08 16:47:46.6786 (1)  ANIM EXIT 2
 2019-05-08 16:47:46.6823 (1)  Try to begin connection to 172.18.0.10:11628 - index 3
 2019-05-08 16:47:46.6830 (1)  [splay.net] W: Cannot connect peer 172.18.0.10:11628: connection refused
 2019-05-08 16:47:46.7794 (1)  SPLAYD LUA END
@@ -243,7 +243,7 @@
 2019-05-08 16:47:46.7761 (1)  END_LOG
 2019-05-08 16:47:46.7799 (3)  [splay.net] N: async end: #SE (TCP): #RS (TCP): tcp{client}: 0x55cb891841e8
 2019-05-08 16:47:46.7801 (3)  Closing: 172.18.0.7:11628 - index 2
-2019-05-08 16:47:46.9818 (3)  ANIM EXIT ON 1
+2019-05-08 16:47:46.9818 (3)  ANIM EXIT 1
 2019-05-08 16:47:46.9867 (3)  Try to begin connection to 172.18.0.7:11628 - index 2
 2019-05-08 16:47:46.9876 (3)  [splay.net] W: Cannot connect peer 172.18.0.7:11628: connection refused
 2019-05-08 16:47:46.9876 (3)  Try to begin connection to 172.18.0.10:11628 - index 3

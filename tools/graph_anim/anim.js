@@ -1,46 +1,92 @@
 var stopClock = false
 
-function graph() {
+const EventGraph = Object.freeze({
+    "addNode": 1,
+    "addEdge": 2,
+    "packetSend": 3,
+
+    "removeNode": 4,
+    "removeEdge": 5,
+    "packetReceive" : 6,
+
+    "stateNode": 7
+})
+
+function submit(){
+    var textInput = document.getElementById('textInput');
+    var text = textInput.value
+    if (text == null) {
+        text = text.innerHTML
+    }
+
+    var timeline = parseLog(text)
+    console.log(timeline)
+    graph(timeline, 0.25)
+
+}
+
+function parseLog(text) {
+    lines = text.split("\n")
+    first_time = new Date(lines[0].split(" ")[0] + "T" + lines[0].split(" ")[1])
+
+    function createOneTime(time_b, data) {
+        return {
+            begin: time_b - first_time,
+            data: data
+        }
+    }
+    
+    var timeline = []
+    for (var i = 1; i < lines.length; i++){
+        words = lines[i].split(" ")
+        time_l = new Date(words[0] + "T" + words[1])
+
+        removed = words.splice(0,4) // two spaces between (id_daemon) and log line
+        log_line = words.join(" ")
+        //console.log(log_line)
+        if (words[0] == "ANIM") {
+            if (words[1] == "START") {
+                timeline.push(createOneTime(time_l,{ type: EventGraph.addNode, label: "Job " + words[2], id: words[2]}))
+
+            } else if (words[1] == "STATE") {
+                timeline.push(createOneTime(time_l,{ type: EventGraph.stateNode, id_node: words[2], color: "#000000"}))
+
+            } else if (words[1] == "CONNETED") { 
+                timeline.push(createOneTime(time_l,{ type:  EventGraph.addEdge, to: words[2], from: words[4]}))
+
+            } else if (words[1] == "SDATA") {
+                timeline.push(createOneTime(time_l,{ type:  EventGraph.packetSend, to: words[2], from: words[4], packet: words[8]}))
+
+            } else if (words[1] == "RDATA") {
+                timeline.push(createOneTime(time_l,{ type:  EventGraph.packetReceive, to: words[2], from: words[4], packet: words[8]}))
+
+            } else if (words[1] == "EXIT") {
+                timeline.push(createOneTime(time_l,{ type: EventGraph.removeNode, id: words[2]}))
+
+            } else if (words[1] == "DISCONNETED") {
+                timeline.push(createOneTime(time_l,{ type: EventGraph.removeEdge, to: words[2], from: words[4]}))
+            } else {
+                console.log("Type of ANIM unknown : " + words[0])
+            }
+        } else if (words[0] == "CRASH") {
+
+        }
+    }
+    function compare( a, b ) {
+        return a.begin - b.begin;
+    }
+
+    // return a timeline
+    return timeline.sort(compare)
+} 
+
+
+function graph(timeline, speedFactor) {
+
     const sleep = (milliseconds) => {
         return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
-    
-    const timeline = [
-        {begin: 500, end: 25000, data: { type: "addNode", label:"Splayd 1", id: 1}},
-        {begin: 1550, end: 32500, data: { type: "addNode", label:"Splayd 2", id: 2}},
-        {begin: 1560, end: 35000, data: { type: "addNode", label:"Splayd 3", id: 3}},
-        {begin: 1560, end: 35000, data: { type: "addNode", label:"Splayd 4", id: 4}},
-        {begin: 1560, end: 35000, data: { type: "addNode", label:"Splayd 5", id: 5}},
 
-    
-        {begin: 1600, end: 15000, data: { type: "addEdge", to: 1, from: 2}},
-        {begin: 1600, end: 15000, data: { type: "addEdge", to: 2, from: 1}},
-
-        {begin: 1600, end: 15000, data: { type: "addEdge", to: 1, from: 4}},
-        {begin: 1600, end: 15000, data: { type: "addEdge", to: 4, from: 1}},
-        {begin: 1850, end: 15000, data: { type: "addEdge", to: 2, from: 3}},
-        {begin: 1850, end: 15000, data: { type: "addEdge", to: 5, from: 3}},
-        {begin: 1850, end: 15000, data: { type: "addEdge", to: 5, from: 1}},
-        {begin: 1850, end: 15000, data: { type: "addEdge", to: 5, from: 2}},
-        {begin: 1850, end: 15000, data: { type: "addEdge", to: 5, from: 4}},
-        {begin: 1850, end: 15000, data: { type: "addEdge", to: 4, from: 5}},
-        {begin: 1850, end: 15000, data: { type: "addEdge", to: 2, from: 5}},
-
-        {begin: 1855, end: 15000, data: { type: "addEdge", to: 3, from: 2}},
-        {begin: 1855, end: 15000, data: { type: "addEdge", to: 3, from: 5}},
-        {begin: 2515, end: 15000, data: { type: "addEdge", to: 1, from: 3}},
-        {begin: 2519, end: 15000, data: { type: "addEdge", to: 3, from: 1}},
-
-
-        {begin: 2515, end: 15000, data: { type: "addEdge", to: 4, from: 3}},
-        {begin: 2519, end: 15000, data: { type: "addEdge", to: 3, from: 4}},
-
-        {begin: 5530, end: 5620, data: { type: "packet", to: 2, from: 3, color:"#000000"}},
-        {begin: 5540, end: 5550, data: { type: "packet", to: 3, from: 2, color:"#000000"}},
-        {begin: 5550, end: 5560, data: { type: "packet", to: 1, from: 3, color:"#000000"}},
-
-    ];
-    
     var counterNode = 1;
     
     var nodes = new vis.DataSet([]);
@@ -65,16 +111,13 @@ function graph() {
     };
     var network = new vis.Network(container, data, options);
     
-    function resolveOneTime(timedata, during) {
-        if (timedata.type == "addNode") {
+    function resolveOneTime(timedata) {
+        if (timedata.type === EventGraph.addNode) {
             const idNode = counterNode;
             nodes.add({id: idNode, label: timedata.label, borderWidth:3, font:{size:20}})
     
             counterNode += 1;
-            setTimeout(function(){ 
-                nodes.remove(idNode)
-            }, during);
-        } else if (timedata.type == "addEdge") {
+        } else if (timedata.type === EventGraph.addEdge) {
             const idEdge = "" + timedata.to +"-"+timedata.from
             edges.add({
                 to: timedata.to, 
@@ -84,13 +127,8 @@ function graph() {
                // smooth: false
 
             })
-            
-            setTimeout(function(){ 
-                edges.remove(idEdge)
-            }, during);
-
-        } else if (timedata.type == "packet") {
-            const idEdge = "" + timedata.to +"-"+timedata.from
+        } else if (timedata.type === EventGraph.packetSend) {
+            /* const idEdge = "" + timedata.to +"-"+timedata.from
             
             edges.update([{ width: 4, id: idEdge, color: {
                 color: timedata.color,
@@ -98,45 +136,63 @@ function graph() {
                 hover: timedata.color,
                 inherit: false,
                 opacity: 1.0
-            }}])
-
-            setTimeout(function(){ 
-                edges.update([{ width: 2, id: idEdge, color: '#848484'}])
-            }, during);
+            }}]) */
+        } else if (timedata.type === EventGraph.removeNode) {
+            nodes.remove(timedata.id)
+        } else if (timedata.type === EventGraph.removeEdge) {
+            const idEdge = "" + timedata.to +"-"+timedata.from
+            edges.remove(idEdge)
+        } else {
+            console.log("Not implemented type : " + timedata.type)
         }
     }
     
     const executeTimeline = async () => {
-       
+        
         var date = new Date();
         var beginTime = date.getTime();
-        startTime(beginTime)
         index = 0;
+        var c =  new Clock(250, speedFactor)
+        c.updateStartTime(beginTime)
+        c.start()
         while (timeline.length > index) {
             var timestamp = Date.now();
-            timeToWait = timeline[index].begin - (timestamp - beginTime);
+            timeToWait = (timeline[index].begin / speedFactor - (timestamp - beginTime));
             if (timeToWait >= 0){
                 await sleep(timeToWait);
             }
-            console.log("resolve at " + (Date.now() - beginTime) + " expected at " + timeline[index].begin)
-            resolveOneTime(timeline[index].data, timeline[index].end - timeline[index].begin);
+            console.log("resolve at " + (Date.now() - beginTime) + " expected at " + timeline[index].begin  / speedFactor)
+            resolveOneTime(timeline[index].data);
             index += 1;
         }
+        c.stop()
     }
     
     executeTimeline();
 }
 
-function startTime(beginTime) {
-    var timeHtml = document.getElementById("time");
+function Clock(updateTime, speedFactor) {
+    this.timeHtml = document.getElementById("time");
+    this.beginTime = Date.now()
+    this.updateTime = updateTime
+    this.speedFactor = speedFactor
 
-    function clock(){
-        if (!stopClock) {
-            timeHtml.innerHTML = "Time : " + Math.floor ((Date.now() - beginTime) / 1000 )+ " sec"
-            setTimeout(clock, 500)
+    this.stopBool = false
+
+    this.updateStartTime = function(t) {
+        this.beginTime = t
+    }
+
+    this.start = async function () {
+        if (!this.stopBool) {
+            this.timeHtml.innerHTML = "Time : " + (((Date.now() - this.beginTime) / 1000) * this.speedFactor).toFixed(2)+ " sec / speed factor : " + this.speedFactor
+            var _this = this;
+            setTimeout(function() {_this.start()}, this.updateTime * this.speedFactor)
         } else {
-            timeHtml.innerHTML = "Finish after " + Math.floor ((Date.now() - beginTime) / 1000 ) + " sec"
+            this.timeHtml.innerHTML = "Finish after " + Math.floor ((Date.now() - this.beginTime) / 1000 ) + " sec"
         }
     }
-    clock()
+    this.stop = function() {
+        this.stopBool = true
+    }
 }
