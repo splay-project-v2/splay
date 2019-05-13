@@ -12,8 +12,29 @@ const EventGraph = Object.freeze({
     "stateNode": 7
 })
 
+const NodeColor = Object.freeze({
+    "follower": {
+        border: '#2B7CE9',
+        background: '#D2E5FF'
+    },
+    "default": {
+        border: '#515452',
+        background: '#626663'
+    },
+    "candidate": {
+        border: '#847e0d',
+        background: '#bab21f'
+    },
+    "leader": {
+        border: '#9e0101',
+        background: '#ff0202'
+    }
+})
+
 function submit() {
     var textInput = document.getElementById('textInput');
+    var speedInput = document.getElementById('speedInput');
+
     var text = textInput.value
     if (text == null) {
         text = text.innerHTML
@@ -21,7 +42,7 @@ function submit() {
 
     var timeline = parseLog(text)
     console.log(timeline)
-    graph(timeline, 0.25)
+    graph(timeline, parseFloat(speedInput.value))
 
 }
 
@@ -56,7 +77,7 @@ function parseLog(text) {
                 timeline.push(createOneTime(time_l, {
                     type: EventGraph.stateNode,
                     id_node: words[2],
-                    color: "#000000"
+                    color: NodeColor[words[4]]
                 }))
 
             } else if (words[1] == "CONNETED") {
@@ -98,7 +119,10 @@ function parseLog(text) {
                 console.log("Type of ANIM unknown : " + words[0])
             }
         } else if (words[0] == "CRASH") {
-
+            timeline.push(createOneTime(time_l, {
+                type: EventGraph.removeNode,
+                id: words[2]
+            }))
         }
     }
 
@@ -116,8 +140,6 @@ function graph(timeline, speedFactor) {
     const sleep = (milliseconds) => {
         return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
-
-    var counterNode = 1;
 
     var nodes = new vis.DataSet([]);
     var edges = new vis.DataSet([]);
@@ -144,62 +166,87 @@ function graph(timeline, speedFactor) {
 
     function resolveOneTime(timedata) {
         if (timedata.type === EventGraph.addNode) {
-            const idNode = counterNode;
-            nodes.add({
-                id: idNode,
+            nodes.update({
+                id: timedata.id,
                 label: timedata.label,
                 borderWidth: 3,
                 font: {
-                    size: 20
+                    size: 20,
+                    color: "#000000"
+                },
+                color: {
+                    highlight: NodeColor.default,
+                    hover: NodeColor.default,
+                    border: NodeColor.default.border,
+                    background: NodeColor.default.background
                 }
             })
 
-            counterNode += 1;
         } else if (timedata.type === EventGraph.addEdge) {
             const idEdge = "" + timedata.to + "-" + timedata.from
-            edges.add({
+            edges.update({
                 to: timedata.to,
                 from: timedata.from,
                 arrows: "to",
                 width: 2,
                 id: idEdge,
                 length: 300,
-                // smooth: false
-
-            })
-            packets[idEdge] = {nb: 0, labels: []} 
-        } else if (timedata.type === EventGraph.packetSend) {
-            const idEdge = "" + timedata.to +"-"+timedata.from
-
-            packets[idEdge].nb += 1 
-
-            edges.update([{ width: 3 + packets[idEdge].nb, id: idEdge, color: {
-                color: "#000000",
-                highlight: "#000000",
-                hover: "#000000",
-                inherit: false,
-                opacity: 1.0
-            }}])
-
-        } else if (timedata.type === EventGraph.packetReceive) {
-            const idEdge = "" + timedata.from +"-"+ timedata.to 
-            packets[idEdge].nb -= 1
-            if ( packets[idEdge].nb == 0) {
-                edges.update([{ width: 2, id: idEdge, color: {
+                color : {
+                    inherit: false,
                     color: '#2B7CE9',
                     highlight: '#2B7CE9',
-                    hover: '#2B7CE9',
-                    inherit: 'from',
-                    opacity: 1.0
-                }}])
-            } else {
-                edges.update([{ width: 3 + packets[idEdge].nb, id: idEdge, color: {
+                    hover: '#2B7CE9'
+                }
+
+            })
+            packets[idEdge] = {
+                nb: 0,
+                labels: []
+            }
+        } else if (timedata.type === EventGraph.packetSend) {
+            const idEdge = "" + timedata.from + "-" + timedata.to
+
+            packets[idEdge].nb += 1
+
+            edges.update([{
+                width: 3 + packets[idEdge].nb,
+                id: idEdge,
+                color: {
                     color: "#000000",
                     highlight: "#000000",
                     hover: "#000000",
                     inherit: false,
                     opacity: 1.0
-                }}])
+                }
+            }])
+
+        } else if (timedata.type === EventGraph.packetReceive) {
+            const idEdge = "" + timedata.to + "-" + timedata.from
+            packets[idEdge].nb -= 1
+            if (packets[idEdge].nb == 0) {
+                edges.update([{
+                    width: 2,
+                    id: idEdge,
+                    color: {
+                        color: '#2B7CE9',
+                        highlight: '#2B7CE9',
+                        hover: '#2B7CE9',
+                        inherit: false,
+                        opacity: 1.0
+                    }
+                }])
+            } else {
+                edges.update([{
+                    width: 3 + packets[idEdge].nb,
+                    id: idEdge,
+                    color: {
+                        color: "#000000",
+                        highlight: "#000000",
+                        hover: "#000000",
+                        inherit: false,
+                        opacity: 1.0
+                    }
+                }])
             }
         } else if (timedata.type === EventGraph.removeNode) {
             nodes.remove(timedata.id)
@@ -207,6 +254,16 @@ function graph(timeline, speedFactor) {
             const idEdge = "" + timedata.to + "-" + timedata.from
             edges.remove(idEdge)
             packets[idEdge] = {}
+        } else if (timedata.type === EventGraph.stateNode) {
+            nodes.update([{
+                id: timedata.id_node,
+                color: {
+                    highlight: timedata.color,
+                    hover: timedata.color,
+                    border: timedata.color.border,
+                    background: timedata.color.background
+                }
+            }])
         } else {
             console.log("Not implemented type : " + timedata.type)
         }
