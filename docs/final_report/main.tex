@@ -645,7 +645,7 @@
 
         However, we inherited of an application scattered in multiples LUA
         files, each file representing a CLI command. We therefore had a huge
-        source of code duplication, each file was repeating the process
+        source of code duplication, as each file was repeating the process
         of parsing the user arguments when the program was called, and also
         repeating the process of reaching the server through a HTTP library
         in LUA.\\
@@ -657,52 +657,54 @@
 
       \subsection{Ruby on Rails - Backend}
 
-        Le controller et l'ancienne paire de services destinés au CLI ayant été
-        développé en Ruby, et l'ancienne application web en Ruby on Rails, il
-        nous semblait évident de rester dans l'écosystème Ruby pour créer
-        le service qui deviendrait ce que nous avons appelé \textbf{Backend}.
-        La technologie que nous voulions utiliser pour développer le backend
-        devait proposer une solution efficace aux problèmes suivants : \\
+        The controller service and the old pair of services composing the CLI
+        having been developed with the Ruby language, and the old web
+        application having been developed with Ruby on Rails, it was obvious
+        for us to stay within the Ruby ecosystem to create the new service
+        that would become what we called the \textbf{Backend}. The technology
+        we wanted to use for this development had to offer an efficient
+        solution to the following issues :
 
         \begin{itemize}
-          \item Permettre un interfacage simple avec la base de données MySQL
-          pour assurer la communication avec le controlleur, et ainsi pouvoir
-          soumettre de nouveaux jobs, récupérer les infos sur les Daemons, etc...
-          \item Permettre de développer et exposer une JSON API permettant
-          aux services front-end (application web et CLI) de l'exploiter
-          pour interagir avec le système Splay.
-          \item Offrir un large choix au niveau de librairies de testing,
-          de serialization des données en JSON, et autres librairies permettant
-          de répondre aux problèmes susmentionnés.
+          \item Allowing a simple interfacing with the MySQL database in order
+          to ensure the communication with the controller, and therefore allow
+          the submission of new jobs, the gathering of information about the
+          Daemons, etc...
+          \item Allow to develop and expose a JSON API alloing other front
+          end services (web application and CLI) to make use of this API and
+          interact with the Splay system.
+          \item Offer a large choice of libraries for testing, data
+          serialization using JSON, and other libraries solving the problems
+          we talked about before.
         \end{itemize}
 
-        Ayant déjà tous deux une expérience assez conséquente en Ruby on Rails,
-        et pour les raisons de consistance d'écosystème exposée plus haut, nous
-        nous sommes immédiatement accordés pour utiliser cette technologie.
-        Le fait de rester dans le même ecosystème de langage nous assurait
-        aussi que les futurs contributeurs de l'application n'auraient pas
-        à devoir jongler avec plusieurs technologies et faciliterait donc
-        l'évolution future de Splay.\\
-        Il est aussi à noter que comme nous l'avons explicité dans la partie
-        concernant le renouvellement de l'architecture de Splay, la précédente
-        web application et le serveur CLI avaient un rôle similaire bien que
-        spécialisé pour différentes applications. Cependant la logique commune
-        deux deux services en Ruby était déjà présente, et il s'agissait donc
-        en partie de l'isoler et de l'améliorer.\\
+        The both of us already having a certain experience in using Ruby on
+        Rails, and for the reasons of ecosystem consistency we talked about
+        in the previous sections, we immediately agreed on using this
+        framework for the backend. The fact of staying in the same language
+        ecosystem would allow us to make sure that future contributers to
+        the application would not have to play with too many technologies and
+        therefore make the future evolution of Splay easier.\\
+        It should also be noticed that, as we exposed it when talking about the
+        changes in the renewed software architecture of Splay, the previous
+        web application and the CLI server had a similar role although being
+        specialized for different applications. However, the commom logic
+        of these two Ruby services was already present, and a part of the
+        work was therefore just the matter of isolating this common logic
+        and making it better.\\
 
-        Rails permet en effet très simplement de développer, outre des
-        applications web traditionnelles MVC, des applications destinées uniquement
-        à être des API faisant fi de toute la complexité nécessaire à la
-        présentation des vues pour l'utilisateur et donc légères et concises
-        en terme de codebase.\\
-        L'ORM ActiveRecord associé aux applications Rails était également un
-        atout majeur pour cette technologie, nous permettant de gérer
-        simplement et efficacement les jobs et daemons du système.\\
-        Enfin, des librairies telles que RSpec pour le testing (point sur
-        lequel nous reviendrons plus tard dans un chapitre dédié), Rubocop pour
-        le linter, ou encore la libraire fast\_jsonapi de Netflix pour la
-        serialization des données faisait vraiment de Rails la bonne technologie
-        à choisir pour le Backend.
+        Indeed Rails allow to easily develop, besides traditional MVC web
+        applications, API only applications that doesn't contain all the stuff
+        and complexity needed for presenting HTML views to the user and thus
+        having a lighter and more concise codebases.\\
+        The ActiveRecord \cite{activerecord} ORM shipped with the Rails
+        applications is also a major advantage for this technology, allowing us
+        to easily and efficiently manage the system's jobs and daemons.\\
+        Finally, the availability of some libraries such as RSpec made for the
+        testing (topic on which we'll talk more deeply in a dedicated chapter),
+        Rubocop for the linter, or even the Netflix's fast\_jsonapi library for
+        data serialization has definitely made Rails the right technology to
+        choose for the Backend.
 
     \section{Development}
 
