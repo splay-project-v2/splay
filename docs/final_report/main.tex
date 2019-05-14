@@ -206,16 +206,12 @@
 
   \chapter{Splay Version 2} %TODO: Review - Rewrite
 
-    % All about what we wanted to do exactly.
-    Then, our goal for the new version of Splay, was first, stabilize and
-    modernize the legacy project. Indeed, some parts was not updated or
-    partially documented. All details is available in the next section.\\
+    In this chapter, we'll expose and describe the objective of this thesis
+    being the version 2 of Splay.\\
 
-    In a second step, we wanted to add our own features focus on the usage of
-    the final user (student, professor or searcher). These features were a
-    modern web application with Lua editor integrated, a graphical topology
-    creator inside the web app and a way to inject some fault injection in the
-    user code. We will details all of then in this chapter.
+    We'll first go through what we needed to modify or setup about the project.
+    Then, we'll talk about the features we decided, with Etienne Riviere, to
+    implement on the project.
 
     \section{Objectives} %TODO: Review - Rewrite
 
@@ -282,40 +278,54 @@
       features on it (next section)
 
 
-    \section{New features of Splay} %TODO: Review - Rewrite
+    \section{New features of Splay}
 
-     To present our own new features of Splay, we will explain by some user
-     scenarios and after explain in details the three features.
+     Before create a precise list of features to add to Splay, we first
+     thought about scenarios. We imagined how someone would want to exercise
+     and experiment with his distributed algorithm, using a platform like
+     Splay. From these scenarios we would then get the precise new features
+     we had to implement in order to make those scenarios possible and
+     concrete.\\
+
+     These scenarios would be useful to keep track of the progression of our
+     work as we would progressively making those reality, but also useful
+     to use them to create tests (needed, as we explained before) and ensure
+     these features would be covered.
 
       \subsection{Scenarios} %TODO: Review - Rewrite
 
-        \textbf{First Scenario : } as a student, I want to put in practice my
-        course on distributed application. The university provides a existing
-        installation of Splay in the local network. The student just need to
-        connect on the web server with its browser. The student, after
-        registering, will able to create its own code with a complete Lua
-        editor on the web page. Also a powerful and documented library
-        facilitates the creation of distributed algorithm. When the code is
-        finished, the student launch the job, the code will be automatically
-        dispatch on several machines (depending of number of available daemon
-        and the number choose by the student), and getting the log of each of
-        then in the web page during/after the completion of the algorithm.
-        Also, if it is too long the student can choose to kill the job. The
-        student, through a simple web interface, can put in practice its course
-        and see the result quickly via logs.\\
+        \subsubsection{First Scenario}
 
-      	\textbf{Second scenario : } a professor wants to test a new approach to
-        solve the problem of leader election between multiples nodes. A cluster
-        of Raspberry is set up with Splay to make the experiment. The new
-        approach is described in a paper with some pseudo-code and some difficult
-        cases when the network topology is quite exotic. Then the professor need
-        to rewrite the pseudo code in a actual one, and create a simulation for
-        each different network topology to point the strength of this new
-        approach. Unfortunately, He is very busy, and his/her time is very
-        precious. It is the case where Splay can be the solution, it manages
-        network topology transparently and give a topology creator in a web page.
-        Also the library of Splay in the Lua side allow to quickly reproduce the
-        pseudo-code.
+          As a student, I'd like to be able to put in practice what I learned
+          during my courses about distributed systems and applications.\\
+          Hopefully, my university provides an existing installation of Splay
+          available through the university network.\\
+          I can access this service on the web through a web application. After
+          registration and login, I have access to a complete Lua Editor that
+          allows me to create my own distributed algorithm.\\
+          I can also choose parameters such as the number of daemons on
+          which run my algorithms, a topology editor to emulate network
+          conditions, etc...\\
+          Once I submitted my job, I can get logs about how my algorithm
+          performed in the system. I can also choose to kill my job in case
+          I did something wrong and the job is not finishing at all.
+
+        \subsubsection{Second Scenario}
+
+          As a professor, I would like to be able to experiment with a new
+          approach of solving the leader election problem among a set of
+          nodes.\\
+          I can use the Splay system which is linked with a cluster of
+          Raspberry Pi's.\\
+          The new approach described in a paper with some pseudo-code and some difficult
+          cases when the network topology is quite exotic
+          The new leader election approach is described in a paper with some
+          pseudo-code and has special cases of execution when the topology is
+          a bit exotic.\\
+          Thanks to Splay, I can rewrite the pseudo-code in actual Lua code
+          in a dedicated editor, and create special cases of topologies
+          thanks to a topology editor, and get all the informations about
+          the algorithm execution thanks to the Splay logging system.
 
         % \textbf{Third scenario : } A employee from a big cloud company want to test the robustness of their new Top Secret distributed algorithm. TODO
 
