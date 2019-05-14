@@ -332,28 +332,30 @@
 
         % as a employee from a cloud company who want test the robusness of their new Top Secret algorithm.
 
-      \subsection{Details of the new features}  %TODO: Review - Rewrite
+      \subsection{Details of the new features}
 
-        \subsubsection{Complete Lua editor on the website}  %TODO: Review - Rewrite
+        \subsubsection{Complete Lua editor on the website}
 
-        Splay in its first version had a web application with some basic
-        features :
+          The first web application of Splay already allowed the user to send
+          his own Lua code to create the job but the system was not really
+          user-friendly.\\
 
-        \begin{itemize}
-          \item User registration and connexion
-          \item Job listing and creation
-          \item Logs retrieval
-        \end{itemize}
+          As we were going to rebuild the web application and modernize it,
+          we wanted to provide the user with a conveniant way to prepare
+          the job he wanted to send into the Splay system. For that purpose,
+          we wanted to integrate an algorithm editor with the following
+          characteristics :
 
+          \begin{itemize}
+            \item Standalone editor
+            \item Code coloration for the Lua language
+            \item Error parsing
+            \item Optionnaly some auto-completion features
+          \end{itemize}
 
-        This web application as explained before was very trivial with
-        almost no CSS and poor in term of content. Then, we wanted to refactor
-        completely and modernize the old web application. And, also in this
-        purpose, the user could use a integrated Lua editor directly on the
-        website. This editor should be standalone, with coloration for Lua
-        language, error parsing and maybe some small auto-completion. This one
-        need to be integrated into the form of the job creation.
-
+          Having this feature available within the job creation page, the user
+          could easily and comfortably achieve his tasks on the system.
+          
         \subsubsection{Topology creator/visualisation}
 
           The legacy project managed a definition of a network topology when
@@ -402,7 +404,7 @@
             \item A way to convert the visual topology in XML, and conversely
           \end{itemize}
 
-        \subsubsection{Fault Injection} %TODO: Review - Rewrite
+        \subsubsection{Fault Injection}
 
           The creation of distributed algorithm is a difficult task, and
           moreover, it is hard to make real code which is reliable. Robustness
