@@ -355,7 +355,7 @@
 
           Having this feature available within the job creation page, the user
           could easily and comfortably achieve his tasks on the system.
-          
+
         \subsubsection{Topology creator/visualisation}
 
           The legacy project managed a definition of a network topology when
@@ -880,6 +880,96 @@
         need for new endpoints on the backend to provide user with more
         actions in order to interact the system.\\
 
+        \subsubsection{Models}
+
+          The first phase of this centralized backend development was to
+          put it in charge of the database and the way the data was handled.\\
+
+          For this purpose, we progressively created database migrations
+          for each model of the Splay system (jobs, daemons, users, etc...)
+          with the right constraints on their fields.\\
+          We reflected these constraints inside the generated Rails models to
+          ensure that no corrupted data could be registered into the system,
+          having a double check through the application and through the
+          database schema.\\
+          For each model created, we also wrote model tests to ensure those
+          constraints were respected when creating a new model and trying
+          to save it into the database.
+
+        \subsubsection{User Registration}
+
+          To achieve the registration of users, we simply used the
+          well-known Devise \cite{devise} gem (gems are how ruby libraries are
+          called) which provide out-of-the box an efficient and flexible
+          authentication solution for Rails application.\\
+          As we were to allow the authentication through a future JSON API,
+          the most relevant part in using Devise was to make use of all
+          the user registration process given by the gem, using good principles
+          in terms of password hashing with salt to store them. We didn't
+          have to reinvent the wheel about user registration.\\
+
+          Moreover, for any further development or evolution of the application,
+          we know that Devise also provides user management modules such as
+          Omniauth support, account tracking, registration confirmation
+          through emails, and many other listed on the gem webpage.\\
+
+          Devise was therefore the best choice for our registration management,
+          even for an API only Rails application.
+
+        \subsubsection{User Authentication}
+
+          As we mentioned it before, one of the best way to handle user
+          authentication in JSON API applications is by using the JSON Web
+          Tokens (JWT), following the industry standard from RFC7519.\\
+
+          Upon successful registration or login on the Rails application, a
+          JWT is returned to the calling application to provide it with a way
+          to authenticate further request. This JWT holds encrypted
+          information (with a secret key) such as the user id to allow the Rails
+          app to identify to whom belongs the request. The fact that the token
+          is generated in the backend with a secret key also means that the
+          token cannot be altered or forged by a malicious application.\\
+
+          To make this works, we had to begin the work on the API endpoints.
+          Before starting to work on those endpoints, we agree that we would
+          follow the principles of REST \cite{rest} for the API. Endpoints would
+          represent entities with classic HTTP verbs to interact with them.\\
+
+          Each endpoint inside our system is managed by the following stack :
+
+          \begin{itemize}
+            \item A route entry representing the entity. In this case,
+            authentication is linked to the session entity and achieve through
+            a POST method, as we want to create a new session.
+            \item A controller method corresponding to the endpoint action.
+            Here then, a Session controller exists, with a create method in
+            which the password checking happens and a response is returned
+            accordingly.
+          \end{itemize}
+
+          As we were in the objective of following good practices, we wanted
+          to follow the \textit{"Fat models, skinny controllers"} principle.
+          But instead of bloating our models with the needed inner logic for
+          authentication, we created intermediate layers called services
+          in Rails. Those services hold the needed logic to keep the controllers
+          nice and clean. In the case of authentication the controller receives
+          the request from the router, filled with user data, then delegates
+          the task of password verification, token generation if succeeded,
+          and just return the result in the response.\\
+
+          The same process was also applied to manage registration through
+          the API, as it needed the JWT layer to be in a working state.\\
+
+          Finally we also wrote tests simulating request making use of our
+          API, which we'll explain in more details in a dedicated chapter.
+          Nevertheless, each test is testing the different behaviour of
+          the endpoints, like registering with a bad email, logging in with
+          a non-existant user, etc...
+
+        \subsubsection{Splay Endpoints}
+
+
+
 
       \subsection{A new front-end application} %TODO: Review - Rewrite
 
@@ -966,8 +1056,8 @@
         \subsubsection{Adding the automatic wrapping of topology}
 
         \subsubsection{Topology socket}
-        
-        Client problem : 
+
+        Client problem :
 
       \subsection{Timeline Animation of a graph evolution}
 
@@ -1241,6 +1331,9 @@
     \section{}
 
   \chapter{Improvements}
+
+    \subsection{Security}
+
 
 
   \nocite{*}
