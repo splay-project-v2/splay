@@ -34,11 +34,11 @@ function submit () {
     local TOPO=$2
     if [ ! -z "$TOPO" ]; then
         step "Submit a job ${JOB} with ${TOPO}"
-        JOB_RES=$(docker-compose exec cli python cli.py submit-job -n "TEST" -s 2 ${JOB} -t ${TOPO})
+        JOB_RES=$(docker-compose exec cli python cli.py submit-job -n "${JOB}" -s 2 ${JOB} -t ${TOPO})
         check "Fail to submit the job" "\n" "${JOB_RES[@]}"
     else 
         step "Submit a job ${JOB} with ${TOPO}"
-        JOB_RES=$(docker-compose exec cli python cli.py submit-job -n "TEST" -s 2 ${JOB})
+        JOB_RES=$(docker-compose exec cli python cli.py submit-job -n "${JOB}" -s 2 ${JOB})
         check "Fail to submit the job" "\n" "${JOB_RES[@]}"
     fi
 

@@ -43,11 +43,11 @@ if [ $(bc -l <<< "${RTT} > 1.2499") -eq 0 ]; then
 fi
 
 #--
-step "Test the speed of a topology"
+# step "Test the speed of a topology"
 
 #--
-JOB="app_test/simple_topo_speed.lua"
-TOPO="app_test/topo_2_speed.xml"
+# JOB="app_test/simple_topo_speed.lua"
+# TOPO="app_test/topo_2_speed.xml"
 
 #--
-submit $JOB $TOPO
+# submit $JOB $TOPO
