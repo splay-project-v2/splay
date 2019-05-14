@@ -354,7 +354,7 @@
         language, error parsing and maybe some small auto-completion. This one
         need to be integrated into the form of the job creation.
 
-        \subsubsection{Topology creator/visualisation} %TODO: Review - Rewrite
+        \subsubsection{Topology creator/visualisation}
 
           The legacy project managed a definition of a network topology when
           submitting a job. A user could define this topology by setting
@@ -404,27 +404,40 @@
 
         \subsubsection{Fault Injection} %TODO: Review - Rewrite
 
-        The creation of distributed algorithm is a difficult task, and
-        moreover, it is hard to make real code who is reliable. Robustness
-        and correctness of a distributed solution is the key point to test
-        for a designed solution, and manually injection of fault is painful
-        and can take some time. \\
+          The creation of distributed algorithm is a difficult task, and
+          moreover, it is hard to make real code which is reliable. Robustness
+          and correctness of a distributed solution is the key point to test
+          for a designed solution, and manually injecting of fault is painful
+          and can take some time. \\
 
-        With the legacy project and the dockerization, it was possible to
-        crash a single daemon during the execution of a job. But the main
-        problem of this solution, we can't control where the crash is done
-        (in the execution tree). We wanted to improve this precision by adding
-        a feature where the user is able to choose when a daemon (or several)
-        crash during the execution of code. It need to convert the two main
-        different, the hard crash (the nodes is destroyed) or a recovery crash
-        (nodes crash but it is relaunch after some time). \\
+          With the legacy project and the dockerization, it was obviously
+          possible to crash a single daemon during the execution of a job, just
+          by killing the running container of that daemon.\\
+          However, the main problem of this trivial solution is that we cannot
+          control where the crash may happen during the code execution.
+          We wanted to improve this by providing the user with a feature
+          allowing him to choose when one or multiple daemon would crash during
+          the execution. We came up with two ideas :
 
-        To resume, the fault injection will allow (user) to choose when (in
-        the execution tree) and where (one or several nodes) the crash is done
-        in the daemon, specified the type of crash and act depending. This
-        possibility for the user need to be user friendly and quick to make.
+          \begin{itemize}
+            \item A hard crash in which the node is completely put down
+            \item A recovery crash in which the node is relaunched after some
+            down time
+          \end{itemize}
 
-        % This for reason - 2 types of crash possible - can touch one or more than one in the same time - crash in middle 2 instruction.
+          To sum up, the fault injection will allow (user) to choose when (in
+          the execution tree) and where (one or several nodes) the crash is done
+          in the daemon, specified the type of crash and act depending. This
+          possibility for the user need to be user friendly and quick to make.
+
+          To sum up, our fault injection tool would allow the user to choose
+          when (in the execution tree) and where (one or several nodes) the
+          crash happens in the daemon, in an user friendly way. The best and
+          most straigthforward way to achieve this would have been to let
+          the user specify those crashpoints in the Lua code within the Lua
+          editor.
+
+          % This for reason - 2 types of crash possible - can touch one or more than one in the same time - crash in middle 2 instruction.
 
   \chapter{Architecture}
 
