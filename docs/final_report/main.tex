@@ -101,108 +101,108 @@
 
       \subsection{A first update}
 
-        Nous avons eu la chance d'obtenir auprès de l'UCL un travail étudiant
-        en lien direct avec ce mémoire. Il s'agissait, à l'issue de dix jours
-        de travail, de mettre à jour la version des technologies utilisées par
-        Splay et par la même occasion acquérir une connaissance plus complète
-        du fonctionnement du projet.\\
+        We had the opportunity to get a part-time job at the UCLouvain for
+        a work directly linked on this thesis. The objective was, at the end
+        of ten days of work, to update the versions of the technologies used
+        in Splay and in the mean time get the opportunity to acquire and
+        deepen our knowledge about how the project was working.\\
 
-        Lors du début du travail, les derniers updates sur le projet dataient
-        de 2016, et un certain nombres de features et améliorations avaient
-        été développés jusque là. Cependant le projet n'était pas dans un
-        état stable et donc Raziel Carvajal Gomez (notre superviseur pour ce
-        travail contributeur de Splay) a préféré nous faire faire un fork
-        du projet sur un commit remontant en Septembre 2011.\\
-        Nous avions donc le bénéfice de repartir sur des bases saines et
-        un projet fonctionnel, mais avec une grande perte en ce qui concerne
-        le travail qui avait été accompli sur les cinq années qui séparent
-        2011 de 2016.\\
-        C'est là que nous avons relevé le premier problème
-        et élément que nous voulions absolument changer et intégrer dans notre
-        reprise de Splay: le projet avait été transferé depuis son ancien
-        système de versionning sur Git et uploadé sur Github en Juin 2011 mais
-        n'avait pas profité du système de tag de versions offert par Git pour
-        référencer dans l'histoire du projet des releases fonctionnelles
-        et stables, c'est donc quelque chose que nous mettrions en oeuvre
-        par la suite.\\
+        At the beginning of this job, the last updates on the project were
+        from 2016, and a number of features and enhancements were developed
+        so far. However the last version of the project wasn't in a stable
+        state and thus Raziel Carvajal Gomez (our supervisor during this
+        part-time job, and also a contributer of the project) took the decision
+        to create a branch from a commit dating from September 2011 to let us
+        start from a stable state.\\
+        We therefore had the benefit of starting with a stable and working
+        base, but that caused a great loss concerning the work that had been
+        achieved during the five years between 2011 and 2016.\\
+        That is the moment when we spotted the first issue and thing we
+        absolutely wanted to change and integrate on the project before
+        starting the development phase: the project had been transfered from
+        its old versioning system on Git and had been uploaded on Github in
+        June 2011. But since that period, the version tagging system offered
+        by Git hadn't been used to mark working and stable releases over time,
+        therefore that was something we would achieve thereafter.\\
 
-        Partant de là, nous avons pu nous familiariser progressivement avec
-        le fonctionnement du projet et son architecture software, appréhender
-        les différents services qui le composaient et comprendre leurs
-        interactions. Une fois cette connaissance acquise, nous avons pu
-        commencer à upgrader les différentes versions des technologies
-        utilisées en commencant par le Ruby et le Lua, les deux plus importantes
-        et plus présentes technologies du projet.\\
-        Avec des versions datant de 2011 maximum, et étant donné que nous voulions
-        transiter sur les versions les plus récentes disponibles, nous savions
-        pertinamment qu'au moment où nous changerions les versions, le projet
-        deviendrait totalement instables et que de nombreux appels de méthodes
-        ou fonctions dépréciées seraient à changer avant de récupérer un état
-        stable. Mais là aussi nous avons relevé un second problème et élément
-        primordial à intégrer pour les futures améliorations, le projet
-        manquait cruellement de tests, à quelque niveau que ce soit.\\
+        Starting from that point, we were able to progressively become more
+        familiar with the way the project was working and its software
+        architecture, identify and understand the different services that
+        were composing it and also understand how they interacted among
+        each other. Once this knowledge acquired, we were able to begin the
+        upgrade of the different technology versions used beginning with the
+        Ruby and the Lua, the two most widely present technologies in Splay.\\
+        With software versions from at most 2011, and because we wanted
+        to upgrade thoses to the most recent available versions of those
+        technologies, we were well aware that at the moment we would apply the
+        versions changes, the whole project would become totally unstable
+        because of numerous function calls that would be now deprecated,
+        modified or even not available anymore and we would have to spend a lot
+        of time changing those before getting the project to be stable again.
+        There again we thought that we could avoid this situation in the future
+        and we really had to change something in the future phases: the project
+        was cruelly lacking of tests, at any level of the application.\\
 
-        La conséquence de ceci était que nous devions réparer pas à pas le
-        projet suite au changement des versions des langages et frameworks en
-        devant nous baser sur notre compréhension globale du projet acquise
-        précédemment et sur des resultats finaux attendus lors de l'exécution
-        de divers scénarios utilisant le projet. Il nous était impossible d'être
-        certains que nos changements n'affectaient pas le fonctionnement interne
-        du projet de manière négative mais imperceptible, conséquences qui
-        étaient en fait inévitables mais que nous ne découvririons que par
-        la suite lors de l'implémentation de nouvelles features.\\
-        Il était dès lors évident pour nous que nous mettrions en place des
-        séries de tests à plusieurs niveaux lors des prochaines phases du
-        projet, afin de rendre celui-ci bien plus maintenable que dans l'état
-        où nous l'avons repris et de pouvoir garantir de futures améliorations
-        plus aisées.\\
 
-        Nous sommes donc parvenus à progressivement remettre en état (partiellement avec la feature principal) de
-        fonctionnement tous les éléments composant Splay avec les nouvelles
-        versions, en mettant également à jour les librairies utilisées par
-        les différents langages. Les changements principaux en termes de
-        version de technologies sont les suivants :
+        The major consequence of this fact was that we had to make repairs
+        step by step because of the languages and frameworks version changes,
+        and we had to base ourselves on a certain global understanding of how
+        the project was working and some final execution results of scenarios
+        to estimate that the project was functional again. It was totally
+        impossible to be sure that our changes weren't impacting some internal
+        behaviour of the project in a negative but imperceptible way,
+        consequences that were not avoidable in the end but that we would
+        only discover thereafter when implementing new features.\\
+        It was therefore obvious for us that we would setup series of tests
+        at different levels of the application during the next phases of our
+        work, in order to make the project way more maintainable than in the
+        state we received it and to ensure that further enhancement would
+        be way more easier.\\
+
+
+        We then succeded to progressively put back in a working state
+        (partially, as we based this criterion on the main feature) all the
+        elements composing Splay with newer versions, and also updating the
+        libraries used by all the different languages. The main changes
+        speaking of technology versions were the following :
 
         \begin{itemize}
           \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
           \item \textbf{Lua}: 5.1 $\rightarrow$ 5.3
           \item \textbf{Rails}: 2.1.0 $\rightarrow$ 5.2.0
-          % Eux, ça s'était après :
-          % \item \textbf{MySQL}: 5.5 $\rightarrow$ 5.7
         \end{itemize}
 
-        Nous avions à l'issue de ces dix jours de travail une base saine et
-        mise à jour prête à être utilisée pour le travail concret de notre
-        mémoire.\\
+        At the end of these ten days of work, we had a healthy and updated
+        base to work with and ready to receive the real work of our thesis.\\
 
-        En plus de ceci, une autre partie du travail a consisté, une fois les
-        updates réalisés, à mettre à jour la documentation du projet et y
-        décrire le fonctionnement des différents services ainsi que de prendre
-        du temps afin de réfléchir à des améliorations au niveau de
-        l'architecture du système et de son fonctionnement et avons émis
-        les réflexions suivantes :
+        Besides this, another part of this part-time job was, once the updates
+        achieved, to update the project's documentation and to describe in
+        it how the different services were working and also to take some
+        reflexion time in order to emit thoughts about how we could make
+        enhancement on the system architecture and how it was operating. These
+        were our conclusions :
 
         \begin{itemize}
-          \item L'organisation du code n'était vraiment pas idéale et devrait
-          être changée. Le code des six différents services se trouvait dans
-          un seul même repository, ce qui rendait compliqués la navigation dans
-          l'arborescence du projet pendant le développement, le suivi des
-          commits et donc de l'évolution de ces différents services.
-          \item Le fait d'utiliser une database comme point de communication
-          entre le côté user et le \textbf{Controller} n'était peut-être
-          pas aujourd'hui la meilleure manière de procéder.
-          \item L'utilisation de Ruby comme langage pour le \textbf{Controller}
-          et de LUA pour les \textbf{Daemons} n'était peut-être plus
-          aujourd'hui un choix pertinant et des alternatives possibles
-          pour des applications multi-processus et concurrentielles telles
-          que Elixir demandaient analyse. Un différent choix de technologie
-          aurait aussi pu par la même occasion solutionner notre interrogation
-          précédente sur la base de données.
+          \item The code organization was not really good and should be changed.
+          The code of the six different services was located in the same and
+          unique repository, this had the consequence of making way harder
+          the navigation in the project's tree during the development, the
+          clarity of the commits in the Git log and therefore the evolution
+          of these different services.
+          \item The fact of using a database as a communication point between
+          the user part and the \textbf{Controller} was maybe not the best
+          way of proceeding today.
+          \item The usage of Ruby as language for the \textbf{Controller} and
+          Lua for the \textbf{Daemons} was maybe not the most relevant choice
+          today, and technology alternatives designed for multi-processes and
+          concurrent applications such as Elixir should be reviewed. A different
+          technology choice might also in the mean time solve our previous
+          thought abot the database.
         \end{itemize}
 
-        Ces réflexions ont été ensuite discutée avec Etienne Rivière, afin de
-        dresser ensuite le ligne directrice et les objectifs concrets à atteindre
-        pour la suite du projet et entammer la version 2 de Splay.
+        Those thoughts were thereafter discussed with Etienne Riviere, in order
+        to draw up the next objectives we should pursue for the continuation
+        of our work and to begin the version 2 of the Splay project.
 
   \chapter{Splay Version 2} %TODO: Review - Rewrite
 
@@ -351,7 +351,7 @@
         reason, we decided to add a visualization and creation tool of the
         network graph. Then, it will be possible to create easily a visual
         topology with all type of setting and it will be transform
-        automatically in the correct format of XML. But, the opposite will be
+        automatically in the correct format of XML. But`, the opposite will be
         possible, it means from a XML, see the topology into a graph
         representation.
 
@@ -402,58 +402,60 @@
           Splay through communication with the MySQL Database.
         \end{itemize}
 
-        % Figure of the old architecture, TODO : remake with technologies used
         \begin{figure}[H]
           \centering
           \includegraphics[scale=0.6]{figures/prev_arch.png}
           \caption{\label{prev_arch} Previous Splay Architecture}
         \end{figure}
 
-        Que cela soit à travers l'utilisation du CLI ou de l'application SplayWeb,
-        un utilisateur pouvait intéragir avec Splay et y envoyer ses jobs, récupérer
-        des informations telles que les logs ou l'état des Splayds.\\
+        Whether through the usage of the CLI application or the web application,
+        the user was able to interact with the Splay system and to send his
+        jobs, and gather many informations such as the logs or the current
+        state of the running Splayds (the Splay daemons).
 
-        Le fait que la base de données soit l'élément central de communication entre
-        le contrôleur et les applications utilisteurs était un choix de design
-        que nous avons choisi de respecter. En effet, le \textbf{Controller} est
-        l'élément central du projet Splay, vouloir apporter un changement dans ce choix
-        de design et opter pour un remplacement de la façon de communication aurait
-        impliqué plus que certainement une réécriture quasi totale du contrôleur.\\
+        The fact that the database was the central piece of communication
+        between the controller and the user applications was a design choice
+        that we decided to respect and to keep working that way. Indeed, the
+        \textbf{Controller} is the central piece within the Splay project,
+        trying to push changes in that design choice and try to implement a
+        different way of communication than the database would have, more
+        than probably, implied a total rewrite of the controller.\\
 
-        Cela dit, nous n'étions pas satisfaits par les possibilités d'interactions
-        offertes à l'utilisateur. En effet, l'application Ruby on Rails était assez
-        vieille, et la paire client/server du command-line-interface possédait une
-        codebase difficile à maintenir et trop imposante pour les features qu'elle
-        devait proposer.\\
+        That being said, we weren't totally satisfied about the interaction
+        possibilities offered to the user. Indeed, the Ruby on Rails application
+        was quite old, and the client/server pair of the command line interface
+        stack had a hard to maintain and to huge codebase compared to the
+        features that it had to offer.\\
 
-        Nous avons donc choisi d'opérer des changements majeurs sur cette partie
-        du projet Splay, afin d'en plus d'opérer les changements et ajouts de features,
-        proposer une bonne expérience utilisateur.
+        We thus chose to operate major changes on this part of the Splay
+        project, in order to combine the arrival of our new features and
+        changes onto the core of Splay with a better user experience.
 
       \subsection{Renewed Architecture}
 
-        Le principal problème du côté de l'architecture des services utilisateurs
-        était la duplication de code, ou du moins une duplications des solutions
-        apportées pour un seul et même problème. L'application web Rails et le
-        serveur CLI avaient en commun la manipulation de la base de données pour
-        transmettre et récupérer les informations au \textbf{Controller} pour
-        le compte de l'utilisateur.\\
+        The main issue on the architecture of the user services was a code
+        duplication issue, or at least a duplication related to the solutions
+        created to resolve a common problem. The Rails web application and the
+        CLI server had the common role of letting the use manipulate the
+        database to transmit and gather informations to the \textbf{Controller}.\\
 
-        La première décision à prendre pour pallier à ce problème était de
-        fusionner ces deux services en un seul et de l'appeler selon sa responsabilité
-        au sein du système, le \textbf{backend} d'un point de vue client.\\
-        Ce backend aurait pour ambition de proposer une API sécurisée via
-        JsonWebToken et permettant ainsi la construction de services autour de
-        ce backend, en l'occurence une application web et un client en ligne
-        de commande.\\
+        The first decision to make in order to solve this problem was to
+        merge those two services into a single one and to call that new
+        service according his role among the system: the \textbf{backend},
+        according to the viewpoint of the client.\\
+        This backend would have the ambition to offer a secured API through
+        the usage of JWT \cite{JWT} and therefore allowing the development
+        of services around that backend, in our case a web application and
+        a command line interface application.\\
 
-        L'application web utiliserait donc une technologie JavaScript récente
-        permettant des interactions dynamiques avec l'utilisateur, et le CLI
-        une technologie simple et adaptée, les deux consommant l'API fournie
-        par le backend. Ce backend resterait quant à lui dans l'écosystème Ruby,
-        pour garder une consistance avec le projet tel qu'il était.\\
+        The web application would thus use a recent JavaScript technology
+        allowing dynamic interactions with the user, and the CLI would use
+        a simple and dedicated technology, those two services consuming the
+        same API offered by the backend. The backend, for its part, would
+        stay in the Ruby ecosystem, in order to keep a technology concistency
+        with the global project and the technologies already in use.\\
 
-        On obtiendrait donc l'architecture retravaillée suivante :
+        The resulting reworked architecture would therefore be the following :
 
         \begin{itemize}
           \item The \textbf{Controller} : The core part of Splay, waits for jobs
@@ -479,224 +481,230 @@
 
   \chapter{Development Methodology}
 
-    Avant de parler des détails d'implémentation, il est utile de décrire la
-    façon dont nous nous sommes organisés afin de développer l'application, le
-    fait d'être deux à faire ce travail nécessitait forcément une façon de
-    s'organiser un peu plus sérieuse qu'un développement seul.\\
+    Before speaking about the implementation details, it may be useful to
+    describe the way we organized ourselves in order to develop the application.
+    The fact of being two student on this development project necessarily
+    implied a way of organizing ourselves a bit more serious than a
+    development project alone.\\
 
-    Grâce à des cours suivis pendant notre cursus au sujet de méthodologies
-    AGILES, et ayant tous deux eu l'occasion d'acquérir de l'expérience de manière
-    professionnelle au travers de stages et de part-times jobs, nous avons
-    voulu mettre à l'oeuvre ces connaissances et bonnes pratiques acquises dans
-    le domaine de la gestion de projet.
+    Thanks to the courses about AGILE methodologies we followed during our
+    scholarship, and the both of us having had the occasion of acquiring
+    experience in a professional way through internships and part-time jobs,
+    we wanted to put to work this knowledge and good practices acquired in
+    the project management domain.\\
 
       \section{Kanban}
+
+        The first tool we put in place, and this from the very beginning of
+        the update period of Splay about which we talked in the previous
+        sections, was a Kanban using the online website Trello \cite{trello}.
+        The kanban allowed us to : \\
 
         Le premier outil que nous avons mis en place, et ce dès notre période
         d'update de Splay dont nous avons parlé plus tôt, a été un Kanban en
         utilisant le site en ligne Trello. Le kanban nous a permis de : \\
 
         \begin{itemize}
-          \item Avoir une vue claire et précise sur les tâches à accomplir restantes
-          dans le backlog, ainsi que de l'état de développement des autres tâches.
-          \item Nous pousser à traduire les features à réaliser en cartes
-          suffisamment détaillées et explicites, pouvant aboutir à des clarifications
-          ou refontes de certaines features avant le début de leur développement.
-          \item Avoir un moyen de tracking de l'avancement du projet et fournir aux
-           personnes impliquées dans le projet Splay un moyen simple et efficace
-           de se tenir informer sur l'état de Splay.
-          \item Se concentrer sur des tâches spécifiques et travailler de manière
-          itérative et efficace.
+          \item Have a clear and precise view about the remaining tasks we had
+          to achieve in the backlog, and also about the development state of
+          all the other tasks.
+          \item Encourage and even oblige ourselves to translate the features
+          we had to implement into sufficiently detailed and explicit cards on
+          the kanban. This process has the benefit of refining or making
+          features the most explicit possible before starting the development.
+          \item Have a way of tracking the project's progression and offering
+          to all the people related to the project a simple and effective way
+          to keep themselves informed about Splay's state.
+          \item To focus ourselves on specific tasks and to work in an
+          iterative and efficient way.
         \end{itemize}
 
       \section{Quality Assurance}
 
-        Ceci sera explicité plus en détail dans un chapitre suivant, mais nous
-        avons voulu nous assurer de maintenir un certain degré de qualité dans
-        notre travail sur Splay et plus spécifiquement au niveau du code, afin
-        aussi d'assurer la maintenabilité du projet. Nous nous sommes donc
-        fixés ce but à travers la mise en place des éléments suivants : \\
+        This will be explained more explicitly in the next chapter, but we
+        wanted to be sure that we would be able to keep a certain degree of
+        quality in our work on Splay and more specifically at the code level,
+        in order to ensure the overall maintainability of the project. We
+        therefore set this goal through the setup of the following elements :\\
 
         \begin{itemize}
-          \item \textbf{Testing suites} : Ensembles de tests unitaires et
-          d'intégration, intra-service et inter-services.
-          \item \textbf{Linter} : Analyse statique du code afin de satisfaire à
-          des exigeances de style de code et de bonnes pratiques.
-          \item \textbf{Coverage Analyzers} : Analyse du pourcentage de couverture
-          du code par les suites de tests.
+          \item \textbf{Testing suites} : Set of unit tests and integration
+          tests, intra-services and inter-services.
+          \item \textbf{Linter} : Static analysis of the code in order to
+          satisfy to a set of rules about codestyle and good practices.
+          \item \textbf{Coverage Analyzers} : Analysis of the percentage of
+          the code coverage by the test suites.
         \end{itemize}
 
       \section{Github and Gitflow}
 
-        Le projet et les divers services qui le composent sont versionnés
-        en utilisant le système de versionning \textit{Git} et hostés
-        sur le service en ligne \textit{Github}.
-        Nous avons donc organisés notre travail sur le modèle du Gitflow.
-        Chaque feature ou tâche que nous avions créée sur le kanban était
-        destinée à recevoir sa propre branche, partant de la branche principale.
-        Une fois la feature terminée et testée, une pull request était créée
-        demandant la fusion de la branche de feature sur la branche principale.
-        Le bénéfice premier étant évidemment de garder la branche principale
-        dans un état fonctionnel avec des features implémentées terminées et
-        saines.\\
+        The project and all the services composing it are versioned using the
+        \textit{Git} versioning system and are hosted on the online service
+        \textit{Github}.\\
+        We therefore organized our work on the Gitflow model. Each feature or
+        tasks we created on the kanban was meant to receive its very own
+        branch, starting from the main branch.
+        Once the feature finished and tested, a pull request was made asking
+        to merge the feature branch with the main branch.
+        The first benefit of this was obviously to keep the main branch in
+        a working state with healthy and finished features.\\
 
-        Le deuxième atout de cette méthode de travail au sein de notre groupe
-        était de pouvoir, encore dans un but d'assurer la qualité, aisément
-        organiser du reviewing de code entre nous. Chaque fois qu'un de nous
-        finissait une tâche et effectuait une pull request, l'autre était
-        assigné en tant que reviewer et chargé d'accepter la pull request
-        et d'effectuer le merge, ou détecter des erreurs à l'issue de cette
-        review et de demander les changements adéquats au premier.\\
-        Outre le bénéfice premier de la review dans la réduction du nombre
-        de bugs ou d'erreurs, cela permettait aussi à chacun d'entre nous
-        de rester au courant de tous les changements au sein des différents
-        services, puisque nous ne pouvions pas décemment travailler ensemble
-        sur chaque service individuellement étant donné leur nombre et les
-        features inter-dépendantes à développer.
-
+        The second benefit of this way of working on the project was to
+        permit, once again towards the goal of ensuring quality, code reviewing.
+        Each time one of us was done with the development of a task and was
+        issuing a pull request, the other was assigned as code reviewer and
+        was in charge of making this code review, accepting the pull request and
+        doing the merge, or to detect errors or bugs as the outcome of the
+        code review and therefore to ask for changes to the pull request issuer. \\
+        Besides the main code review's benefit of reducing the number of errors
+        or bugs, this process also allowed each of us to keep itself aware and
+        keep itself up to date with all the different changes happening on the
+        different services. Indeed, it was impossible for us to work together
+        in the mean time on each single service, because of the number of
+        services and inter-dependant features we had to develop.
 
   \chapter{Implementation}
 
     \begin{itemize}
-      \item Détails sur les choix d'implémentation
-      \item Story-telling sur le développement en lui-même
-      \item Détails de l'implementation, comment Splay fonctionne aujourd'hui
+      \item Implementation choices details
+      \item Story-telling about the development phase itself
+      \item Details about the implementation, about how Splay is working today.
     \end{itemize}
 
     \section{Technology choices}
 
       \subsection{VueJS - Web App}
 
-        Puisque nous avions décidé que l'application web utilisateur se
-        destinait à être uniquement une application front-end tirant
-        parti d'un backend centralisé fournissant une JsonAPI complète, nous
-        voulions utiliser un framework web front-end qui satisferait aux
-        conditions suivantes : \\
+        As we made the decision that the web application would only be a
+        front-end application making use of a centralized backend offering
+        a complete JSON API, we canted to use a front-end web development
+        framework that would satisfy the following conditions : \\
 
         \begin{itemize}
-          \item Léger
-          \item Facilité de développement et de maintenance
-          \item Accès à de nombreuses librairies tierces
-          \item Assez populaire pour qu'il évolue encore pour un future developement
+          \item Light
+          \item Ease of development and maintenance
+          \item Access to numerous third-party libraries
+          \item Popular enough to be ensure support over time
         \end{itemize}
 
-        Pour une application front-end, l'écosystème JavaScript était
-        évidemment évident, et nos avis se sont de fait tournés vers
-        les options ReactJS, Angular et VueJS, tous étant des framework
-        populaires et reconnus pour leurs qualités.\\
-        Nous avons vite évincé Angular car nous préférions l'orientation
-        composant des deux autres frameworks, moins lourds et évitant
-        ainsi de devoir composer avec une couche style MVC des apps Angular.
-        Bien qu'ayant eu tous deux une expérience préalable avec le React
-        durant nos cours de Cloud Computing au sein de l'UCL, nous avons
-        décidé d'opter pour Vue au lieu de React.\\
+        In order to develop a front-end application, the JavaScript ecosystem
+        was an obvious choice, and we made a pre-selection among the most
+        popular web framework on the market and recognized for their qualities:
+        ReactJS, Angular and VueJS.\\
+        We rapidly removed Angular from our list because we preferred the
+        component-based UI development offered by the two other frameworks,
+        which were lighter and avoiding to have to develop in the MVC style.
+        Even if we both had a previous experience with React thanks to a
+        Cloud Computing course at the UCLouvain, we decided to go for VueJS
+        instead of React.\\
 
-        Le premier gros avantage de Vue étant sa légereté, nous avons
-        aussi pris en compte le fait que la technologie gagnait en popularité
-        depuis un certain nombres d'années pour être aujourd'hui un poids fort
-        dans les technologies web. De plus, ayant pris le temps de d'essayer
-        le développement d'une petite application test pour nous décider, nous
-        avons été grandement satisfaits par la simplicité de développement que
-        le framework Vue offre aux développeurs et nous permet d'être
-        totalement confiant dans le fait qu'opter pour cette technologie
-        permettra à tout contributeur de Splay de très vite pouvoir s'y
-        retrouver et participer au développement.\\
-        En effet, l'application se découpe sous forme de composants individuels
-        possédant chacun leur template HTML, leur styles CSS et le script
-        JavaScript associé. Aucun autre langage exotique n'est requis.\\
-        Le fait que le framework se trouve dans l'ecosystème JavaScript et
-        associé à NPM permet aussi de tirer profit de nombreuses librairies
-        existantes, que ce soit au niveau du testing, de librairies de
-        visualisation de données, etc...\\
+        The first major advantage of Vue is how light it is, we also took into
+        account the fact that this technology was gaining in popularity for
+        multiple years now to be today a huge player in the world of the web
+        technologies. Moreover, as we took some time to develop a proof
+        of concept application using Vue, we were totally satisfied with the
+        simplicity of development that that framework was offering to the
+        developers and allowed us to be totally confident into the fact
+        that going for this technology would allow any further contributer
+        of the Splay project to easily get in and participate to the
+        development.\\
+        Indeed, a Vue application is organized around single components, each
+        having their own HTML template, their CSS style declarations and
+        the associated JavaScript code. No other exotic language is required.\\
+        The fac tthat the framework is in the JavaScript ecosystem and
+        associated to the NPM package manager also allow to take advantage of
+        numerous existing libraries, such as data visualisation libraries,
+        testing libraries, etc... \\
 
-        Pour toutes ces raisons, Vue s'est révélé être le choix ideal pour
-        l'application web, et nous permettant en plus d'associer le bénéfice
-        d'un développement agréable sur de nouvelles technologies en plus
-        d'apporter une solution efficace aux requirements du service.
+        For all those reasons, Vue revealed itself the best choice for a
+        web application, and also allowing us to develop with a something
+        we liked and with recent technologies, besides providing an efficient
+        solution to the conditions we needed for the technology.
 
       \subsection{Python - CLI}
 
-        L'ancienne paire de service destinés au CLI était écrite en LUA d'une
-        part pour le côté client, et le serveur CLI en Ruby. Etant donné que
-        la logique du serveur allait être déplacée dans le \textbf{Backend},
-        et que nous voulions garder une application en ligne de commande
-        pour des tests rapides de toute l'infrastructure, nous avons eu besoin
-        de réévaluer la pertinence de l'utilisation du LUA pour cette application.\\
+        The old pair of services intented to compose the CLI service was
+        written in LUA on the client side, and the CLI server was in Ruby. As
+        the server's logic would be moved and merged into the \textbf{Backend}
+        service, and as we wanted to keep a command line interfact application
+        in order to run tests of the global project, we needed to reevaluate
+        the relevance of the LUA usage for this application.\\
 
-        Il est plus que probable que le LUA ait été utilisé à l'époque pour
-        des raisons de cohérence, et pour éviter de disperser Splay autour
-        de beaucoup trop de technologies différentes (bien que Ruby aurait
-        aussi pu être utilisé). Toujours est-il que ce choix n'était aujourd'hui
-        plus le plus pertinant pour une application de ce type, en effet notre
-        petite application CLI client devait être : \\
+        It is more than probable that LUA was used for coherence reasons back
+        in the days, and to avoid to scatter Splay around too much different
+        technologies (although Ruby may have been used too instead of LUA).
+        Still, maybe today this choice was not the most relevant for a CLI
+        application. Indeed, our small client CLI had to be :
 
         \begin{itemize}
           \item Simple
-          \item Très concise
-          \item Ecrite dans un langage facile d'utilisation
-          \item Disposer dans l'idéal de librairies permettant la création
-          de ce genre d'application
+          \item Concise
+          \item Written in an easy-to-use language
+          \item Having conveniant libraries allowing to create simple CLI apps
         \end{itemize}
 
-        Hors nous avions hérité d'une application décomposée sur de multiples
-        fichiers LUA, chacun représentant une commande. On avait donc
-        énormément de duplication de code au niveau de la façon de parser
-        les arguments et aussi dans la manière de contacter le serveur
-        via une librairie HTTP de LUA.\\
-        Ruby était évidemment une option valable si nous voulions restreindre
-        le nombre de technologies différentes utilisées, mais Python se prêtait
-        beaucoup plus à l'écriture d'un script simple tel que notre CLI, avec
-        à disposition des librairies éprouvées pour ce qui est des requêtes
-        HTTP et de la gestion de paramètres utilisateurs.
+        However, we inherited of an application scattered in multiples LUA
+        files, each file representing a CLI command. We therefore had a huge
+        source of code duplication, as each file was repeating the process
+        of parsing the user arguments when the program was called, and also
+        repeating the process of reaching the server through a HTTP library
+        in LUA.\\
+        Ruby was indeed a relevant option if we wanted to restrict the number
+        of different technologies in use among the project, but Python was
+        a better choice to write such a simple script as our CLI. Python has
+        a lot of very conveniant libraries to treat HTTP calls and to
+        manage and parse user arguments when creating a CLI application.
 
       \subsection{Ruby on Rails - Backend}
 
-        Le controller et l'ancienne paire de services destinés au CLI ayant été
-        développé en Ruby, et l'ancienne application web en Ruby on Rails, il
-        nous semblait évident de rester dans l'écosystème Ruby pour créer
-        le service qui deviendrait ce que nous avons appelé \textbf{Backend}.
-        La technologie que nous voulions utiliser pour développer le backend
-        devait proposer une solution efficace aux problèmes suivants : \\
+        The controller service and the old pair of services composing the CLI
+        having been developed with the Ruby language, and the old web
+        application having been developed with Ruby on Rails, it was obvious
+        for us to stay within the Ruby ecosystem to create the new service
+        that would become what we called the \textbf{Backend}. The technology
+        we wanted to use for this development had to offer an efficient
+        solution to the following issues :
 
         \begin{itemize}
-          \item Permettre un interfacage simple avec la base de données MySQL
-          pour assurer la communication avec le controlleur, et ainsi pouvoir
-          soumettre de nouveaux jobs, récupérer les infos sur les Daemons, etc...
-          \item Permettre de développer et exposer une JSON API permettant
-          aux services front-end (application web et CLI) de l'exploiter
-          pour interagir avec le système Splay.
-          \item Offrir un large choix au niveau de librairies de testing,
-          de serialization des données en JSON, et autres librairies permettant
-          de répondre aux problèmes susmentionnés.
+          \item Allowing a simple interfacing with the MySQL database in order
+          to ensure the communication with the controller, and therefore allow
+          the submission of new jobs, the gathering of information about the
+          Daemons, etc...
+          \item Allow to develop and expose a JSON API alloing other front
+          end services (web application and CLI) to make use of this API and
+          interact with the Splay system.
+          \item Offer a large choice of libraries for testing, data
+          serialization using JSON, and other libraries solving the problems
+          we talked about before.
         \end{itemize}
 
-        Ayant déjà tous deux une expérience assez conséquente en Ruby on Rails,
-        et pour les raisons de consistance d'écosystème exposée plus haut, nous
-        nous sommes immédiatement accordés pour utiliser cette technologie.
-        Le fait de rester dans le même ecosystème de langage nous assurait
-        aussi que les futurs contributeurs de l'application n'auraient pas
-        à devoir jongler avec plusieurs technologies et faciliterait donc
-        l'évolution future de Splay.\\
-        Il est aussi à noter que comme nous l'avons explicité dans la partie
-        concernant le renouvellement de l'architecture de Splay, la précédente
-        web application et le serveur CLI avaient un rôle similaire bien que
-        spécialisé pour différentes applications. Cependant la logique commune
-        deux deux services en Ruby était déjà présente, et il s'agissait donc
-        en partie de l'isoler et de l'améliorer.\\
+        The both of us already having a certain experience in using Ruby on
+        Rails, and for the reasons of ecosystem consistency we talked about
+        in the previous sections, we immediately agreed on using this
+        framework for the backend. The fact of staying in the same language
+        ecosystem would allow us to make sure that future contributers to
+        the application would not have to play with too many technologies and
+        therefore make the future evolution of Splay easier.\\
+        It should also be noticed that, as we exposed it when talking about the
+        changes in the renewed software architecture of Splay, the previous
+        web application and the CLI server had a similar role although being
+        specialized for different applications. However, the commom logic
+        of these two Ruby services was already present, and a part of the
+        work was therefore just the matter of isolating this common logic
+        and making it better.\\
 
-        Rails permet en effet très simplement de développer, outre des
-        applications web traditionnelles MVC, des applications destinées uniquement
-        à être des API faisant fi de toute la complexité nécessaire à la
-        présentation des vues pour l'utilisateur et donc légères et concises
-        en terme de codebase.\\
-        L'ORM ActiveRecord associé aux applications Rails était également un
-        atout majeur pour cette technologie, nous permettant de gérer
-        simplement et efficacement les jobs et daemons du système.\\
-        Enfin, des librairies telles que RSpec pour le testing (point sur
-        lequel nous reviendrons plus tard dans un chapitre dédié), Rubocop pour
-        le linter, ou encore la libraire fast\_jsonapi de Netflix pour la
-        serialization des données faisait vraiment de Rails la bonne technologie
-        à choisir pour le Backend.
+        Indeed Rails allow to easily develop, besides traditional MVC web
+        applications, API only applications that doesn't contain all the stuff
+        and complexity needed for presenting HTML views to the user and thus
+        having a lighter and more concise codebases.\\
+        The ActiveRecord \cite{activerecord} ORM shipped with the Rails
+        applications is also a major advantage for this technology, allowing us
+        to easily and efficiently manage the system's jobs and daemons.\\
+        Finally, the availability of some libraries such as RSpec made for the
+        testing (topic on which we'll talk more deeply in a dedicated chapter),
+        Rubocop for the linter, or even the Netflix's fast\_jsonapi library for
+        data serialization has definitely made Rails the right technology to
+        choose for the Backend.
 
     \section{Development}
 
@@ -809,7 +817,7 @@
         to start the development of the web application, which could unveil
         need for new endpoints on the backend to provide user with more
         actions in order to interact the system.\\
-        
+
 
       \subsection{A new front-end application} %TODO: Review - Rewrite
 
@@ -848,7 +856,7 @@
         backend and print with global information in a nice bootstrap table.
         Also, a second table, used for jobs (also via the backend service), is
         builded with general data. The user can choose to see more details on
-        one splay daemon or a job via a button. Also, he can choose to kill a 
+        one splay daemon or a job via a button. Also, he can choose to kill a
         job through a red button, the controller will do the rest. Moreover, The creation of job is done
         with a simple form and it is automatically checked with vee-validate
         package \cite{VeeValidate} (also checked in the backend service of
@@ -860,21 +868,21 @@
         download was missing at this point. \\
 
         % Lua editor
-        The backend was not ready for the log feature, then we worked on the Lua editor 
-        integration. The idea to build our-self entirely the editor was moved aside quickly, 
-        it will take too much time and it will be not evolutive. Then, we found a 
-        great package, named brace (a browserify version of Ace editor) \cite{Ace}. Ace 
-        can handle hundred type of programming language for the coloration, error handling and 
-        show line number. The integration of ace is the project was easy and light, Lua is 
-        colorize perfectly and a error is show when the syntax is wrong. But, there is not 
+        The backend was not ready for the log feature, then we worked on the Lua editor
+        integration. The idea to build our-self entirely the editor was moved aside quickly,
+        it will take too much time and it will be not evolutive. Then, we found a
+        great package, named brace (a browserify version of Ace editor) \cite{Ace}. Ace
+        can handle hundred type of programming language for the coloration, error handling and
+        show line number. The integration of ace is the project was easy and light, Lua is
+        colorize perfectly and a error is show when the syntax is wrong. But, there is not
         build-in auto-completion for Lua most likely because Lua is not very popular these days.
-        It is possible to add our own completer in the ace edito, but it is a long task 
+        It is possible to add our own completer in the ace edito, but it is a long task
         for few results, then we decided to move on. \\
 
-        % Log 
+        % Log
         When the log API on the backend was enable, we readd this feature to the website with some
         improvements. When the job running or endend, the user can see the log (with a button next to details)
-        of merge daemon log with time and daemon indication for each line of log. The user can choose to 
+        of merge daemon log with time and daemon indication for each line of log. The user can choose to
         download as a text file (as before), copy to the clipboard or only verify the log in
         the website checking for any error. \\
 
@@ -908,21 +916,22 @@
 
   \chapter{Testing and Validation}
 
-    Nous allons dans cette section aborder la façon dont nous avons voulu assurer
-    le testing et la validation de projet Splay, que ce soit au niveau du système
-    ou des fonctionnalités utilisateurs, en ciblant à chaque fois une des
-    composantes du projet.\\
+    In this chapter, we will talk more deeply about the way we wanted to ensure
+    the testing and the validation part in the Splay project, whether it be
+    at the global system level or at the user functionalities level, each
+    section will go through the different services and how we tested it, and
+    also how we tested the application globally.\\
 
-    Le fait est que le projet Splay dans l'état où nous l'avons repris disposait
-    de très peu de tests, ce qui ne nous a évidemment pas facilité la tâche puisque
-    nous avançions dans l'ombre, chaque changement pouvant créer de nouveaux
-    dysfonctionnements que nous pourrions remarquer seulemenet longtemps plus tard.\\
+    The fact that Splay had barely no tests at all in the state we receive it
+    motivated us into developing a solid test suite for the system.
+    Indeed that fact made our task much more harder because we were progressing
+    in the dark, each minor change was prone to create dysfunctions that we
+    might only notice way later during our work.\\
 
-    L'écriture des tests s'est déroulée pendant toute la phase de refonte
-    architecturale décrite dans la section correspondante, afin de s'assurer
-    de la maintenabilité du nouveau code, mais aussi de doter progressivement
-    le core de Splay avec des tests pour pouvoir obtenir au final un ensemble
-    maintenable.\\
+    The test writing phase took place during the whole architecture renewal
+    phase described previously, to make sure that we were ensuring the new
+    code's maintainability, but also to progressively gives Splay's core
+    new tests to have a healthy and maintainable final product.
 
     \section{Testing in Web App}
 
@@ -975,163 +984,165 @@
 
     \section{Testing in Backend}
 
-      Pour rappel, le backend tel que nous l'avons conçu a les rôles suivants :
+      As a reminder, the Backend such as we conceived it has the following
+      roles :
+
       \begin{itemize}
-        \item Responsabilité de la base de données, notamment au niveau de
-        la définition de sa structure.
-        \item Fourni une API JSON permettant à d'autres applications d'interagir
-        avec le système.
+        \item It has the responsibility of handling the database and
+        defining its structure.
+        \item It must offer a JSON API allowing other application to interact
+        with the system.
       \end{itemize}
 
-      Le backend étant écrit en Rails, nous avons accès à l'ORM ActiveRecord, qui
-      permet une manipulation des données de la database sous forme de modèles.
-      Ces modèles sont donc dotés d'attributs, de contraintes à respecter sur
-      ces attributs par rapport au schéma de la base de données, mais aussi de
-      méthodes. Cette modélisation des données nous permettent donc de faire
-      du model testing.\\
+      The backend being written in Rails, we therefore have access to the
+      ActiveRecord ORM which allows manipulating the database by associating
+      tables to models. These models are thus granted with attributes,
+      constraints to comply with on these attributes following the constraints
+      listed in the database schema, but also granted with methods. This data
+      modelisation allow us to do model testing.
 
-      Le rôle du backend étant uniquement de fournir une JSON API
-      aux différents services clients à travers une authentification utilisant
-      JSON Web Token, une suite de request testing devait venir valider
-      notre ensemble d'endpoints ainsi que les méchanismes d'authentification.
-      Les données étant renvoyées aux applications sous forme de réponses
-      JSON, une sérialization des modèles devait aussi être appliquée et donc
-      également sujette à une série de tests.
+      The backend role being only to offer a JSON API to the different client
+      services through an authentication system using JSON Web tokens, a
+      request testing suite should be implemented to validate our set of
+      endpoints and the mechanism of authentication.
+      The data responses being sent to the calling applications under the form
+      of JSON responses, we had to serialize our models and therefore this
+      part was also subject to testing.
 
       \subsection{RSpec}
 
-        RSpec est une librairie destinée au Behaviour Driven Development
-        pour Ruby. Le BDD était une pratique que nous voulions suivre pour
-        la reprise du développement de Splay, nous permettant d'adopter
-        un cycle red-green-refactor mais aussi de pouvoir nous concentrer sur
-        la rédaction de scénarios en langage naturels et ensuite de les
-        traduire en scénarios de tests.
+        RSpec \cite{rspec} is a library aiming to ease Behaviour Driven
+        Development on Ruby projects. BDD and TDD (Test Driven Development) are
+        practices we wantedto follow for our work on the Splay development,
+        this would allow us to adopt a green-red-refactor work cycles but also
+        to focus on writing natural language scenarios and then translating
+        them into test scenarios.
 
         \subsubsection{Model Testing}
 
-          Comme explicité plus haut, la couche ORM de Rails nous offre un
-          reflet des contraintes présentes dans la base de données en représentant
-          ses tables sous forme de modèles dotés d'attributs, que nous pouvons en
-          plus doter d'attributs supplémentaires, de méthodes et d'une surcouche
-          de validations supplémentaires (par exemple sur des combinaisons d'attributs,
-          ou des contraintes plus complexes inter-tables).\\
+          As we made it explicit in upper sections, the Rails ORM layer offers
+          a reflexion about the database constraints by representing its
+          tables under the form of models granted with attributes, that we can
+          enrich with additional attributes, methods and an overlay of
+          additional validations (such as validations on attributes
+          combinations, or more complex constraints between the models).\\
 
-          Cette abstraction supplémentaire nécessite en effet d'être couverte par
-          un ensemble suffisant de validation, ce que nous avons fait à travers
-          du \textbf{Model Testing}, en mettant à l'épreuve la surcouche appliquée
-          aux modèles mais aussi les contraintes de bases explicitées dans le
-          schéma de la base de données.\\
+          This additional abstraction therefore needs to be covered with a
+          sufficient validation set, which we did by applying
+          \textbf{Model Testing}, challenging that overlay applied to the
+          models but also the basic constraints explicited in the database's
+          schema.\\
 
-          Cet ensemble de tests offrent donc une double validation sur les contraintes
-          de champs, mais aussi une validation sur la logique business ajoutée
-          dans l'application.
+          This testing set is therefore offering a double validation on the
+          database field constraints, but also validations on the business
+          logic we added in the application.
 
         \subsubsection{Request Testing}
 
-          Les tests de requêtes au sein du Backend sont les tests les plus
-          importants que nous avons réalisés, en termes de couverture de la
-          codebase mais aussi en termes d'exploration des features implémentées
-          au sein de ce service de Splay.\\
+          The request tests inside the Backend service are the most important
+          tests we wrote, in terms or code coverage but also in terms of
+          testing the implemented features inside of this Splay service.\\
 
-          Les "requests specs" au sein de RSpec sont faites pour simuler un
-          comportement d'application utilisateur faisant appel à tout le stack
-          de Rails (un framework web MVC).
-          Chaque requête passe donc au travers des éléments suivants :\\
+          The request specs among the RSpec tool are made to simulate
+          the behaviour of a third-party application sending a request to
+          our service and therefore making the whole Rails stack running
+          to provide an answer to this request.\\
+          Each request is therefore going through those elements :\\
 
-          % INSERT SCHEMA HERE
           \begin{figure}[H]
             \centering
             \includegraphics[scale=0.6]{figures/request_test.png}
             \caption{\label{request_test} Request Lifetime in Backend Service}
           \end{figure}
 
-          Chaque route de l'application est testée, en explorant différent
-          scénarios possibles (token d'authentification invalide, action
-          non autorisée pour l'utilisateur). On a donc une série de tests
-          qui mettent en oeuvre l'intégralité de l'application, avec simplement
-          un envoi de requêtes et une comparaison sur les réponses attendues
-          de la part de l'application.
+          Each route of the application is tested, exploring different possible
+          scenarios for the incoming request (the idenfication token provided
+          is invalid, the token is valid but the requested action is not
+          authorized for the associated user). We therefore have a testing set
+          that uses the whole application, simply by sending request and
+          making expectations about the awaited response from the application.
 
       \subsection{Code Coverage - Simple Cov}
 
-        Nous avons choisi d'utiliser Simple Cov en combinaison du testing appliqué
-        au Backend. Cet outil permet de mesure le code coverage d'une application
-        Ruby et de fournir des informations utiles grâce à une analyse des
-        exécutions des tests.\\
+        We chose to use Simple Cov in combination of the testing applied to
+        the Backend. This tool allow to measure the code coverage of Ruby
+        application and to provide the developer with useful information
+        thanks to its test execution analysis.\\
 
-        Notre ambition sur la partie utilisateur de Splay ayant été une refonte
-        des services en services plus simples et maintenables, il était dès lors
-        simple et évident d'atteindre une couverture totale avec une suite de tests,
-        et avons décidé d'utiliser cet outil.
+        Our ambition on the user part of the Splay project was a total recast of
+        the services in more simple and maintainable ones, it was therefore
+        obvious and simple for us to reach a total coverage of that new codebase
+        with a test suite, and thus chose to use that tool.
 
       \subsection{Code Quality - Rubocop}
 
-        Dernière partie de l'ensemble d'outils destinés à assurer la qualité du
-        service, nous avons utilisé Rubocop, un outil d'analyse statique du code
-        (linter) permettant de détecter les enfreintes à une série de codes
-        de conduites en termes de style et pratiques (méthodes trop longues,
-        trop d'instanciations de variables, trop d'embranchements dans le code,
-        ...).
+        we used Rubocop as the last piece of the tool stack designed to ensure
+        the code quality within the service. Rubocop is a static code analysis
+        tool (linter) allowing to detect violations to a set of rules about
+        the code style and good practices (too many lines of code for a method,
+        to many variables instanciations, too many conditional branching
+        in the code, ...).
 
     \section{Testing in Daemons}
 
 
     \section{Integration Testing}
 
-      Afin de pouvoir tester automatiquement le projet dans son ensemble, nous
-      avons aussi voulu développer des tests fonctionnels. Ces tests seraient
-      relativement simples mais suffisamment complets pour s'assurer de
-      tester de manière globale les features développées sur le système, et
-      il suffisait pour cela de transcrire nos scénarios d'utilisation en
-      scénarios de tests.\\
+      In order to automatically test the project as a whole, we also wanted to
+      develop a functional test suite. This test suite would be relatively
+      simple but complete enough to make sure that we could test the developed
+      features in a global way among the system, and to achieve this goal we
+      just had to translate our user scenarios into test scenarios.\\
 
-      Pour ceux-ci, nous n'avons pas utilisé de technologie complexe et avons
-      estimé qu'une série de scripts en Bash était plus que suffisante pour
-      parvenir à nos fins. Bash ne permettrait pas de tester des scénarios
-      utilisateurs à travers l'application web, mais étant donné que celle-ci
-      utilise exactement la même API fournie par le Backend que l'application
-      CLI, nous pouvions donc simuler les actions utilisateurs via celui-ci (
-      et c'est en partie pour cette raison que nous avons conservé une
-      application CLI dans le projet).\\
+      For these functional tests, we didn't use a complex technology and
+      thought that a Bash scripts serie would be more than sufficient to
+      reach our goal. Bash scripts could indeed not allow us to recreate user
+      behaviour using Splay through the web application, but as this
+      application is using the exact same API offered by the Backend than the
+      CLI application, we could simulate user behaviour through that CLI (and
+      that's partially the reason why the decided to keep a CLI application
+      within the project).\\
 
-      Les tests d'intégration ont été placés dans un dossier spécifique à la
-      racine du projet Splay, et achèvent les actions suivantes pour chaque
-      test : \\
+      The integration tests were placed in a dedicated directory at the Splay
+      project's root, and execute the following actions for each test :
 
       \begin{itemize}
-        \item Nettoyage des containers
-        \item Rebuild des différents services listés dans le docker-compose
-        \item Démarrage des services
-        \item Execution de commandes via le CLI
-        \item Vérification de la réponse retournée par le CLI et affichage du
-        succès ou de l'erreur de cette phase de test dans le terminal
+        \item Cleaning the containers.
+        \item Rebuilding the different services listed in the docker-compose
+        file.
+        \item Starting up the services.
+        \item Executing commands through the CLI.
+        \item Checking the returned responsed sent by the CLI and displaying
+        whether the test phase has succeeded or failed in the terminal.
       \end{itemize}
 
-      {\color{red} Faire le lien avec les scénarios du début}\\
+      {\color{red} Link with scenarios}\\
 
-      Cette manière de procéder et le fait d'utiliser nos scénarios utilisateurs
-      pour déterminer les actions décrites dans les tests nous permettent de
-      nous assurer et de valider que l'implémentation de nos features est
-      fonctionnelle tout au long du projet de la vie de Splay. De plus, ces
-      tests viennent ajouter une couche de validation supplémentaire par rapport
-      aux tests ciblant les différents services individuellement. On se retrouve
-      ici avec des tests qui font intervenir chaque service dans un cas concret
-      de fonctionnement du projet, et permet donc aussi de tester les interactions
-      entre ceux-ci.
-
+      By proceeding this way and with the fact of using our user scenarios to
+      determine the actions described in the test suite, we can make sure
+      that the implementation of our features is functional and will stay
+      functional through the lifetime and evolutions of Splay. Moreover, those
+      tests are adding an additional validation layer compared to the tests
+      targeting the different services individually. We have here tests that
+      are involving each service in concrete scenarios and reflecting real
+      working conditions of the project, and also testing interactions
+      between the services.
 
     \section{Continuous Integration}
 
-      Encore dans un soucis de qualité, les differents service ont été placés
-      sur la plateforme d'intégration continue Travis CI, le but étant de se
-      servir des hooks fournis par Travis sur l'exécution des tests.\\
+      Once again in a way to ensure quality, the different services were placed
+      on the Travis CI \cite{travis} continuous integration platform. Travis
+      can be coupled with Github to detect any change on the branches and
+      automatically run a test procedure listed in a script and then offer
+      feedback on how the test suite went.\\
 
-      Splay étant un projet open source, et que nous espérons voir évoluer, son
-      développment collaboratif se fera inévitablement à travers l'organisation
-      Github dans laquelle les repositories se trouvent.\\
-      Les hooks Travis permettent, dans le cadre d'une pull request, d'obtenir
-      une review de l'exécution de tests sur la branche qui demande à être
-      mergée, et de s'assurer que le build est sain.
+      Splay being an open source project, that we hope to see growing in the
+      future, its collaborative development will inevitably happen through
+      the Github organization in which the different repositories are located.\\
+      The coupling of Travis with Github allow, in the case of a pull request,
+      gather the review about the test execution on the branch asking to be
+      merged with the main branch, and therefore to make sure the build is
+      clean and the test are passing before merging the new code.
 
     \section{Overall Testing Suite}
 
@@ -1150,12 +1161,14 @@
   A student wants to test his raft implementation
     \begin{itemize}
       \item The student register or connect to the Splay web server
-      \item After doing the code of raft, he wants to try on several nodes (5), 
-      beginning without network topology (all nodes is directly connect). 
+      \item After doing the code of raft, he wants to try on several nodes (5),
+      beginning without network topology (all nodes is directly connect).
       \item He sees the log to check if one node is leader and no more.
-      \item He wants to test the correctness of his code by making crash the leader essentialy, 
+      \item He wants to test the correctness of his code by making crash the
+      leader essentialy,
       but also the other.
-      \item After checking his previous code, he repeats all process with and network topology.
+      \item After checking his previous code, he repeats all process with and
+      network topology.
     \end{itemize}
 
 
