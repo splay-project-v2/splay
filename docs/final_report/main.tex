@@ -968,7 +968,64 @@
 
         \subsubsection{Splay Endpoints}
 
+          From all the previous tasks on the backend, we now had all the
+          necessary basis to create the other endpoints in order to let
+          an authenticated user interact with Splay.\\
 
+          Once again, we created an authentication service that would check
+          the request's token to verify whether or not the user was valid or
+          if he had the necessary rights to perform the requested action.\\
+
+          The endpoints we created are the following :
+
+          \begin{itemize}
+            \item \textbf{Users} : Create, destroy, index (get the list of that
+            ressource)
+            \item \textbf{Sessions} : Create
+            \item \textbf{Splayds} : Index
+            \item \textbf{Jobs} : Index, show (get info on a specific entity
+            of that ressource), destroy and create
+            \item \textbf{Logs} : Show
+          \end{itemize}
+
+          The create methods required additional checks in corresponding
+          services, to carefully create the entity in the database with
+          the data sent with the request and make sure those data were
+          satisfying the constraints.\\
+
+        \subsubsection{Error Handling}
+
+          In order to provide the best response to the applications
+          communicating with the backend, we wanted to give response
+          the right HTTP errors code in case of errors.\\
+
+          Indeed a successful request is automatically answered with a 200
+          status code by the Rails application by default.\\
+          Rails has a really conveniant way to raise errors and catch them
+          in the same or upper component on the call stack, we therefore
+          made use of that tool to implement the following error manaegement
+          strategy :
+
+          \begin{itemize}
+            \item Each Controller of our API inherit from a common file
+            called \textit{ApplicationController}
+            \item This ApplicationController holds a set of catchers (rescue
+            in the Ruby language) to catch which errors could happen in our
+            application :
+              \begin{itemize}
+                \item The entity that the user wants to create isn't valid, this
+                means he sent bad parameters through the request
+                \item The requested action is not authorized for this user
+                \item The request is malformed (missing fields or badly forged
+                request)
+                \item The requested entity doesn't exist (for example a user
+                wants to get the job details for a non existing job)
+              \end{itemize}
+            \item Then in any controller or service used by a controller, we
+            can raise an error and associate an error message, which will be
+            autmatically rescued at the root level and trigger a response with
+            the right HTTP status code and the given error message.
+          \end{itemize}
 
 
       \subsection{A new front-end application} %TODO: Review - Rewrite
