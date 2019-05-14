@@ -204,16 +204,17 @@
         to draw up the next objectives we should pursue for the continuation
         of our work and to begin the version 2 of the Splay project.
 
-  \chapter{Splay Version 2} %TODO: Review - Rewrite
+  \chapter{Splay Version 2}
 
     In this chapter, we'll expose and describe the objective of this thesis
     being the version 2 of Splay.\\
 
-    We'll first go through what we needed to modify or setup about the project.
+    We'll first go through what we needed to modify or setup about the project,
+    some following our thoughts at the end of the part-time job period.
     Then, we'll talk about the features we decided, with Etienne Riviere, to
     implement on the project.
 
-    \section{Objectives} %TODO: Review - Rewrite
+    \section{Modifications} %TODO: Review - Rewrite
 
       % Adding features of splayNet with
       Our Objectives can be easily cup in two parts, first the maintainability
@@ -305,7 +306,7 @@
           allows me to create my own distributed algorithm.\\
           I can also choose parameters such as the number of daemons on
           which run my algorithms, a topology editor to emulate network
-          conditions, etc...\\
+          conditions, inject faults, etc...\\
           Once I submitted my job, I can get logs about how my algorithm
           performed in the system. I can also choose to kill my job in case
           I did something wrong and the job is not finishing at all.
@@ -331,13 +332,21 @@
 
         % as a employee from a cloud company who want test the robusness of their new Top Secret algorithm.
 
-      \subsection{Details of features}  %TODO: Review - Rewrite
+      \subsection{Details of the new features}  %TODO: Review - Rewrite
 
         \subsubsection{Complete Lua editor on the website}  %TODO: Review - Rewrite
 
-        Splay in version 1, had a web application, with some basics features :
-        user connection, list of job, creation of job and a way to retrieve
-        logs. This web application as explained before was very trivial with
+        Splay in its first version had a web application with some basic
+        features :
+
+        \begin{itemize}
+          \item User registration and connexion
+          \item Job listing and creation
+          \item Logs retrieval
+        \end{itemize}
+
+
+        This web application as explained before was very trivial with
         almost no CSS and poor in term of content. Then, we wanted to refactor
         completely and modernize the old web application. And, also in this
         purpose, the user could use a integrated Lua editor directly on the
@@ -347,23 +356,51 @@
 
         \subsubsection{Topology creator/visualisation} %TODO: Review - Rewrite
 
-        Also, the legacy project manages network topology. Indeed a user can
-        defined its own network topology with different settings for each
-        edge : the latency, the bandwidth and error dropping packet. Also it
-        is possible to make more complex network by adding router between nodes
-        and Splay will approximate the true parameters for each
-        source-destination (Splay will not simulate the internal node of the
-        network, for performance reason and simplicity). \\
+          The legacy project managed a definition of a network topology when
+          submitting a job. A user could define this topology by setting
+          parameters such as :
 
-        The network settings is done on the legacy project by a XML file with a
-        specific format (ModelNet \cite{ModelNet}). This format is not user
-        friendly and hard to read, also the documentation is poor. For these
-        reason, we decided to add a visualization and creation tool of the
-        network graph. Then, it will be possible to create easily a visual
-        topology with all type of setting and it will be transform
-        automatically in the correct format of XML. But`, the opposite will be
-        possible, it means from a XML, see the topology into a graph
-        representation.
+          \begin{itemize}
+            \item Nodes
+            \item Edges with latency, bandwidth, packet loss rate and queing
+            length
+            \item Specs with latency, bandwidth, packet loss rate and queing
+            length, that could be used by edges to easly acquire those
+            attributes
+          \end{itemize}
+
+          Special nodes like router could also be added to the topology in order
+          to create more complex networks. The Splay system will then
+          approximate the true parameters for each source-destination by
+          emulating this topology.\\
+
+          This topology definition in the legacy project was done through
+          the senting of an XML file following a specific format described
+          in ModelNet \cite{ModelNet}.\\
+          This format not being really user-friendly and quite hard to read,
+          and with the fact that ModelNet documentation is not easy to find
+          on the Internet, we decided that the new web application would have
+          to provide an easy way for the user to define it's own topology
+          still following the ModelNet standards.\\
+
+          This topology editor should provide a graphical interface with
+          buttons and fields allowing an easy configuration. Each change
+          using this interface would result in an immediate visual feedback
+          thanks to a topology visualisation tool, such that the user would
+          have a better view about his topology than by reading XML lines.
+          Nevertheless, an XML editor and visualisation tool should be included
+          in the topology editor which would translate the visual output of
+          the tool into readable XML, or translate its XML content into the
+          visualisation tool.\\
+
+          In summary, this tool should provide the user with :
+
+          \begin{itemize}
+            \item A topology editor with simple input fields
+            \item A topology visualisation tool
+            \item An XML editor
+            \item A way to convert the visual topology in XML, and conversely
+          \end{itemize}
 
         \subsubsection{Fault Injection} %TODO: Review - Rewrite
 
