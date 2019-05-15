@@ -1028,11 +1028,15 @@
           \end{itemize}
 
 
-      \subsection{A new front-end application} %TODO: Review - Rewrite
+      \subsection{The new front-end application} %TODO: Review - Rewrite
+
+        In this section, we will talk about the new modern web application. 
+        The developement story beginning by a complete refactor of all features 
+        and finished by the new features developed in the web application side.
 
         % maybe screen shots ??
-
-        As the backend was available (previous section), we begon the
+        \subsubsection{Single Page Application - Old feature refactor}
+        As the devolment of backend was begon (previous section), we started, in the same time, the
         developement of the Single Page Application in VueJS. After removing
         old files of the previous web site, we created a basic VueJS project
         (version 2.5.X at this time) with the home page and the bootstrap-vue
@@ -1076,6 +1080,14 @@
         nice way, with modern solution and maintenable code. Only the log
         download was missing at this point. \\
 
+        % Log
+        When the log API on the backend was enable, we readd this feature to the website with some
+        improvements. When the job running or endend, the user can see the log (with a button next to details)
+        of merge daemon log with time and daemon indication for each line of log. The user can choose to
+        download as a text file (as before), copy to the clipboard or only verify the log in
+        the website checking for any error. \\
+
+        \subsubsection{The Lua editor}
         % Lua editor
         The backend was not ready for the log feature, then we worked on the Lua editor
         integration. The idea to build our-self entirely the editor was moved aside quickly,
@@ -1088,25 +1100,50 @@
         It is possible to add our own completer in the ace edito, but it is a long task
         for few results, then we decided to move on. \\
 
-        % Log
-        When the log API on the backend was enable, we readd this feature to the website with some
-        improvements. When the job running or endend, the user can see the log (with a button next to details)
-        of merge daemon log with time and daemon indication for each line of log. The user can choose to
-        download as a text file (as before), copy to the clipboard or only verify the log in
-        the website checking for any error. \\
-
+        \subsubsection{Topology creation}
         % SAM: Topology creation
-
 
       \subsection{Rework of the CLI to use new Backend}
 
         All the Command line interface has been redone in Python more clearly and concise.
 
-      \subsection{Topology creation through Javascript Interface}
-
       \subsection{Fault injection}
+        The fault injection (or crash point) is done on the daemon side. Indeed, we wanted 
+        to crash the code in middle of the execution tree, then, only the daemon can 
+        handle with presicion the crash. We choose to use domain specific language for 
+        crash management that the user can put in a Lua comment. During the execution of job, the first step 
+        is to parse the code and manage the execute of the crash point.
 
-        The implementation of the fault injection is designed to be easy to use and understand. TODO
+        \subsubsection{Domain Specific Language (DSL)}
+        
+        We specified a small DSL designed to be simple and flexible, for the user and for the parsing. This DSL need to 
+        be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the 
+        daemon if the specification (by the user) of the crash is not correct. Also, the number of line between the 
+        source code and after the parsing (DSL) need to be the same for error message (to get the correct line number in the trace).
+        For these reasons, a crash point need to be reprensented in one line and beginning by two comma (--) which 
+        indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}. \\
+
+        Secondly, a fault is defined by it type, by the moment it occurs and on which nodes it going to happend.
+        These characteristics need to be on the DSL specification. First, we begon to integrate the affected (by crash) nodes choosed
+        (can be several), in this purpose, the user adds, after the keyword \textit{CRASH POINT}, 
+        the ids of nodes (separated by space). We separated these and the type of fault by adding a colon, the type 
+        of fault is defined by its name and a possible extend data (also separated by space). Again, we split the
+        fault type and the moment definition by a colon. The moment definition (when occurs the crash) is a keyword, follows
+        by additional data. \\
+        
+        Here some example of crash points using our DSL :
+        TODO
+       % \includegraphics{crash_point_comments.jpg}[H]
+
+        \subsubsection{Parsing}
+
+
+
+
+
+        \subsubsection{Execution}
+
+        \subsubsection{Tests}
 
       \subsection{Improvement of existing daemon libraries}
 
@@ -1374,11 +1411,23 @@
       beginning without network topology (all nodes is directly connect).
       \item He sees the log to check if one node is leader and no more.
       \item He wants to test the correctness of his code by making crash the
-      leader essentialy,
-      but also the other.
+      leader essentialy, but also the other.
       \item After checking his previous code, he repeats all process with and
       network topology.
+      \item For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
     \end{itemize}
+
+  \chapter{Improvements}
+
+    % Our features
+    \subsection{Our Features improvement}
+    
+    % From old project 
+    \subsection{Security}
+
+    \subsection{Controller}
+
+    \subsection{Daemon}
 
 
   \chapter{Conclusion}
@@ -1387,11 +1436,7 @@
 
     \section{}
 
-  \chapter{Improvements}
-
-    \subsection{Security}
-
-
+ 
 
   \nocite{*}
   \bibliographystyle{plain}
