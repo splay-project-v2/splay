@@ -1190,11 +1190,39 @@
         \end{lstlisting}
 
         \subsubsection{Parsing}
+        
+        The parsing of the code is done just before that the user code is launched in each node (daemon). The parsing will 
+        create a table with information of each crash found in the user code and concerned with this node (with id node). 
+        This table is save in the library named "splay.crash", and the access of crash information is done by a number id.
+        The parsing will return a new code where the crash point comment take in account (if no error and concerned this node)
+        is replaced by a function calling, with the right number crash id (as parameter). Then, when the code will execute, 
+        and the crash function call, we can act depending of information about this crash (type, when trigger the crash, ...).\\
 
+        The parsing handles savely the error of user about the syntax, with crashing the node. Parsing is done
+        line by line and if there is a error (also in the code of parsing itself), the line will be unchanged and 
+        a warning or error log will be written. Also, the parsing is fully write in Lua (of course) with only 
+        the regex (not standard regex) matcher of Lua \cite{RegexLua}.
 
         \subsubsection{Execution}
 
-        \subsubsection{Tests}
+        Well, we see the definition of the DSL and how we parse it, now we will detail how the crash append and how 
+        to handle it to recover. First, the main problem is that Lua multithreading is non-preemptive, then we can't 
+        stop a thread from outside \cite{CoroutineLua}. The only to stop directly the Lua interpreter and kill all other
+        thread is to exit the program by a os function. Also, we have the possibility to send a exit status code of the 
+        process, it is very convinent for knowing if we need to restart or not after a crash point. \\
+
+        With this way to exit, we can create a artificial crash point, which kill immediately all coroutine (thread)
+        of Lua and the current execution. Moreover, we can pass special exit status code to send message to a other process.
+        To use this exit code, we created a fork (already in the c splay lib) before parse the crash point and execute the user code.
+        Then the process child will execute the parsing of crash point and execute the code, and the parent process will wait 
+        to get the exit status code of it child process. We added a Lua function (waitpid) for this purpose and use the 
+        original waitpid of C \cite{waitpid}. \\
+
+        When the child process end (either normaly or by a crash), the parent process check the status exit code and act depending.
+        If it is the exit code 65 or 66, it means that a crash has been done (or the user want to exit with one of these values), 
+        65 means a STOP crash, then no restart need to be node. On the opposite, 66 (Recovery crash type) means than we need to
+        relaunch the user code,
+        and it is done recursively (with a new fork of course), and the crash table is reset (by reparsing the original code).
 
       \subsection{Improvement of existing daemon libraries}
 
