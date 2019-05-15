@@ -2,6 +2,15 @@
 \documentclass{eplmastersthesis}
 \usepackage{float}
 \usepackage{xcolor}
+\usepackage{listings}
+
+\lstdefinestyle{lua}{
+  language         = [5.3]Lua,
+  basicstyle       = \ttfamily,
+  keywordstyle=\color{magenta},
+  stringstyle=\color{blue},
+  commentstyle=\color{black!50}
+}
 
 % Please fill in the following boxes
 % Title of the thesis
@@ -1120,8 +1129,10 @@
         be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the 
         daemon if the specification (by the user) of the crash is not correct. Also, the number of line between the 
         source code and after the parsing (DSL) need to be the same for error message (to get the correct line number in the trace).
-        For these reasons, a crash point need to be reprensented in one line and beginning by two comma (--) which 
-        indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}. \\
+        For these reasons, a crash point need to be reprensented in \textbf{one line} and beginning by two comma (--) which 
+        indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}. 
+        The crash append where the crash point is define, then it is possible to 
+        crash everywhere (thread, middle of function, etc). \\
 
         Secondly, a fault is defined by it type, by the moment it occurs and on which nodes it going to happend.
         These characteristics need to be on the DSL specification. First, we begon to integrate the affected (by crash) nodes choosed
@@ -1129,16 +1140,56 @@
         the ids of nodes (separated by space). We separated these and the type of fault by adding a colon, the type 
         of fault is defined by its name and a possible extend data (also separated by space). Again, we split the
         fault type and the moment definition by a colon. The moment definition (when occurs the crash) is a keyword, follows
-        by additional data. \\
+        by additional data. Our final DSL looks like (The first line corresponds to one line of crash point): 
+        \begin{lstlisting}
+-- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN> 
+<TYPE> => STOP | RECOVERY <float>
+<WHEN> => AFTER <int> | RANDOM <float>
+        \end{lstlisting}
+        For now, you can see, there are 2 types of crash and 2 way to define the moment of crash. A stop crash (STOP) means that
+        the nodes will be dead forever. In opposite, when it is the recovery type (RECOVERY), the node will be crash but restart
+        completely after x seconds (float number). Moreover there are 2 way to define when the code will crash. The ATFER keyword 
+        is the determinist way, after x pass (int number), the next passage the crash will happen. The non-determinist way is
+        done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage. 
+        Here some positive examples of crash points using our DSL :
         
-        Here some example of crash points using our DSL :
-        TODO
-       % \includegraphics{crash_point_comments.jpg}[H]
+        \begin{lstlisting}[style=lua]
+-- Crash forever the node 1 and 2 at the 4th passage
+-- in the code
+-- CRASH POINT 1 2 : STOP : AFTER    3
+
+-- At each time that the code (node 1) pass by this comment,
+-- there is 0.0002 chance to crash the node 1
+--CRASH POINT 1: STOP : RANDOM 0.0002
+
+-- Crash immediately when the comment is encouter in 
+-- the node 1, but this node will recover after 2 sec
+-- CRASH POINT 1: RECOVERY 2 : AFTER 0
+
+-- Have one chance on two to crash at each pass for 
+-- the node 1, 2, 3, 4, 5. But recover immediately
+-- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
+          \end{lstlisting}
+
+        Also, we add some negative examples (won't product any crash) :
+       
+        \begin{lstlisting}[style=lua]
+-- Won't work because Crash point not in uppercase
+--Crash Point 1 2 : STOP : AFTER 3   
+
+-- Won't work because no node is specified.
+-- CRASH POINT :RECOVERY  965 :   AFTER 3 
+
+-- Won't work because RECOVER is not a valid
+-- type (but warning expected).
+-- CRASH POINT 1 2 :RECOVER 1 : AFTER 3  
+
+-- Won't work because TIME is not a valid type 
+-- for now (but error expected).
+-- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
+        \end{lstlisting}
 
         \subsubsection{Parsing}
-
-
-
 
 
         \subsubsection{Execution}
@@ -1421,6 +1472,7 @@
 
     % Our features
     \subsection{Our Features improvement}
+      \subsubsection{Crash point}
     
     % From old project 
     \subsection{Security}
