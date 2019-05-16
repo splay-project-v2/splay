@@ -64,8 +64,10 @@
   \maketitle
 
   \chapter*{Abstract}
+  {\color{red} TODO}
 
   \chapter*{Acknowledgements}
+  {\color{red} TODO}
 
   \tableofcontents
 
@@ -106,7 +108,7 @@
 
         When we begin our work on Splay, the repository of the
         project \cite{SplayGit} was not consistent. Indeed,
-        the master branch is unstable, ...
+        the master branch is unstable, {\color{red} TODO}
 
       \subsection{A first update}
 
@@ -303,6 +305,7 @@
      these features would be covered.
 
       \subsection{Scenarios}
+        We will present different scenarios where Splay can be a solid solution.
 
         \subsubsection{First Scenario}
 
@@ -436,11 +439,6 @@
             down time
           \end{itemize}
 
-          To sum up, the fault injection will allow (user) to choose when (in
-          the execution tree) and where (one or several nodes) the crash is done
-          in the daemon, specified the type of crash and act depending. This
-          possibility for the user need to be user friendly and quick to make.
-
           To sum up, our fault injection tool would allow the user to choose
           when (in the execution tree) and where (one or several nodes) the
           crash happens in the daemon, in an user friendly way. The best and
@@ -548,7 +546,7 @@
 
     \section{Hardware Architecture}
 
-      About the Rasp cluster.
+      About the Rasp cluster. {\color{red} TODO}
 
   \chapter{Development Methodology}
 
@@ -780,8 +778,8 @@
     \section{Development}
 
       This section details in a story-telling way all the different part
-      of our work on the project, starting from the first big code cleaning
-      and refactors and ending with our latest features on the application.\\
+      of our work on the project, starting from the first big code cleaning/refactors 
+      and ending with our latest features on the application.\\
 
       The organization of the section doesn't reflect a strict timeline of
       our work but is organized by date of beginning. Indeed, some goals
@@ -844,6 +842,15 @@
         distinct repositories, it would be really easier for us to track
         the changes made in each service and would ease further improvement
         by Splay maintainers.
+
+      \subsection{Stabilisation of Controller and daemon}
+        {\color{red} TODO}
+        \begin{itemize}
+          \item Integrated work after 2011 
+          \item fix with sequel call in all controller
+          \item update openssl daemon 
+          \item fix bugs controller and daemon
+        \end{itemize}
 
       \subsection{Centralization of Splay's Backend}
 
@@ -1036,14 +1043,12 @@
             the right HTTP status code and the given error message.
           \end{itemize}
 
-
       \subsection{The new front-end application} %TODO: Review - Rewrite
 
         In this section, we will talk about the new modern web application. 
         The developement story beginning by a complete refactor of all features 
         and finished by the new features developed in the web application side.
 
-        % maybe screen shots ??
         \subsubsection{Single Page Application - Old feature refactor}
         As the devolment of backend was begon (previous section), we started, in the same time, the
         developement of the Single Page Application in VueJS. After removing
@@ -1081,13 +1086,14 @@
         one splay daemon or a job via a button. Also, he can choose to kill a
         job through a red button, the controller will do the rest. Moreover, The creation of job is done
         with a simple form and it is automatically checked with vee-validate
-        package \cite{VeeValidate} (also checked in the backend service of
+        package \cite{VeeValidate} (also checked in the backend service, of
         course). Vee-validate is a small package solutionning the problem of
         manual checking of form by adding some propreties to inputs, and it
         makes our code more compact and less messy. At this step, we had
         almost all legacy feature (for the web application) but in much more
         nice way, with modern solution and maintenable code. Only the log
         download was missing at this point. \\
+        {\color{red} TODO : Screen shot of monitor}
 
         % Log
         When the log API on the backend was enable, we readd this feature to the website with some
@@ -1107,14 +1113,16 @@
         colorize perfectly and a error is show when the syntax is wrong. But, there is not
         build-in auto-completion for Lua most likely because Lua is not very popular these days.
         It is possible to add our own completer in the ace edito, but it is a long task
-        for few results, then we decided to move on. \\
+        for few results, then we decided to move on.
+        {\color{red} TODO : screen shot of Lua editor}
 
         \subsubsection{Topology creation}
         % SAM: Topology creation
+        {\color{red} TODO + screen shot}
 
       \subsection{Rework of the CLI to use new Backend}
 
-        All the Command line interface has been redone in Python more clearly and concise.
+        All the Command line interface has been redone in Python more clearly and concise. {\color{red} TODO }
 
       \subsection{Fault injection}
         The fault injection (or crash point) is done on the daemon side. Indeed, we wanted 
@@ -1224,20 +1232,9 @@
         relaunch the user code,
         and it is done recursively (with a new fork of course), and the crash table is reset (by reparsing the original code).
 
-      \subsection{Improvement of existing daemon libraries}
-
-        \subsubsection{Adding the automatic wrapping of topology}
-
-        \subsubsection{Topology socket}
-
-        Client problem :
-
       \subsection{Timeline Animation of a graph evolution}
-
-    \section{Implementation Details}
-
-      A precise description on how the Splay project works now?
-
+      % REM
+      {\color{red} TODO}
 
   \chapter{Testing and Validation}
 
@@ -1514,31 +1511,46 @@
   \chapter{Improvements}
 
     % Our features
-    \subsection{Our Features improvement}
-      \subsubsection{Crash point}
+    \section{Our possible Features improvement}
+
+      \subsection{Lua editor}
+      {\color{red} TODO}
+      \begin{itemize}
+        \item auto-completion
+        \item color theme option to choose
+        \item integration of the splay lib to the auto-completion
+      \end{itemize}
+
+      \subsection{Crash point}
+      {\color{red} TODO}
+      \begin{itemize}
+        \item new type of crash point (network crash)
+        \item new type of when the crash append
+      \end{itemize}
+
+      \subsection{Topology Creation}
+      {\color{red} TODO}
+      \begin{itemize}
+        \item automatic completion of edge between nodes
+        \item modification of edge or nodes on double-click (modal) 
+      \end{itemize}
     
     % From old project 
-    \subsection{Security}
+    \section{Security issues}
+    {\color{red} TODO}
 
-    \subsection{Controller}
-
-    \subsection{Daemon}
-
+    \section{Refactor of Controller/Daemon}
+    {\color{red} TODO}
 
   \chapter{Conclusion}
 
-    \section{Objective vs Done}
+    \section{Objectives achievement}
 
-    \section{}
-
- 
+    \section{Go futher}
 
   \nocite{*}
   \bibliographystyle{plain}
   \bibliography{biblio.bib}
-
-
-
 
   % Back cover page
   \backcoverpage
