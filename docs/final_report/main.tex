@@ -1409,7 +1409,22 @@
         in the code, ...).
 
     \section{Testing in Daemons}
+      
+      The daemon is a critical part of the project, it allows the communication, the running
+      and controlling the status of jobs. But the daemon also serves the user with a rich Lua Splay library.
+      In the legacy project very few tests has be made to check the installation and 
+      test some very basic features (small functionalities) of the Lua Splay library. Also some tests didn't pass anymore
+      (if there did passed one day?), and there was no testing library used. \\
 
+      We wanted to improve this condition, we added a test library called busted \cite{busted}, it was the more elegant,
+      active library and fully integrated with Lua 5.3. Then, we tranformed the old successfuly manual tests into busted tests.
+      Only with this change, we detected some anomally in the lib code and fixed it. We added a test step in the 
+      docker creation to avoid the creation of malformed images (Unfortunately the docker becomes less compact and clean). \\
+
+      Moreover, we added a lot of tests about all modifications (openssl updated, new misc functions, small change in existing functions, ...) 
+      and the new fault injection feature (parsing, crash and waitpid+fork). Sadly all the Splay lib, isn't tested, and far away from it,
+      the huge amount of code (some not documented/used) make impossible to do it ourself. But, we ensure that our job is 
+      maintainable for future improvement/refactor.
 
     \section{Integration Testing}
 
