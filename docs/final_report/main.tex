@@ -116,8 +116,9 @@
       \subsection{Legacy Splay Project}
 
         When we begin our work on Splay, the repository of the
-        project \cite{SplayGit} was not consistent. Indeed,
-        the master branch is unstable, {\color{red} TODO}
+        project \cite{SplayGit} was not consistent. Indeed, the master branch was
+        unstable (last commit and a lot before too). The project was splitting in
+        multiple parts without any explantion or quite few. 
 
       \subsection{A first update}
 
@@ -1530,7 +1531,8 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
 
       \subsection{Creation of the algorithm}
-      We will explain the raft election with each time the Lua code attached to it.
+      We will explain the raft election in small piece with each time the Lua code attached to it.
+
       
       \subsection{First result}
       % After doing the code of raft, he wants to try on several nodes (5), beginning without network topology (all nodes is directly connect).
