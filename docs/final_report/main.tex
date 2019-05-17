@@ -84,6 +84,12 @@
 
     \section{Context and Motivations}
 
+      % Discuter de la problématique de tester des algorithmes distribues
+      % expliquer pourquoi le projet existe, le pourquoi SPlay existe
+      % amener implicitement les features
+
+      % virer About the splay project
+
       {\color{red} Rewrite and complete this, placeholder right now}\\
 
       The process of learning distributed systems and algorithms is usually
@@ -118,9 +124,11 @@
         When we begin our work on Splay, the repository of the
         project \cite{SplayGit} was not consistent. Indeed, the master branch was
         unstable (last commit and a lot before too). The project was splitting in
-        multiple parts without any explantion or quite few. 
+        multiple parts without any explantion or quite few.
 
       \subsection{A first update}
+
+        % réduire à quelques paragraphes
 
         We had the opportunity to get a part-time job at the UCLouvain for
         a work directly linked on this thesis. The objective was, at the end
@@ -226,6 +234,10 @@
         of our work and to begin the version 2 of the Splay project.
 
   \chapter{Splay Version 2}
+
+  % Aporter les solutions aux problèmes cités dans l'introduction
+  % parler des fonctionnalités actuelles du vieux splay
+  % ce qu'on doit changer et fonctionnalités à apporter
 
     In this chapter, we'll expose and describe the objective of this thesis
     being the version 2 of Splay.\\
@@ -460,6 +472,10 @@
 
   \chapter{Architecture}
 
+    % Mixer développement et architecture
+    % expliquer pourquoi on l'a fait ***
+    % fur et à mesure, pas forcément
+
     \section{Software Architecture}
 
       It is important here to discuss about the software architecture of the
@@ -559,6 +575,8 @@
       About the Rasp cluster. {\color{red} TODO}
 
   \chapter{Development Methodology}
+
+    % Merge with test, global quality assurance chapter
 
     Before speaking about the implementation details, it may be useful to
     describe the way we organized ourselves in order to develop the application.
@@ -788,7 +806,7 @@
     \section{Development}
 
       This section details in a story-telling way all the different part
-      of our work on the project, starting from the first big code cleaning/refactors 
+      of our work on the project, starting from the first big code cleaning/refactors
       and ending with our latest features on the application.\\
 
       The organization of the section doesn't reflect a strict timeline of
@@ -856,9 +874,9 @@
       \subsection{Stabilisation of Controller and daemon}
         {\color{red} TODO}
         \begin{itemize}
-          \item Integrated work after 2011 
+          \item Integrated work after 2011
           \item fix with sequel call in all controller
-          \item update openssl daemon 
+          \item update openssl daemon
           \item fix bugs controller and daemon
         \end{itemize}
 
@@ -1055,8 +1073,8 @@
 
       \subsection{The new front-end application} %TODO: Review - Rewrite
 
-        In this section, we will talk about the new modern web application. 
-        The developement story beginning by a complete refactor of all features 
+        In this section, we will talk about the new modern web application.
+        The developement story beginning by a complete refactor of all features
         and finished by the new features developed in the web application side.
 
         \subsubsection{Single Page Application - Old feature refactor}
@@ -1135,42 +1153,42 @@
         All the Command line interface has been redone in Python more clearly and concise. {\color{red} TODO }
 
       \subsection{Fault injection}
-        The fault injection (or crash point) is done on the daemon side. Indeed, we wanted 
-        to crash the code in middle of the execution tree, then, only the daemon can 
-        handle with presicion the crash. We choose to use domain specific language for 
-        crash management that the user can put in a Lua comment. During the execution of job, the first step 
+        The fault injection (or crash point) is done on the daemon side. Indeed, we wanted
+        to crash the code in middle of the execution tree, then, only the daemon can
+        handle with presicion the crash. We choose to use domain specific language for
+        crash management that the user can put in a Lua comment. During the execution of job, the first step
         is to parse the code and manage the execute of the crash point.
 
         \subsubsection{Domain Specific Language (DSL)}
-        
-        We specified a small DSL designed to be simple and flexible, for the user and for the parsing. This DSL need to 
-        be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the 
-        daemon if the specification (by the user) of the crash is not correct. Also, the number of line between the 
+
+        We specified a small DSL designed to be simple and flexible, for the user and for the parsing. This DSL need to
+        be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the
+        daemon if the specification (by the user) of the crash is not correct. Also, the number of line between the
         source code and after the parsing (DSL) need to be the same for error message (to get the correct line number in the trace).
-        For these reasons, a crash point need to be reprensented in \textbf{one line} and beginning by two comma (--) which 
-        indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}. 
-        The crash append where the crash point is define, then it is possible to 
+        For these reasons, a crash point need to be reprensented in \textbf{one line} and beginning by two comma (--) which
+        indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}.
+        The crash append where the crash point is define, then it is possible to
         crash everywhere (thread, middle of function, etc). \\
 
         Secondly, a fault is defined by it type, by the moment it occurs and on which nodes it going to happend.
         These characteristics need to be on the DSL specification. First, we begon to integrate the affected (by crash) nodes choosed
-        (can be several), in this purpose, the user adds, after the keyword \textit{CRASH POINT}, 
-        the ids of nodes (separated by space). We separated these and the type of fault by adding a colon, the type 
+        (can be several), in this purpose, the user adds, after the keyword \textit{CRASH POINT},
+        the ids of nodes (separated by space). We separated these and the type of fault by adding a colon, the type
         of fault is defined by its name and a possible extend data (also separated by space). Again, we split the
         fault type and the moment definition by a colon. The moment definition (when occurs the crash) is a keyword, follows
-        by additional data. Our final DSL looks like (The first line corresponds to one line of crash point): 
+        by additional data. Our final DSL looks like (The first line corresponds to one line of crash point):
         \begin{lstlisting}[style=MyBash]
--- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN> 
+-- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
 <TYPE> => STOP | RECOVERY <float>
 <WHEN> => AFTER <int> | RANDOM <float>
         \end{lstlisting}
         For now, you can see, there are 2 types of crash and 2 way to define the moment of crash. A stop crash (STOP) means that
         the nodes will be dead forever. In opposite, when it is the recovery type (RECOVERY), the node will be crash but restart
-        completely after x seconds (float number). Moreover there are 2 way to define when the code will crash. The ATFER keyword 
+        completely after x seconds (float number). Moreover there are 2 way to define when the code will crash. The ATFER keyword
         is the determinist way, after x pass (int number), the next passage the crash will happen. The non-determinist way is
-        done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage. 
+        done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage.
         Here some positive examples of crash points using our DSL :
-        
+
         \begin{lstlisting}[style=MyLua]
 -- Crash forever the node 1 and 2 at the 4th passage
 -- in the code
@@ -1180,64 +1198,64 @@
 -- there is 0.0002 chance to crash the node 1
 --CRASH POINT 1: STOP : RANDOM 0.0002
 
--- Crash immediately when the comment is encouter in 
+-- Crash immediately when the comment is encouter in
 -- the node 1, but this node will recover after 2 sec
 -- CRASH POINT 1: RECOVERY 2 : AFTER 0
 
--- Have one chance on two to crash at each pass for 
+-- Have one chance on two to crash at each pass for
 -- the node 1, 2, 3, 4, 5. But recover immediately
 -- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
           \end{lstlisting}
 
         Also, we add some negative examples (won't product any crash) :
-       
+
         \begin{lstlisting}[style=MyLua]
 -- Won't work because Crash point not in uppercase
---Crash Point 1 2 : STOP : AFTER 3   
+--Crash Point 1 2 : STOP : AFTER 3
 
 -- Won't work because no node is specified.
--- CRASH POINT :RECOVERY  965 :   AFTER 3 
+-- CRASH POINT :RECOVERY  965 :   AFTER 3
 
 -- Won't work because RECOVER is not a valid
 -- type (but warning expected).
--- CRASH POINT 1 2 :RECOVER 1 : AFTER 3  
+-- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
 
--- Won't work because TIME is not a valid type 
+-- Won't work because TIME is not a valid type
 -- for now (but error expected).
 -- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
         \end{lstlisting}
 
         \subsubsection{Parsing}
-        
-        The parsing of the code is done just before that the user code is launched in each node (daemon). The parsing will 
-        create a table with information of each crash found in the user code and concerned with this node (with id node). 
+
+        The parsing of the code is done just before that the user code is launched in each node (daemon). The parsing will
+        create a table with information of each crash found in the user code and concerned with this node (with id node).
         This table is save in the library named "splay.crash", and the access of crash information is done by a number id.
         The parsing will return a new code where the crash point comment take in account (if no error and concerned this node)
-        is replaced by a function calling, with the right number crash id (as parameter). Then, when the code will execute, 
+        is replaced by a function calling, with the right number crash id (as parameter). Then, when the code will execute,
         and the crash function call, we can act depending of information about this crash (type, when trigger the crash, ...).\\
 
         The parsing handles savely the error of user about the syntax, with crashing the node. Parsing is done
-        line by line and if there is a error (also in the code of parsing itself), the line will be unchanged and 
-        a warning or error log will be written. Also, the parsing is fully write in Lua (of course) with only 
+        line by line and if there is a error (also in the code of parsing itself), the line will be unchanged and
+        a warning or error log will be written. Also, the parsing is fully write in Lua (of course) with only
         the regex (not standard regex) matcher of Lua \cite{RegexLua}.
 
         \subsubsection{Execution}
 
-        Well, we see the definition of the DSL and how we parse it, now we will detail how the crash append and how 
-        to handle it to recover. First, the main problem is that Lua multithreading is non-preemptive, then we can't 
+        Well, we see the definition of the DSL and how we parse it, now we will detail how the crash append and how
+        to handle it to recover. First, the main problem is that Lua multithreading is non-preemptive, then we can't
         stop a thread from outside \cite{CoroutineLua}. The only to stop directly the Lua interpreter and kill all other
-        thread is to exit the program by a os function. Also, we have the possibility to send a exit status code of the 
+        thread is to exit the program by a os function. Also, we have the possibility to send a exit status code of the
         process, it is very convinent for knowing if we need to restart or not after a crash point. \\
 
         With this way to exit, we can create a artificial crash point, which kill immediately all coroutine (thread)
         of Lua and the current execution. Moreover, we can pass special exit status code to send message to a other process.
         To use this exit code, we created a fork (already in the c splay lib) before parse the crash point and execute the user code.
-        Then the process child will execute the parsing of crash point and execute the code, and the parent process will wait 
-        to get the exit status code of it child process. We added a Lua function (waitpid) for this purpose and use the 
+        Then the process child will execute the parsing of crash point and execute the code, and the parent process will wait
+        to get the exit status code of it child process. We added a Lua function (waitpid) for this purpose and use the
         original waitpid of C \cite{waitpid}. \\
 
         When the child process end (either normaly or by a crash), the parent process check the status exit code and act depending.
-        If it is the exit code 65 or 66, it means that a crash has been done (or the user want to exit with one of these values), 
+        If it is the exit code 65 or 66, it means that a crash has been done (or the user want to exit with one of these values),
         65 means a STOP crash, then no restart need to be node. On the opposite, 66 (Recovery crash type) means than we need to
         relaunch the user code,
         and it is done recursively (with a new fork of course), and the crash table is reset (by reparsing the original code).
@@ -1416,21 +1434,21 @@
         in the code, ...).
 
     \section{Testing in Daemons}
-      
+
       The daemon is a critical part of the project, it allows the communication, the running
       and controlling the status of jobs. But the daemon also serves the user with a rich Lua Splay library.
-      In the legacy project very few tests has be made to check the installation and 
+      In the legacy project very few tests has be made to check the installation and
       test some very basic features (small functionalities) of the Lua Splay library. Also some tests didn't pass anymore
       (if there did passed one day?), and there was no testing library used. \\
 
       We wanted to improve this condition, we added a test library called busted \cite{busted}, it was the more elegant,
       active library and fully integrated with Lua 5.3. Then, we tranformed the old successfuly manual tests into busted tests.
-      Only with this change, we detected some anomally in the lib code and fixed it. We added a test step in the 
+      Only with this change, we detected some anomally in the lib code and fixed it. We added a test step in the
       docker creation to avoid the creation of malformed images (Unfortunately the docker becomes less compact and clean). \\
 
-      Moreover, we added a lot of tests about all modifications (openssl updated, new misc functions, small change in existing functions, ...) 
+      Moreover, we added a lot of tests about all modifications (openssl updated, new misc functions, small change in existing functions, ...)
       and the new fault injection feature (parsing, crash and waitpid+fork). Sadly all the Splay lib, isn't tested, and far away from it,
-      the huge amount of code (some not documented/used) make impossible to do it ourself. But, we ensure that our job is 
+      the huge amount of code (some not documented/used) make impossible to do it ourself. But, we ensure that our job is
       maintainable for future improvement/refactor.
 
     \section{Integration Testing}
@@ -1505,16 +1523,16 @@
       \end{figure}
 
   \chapter{Use Case}
-    A student following a course on distributed application wants to try raft (focus on the correctness of the leader election) 
-    implementation on 5 nodes. 
+    A student following a course on distributed application wants to try raft (focus on the correctness of the leader election)
+    implementation on 5 nodes.
     He choosed to use Splay for his tests in his own laptop (or cluster of mini-computer) but there
-    is no installation of Splay available for him. 
+    is no installation of Splay available for him.
     We going to described the different step of this student with the usage of Splay.
-    
+
     \section{Installation of Splay}
       First this student need to get a clean installation of Splay. Fortunately, this work is greatly
       helped because of a installation documentation and the dockerization of the project.
-      Following the main README file of the main repository (production installation), he installs docker and 
+      Following the main README file of the main repository (production installation), he installs docker and
       docker-compose first. Then for running Splay, he runs the requested (by the README) commands in his terminal :
       \begin{lstlisting}[style=MyBash]
 docker-compose -f docker-compose.prod.yml up -d web_app controller
@@ -1526,14 +1544,14 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
     \section{Implementation of Raft in Lua}
       After the successful installation, the hard work need to be done, it means to create the implementation of raft
-      with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one. 
-      We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}. 
+      with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
+      We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
       We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
 
       \subsection{Creation of the algorithm}
       We will explain the raft election in small piece with each time the Lua code attached to it.
 
-      
+
       \subsection{First result}
       % After doing the code of raft, he wants to try on several nodes (5), beginning without network topology (all nodes is directly connect).
 
@@ -1577,10 +1595,10 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       {\color{red} TODO}
       \begin{itemize}
         \item automatic completion of edge between nodes
-        \item modification of edge or nodes on double-click (modal) 
+        \item modification of edge or nodes on double-click (modal)
       \end{itemize}
-    
-    % From old project 
+
+    % From old project
     \section{Security issues}
     {\color{red} TODO}
 
