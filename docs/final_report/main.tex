@@ -12,6 +12,12 @@
   commentstyle=\color{black!50}
 }
 
+\lstset{basicstyle=\ttfamily,
+      showstringspaces=false,
+      commentstyle=\color{red},
+      keywordstyle=\color{blue}
+}
+
 % Please fill in the following boxes
 % Title of the thesis
 \title{Integrated mini-cloud of RaspberryPIs for distributed systems training}
@@ -1161,7 +1167,7 @@
         done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage. 
         Here some positive examples of crash points using our DSL :
         
-        \begin{lstlisting}[style=lua]
+        \begin{lstlisting}[language=[5.3]Lua, style=lua]
 -- Crash forever the node 1 and 2 at the 4th passage
 -- in the code
 -- CRASH POINT 1 2 : STOP : AFTER    3
@@ -1181,7 +1187,7 @@
 
         Also, we add some negative examples (won't product any crash) :
        
-        \begin{lstlisting}[style=lua]
+        \begin{lstlisting}[language=[5.3]Lua, style=lua]
 -- Won't work because Crash point not in uppercase
 --Crash Point 1 2 : STOP : AFTER 3   
 
@@ -1495,8 +1501,41 @@
       \end{figure}
 
   \chapter{Use Case}
-  A student wants to test his raft implementation
+    A student following a course on distributed application wants to try a raft implementation on 5 nodes. 
+    He choosed to use Splay for his tests in his own laptop (or cluster of mini-computer) but there
+    is no installation of Splay available for him. 
+    We going to described the different step of this student with the usage of Splay.
+    
+    \section{Installation of Splay}
+      First this student need to get a clean installation of Splay. Fortunately, this work is greatly
+      helped because of a installation documentation and the dockerization of the project.
+      Following the main README file of the main repository (production installation), he installs docker and 
+      docker-compose first. Then for running Splay, he runs the requested (by the README) commands in his terminal :
+      \lstset{
+        language=bash,
+        basicstyle=\ttfamily
+      }
+      \begin{lstlisting}[language=bash]
+docker-compose -f docker-compose.prod.yml up -d web_app controller
+# 7 daemons because it is recommended to have more than needed
+docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
+      \end{lstlisting}
+      Then he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
+      http://localhost:8080/ . He creates is own account by the register form and it will be automatically connect next time.
+
+    \section{Implementation of Raft in Lua}
+      After the successful installation, the hard work need to be done, it means create the implementation of raft
+      with the help of the Splay libraries. {\color{red} TODO}
+
+    \section{Topology settings}
+
+    \section{Robustness Test through fault injection}
+
+    \section{Result with a animation}
+
+
     \begin{itemize}
+      \item Installation of Splay
       \item The student register or connect to the Splay web server
       \item After doing the code of raft, he wants to try on several nodes (5),
       beginning without network topology (all nodes is directly connect).

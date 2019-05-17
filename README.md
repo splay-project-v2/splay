@@ -26,6 +26,20 @@ A more recent version of SPLAY (Version 2) has been written with new technologie
 
 ## HOW TO
 
+If you want only use Splay choose the production mode (pre-build image), if you want improve/develop Splay choose the Development installation
+
+#### Production mode
+
+For only running the Splay project, you need a proper docker installation and also docker-compose. Clone this git (no need submodules).
+Then execute in your favorite console (replace <nb_daemon> by number of daemons, always put some more than needed):
+```bash 
+docker-compose -f docker-compose.prod.yml up -d backend web_app controller 
+docker-compose -f docker-compose.prod.yml up -d --scale daemon=<nb_daemon>
+```
+
+You can now access to the [webserver](http://localhost:8080/) locally in the port 8080
+
+#### Development mode
 First, this repository uses git submodules, then to get all sources, you need to launch `git submodule update --init --recursive` or when cloning `git clone --recurse-submodules`.
 
 The 5 part are dockerized (need Docker and docker-compose), to build containers, run : `docker-compose build`
@@ -36,7 +50,7 @@ docker-compose up -d web_app controller
 docker-compose up -d --scale daemon=5
 ```
 
-You can now access to the [web](https://github.com/splay-project-v2/web_app) application with the url [localhost:8080](localhost:8080). With this app you can submit for testing your distributed algorithm and check the result of these by the logs (available either on the web app or via daemon dockern services). 
+You can now access to the [web](https://github.com/splay-project-v2/web_app) application with the url [localhost:8080](http://localhost:8080/). With this app you can submit for testing your distributed algorithm and check the result of these by the logs (available either on the web app or via daemon dockern services). 
 
 The second way to use SPLAY is throut the [cli](https://github.com/splay-project-v2/cli) service, check the integration test scripts to get more info.
 
