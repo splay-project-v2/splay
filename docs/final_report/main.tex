@@ -3,8 +3,9 @@
 \usepackage{float}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage{hyperref}
 
-\lstdefinestyle{lua}{
+\lstdefinestyle{MyLua}{
   language         = [5.3]Lua,
   basicstyle       = \ttfamily,
   keywordstyle=\color{magenta},
@@ -12,10 +13,12 @@
   commentstyle=\color{black!50}
 }
 
-\lstset{basicstyle=\ttfamily,
-      showstringspaces=false,
-      commentstyle=\color{red},
-      keywordstyle=\color{blue}
+\lstdefinestyle{MyBash}{
+  language = bash,
+  basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue}
 }
 
 % Please fill in the following boxes
@@ -1155,7 +1158,7 @@
         of fault is defined by its name and a possible extend data (also separated by space). Again, we split the
         fault type and the moment definition by a colon. The moment definition (when occurs the crash) is a keyword, follows
         by additional data. Our final DSL looks like (The first line corresponds to one line of crash point): 
-        \begin{lstlisting}
+        \begin{lstlisting}[style=MyBash]
 -- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN> 
 <TYPE> => STOP | RECOVERY <float>
 <WHEN> => AFTER <int> | RANDOM <float>
@@ -1167,7 +1170,7 @@
         done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage. 
         Here some positive examples of crash points using our DSL :
         
-        \begin{lstlisting}[language=[5.3]Lua, style=lua]
+        \begin{lstlisting}[style=MyLua]
 -- Crash forever the node 1 and 2 at the 4th passage
 -- in the code
 -- CRASH POINT 1 2 : STOP : AFTER    3
@@ -1187,7 +1190,7 @@
 
         Also, we add some negative examples (won't product any crash) :
        
-        \begin{lstlisting}[language=[5.3]Lua, style=lua]
+        \begin{lstlisting}[style=MyLua]
 -- Won't work because Crash point not in uppercase
 --Crash Point 1 2 : STOP : AFTER 3   
 
@@ -1501,7 +1504,8 @@
       \end{figure}
 
   \chapter{Use Case}
-    A student following a course on distributed application wants to try a raft implementation on 5 nodes. 
+    A student following a course on distributed application wants to try raft (focus on the correctness of the leader election) 
+    implementation on 5 nodes. 
     He choosed to use Splay for his tests in his own laptop (or cluster of mini-computer) but there
     is no installation of Splay available for him. 
     We going to described the different step of this student with the usage of Splay.
@@ -1511,41 +1515,41 @@
       helped because of a installation documentation and the dockerization of the project.
       Following the main README file of the main repository (production installation), he installs docker and 
       docker-compose first. Then for running Splay, he runs the requested (by the README) commands in his terminal :
-      \lstset{
-        language=bash,
-        basicstyle=\ttfamily
-      }
-      \begin{lstlisting}[language=bash]
+      \begin{lstlisting}[style=MyBash]
 docker-compose -f docker-compose.prod.yml up -d web_app controller
 # 7 daemons because it is recommended to have more than needed
 docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       \end{lstlisting}
       Then he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
-      http://localhost:8080/ . He creates is own account by the register form and it will be automatically connect next time.
+      \url{http://localhost:8080/}. He creates is own account by the register form and it will be automatically connect next time.
 
     \section{Implementation of Raft in Lua}
-      After the successful installation, the hard work need to be done, it means create the implementation of raft
-      with the help of the Splay libraries. {\color{red} TODO}
+      After the successful installation, the hard work need to be done, it means to create the implementation of raft
+      with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one. 
+      We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}. 
+      We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
 
+      \subsection{Creation of the algorithm}
+      We will explain the raft election with each time the Lua code attached to it.
+      
+      \subsection{First result}
+      % After doing the code of raft, he wants to try on several nodes (5), beginning without network topology (all nodes is directly connect).
+
+      % He sees the log to check if one node is leader and no more.
     \section{Topology settings}
+
+      % After checking his previous code, he repeats all process with and network topology.
+    {\color{red} TODO}
 
     \section{Robustness Test through fault injection}
 
+    % He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
+
+    {\color{red} TODO}
+
     \section{Result with a animation}
-
-
-    \begin{itemize}
-      \item Installation of Splay
-      \item The student register or connect to the Splay web server
-      \item After doing the code of raft, he wants to try on several nodes (5),
-      beginning without network topology (all nodes is directly connect).
-      \item He sees the log to check if one node is leader and no more.
-      \item He wants to test the correctness of his code by making crash the
-      leader essentialy, but also the other.
-      \item After checking his previous code, he repeats all process with and
-      network topology.
-      \item For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
-    \end{itemize}
+    % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
+    {\color{red} TODO}
 
   \chapter{Improvements}
 
