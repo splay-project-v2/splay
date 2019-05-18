@@ -364,21 +364,32 @@
 
       \subsection{Testing in Daemons}
 
-        The daemon is a critical part of the project, it allows the communication, the running
-        and controlling the status of jobs. But the daemon also serves the user with a rich Lua Splay library.
-        In the legacy project very few tests has be made to check the installation and
-        test some very basic features (small functionalities) of the Lua Splay library. Also some tests didn't pass anymore
-        (if there did passed one day?), and there was no testing library used. \\
+        The Daemon is a critical part of the project as it has to communicate
+        with the controller to receive the jobs, run the jobs and return
+        information to the controller about the job state. But the Daemon also
+        provides the user with a rich Splay library written in Lua.\\
+        In the legacy project, only a few test were present and their
+        task was to check the installation and to test some very basic features
+        (small functionalities) of the Lua Splay library. Some of those tests
+        weren't passing anymore (if they did passed one day), and no testing
+        library were used.\\
 
-        We wanted to improve this condition, we added a test library called busted \cite{busted}, it was the more elegant,
-        active library and fully integrated with Lua 5.3. Then, we tranformed the old successfuly manual tests into busted tests.
-        Only with this change, we detected some anomally in the lib code and fixed it. We added a test step in the
-        docker creation to avoid the creation of malformed images (Unfortunately the docker becomes less compact and clean). \\
+        We wanted to change this, so we started by adding a testing library
+        called Busted \cite{busted}. This library allowed elegant unit testing,
+        still under active development and fully integrated with Lua 5.3.\\
+        Then we successfuly transformed the old existing tests into busted
+        tests. With only this single change, we were able to detect some
+        anomalies in the lib code and to fix these. We added some tests steps
+        in the docker inage creation to avoid creating malformed images.\\
 
-        Moreover, we added a lot of tests about all modifications (openssl updated, new misc functions, small change in existing functions, ...)
-        and the new fault injection feature (parsing, crash and waitpid+fork). Sadly all the Splay lib, isn't tested, and far away from it,
-        the huge amount of code (some not documented/used) make impossible to do it ourself. But, we ensure that our job is
-        maintainable for future improvement/refactor.
+        Moreovr, we added a lot of tests about each modification we made
+        (openssl updated, new misc functions, small changes in existing
+        functions, ...) and also about the new features.\\
+        Sadly the whole Splay lib of the Daemon isn't entirely tested,
+        the huge amount of code (some being documented and some not) made it
+        really hard for us to make it ourselves during the period of this
+        thesis, but still ensuring our work on the Daemon is maintainable
+        for future improvement or refactoring.
 
       \subsection{Integration Testing}
 
@@ -575,7 +586,7 @@
         be way more easier.\\
 
 
-        We then succeded to progressively put back in a working state
+        We then succeeded to progressively put back in a working state
         (partially, as we based this criterion on the main feature) all the
         elements composing Splay with newer versions, and also updating the
         libraries used by all the different languages. The main changes
