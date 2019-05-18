@@ -4,6 +4,8 @@
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{hyperref}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
 
 \lstdefinestyle{MyLua}{
   language         = [5.3]Lua,
@@ -175,6 +177,280 @@
           develop.
 
     \section{Testing and Validation}
+
+      In this section, we will talk more deeply about the way we wanted to ensure
+      the testing and the validation part in the Splay project, whether it be
+      at the global system level or at the user functionalities level, each
+      section will go through the different services and how we tested it, and
+      also how we tested the application globally.\\
+
+      The fact that Splay had barely no tests at all in the state we receive it
+      motivated us into developing a solid test suite for the system.
+      Indeed that fact made our task much more harder because we were progressing
+      in the dark, each minor change was prone to create dysfunctions that we
+      might only notice way later during our work.\\
+
+      The test writing phase took place from the very beginning of our work on
+      Splay as part of our development methodology,
+      to make sure that we were ensuring the new code's maintainability, but
+      also to progressively gives Splay's core new tests to have a healthy
+      and maintainable final product.
+
+      \subsection{Testing in Web App}
+
+        As we choosed Vue as our framework for the web application service,
+        all we had to deal with was components. As Vue is organised around
+        the use of components, the immediate reward of this was that we would
+        be able to write tests dedicated to isolated and simple components.
+
+        \subsubsection{Jest}
+
+          In order to test the components composing the application, we
+          went for the Jest \cite{jest} testing framework, which was advised
+          as unit testing framework during the project creation.\\
+
+          Testing JavaScript is not always the simplest thing to achieve, the
+          ecosystem being in constant evolution with diverse solutions emerging
+          trying to fit with the evolution and the apparition of a lot of
+          other JavaScript framework.\\
+          But Jest was a really good pick as testing framework, as it was
+          developped by Facebook and designed to fit with the majority of the
+          most used front-end framework and this with almost no configuration and
+          providing us with a really simple API.\\
+
+          In order to test the application using Jest, we created a directories
+          hierarchy reflecting the Vue components hierarchy we created, thus
+          a test file corresponding to a component file. In each of these
+          test specifications, we decided to target the core part of each
+          components : the methods.\\
+          Indeed, there is no need to test whether or not a click on a button
+          triggers the associated action as this is part of the Vue system. What
+          we wanted to test was the triggered action we wrote ourselves and
+          were simply functions.\\
+          Each file therefore tests that the related components can be
+          successfuly instanciated among the application, then run a serie
+          of \textbf{unit tests} validating the methods expected behaviour.
+
+        \subsubsection{ESLint}
+
+          Provided almost by default when creating a new Vue project, ESLint
+          \cite{eslint} is a JavaScript linter that allows the developper to
+          make sure he's not writing code inducing problematic patterns or not
+          respecting code guidelines.\\
+          This helps to keep a consistent codestyle as we were two people working
+          on this project, and increase the overall code quality and
+          maintainability. We chose not to change any preset of the shipped-in
+          ESLint confguration to ensure following common guidelines among the Vue
+          community and make sure any developper joining the Splay project will
+          be able to work on the web application seamlessly.
+
+
+      \subsection{Testing in Backend}
+
+        As a reminder, the Backend such as we conceived it has the following
+        roles :
+
+        \begin{itemize}
+          \item It has the responsibility of handling the database and
+          defining its structure.
+          \item It must offer a JSON API allowing other application to interact
+          with the system.
+        \end{itemize}
+
+        The backend being written in Rails, we therefore have access to the
+        ActiveRecord ORM which allows manipulating the database by associating
+        tables to models. These models are thus granted with attributes,
+        constraints to comply with on these attributes following the constraints
+        listed in the database schema, but also granted with methods. This data
+        modelisation allow us to do model testing.
+
+        The backend role being only to offer a JSON API to the different client
+        services through an authentication system using JSON Web tokens, a
+        request testing suite should be implemented to validate our set of
+        endpoints and the mechanism of authentication.
+        The data responses being sent to the calling applications under the form
+        of JSON responses, we had to serialize our models and therefore this
+        part was also subject to testing.
+
+        \subsubsection{RSpec}
+
+          RSpec \cite{rspec} is a library aiming to ease Behaviour Driven
+          Development on Ruby projects. BDD and TDD (Test Driven Development) are
+          practices we wantedto follow for our work on the Splay development,
+          this would allow us to adopt a green-red-refactor work cycles but also
+          to focus on writing natural language scenarios and then translating
+          them into test scenarios.
+
+        \subsubsection{Model Testing}
+
+          As we made it explicit in upper sections, the Rails ORM layer offers
+          a reflexion about the database constraints by representing its
+          tables under the form of models granted with attributes, that we can
+          enrich with additional attributes, methods and an overlay of
+          additional validations (such as validations on attributes
+          combinations, or more complex constraints between the models).\\
+
+          This additional abstraction therefore needs to be covered with a
+          sufficient validation set, which we did by applying
+          \textbf{Model Testing}, challenging that overlay applied to the
+          models but also the basic constraints explicited in the database's
+          schema.\\
+
+          This testing set is therefore offering a double validation on the
+          database field constraints, but also validations on the business
+          logic we added in the application.
+
+        \subsubsection{Request Testing}
+
+          The request tests inside the Backend service are the most important
+          tests we wrote, in terms or code coverage but also in terms of
+          testing the implemented features inside of this Splay service.\\
+
+          The request specs among the RSpec tool are made to simulate
+          the behaviour of a third-party application sending a request to
+          our service and therefore making the whole Rails stack running
+          to provide an answer to this request.\\
+          Each request is therefore going through those elements :\\
+
+          \begin{figure}[H]
+            \centering
+            \includegraphics[scale=0.6]{figures/request_test.png}
+            \caption{\label{request_test} Request Lifetime in Backend Service}
+          \end{figure}
+
+          Each route of the application is tested, exploring different possible
+          scenarios for the incoming request (the idenfication token provided
+          is invalid, the token is valid but the requested action is not
+          authorized for the associated user). We therefore have a testing set
+          that uses the whole application, simply by sending request and
+          making expectations about the awaited response from the application.
+
+        \subsubsection{Code Coverage - Simple Cov}
+
+          We chose to use Simple Cov in combination of the testing applied to
+          the Backend. This tool allow to measure the code coverage of Ruby
+          application and to provide the developer with useful information
+          thanks to its test execution analysis.\\
+
+          Our ambition on the user part of the Splay project was a total recast of
+          the services in more simple and maintainable ones, it was therefore
+          obvious and simple for us to reach a total coverage of that new codebase
+          with a test suite, and thus chose to use that tool.\\
+
+          The benefits we found in using a code coverage tool were the
+          following :
+
+          \begin{itemize}
+            \item Encourage the TDD approach, as it's easier and better to
+            write the tests covering the feature and then writing the feature
+            instead of writing the feature and then tests in order to reach
+            the coverage level
+            \item Ensuring we don't let parts of the code or certain branches
+            in conditional statements being untested
+            \item Refrain to write useless code. The tests are supposed to cover
+            which features should exist, a decrease in the coverage level
+            might then spot bad patterns or code being outside the scope
+            of the feature.
+          \end{itemize}
+
+        \subsubsection{Code Quality - Rubocop}
+
+          We used Rubocop as the last piece of the tool stack designed to ensure
+          the code quality within the service. Rubocop is a static code analysis
+          tool (linter) allowing to detect violations to a set of rules about
+          the code style and good practices (too many lines of code for a method,
+          to many variables instanciations, too many conditional branching
+          in the code, ...).
+
+      \subsection{Testing in Daemons}
+
+        The daemon is a critical part of the project, it allows the communication, the running
+        and controlling the status of jobs. But the daemon also serves the user with a rich Lua Splay library.
+        In the legacy project very few tests has be made to check the installation and
+        test some very basic features (small functionalities) of the Lua Splay library. Also some tests didn't pass anymore
+        (if there did passed one day?), and there was no testing library used. \\
+
+        We wanted to improve this condition, we added a test library called busted \cite{busted}, it was the more elegant,
+        active library and fully integrated with Lua 5.3. Then, we tranformed the old successfuly manual tests into busted tests.
+        Only with this change, we detected some anomally in the lib code and fixed it. We added a test step in the
+        docker creation to avoid the creation of malformed images (Unfortunately the docker becomes less compact and clean). \\
+
+        Moreover, we added a lot of tests about all modifications (openssl updated, new misc functions, small change in existing functions, ...)
+        and the new fault injection feature (parsing, crash and waitpid+fork). Sadly all the Splay lib, isn't tested, and far away from it,
+        the huge amount of code (some not documented/used) make impossible to do it ourself. But, we ensure that our job is
+        maintainable for future improvement/refactor.
+
+      \subsection{Integration Testing}
+
+        In order to automatically test the project as a whole, we also wanted to
+        develop a functional test suite. This test suite would be relatively
+        simple but complete enough to make sure that we could test the developed
+        features in a global way among the system, and to achieve this goal we
+        just had to translate our user scenarios into test scenarios.\\
+
+        For these functional tests, we didn't use a complex technology and
+        thought that a Bash scripts serie would be more than sufficient to
+        reach our goal. Bash scripts could indeed not allow us to recreate user
+        behaviour using Splay through the web application, but as this
+        application is using the exact same API offered by the Backend than the
+        CLI application, we could simulate user behaviour through that CLI (and
+        that's partially the reason why the decided to keep a CLI application
+        within the project).\\
+
+        The integration tests were placed in a dedicated directory at the Splay
+        project's root, and execute the following actions for each test :
+
+        \begin{itemize}
+          \item Cleaning the containers.
+          \item Rebuilding the different services listed in the docker-compose
+          file.
+          \item Starting up the services.
+          \item Executing commands through the CLI.
+          \item Checking the returned responsed sent by the CLI and displaying
+          whether the test phase has succeeded or failed in the terminal.
+        \end{itemize}
+
+        {\color{red} Link with scenarios}\\
+
+        By proceeding this way and with the fact of using our user scenarios to
+        determine the actions described in the test suite, we can make sure
+        that the implementation of our features is functional and will stay
+        functional through the lifetime and evolutions of Splay. Moreover, those
+        tests are adding an additional validation layer compared to the tests
+        targeting the different services individually. We have here tests that
+        are involving each service in concrete scenarios and reflecting real
+        working conditions of the project, and also testing interactions
+        between the services.
+
+      \subsection{Continuous Integration}
+
+        Once again in a way to ensure quality, the different services were placed
+        on the Travis CI \cite{travis} continuous integration platform. Travis
+        can be coupled with Github to detect any change on the branches and
+        automatically run a test procedure listed in a script and then offer
+        feedback on how the test suite went.\\
+
+        Splay being an open source project, that we hope to see growing in the
+        future, its collaborative development will inevitably happen through
+        the Github organization in which the different repositories are located.\\
+        The coupling of Travis with Github allow, in the case of a pull request,
+        gather the review about the test execution on the branch asking to be
+        merged with the main branch, and therefore to make sure the build is
+        clean and the test are passing before merging the new code, as
+        explained before in the Gitflow section.
+
+      \subsection{Overall Testing Suite}
+
+        Here is a figure detailing the whole Splay project with the different
+        test suites and procedures that have been described in the previous
+        sections so that the reader can get the grasp on the overall
+        organisation of this.
+
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale=0.55]{figures/global_testing.png}
+          \caption{\label{global_testing} Global Testing in Splay}
+        \end{figure}
 
 
 
@@ -1290,263 +1566,6 @@
       % REM
       {\color{red} TODO}
 
-  \chapter{Testing and Validation}
-
-    In this chapter, we will talk more deeply about the way we wanted to ensure
-    the testing and the validation part in the Splay project, whether it be
-    at the global system level or at the user functionalities level, each
-    section will go through the different services and how we tested it, and
-    also how we tested the application globally.\\
-
-    The fact that Splay had barely no tests at all in the state we receive it
-    motivated us into developing a solid test suite for the system.
-    Indeed that fact made our task much more harder because we were progressing
-    in the dark, each minor change was prone to create dysfunctions that we
-    might only notice way later during our work.\\
-
-    The test writing phase took place during the whole architecture renewal
-    phase described previously, to make sure that we were ensuring the new
-    code's maintainability, but also to progressively gives Splay's core
-    new tests to have a healthy and maintainable final product.
-
-    \section{Testing in Web App}
-
-      As we choosed Vue as our framework for the web application service,
-      all we had to deal with was components. As Vue is organised around
-      the use of components, the immediate reward of this was that we would
-      be able to write tests dedicated to isolated and simple components.
-
-      \subsection{Jest}
-
-        In order to test the components composing the application, we
-        went for the Jest \cite{jest} testing framework, which was advised
-        as unit testing framework during the project creation.\\
-
-        Testing JavaScript is not always the simplest thing to achieve, the
-        ecosystem being in constant evolution with diverse solutions emerging
-        trying to fit with the evolution and the apparition of a lot of
-        other JavaScript framework.\\
-        But Jest was a really good pick as testing framework, as it was
-        developped by Facebook and designed to fit with the majority of the
-        most used front-end framework and this with almost no configuration and
-        providing us with a really simple API.\\
-
-        In order to test the application using Jest, we created a directories
-        hierarchy reflecting the Vue components hierarchy we created, thus
-        a test file corresponding to a component file. In each of these
-        test specifications, we decided to target the core part of each
-        components : the methods.\\
-        Indeed, there is no need to test whether or not a click on a button
-        triggers the associated action as this is part of the Vue system. What
-        we wanted to test was the triggered action we wrote ourselves and
-        were simply functions.\\
-        Each file therefore tests that the related components can be
-        successfuly instanciated among the application, then run a serie
-        of \textbf{unit tests} validating the methods expected behaviour.
-
-      \subsection{ESLint}
-
-        Provided almost by default when creating a new Vue project, ESLint
-        \cite{eslint} is a JavaScript linter that allows the developper to
-        make sure he's not writing code inducing problematic patterns or not
-        respecting code guidelines.\\
-        This helps to keep a consistent codestyle as we were two people working
-        on this project, and increase the overall code quality and
-        maintainability. We chose not to change any preset of the shipped-in
-        ESLint confguration to ensure following common guidelines among the Vue
-        community and make sure any developper joining the Splay project will
-        be able to work on the web application seamlessly.
-
-
-    \section{Testing in Backend}
-
-      As a reminder, the Backend such as we conceived it has the following
-      roles :
-
-      \begin{itemize}
-        \item It has the responsibility of handling the database and
-        defining its structure.
-        \item It must offer a JSON API allowing other application to interact
-        with the system.
-      \end{itemize}
-
-      The backend being written in Rails, we therefore have access to the
-      ActiveRecord ORM which allows manipulating the database by associating
-      tables to models. These models are thus granted with attributes,
-      constraints to comply with on these attributes following the constraints
-      listed in the database schema, but also granted with methods. This data
-      modelisation allow us to do model testing.
-
-      The backend role being only to offer a JSON API to the different client
-      services through an authentication system using JSON Web tokens, a
-      request testing suite should be implemented to validate our set of
-      endpoints and the mechanism of authentication.
-      The data responses being sent to the calling applications under the form
-      of JSON responses, we had to serialize our models and therefore this
-      part was also subject to testing.
-
-      \subsection{RSpec}
-
-        RSpec \cite{rspec} is a library aiming to ease Behaviour Driven
-        Development on Ruby projects. BDD and TDD (Test Driven Development) are
-        practices we wantedto follow for our work on the Splay development,
-        this would allow us to adopt a green-red-refactor work cycles but also
-        to focus on writing natural language scenarios and then translating
-        them into test scenarios.
-
-        \subsubsection{Model Testing}
-
-          As we made it explicit in upper sections, the Rails ORM layer offers
-          a reflexion about the database constraints by representing its
-          tables under the form of models granted with attributes, that we can
-          enrich with additional attributes, methods and an overlay of
-          additional validations (such as validations on attributes
-          combinations, or more complex constraints between the models).\\
-
-          This additional abstraction therefore needs to be covered with a
-          sufficient validation set, which we did by applying
-          \textbf{Model Testing}, challenging that overlay applied to the
-          models but also the basic constraints explicited in the database's
-          schema.\\
-
-          This testing set is therefore offering a double validation on the
-          database field constraints, but also validations on the business
-          logic we added in the application.
-
-        \subsubsection{Request Testing}
-
-          The request tests inside the Backend service are the most important
-          tests we wrote, in terms or code coverage but also in terms of
-          testing the implemented features inside of this Splay service.\\
-
-          The request specs among the RSpec tool are made to simulate
-          the behaviour of a third-party application sending a request to
-          our service and therefore making the whole Rails stack running
-          to provide an answer to this request.\\
-          Each request is therefore going through those elements :\\
-
-          \begin{figure}[H]
-            \centering
-            \includegraphics[scale=0.6]{figures/request_test.png}
-            \caption{\label{request_test} Request Lifetime in Backend Service}
-          \end{figure}
-
-          Each route of the application is tested, exploring different possible
-          scenarios for the incoming request (the idenfication token provided
-          is invalid, the token is valid but the requested action is not
-          authorized for the associated user). We therefore have a testing set
-          that uses the whole application, simply by sending request and
-          making expectations about the awaited response from the application.
-
-      \subsection{Code Coverage - Simple Cov}
-
-        We chose to use Simple Cov in combination of the testing applied to
-        the Backend. This tool allow to measure the code coverage of Ruby
-        application and to provide the developer with useful information
-        thanks to its test execution analysis.\\
-
-        Our ambition on the user part of the Splay project was a total recast of
-        the services in more simple and maintainable ones, it was therefore
-        obvious and simple for us to reach a total coverage of that new codebase
-        with a test suite, and thus chose to use that tool.
-
-      \subsection{Code Quality - Rubocop}
-
-        we used Rubocop as the last piece of the tool stack designed to ensure
-        the code quality within the service. Rubocop is a static code analysis
-        tool (linter) allowing to detect violations to a set of rules about
-        the code style and good practices (too many lines of code for a method,
-        to many variables instanciations, too many conditional branching
-        in the code, ...).
-
-    \section{Testing in Daemons}
-
-      The daemon is a critical part of the project, it allows the communication, the running
-      and controlling the status of jobs. But the daemon also serves the user with a rich Lua Splay library.
-      In the legacy project very few tests has be made to check the installation and
-      test some very basic features (small functionalities) of the Lua Splay library. Also some tests didn't pass anymore
-      (if there did passed one day?), and there was no testing library used. \\
-
-      We wanted to improve this condition, we added a test library called busted \cite{busted}, it was the more elegant,
-      active library and fully integrated with Lua 5.3. Then, we tranformed the old successfuly manual tests into busted tests.
-      Only with this change, we detected some anomally in the lib code and fixed it. We added a test step in the
-      docker creation to avoid the creation of malformed images (Unfortunately the docker becomes less compact and clean). \\
-
-      Moreover, we added a lot of tests about all modifications (openssl updated, new misc functions, small change in existing functions, ...)
-      and the new fault injection feature (parsing, crash and waitpid+fork). Sadly all the Splay lib, isn't tested, and far away from it,
-      the huge amount of code (some not documented/used) make impossible to do it ourself. But, we ensure that our job is
-      maintainable for future improvement/refactor.
-
-    \section{Integration Testing}
-
-      In order to automatically test the project as a whole, we also wanted to
-      develop a functional test suite. This test suite would be relatively
-      simple but complete enough to make sure that we could test the developed
-      features in a global way among the system, and to achieve this goal we
-      just had to translate our user scenarios into test scenarios.\\
-
-      For these functional tests, we didn't use a complex technology and
-      thought that a Bash scripts serie would be more than sufficient to
-      reach our goal. Bash scripts could indeed not allow us to recreate user
-      behaviour using Splay through the web application, but as this
-      application is using the exact same API offered by the Backend than the
-      CLI application, we could simulate user behaviour through that CLI (and
-      that's partially the reason why the decided to keep a CLI application
-      within the project).\\
-
-      The integration tests were placed in a dedicated directory at the Splay
-      project's root, and execute the following actions for each test :
-
-      \begin{itemize}
-        \item Cleaning the containers.
-        \item Rebuilding the different services listed in the docker-compose
-        file.
-        \item Starting up the services.
-        \item Executing commands through the CLI.
-        \item Checking the returned responsed sent by the CLI and displaying
-        whether the test phase has succeeded or failed in the terminal.
-      \end{itemize}
-
-      {\color{red} Link with scenarios}\\
-
-      By proceeding this way and with the fact of using our user scenarios to
-      determine the actions described in the test suite, we can make sure
-      that the implementation of our features is functional and will stay
-      functional through the lifetime and evolutions of Splay. Moreover, those
-      tests are adding an additional validation layer compared to the tests
-      targeting the different services individually. We have here tests that
-      are involving each service in concrete scenarios and reflecting real
-      working conditions of the project, and also testing interactions
-      between the services.
-
-    \section{Continuous Integration}
-
-      Once again in a way to ensure quality, the different services were placed
-      on the Travis CI \cite{travis} continuous integration platform. Travis
-      can be coupled with Github to detect any change on the branches and
-      automatically run a test procedure listed in a script and then offer
-      feedback on how the test suite went.\\
-
-      Splay being an open source project, that we hope to see growing in the
-      future, its collaborative development will inevitably happen through
-      the Github organization in which the different repositories are located.\\
-      The coupling of Travis with Github allow, in the case of a pull request,
-      gather the review about the test execution on the branch asking to be
-      merged with the main branch, and therefore to make sure the build is
-      clean and the test are passing before merging the new code.
-
-    \section{Overall Testing Suite}
-
-      Here is a figure detailing the whole Splay project with the different
-      test suites and procedures that have been described in the previous
-      sections so that the reader can get the grasp on the overall
-      organisation of this.
-
-      \begin{figure}[H]
-        \centering
-        \includegraphics[scale=0.6]{figures/global_testing.png}
-        \caption{\label{global_testing} Global Testing in Splay}
-      \end{figure}
 
   \chapter{Use Case}
     A student following a course on distributed application wants to try raft (focus on the correctness of the leader election)
