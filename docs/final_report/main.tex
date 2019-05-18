@@ -145,12 +145,18 @@
           tasks we created on the kanban was meant to receive its very own
           branch, starting from the main branch.
           Once the feature finished and tested, a pull request was made asking
-          to merge the feature branch with the main branch.
+          to merge the feature branch with the main branch.\\
           The first benefit of this was obviously to keep the main branch in
           a working state with healthy and finished features. Indeed, as
           we will explain in the following section, we setup a series of tools
           to allow ensuring a branch was passing the tests before allowing any
           merge on master.\\
+
+          \begin{figure}[H]
+            \centering
+            \includegraphics[scale=0.6]{figures/gitflow.png}
+            \caption{\label{prev_arch} Gitflow Workflow}
+          \end{figure}
 
           The second benefit of this way of working on the project was to
           permit, once again towards the goal of ensuring quality, code
