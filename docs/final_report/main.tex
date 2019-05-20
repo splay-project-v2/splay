@@ -87,6 +87,7 @@
     % Discuter de la problématique de tester des algorithmes distribues
     % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features 
     % amener implicitement les features
+    \subsection{Distributed Algorithms}
 
     Distributed algorithms is a key aspect of lot of application in different domain such 
     cloud computing, networking or artificial intelligence \cite{DistributedArtificialIntelligence}.
@@ -102,24 +103,22 @@
     With all these steps, the prototyping of our algorithm is time consuming, product thousand line of codes and increase
     the chance of bugs not correlated to your distributed algorithm. \\
 
-    % Se qui existe déjà Emulab, PlanetLab. 
+    Some testbeds exists to facilitate the testing of distributed application such as emulab \cite{Emulab}
+    , ModelNet \cite{ModelNet} or PlanetLab \cite{PlanetLab}. These solution have some serious 
+    drawback, it is very hard to learn and then lot of time is spend to deploy or install. \\
 
-    % Code asynchrone donc difficile sans libraries adapté (Mace, etc)
+    A second problem with distributed algorithm is that the pseudo-code, from papers by example, is 
+    far away from a true solution with pratical code. There are in general lot of time management and
+    asynchrone call and response from others nodes. It increases the gap between the theorical 
+    specification and the real test. Then, supply a high level library helping the creation of distributed algorithm
+    is good start. Again, some libraries exist for this purpose in different languages (Mace \cite{Mace} in C++,
+    Pymote \cite{Pymote} in (Python), ...) \\
 
+    \subsection{Our requirements}
 
+    
 
-    The process of learning distributed systems and algorithms is usually
-    undermined by the difficulty of being able for one to test and apply
-    what he learns. Indeed, in order to run a distributed algorithm and observe the result, a
-    collection of machines running the algorithm is needed. Besides that,
-    one would like to be able to change the conditions in which the algorithm
-    is run, for example by provoking faulty nodes, or inducing network
-    perturbations among the system, as distributed algorithms are designed to
-    adapt to these conditions. These needs make it really cumbersome
-    for students to setup a testing environment emulating realistic
-    conditions for learning purposes.
-
-  
+    % requirements leading to Splay
 
   \chapter{Problem Statement - Splay}
 
