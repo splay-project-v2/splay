@@ -84,40 +84,41 @@
 
   \chapter{Introduction}
 
+
+
     % Discuter de la problématique de tester des algorithmes distribues
     % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features 
     % amener implicitement les features
     \subsection{Distributed Algorithms}
 
-    Distributed algorithms is a key aspect of lot of application in different domain such 
-    cloud computing, networking or artificial intelligence \cite{DistributedArtificialIntelligence}.
-    We say that a algorithm is distributed when it is designed to run in several connected processors/machines.
-    The main reasons of this separation of processors are for performance, availability or/and scalability.
-    Distributed application used distributed algorithms to fix some issues, raised by the computation division   
-    in different processors/machines, such as consensus, atomic commit, leader election, ...  \\
+      Distributed algorithms is a key aspect of lot of application in different domain such 
+      cloud computing, networking or artificial intelligence \cite{DistributedArtificialIntelligence}.
+      We say that a algorithm is distributed when it is designed to run in several connected processors/machines.
+      The main reasons of this separation of processors are for performance, availability or/and scalability.
+      Distributed application used distributed algorithms to fix some issues, raised by the computation division   
+      in different processors/machines, such as consensus, atomic commit, leader election, ...  \\
 
-    The creation of distributed application is time consuming, complex and error prone. Moreover,
-    the test of distributed algorithms used is a mandatory step to avoid errors in specific configuration and 
-    gain trust in the correctness of the whole system. These tests is painful to do manually, you need 
-    to deploy/simulate a collection of machine, create the real pratical code and a way to regroup all you result. 
-    With all these steps, the prototyping of our algorithm is time consuming, product thousand line of codes and increase
-    the chance of bugs not correlated to your distributed algorithm. \\
+      The creation of distributed application is time consuming, complex and error prone. Moreover,
+      the test of distributed algorithms used is a mandatory step to avoid errors in specific configuration and 
+      gain trust in the correctness of the whole system. These tests is painful to do manually, you need 
+      to deploy/simulate a collection of machine, create the real pratical code and a way to regroup all you result. 
+      With all these steps, the prototyping of our algorithm is time consuming, product thousand line of codes and increase
+      the chance of bugs not correlated to your distributed algorithm. \\
 
-    Some testbeds exists to facilitate the testing of distributed application such as emulab \cite{Emulab}
-    , ModelNet \cite{ModelNet} or PlanetLab \cite{PlanetLab}. These solution have some serious 
-    drawback, it is very hard to learn and then lot of time is spend to deploy or install. \\
+      Some testbeds exists to facilitate the testing of distributed application such as emulab \cite{Emulab}
+      , ModelNet \cite{ModelNet} or PlanetLab \cite{PlanetLab}. These solution have some serious 
+      drawback, it is very hard to learn and then lot of time is spend to deploy or install. \\
 
-    A second problem with distributed algorithm is that the pseudo-code, from papers by example, is 
-    far away from a true solution with pratical code. There are in general lot of time management and
-    asynchrone call and response from others nodes. It increases the gap between the theorical 
-    specification and the real test. Then, supply a high level library helping the creation of distributed algorithm
-    is good start. Again, some libraries exist for this purpose in different languages (Mace \cite{Mace} in C++,
-    Pymote \cite{Pymote} in (Python), ...) \\
+      A second problem with distributed algorithm is that the pseudo-code, from papers by example, is 
+      far away from a true solution with pratical code. There are in general lot of time management and
+      asynchrone call and response from others nodes. It increases the gap between the theorical 
+      specification and the real test. Then, supply a high level library helping the creation of distributed algorithm
+      is good start. Again, some libraries exist for this purpose in different languages (Mace \cite{Mace} in C++,
+      Pymote \cite{Pymote} in (Python), ...) \\
 
     \subsection{Our requirements}
 
     
-
     % requirements leading to Splay
 
   \chapter{Problem Statement - Splay}
@@ -1633,27 +1634,49 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
 
   \chapter{Conclusion}
+    We concludes this report by some suggestion, firstly about our own features and secondly about
+    SPLAY it-self. At the end, we summarise our global achievement about this project (objectifs agains realized).
 
     \section{Improvements}
 
       % Our features
-      \subsection{Our possible Features improvement}
+      \subsection{New features improvement}
 
         \subsubsection{Lua editor}
-        {\color{red} TODO}
+
+        We have noticed during the developement of own features that the Lua Editor is  
+        the less important feature. Only for one reason, most of the time, we 
+        create our Lua script in on own editor and then making a copy-paste.  
+        A local modern editor with a Lua package installed offer more (not much because Lua is not popular),
+        feature than our editor. But, with little improvements, it can be better or equals than other, 
+        here a non-exaustif list :
+
         \begin{itemize}
-          \item auto-completion
-          \item color theme option to choose
-          \item integration of the splay lib to the auto-completion
+          \item Basic auto-completion : A basic auto-completion can be done for keyword (as our IDE) and 
+          for named function with the help of Ace Editor package. 
+          \item Specific auto-completion : integration of the splay library to the auto-completion with some 
+          hint. It will be overtake our own IDE.
+          \item Color theme : with Ace the color theme can be changed, maybe a user can choose by it-self for him
         \end{itemize}
+
+        Note that, Ace can handle lot of different language, 
+        then if the daemon switch of technology (see next section "Refactor of Controller/Daemon"), 
+        then it will be easy to change the targeted language.
 
         \subsubsection{Crash point}
-        {\color{red} TODO}
-        \begin{itemize}
-          \item new type of crash point (network crash)
-          \item new type of when the crash append
-        \end{itemize}
 
+          The crash point feature handle 2 type of crash and 2 specification of when crash happend.
+          This feature is very usefull to simulate hard stop of a machine (by lack of power by example).
+          However we can improve it by adding new types of crash, by example a network crash, it means
+          that the node will not handle to communicate with all or some other node during a defined time.
+          Then we can imagine to modify, the socket wrapping done for topology (or making a new wrapping),
+          where the crash lib can ask some restriction on network. \\
+
+          Moreover, we can imagine more control for the user to handle much better when the crash append.
+          Indeed, by example, when a condition is meet and equals to true then the crash happend. 
+          Global variables can help (access then also by the crash lib) or by parsing modificatation
+          where a extra parameters will by add to the crash function call.\\          
+        
         \subsubsection{Topology Creation}
         {\color{red} TODO}
         \begin{itemize}
