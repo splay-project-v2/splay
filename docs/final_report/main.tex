@@ -61,7 +61,7 @@
 
 % Name of the reader(s)
 \readerone{Guillaume \textsc{Derval}}
-\readertwo{Raziel \textsc{Carvajal Gomez }}			% remove if not applicable
+\readertwo{Raziel \textsc{Carvajal Gomez}}			% remove if not applicable
 \readerthree{Peter \textsc{Van Roy}}			% remove if not applicable
 %\readerfour{Firstname \textsc{Lastname}}			% remove if not applicable
 %\readerfive{Firstname \textsc{Lastname}}			% remove if not applicable
@@ -84,20 +84,33 @@
 
   \chapter{Introduction}
 
-    \section{Context and Motivations}
-
     % Discuter de la problématique de tester des algorithmes distribues
     % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features 
     % amener implicitement les features
 
-    % virer About the splay project
+    Distributed algorithms is a key aspect of lot of application in different domain such 
+    cloud computing, networking or artificial intelligence \cite{DistributedArtificialIntelligence}.
+    We say that a algorithm is distributed when it is designed to run in several connected processors/machines.
+    The main reasons of this separation of processors are for performance, availability or/and scalability.
+    Distributed application used distributed algorithms to fix some issues, raised by the computation division   
+    in different processors/machines, such as consensus, atomic commit, leader election, ...  \\
 
-    {\color{red} Rewrite and complete this, placeholder right now}\\
+    The creation of distributed application is time consuming, complex and error prone. Moreover,
+    the test of distributed algorithms used is a mandatory step to avoid errors in specific configuration and 
+    gain trust in the correctness of the whole system. These tests is painful to do manually, you need 
+    to deploy/simulate a collection of machine, create the real pratical code and a way to regroup all you result. 
+    With all these steps, the prototyping of our algorithm is time consuming, product thousand line of codes and increase
+    the chance of bugs not correlated to your distributed algorithm. \\
+
+    % Se qui existe déjà Emulab, PlanetLab. 
+
+    % Code asynchrone donc difficile sans libraries adapté (Mace, etc)
+
+
 
     The process of learning distributed systems and algorithms is usually
     undermined by the difficulty of being able for one to test and apply
-    what he learns.\\
-    Indeed, in order to run a distributed algorithm and observe the result, a
+    what he learns. Indeed, in order to run a distributed algorithm and observe the result, a
     collection of machines running the algorithm is needed. Besides that,
     one would like to be able to change the conditions in which the algorithm
     is run, for example by provoking faulty nodes, or inducing network
@@ -105,6 +118,10 @@
     adapt to these conditions. These needs make it really cumbersome
     for students to setup a testing environment emulating realistic
     conditions for learning purposes.
+
+  
+
+  \chapter{Problem Statement - Splay}
 
   \section{About the Splay Project}
 
@@ -234,8 +251,6 @@
       Those thoughts were thereafter discussed with Etienne Riviere, in order
       to draw up the next objectives we should pursue for the continuation
       of our work and to begin the version 2 of the Splay project.
-
-  \chapter{Problem Statement - Splay}
 
 
   \chapter{Architecture}
