@@ -1350,6 +1350,100 @@
           \caption{\label{global_testing} Global Testing in Splay}
         \end{figure}
 
+  \chapter{Conclusion}
+    We concludes this report by some suggestion, firstly about our own features and secondly about
+    SPLAY it-self. At the end, we summarise our global achievement about this project (objectifs agains realized).
+
+    \section{Improvements}
+
+      % Our features
+      \subsection{New features improvement}
+
+        \subsubsection{Lua editor}
+
+        We have noticed during the developement of own features that the Lua Editor is
+        the less important feature. Only for one reason, most of the time, we
+        create our Lua script in on own editor and then making a copy-paste.
+        A local modern editor with a Lua package installed offer more (not much because Lua is not popular),
+        feature than our editor. But, with little improvements, it can be better or equals than other,
+        here a non-exaustif list :
+
+        \begin{itemize}
+          \item Basic auto-completion : A basic auto-completion can be done for keyword (as our IDE) and
+          for named function with the help of Ace Editor package.
+          \item Specific auto-completion : integration of the splay library to the auto-completion with some
+          hint. It will be overtake our own IDE.
+          \item Color theme : with Ace the color theme can be changed, maybe a user can choose by it-self for him
+        \end{itemize}
+
+        Note that, Ace can handle lot of different language,
+        then if the daemon switch of technology (see next section "Refactor of Controller/Daemon"),
+        then it will be easy to change the targeted language.
+
+        \subsubsection{Crash point}
+
+          The crash point feature handle 2 type of crash and 2 specification of when crash happend.
+          This feature is very usefull to simulate hard stop of a machine (by lack of power by example).
+          However we can improve it by adding new types of crash, by example a network crash, it means
+          that the node will not handle to communicate with all or some other node during a defined time.
+          Then we can imagine to modify, the socket wrapping done for topology (or making a new wrapping),
+          where the crash lib can ask some restriction on network. \\
+
+          Moreover, we can imagine more control for the user to handle much better when the crash append.
+          Indeed, by example, when a condition is meet and equals to true then the crash happend.
+          Global variables can help (access then also by the crash lib) or by parsing modificatation
+          where a extra parameters will by add to the crash function call.\\
+
+        \subsubsection{Topology Creation}
+
+          The creation of topology through a modern interface is very effective to build your own
+          network topology quickly. However, we have more ideas (not exaustif) to improve this features, not possible to do ourself
+          with the time constraint:
+          \begin{itemize}
+            \item Modification of items on click : For now, you can't modify a edge, node or specification
+            easily, we need to remove the specific item et redo the appropriate form to fix this item. It can
+            be painful, especially if you want change a global specification (if you remove it, remove each edge using this specification)
+            \item Edge both direction : we can only add directed edge between nodes.
+            Then adding a radio button (or else) to specify that a edge is in both direction, is good idea and avoid
+            the double work with directed edge via form.
+          \end{itemize}
+
+      \subsection{Refactor of Controller/Daemon}
+        We have redid some parts of Splay with more modern technology as explain in the section on the architecture but
+        we didn't have make a complete refactor for the daemon and the controller. And we think that it is important,
+        for future maintenability or improvement, that these services need to be redid or only passed a meticulously review/refactor.
+
+        \subsubsection{Daemon}
+          The daemon is maybe the critical part of the project and it was build with Lua \cite{Lua}. During, our work, after
+          stabilize the whole project, we have seen lot of unused code, small bugs and repeated code. Then,
+          we fixed these issues when we encountered them (we were very careful about what we removed/changed), but
+          mainly it was not our code and some parts of the SPLAY library was not documented, then we didn't use these
+          mysterious parts. Indeed, lot of file (lib part) is not used with our usage of splay and there aren't not test
+          about it. For these reason, we think that a complete check of the lua libraries (by someone knowing the old project) is mandatory
+          and adding even more busted test (of the splay lib) is a good idea. \\
+
+          Also, maybe, a good solution to clean this service and offer a new alternative for the user, it is completely
+          redo the daemon in a other technology. The best alternative language is, for us, Python (version 3). Indeed, Python is very
+          popular (developement of Python will continue), have rich libraries environment and offer a very complete
+          set of tools (basic library). However, the main problem of this solution is the performance in vanilla Python compared
+          to the very small core of Lua and the C integration of it. For us, the main drawback of Lua, its evolution, Lua have no
+          major updated since 2014 and the libraries used in this project doesn't evoled too.
+          Moreover, Lua have a very small core, then some basic function need done by the user (or in the splay lib) and
+          it causes a great number of line for the splay lib in some situation (which includes more bugs). Also, to return
+          to the performance issue of Python, we can imagine using a Just In Time compiler such as PyPy \cite{PyPy} to boost
+          significantly the performance and used some distributed libraries to create quickly a new Splay library.
+
+        \subsubsection{Controller}
+
+      \subsection{Security aspect}
+      The old project
+
+
+    \section{Objectives achievement}
+
+\part{TO SORT}
+
+
   \chapter{New Features}
 
     \section{Complete Lua editor on the website}
@@ -1740,97 +1834,6 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
     % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
     {\color{red} TODO}
 
-
-  \chapter{Conclusion}
-    We concludes this report by some suggestion, firstly about our own features and secondly about
-    SPLAY it-self. At the end, we summarise our global achievement about this project (objectifs agains realized).
-
-    \section{Improvements}
-
-      % Our features
-      \subsection{New features improvement}
-
-        \subsubsection{Lua editor}
-
-        We have noticed during the developement of own features that the Lua Editor is
-        the less important feature. Only for one reason, most of the time, we
-        create our Lua script in on own editor and then making a copy-paste.
-        A local modern editor with a Lua package installed offer more (not much because Lua is not popular),
-        feature than our editor. But, with little improvements, it can be better or equals than other,
-        here a non-exaustif list :
-
-        \begin{itemize}
-          \item Basic auto-completion : A basic auto-completion can be done for keyword (as our IDE) and
-          for named function with the help of Ace Editor package.
-          \item Specific auto-completion : integration of the splay library to the auto-completion with some
-          hint. It will be overtake our own IDE.
-          \item Color theme : with Ace the color theme can be changed, maybe a user can choose by it-self for him
-        \end{itemize}
-
-        Note that, Ace can handle lot of different language,
-        then if the daemon switch of technology (see next section "Refactor of Controller/Daemon"),
-        then it will be easy to change the targeted language.
-
-        \subsubsection{Crash point}
-
-          The crash point feature handle 2 type of crash and 2 specification of when crash happend.
-          This feature is very usefull to simulate hard stop of a machine (by lack of power by example).
-          However we can improve it by adding new types of crash, by example a network crash, it means
-          that the node will not handle to communicate with all or some other node during a defined time.
-          Then we can imagine to modify, the socket wrapping done for topology (or making a new wrapping),
-          where the crash lib can ask some restriction on network. \\
-
-          Moreover, we can imagine more control for the user to handle much better when the crash append.
-          Indeed, by example, when a condition is meet and equals to true then the crash happend.
-          Global variables can help (access then also by the crash lib) or by parsing modificatation
-          where a extra parameters will by add to the crash function call.\\
-
-        \subsubsection{Topology Creation}
-
-          The creation of topology through a modern interface is very effective to build your own 
-          network topology quickly. However, we have more ideas (not exaustif) to improve this features, not possible to do ourself 
-          with the time constraint: 
-          \begin{itemize}
-            \item Modification of items on click : For now, you can't modify a edge, node or specification 
-            easily, we need to remove the specific item et redo the appropriate form to fix this item. It can 
-            be painful, especially if you want change a global specification (if you remove it, remove each edge using this specification)
-            \item Edge both direction : we can only add directed edge between nodes. 
-            Then adding a radio button (or else) to specify that a edge is in both direction, is good idea and avoid 
-            the double work with directed edge via form.
-          \end{itemize}
-
-      \subsection{Refactor of Controller/Daemon}
-        We have redid some parts of Splay with more modern technology as explain in the section on the architecture but 
-        we didn't have make a complete refactor for the daemon and the controller. And we think that it is important,
-        for future maintenability or improvement, that these services need to be redid or only passed a meticulously review/refactor.
-
-        \subsubsection{Daemon}
-          The daemon is maybe the critical part of the project and it was build with Lua \cite{Lua}. During, our work, after 
-          stabilize the whole project, we have seen lot of unused code, small bugs and repeated code. Then, 
-          we fixed these issues when we encountered them (we were very careful about what we removed/changed), but 
-          mainly it was not our code and some parts of the SPLAY library was not documented, then we didn't use these 
-          mysterious parts. Indeed, lot of file (lib part) is not used with our usage of splay and there aren't not test 
-          about it. For these reason, we think that a complete check of the lua libraries (by someone knowing the old project) is mandatory 
-          and adding even more busted test (of the splay lib) is a good idea. \\
-
-          Also, maybe, a good solution to clean this service and offer a new alternative for the user, it is completely 
-          redo the daemon in a other technology. The best alternative language is, for us, Python (version 3). Indeed, Python is very 
-          popular (developement of Python will continue), have rich libraries environment and offer a very complete
-          set of tools (basic library). However, the main problem of this solution is the performance in vanilla Python compared 
-          to the very small core of Lua and the C integration of it. For us, the main drawback of Lua, its evolution, Lua have no
-          major updated since 2014 and the libraries used in this project doesn't evoled too. 
-          Moreover, Lua have a very small core, then some basic function need done by the user (or in the splay lib) and 
-          it causes a great number of line for the splay lib in some situation (which includes more bugs). Also, to return 
-          to the performance issue of Python, we can imagine using a Just In Time compiler such as PyPy \cite{PyPy} to boost 
-          significantly the performance and used some distributed libraries to create quickly a new Splay library.
-
-        \subsubsection{Controller}
-
-      \subsection{Security aspect}
-      The old project 
-
-
-    \section{Objectives achievement}
 
   \nocite{*}
   \bibliographystyle{plain}
