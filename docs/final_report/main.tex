@@ -1678,18 +1678,27 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           where a extra parameters will by add to the crash function call.\\          
         
         \subsubsection{Topology Creation}
-        {\color{red} TODO}
-        \begin{itemize}
-          \item automatic completion of edge between nodes
-          \item modification of edge or nodes on double-click (modal)
-        \end{itemize}
 
-      % From old project
-      \subsection{Security issues}
-      {\color{red} TODO}
+          The creation of topology through a modern interface is very effective to build your own 
+          network topology quickly. However, we have more ideas (not exaustif) to improve this features, not possible to do ourself 
+          with the time constraint: 
+          \begin{itemize}
+            \item Modification of items on click : For now, you can't modify a edge, node or specification 
+            easily, we need to remove the specific item et redo the appropriate form to fix this item. It can 
+            be painful, especially if you want change a global specification (if you remove it, remove each edge using this specification)
+            \item Edge both direction : we can only add directed edge between nodes. 
+            Then adding a radio button (or else) to specify that a edge is in both direction, is good idea and avoid 
+            the double work with directed edge via form.
+          \end{itemize}
 
       \subsection{Refactor of Controller/Daemon}
-      {\color{red} TODO}
+        \subsubsection{Daemon}
+          
+        \subsubsection{Controller}
+
+      \subsection{Security aspect}
+      The old project 
+
 
     \section{Objectives achievement}
 
