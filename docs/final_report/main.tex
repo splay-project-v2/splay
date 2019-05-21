@@ -171,136 +171,140 @@
         \item Pymote \cite{Pymote} in (Python)
       \end{itemize}
 
+      These solutions were not integrated together or not suiting the real needs
+      for naking the development of distributed algorithms easier and better,
+      thus offering a place for a better solution.
+
   \chapter{Problem Statement - Splay}
 
-  \section{About the Splay Project}
+    \section{About the Splay Project}
 
-    % Discussion about what was available when we started the rework of the Splay project.
-    The SPLAY project has initiated to solve the difficulty to test and
-    develop distributed algorithm in a large scale. SPLAY is not a recent
-    project (begin around 2006), and lot of features have been added during
-    some years. The first version of SPLAY  was designed to "covers all
-    aspects of the development and evaluation chain" of distributed
-    application \cite{SPLAY}. \\
+      % Discussion about what was available when we started the rework of the Splay project.
+      The SPLAY project has initiated to solve the difficulty to test and
+      develop distributed algorithm in a large scale. SPLAY is not a recent
+      project (begin around 2006), and lot of features have been added during
+      some years. The first version of SPLAY  was designed to "covers all
+      aspects of the development and evaluation chain" of distributed
+      application \cite{SPLAY}. \\
 
-    After some years, a module has been constructed be to manage network
-    topology, SplayNet \cite{SplayNet}. This middleware implements a easy
-    way to set the topology network between the endpoints (machines) and
-    restrict the usage of the network depending of that.
+      After some years, a module has been constructed be to manage network
+      topology, SplayNet \cite{SplayNet}. This middleware implements a easy
+      way to set the topology network between the endpoints (machines) and
+      restrict the usage of the network depending of that.
 
-    \subsection{Legacy Splay Project}
+      \subsection{Legacy Splay Project}
 
-      When we begin our work on Splay, the repository of the
-      project \cite{SplayGit} was not consistent. Indeed, the master branch was
-      unstable (last commit and a lot before too). The project was splitting in
-      multiple parts without any explantion or quite few.
+        When we begin our work on Splay, the repository of the
+        project \cite{SplayGit} was not consistent. Indeed, the master branch was
+        unstable (last commit and a lot before too). The project was splitting in
+        multiple parts without any explantion or quite few.
 
-    \subsection{A first update}
+      \subsection{A first update}
 
-      % réduire à quelques paragraphes
+        % réduire à quelques paragraphes
 
-      We had the opportunity to get a part-time job at the UCLouvain for
-      a work directly linked on this thesis. The objective was, at the end
-      of ten days of work, to update the versions of the technologies used
-      in Splay and in the mean time get the opportunity to acquire and
-      deepen our knowledge about how the project was working.\\
+        We had the opportunity to get a part-time job at the UCLouvain for
+        a work directly linked on this thesis. The objective was, at the end
+        of ten days of work, to update the versions of the technologies used
+        in Splay and in the mean time get the opportunity to acquire and
+        deepen our knowledge about how the project was working.\\
 
-      At the beginning of this job, the last updates on the project were
-      from 2016, and a number of features and enhancements were developed
-      so far. However the last version of the project wasn't in a stable
-      state and thus Raziel Carvajal Gomez (our supervisor during this
-      part-time job, and also a contributer of the project) took the decision
-      to create a branch from a commit dating from September 2011 to let us
-      start from a stable state.\\
-      We therefore had the benefit of starting with a stable and working
-      base, but that caused a great loss concerning the work that had been
-      achieved during the five years between 2011 and 2016.\\
-      That is the moment when we spotted the first issue and thing we
-      absolutely wanted to change and integrate on the project before
-      starting the development phase: the project had been transfered from
-      its old versioning system on Git and had been uploaded on Github in
-      June 2011. But since that period, the version tagging system offered
-      by Git hadn't been used to mark working and stable releases over time,
-      therefore that was something we would achieve thereafter.\\
+        At the beginning of this job, the last updates on the project were
+        from 2016, and a number of features and enhancements were developed
+        so far. However the last version of the project wasn't in a stable
+        state and thus Raziel Carvajal Gomez (our supervisor during this
+        part-time job, and also a contributer of the project) took the decision
+        to create a branch from a commit dating from September 2011 to let us
+        start from a stable state.\\
+        We therefore had the benefit of starting with a stable and working
+        base, but that caused a great loss concerning the work that had been
+        achieved during the five years between 2011 and 2016.\\
+        That is the moment when we spotted the first issue and thing we
+        absolutely wanted to change and integrate on the project before
+        starting the development phase: the project had been transfered from
+        its old versioning system on Git and had been uploaded on Github in
+        June 2011. But since that period, the version tagging system offered
+        by Git hadn't been used to mark working and stable releases over time,
+        therefore that was something we would achieve thereafter.\\
 
-      Starting from that point, we were able to progressively become more
-      familiar with the way the project was working and its software
-      architecture, identify and understand the different services that
-      were composing it and also understand how they interacted among
-      each other. Once this knowledge acquired, we were able to begin the
-      upgrade of the different technology versions used beginning with the
-      Ruby and the Lua, the two most widely present technologies in Splay.\\
-      With software versions from at most 2011, and because we wanted
-      to upgrade thoses to the most recent available versions of those
-      technologies, we were well aware that at the moment we would apply the
-      versions changes, the whole project would become totally unstable
-      because of numerous function calls that would be now deprecated,
-      modified or even not available anymore and we would have to spend a lot
-      of time changing those before getting the project to be stable again.
-      There again we thought that we could avoid this situation in the future
-      and we really had to change something in the future phases: the project
-      was cruelly lacking of tests, at any level of the application.\\
-
-
-      The major consequence of this fact was that we had to make repairs
-      step by step because of the languages and frameworks version changes,
-      and we had to base ourselves on a certain global understanding of how
-      the project was working and some final execution results of scenarios
-      to estimate that the project was functional again. It was totally
-      impossible to be sure that our changes weren't impacting some internal
-      behaviour of the project in a negative but imperceptible way,
-      consequences that were not avoidable in the end but that we would
-      only discover thereafter when implementing new features.\\
-      It was therefore obvious for us that we would setup series of tests
-      at different levels of the application during the next phases of our
-      work, in order to make the project way more maintainable than in the
-      state we received it and to ensure that further enhancement would
-      be way more easier.\\
+        Starting from that point, we were able to progressively become more
+        familiar with the way the project was working and its software
+        architecture, identify and understand the different services that
+        were composing it and also understand how they interacted among
+        each other. Once this knowledge acquired, we were able to begin the
+        upgrade of the different technology versions used beginning with the
+        Ruby and the Lua, the two most widely present technologies in Splay.\\
+        With software versions from at most 2011, and because we wanted
+        to upgrade thoses to the most recent available versions of those
+        technologies, we were well aware that at the moment we would apply the
+        versions changes, the whole project would become totally unstable
+        because of numerous function calls that would be now deprecated,
+        modified or even not available anymore and we would have to spend a lot
+        of time changing those before getting the project to be stable again.
+        There again we thought that we could avoid this situation in the future
+        and we really had to change something in the future phases: the project
+        was cruelly lacking of tests, at any level of the application.\\
 
 
-      We then succeeded to progressively put back in a working state
-      (partially, as we based this criterion on the main feature) all the
-      elements composing Splay with newer versions, and also updating the
-      libraries used by all the different languages. The main changes
-      speaking of technology versions were the following :
+        The major consequence of this fact was that we had to make repairs
+        step by step because of the languages and frameworks version changes,
+        and we had to base ourselves on a certain global understanding of how
+        the project was working and some final execution results of scenarios
+        to estimate that the project was functional again. It was totally
+        impossible to be sure that our changes weren't impacting some internal
+        behaviour of the project in a negative but imperceptible way,
+        consequences that were not avoidable in the end but that we would
+        only discover thereafter when implementing new features.\\
+        It was therefore obvious for us that we would setup series of tests
+        at different levels of the application during the next phases of our
+        work, in order to make the project way more maintainable than in the
+        state we received it and to ensure that further enhancement would
+        be way more easier.\\
 
-      \begin{itemize}
-        \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
-        \item \textbf{Lua}: 5.1 $\rightarrow$ 5.3
-        \item \textbf{Rails}: 2.1.0 $\rightarrow$ 5.2.0
-      \end{itemize}
 
-      At the end of these ten days of work, we had a healthy and updated
-      base to work with and ready to receive the real work of our thesis.\\
+        We then succeeded to progressively put back in a working state
+        (partially, as we based this criterion on the main feature) all the
+        elements composing Splay with newer versions, and also updating the
+        libraries used by all the different languages. The main changes
+        speaking of technology versions were the following :
 
-      Besides this, another part of this part-time job was, once the updates
-      achieved, to update the project's documentation and to describe in
-      it how the different services were working and also to take some
-      reflexion time in order to emit thoughts about how we could make
-      enhancement on the system architecture and how it was operating. These
-      were our conclusions :
+        \begin{itemize}
+          \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
+          \item \textbf{Lua}: 5.1 $\rightarrow$ 5.3
+          \item \textbf{Rails}: 2.1.0 $\rightarrow$ 5.2.0
+        \end{itemize}
 
-      \begin{itemize}
-        \item The code organization was not really good and should be changed.
-        The code of the six different services was located in the same and
-        unique repository, this had the consequence of making way harder
-        the navigation in the project's tree during the development, the
-        clarity of the commits in the Git log and therefore the evolution
-        of these different services.
-        \item The fact of using a database as a communication point between
-        the user part and the \textbf{Controller} was maybe not the best
-        way of proceeding today.
-        \item The usage of Ruby as language for the \textbf{Controller} and
-        Lua for the \textbf{Daemons} was maybe not the most relevant choice
-        today, and technology alternatives designed for multi-processes and
-        concurrent applications such as Elixir should be reviewed. A different
-        technology choice might also in the mean time solve our previous
-        thought abot the database.
-      \end{itemize}
+        At the end of these ten days of work, we had a healthy and updated
+        base to work with and ready to receive the real work of our thesis.\\
 
-      Those thoughts were thereafter discussed with Etienne Riviere, in order
-      to draw up the next objectives we should pursue for the continuation
-      of our work and to begin the version 2 of the Splay project.
+        Besides this, another part of this part-time job was, once the updates
+        achieved, to update the project's documentation and to describe in
+        it how the different services were working and also to take some
+        reflexion time in order to emit thoughts about how we could make
+        enhancement on the system architecture and how it was operating. These
+        were our conclusions :
+
+        \begin{itemize}
+          \item The code organization was not really good and should be changed.
+          The code of the six different services was located in the same and
+          unique repository, this had the consequence of making way harder
+          the navigation in the project's tree during the development, the
+          clarity of the commits in the Git log and therefore the evolution
+          of these different services.
+          \item The fact of using a database as a communication point between
+          the user part and the \textbf{Controller} was maybe not the best
+          way of proceeding today.
+          \item The usage of Ruby as language for the \textbf{Controller} and
+          Lua for the \textbf{Daemons} was maybe not the most relevant choice
+          today, and technology alternatives designed for multi-processes and
+          concurrent applications such as Elixir should be reviewed. A different
+          technology choice might also in the mean time solve our previous
+          thought abot the database.
+        \end{itemize}
+
+        Those thoughts were thereafter discussed with Etienne Riviere, in order
+        to draw up the next objectives we should pursue for the continuation
+        of our work and to begin the version 2 of the Splay project.
 
 
   \chapter{Architecture}
