@@ -84,177 +84,896 @@
 
   \chapter{Introduction}
 
-
-
     % Discuter de la problématique de tester des algorithmes distribues
-    % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features 
+    % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features
     % amener implicitement les features
-    \subsection{Distributed Algorithms}
+    \section{Distributed Algorithms Creation}
 
-      Distributed algorithms is a key aspect of lot of application in different domain such 
-      cloud computing, networking or artificial intelligence \cite{DistributedArtificialIntelligence}.
-      We say that a algorithm is distributed when it is designed to run in several connected processors/machines.
-      The main reasons of this separation of processors are for performance, availability or/and scalability.
-      Distributed application used distributed algorithms to fix some issues, raised by the computation division   
-      in different processors/machines, such as consensus, atomic commit, leader election, ...  \\
+      Distributed algorithms are a key aspect of a lot of different
+      applications in different domains such as cloud computing, networking
+      or artificial intelligence \cite{DistributedArtificialIntelligence}.\\
+      We can say that an algorithm is a distributed one when it is designed to
+      run on several processors or machines being linked together, achieving
+      a common task together or dividing the workload among them in order to
+      achieve it.\\
+      The main reasons making this need to distribute the work over multiple
+      nodes may be performance reasons, availability, scalability, replication
+      needs, etc..\\
+      As we start pursuing the development of distributed applications, having
+      the previous needs, we start encountering specific problems related to
+      distributed applications :
+      \begin{itemize}
+        \item In case we want our nodes to organize themselves automatically and
+        make them choose a leader to orchestrate their work, how to achieve
+        this leader election?
+        \item In case we want our nodes to agree on something, how to make
+        them decide and on which value proposed by one of the nodes should they
+        agree with?
+      \end{itemize}
 
-      The creation of distributed application is time consuming, complex and error prone. Moreover,
-      the test of distributed algorithms used is a mandatory step to avoid errors in specific configuration and 
-      gain trust in the correctness of the whole system. These tests is painful to do manually, you need 
-      to deploy/simulate a collection of machine, create the real pratical code and a way to regroup all you result. 
-      With all these steps, the prototyping of our algorithm is time consuming, product thousand line of codes and increase
-      the chance of bugs not correlated to your distributed algorithm. \\
+      A distributed application therefore needs specific distributed algorithms
+      designed to solve those new raised problems.\\
 
-      Some testbeds exists to facilitate the testing of distributed application such as emulab \cite{Emulab}
-      , ModelNet \cite{ModelNet} or PlanetLab \cite{PlanetLab}. These solution have some serious 
-      drawback, it is very hard to learn and then lot of time is spend to deploy or install. \\
+      However, the creation of distributed algorithms is a time consuming,
+      complex and error prone activity. Moreover, testing these algorithms is
+      a mandatory step to avoid errors in specific configurations (from our
+      leader election case, what should happen when the leader dies?) and in
+      order to gain trust in the correctness of the whole system.\\
+      These tests are painful to do manually if you want to reproduce close
+      to reality situation by deploying or simulating a collection of machines,
+      creating the needed code to tie your nodes together before even being
+      able to work on the precise distributed algorithm you want to experiment
+      with, and also writing the needed code to gather statistics and result
+      from your experiments.\\
+      With all these steps, the prototyping of algorithms is time consuming,
+      produces thousands of lines of code not directly related to the work,
+      and thus also increasing the chance of creating bugs not related to the
+      distributed algorithm.\\
 
-      A second problem with distributed algorithm is that the pseudo-code, from papers by example, is 
-      far away from a true solution with pratical code. There are in general lot of time management and
-      asynchrone call and response from others nodes. It increases the gap between the theorical 
-      specification and the real test. Then, supply a high level library helping the creation of distributed algorithm
-      is good start. Again, some libraries exist for this purpose in different languages (Mace \cite{Mace} in C++,
-      Pymote \cite{Pymote} in (Python), ...) \\
+      Another issue with distributed algorithms is that the pseudo-code,
+      from paper for examples, is usually far from what a true solution to the
+      related problem would be. There is in general a lot of time management
+      and asynchronous calls and responses from the nodes among the system,
+      increasing the gap between the theoretical specifications and the real
+      life.
 
-    \subsection{Our requirements}
+    \section{Requirements}
 
-    
-    % requirements leading to Splay
+      There is indeed a need for some solution that would provide answers
+      to ease the development and experimentation of distributed algorithm.
+      From what we listed before, a typical good solution would be:
+
+      \begin{itemize}
+        \item Focused around the development of the algorithm
+        \item Allowing simulation of real-life conditions
+        \item Easy to use and install for any user
+      \end{itemize}
+
+    \section{Existing Solutions}
+
+      Some testbeds exist aiming to facilitate the testing of the
+      distributed algorithms such as emulab \cite{Emulab}, ModelNet
+      \cite{ModelNet} or PlanetLab \cite{PlanetLab}. But these solutions have
+      some serious drawbacks :
+
+      \begin{itemize}
+        \item They are quite complicated to use and hard to learn
+        \item Difficult to install or deploy
+        \item Offering partial solutions to the issues we listed before
+      \end{itemize}
+
+      Concerning the code itself, supplying a high level library helping the
+      creation of distributed algorithms is indeed a solution and those
+      exists for that precise purpose in different languages, such as :
+
+      \begin{itemize}
+        \item Mace \cite{Mace} in C++
+        \item Pymote \cite{Pymote} in (Python)
+      \end{itemize}
+
+      These solutions were not integrated together or not suiting the real needs
+      for naking the development of distributed algorithms easier and better,
+      thus offering a place for a better solution.
 
   \chapter{Problem Statement - Splay}
 
-  \section{About the Splay Project}
+    \section{About the Splay Project}
 
-    % Discussion about what was available when we started the rework of the Splay project.
-    The SPLAY project has initiated to solve the difficulty to test and
-    develop distributed algorithm in a large scale. SPLAY is not a recent
-    project (begin around 2006), and lot of features have been added during
-    some years. The first version of SPLAY  was designed to "covers all
-    aspects of the development and evaluation chain" of distributed
-    application \cite{SPLAY}. \\
+      % Discussion about what was available when we started the rework of the Splay project.
+      The SPLAY project has initiated to solve the difficulty to test and
+      develop distributed algorithm in a large scale. SPLAY is not a recent
+      project (begin around 2006), and lot of features have been added during
+      some years. The first version of SPLAY  was designed to "covers all
+      aspects of the development and evaluation chain" of distributed
+      application \cite{SPLAY}. \\
 
-    After some years, a module has been constructed be to manage network
-    topology, SplayNet \cite{SplayNet}. This middleware implements a easy
-    way to set the topology network between the endpoints (machines) and
-    restrict the usage of the network depending of that.
+      After some years, a module has been constructed be to manage network
+      topology, SplayNet \cite{SplayNet}. This middleware implements a easy
+      way to set the topology network between the endpoints (machines) and
+      restrict the usage of the network depending of that.
 
-    \subsection{Legacy Splay Project}
+      \subsection{Legacy Splay Project}
 
-      When we begin our work on Splay, the repository of the
-      project \cite{SplayGit} was not consistent. Indeed, the master branch was
-      unstable (last commit and a lot before too). The project was splitting in
-      multiple parts without any explantion or quite few.
+        When we begin our work on Splay, the repository of the
+        project \cite{SplayGit} was not consistent. Indeed, the master branch was
+        unstable (last commit and a lot before too). The project was splitting in
+        multiple parts without any explantion or quite few.
 
-    \subsection{A first update}
+      \subsection{A first update}
 
-      % réduire à quelques paragraphes
+        % réduire à quelques paragraphes
 
-      We had the opportunity to get a part-time job at the UCLouvain for
-      a work directly linked on this thesis. The objective was, at the end
-      of ten days of work, to update the versions of the technologies used
-      in Splay and in the mean time get the opportunity to acquire and
-      deepen our knowledge about how the project was working.\\
+        We had the opportunity to get a part-time job at the UCLouvain for
+        a work directly linked on this thesis. The objective was, at the end
+        of ten days of work, to update the versions of the technologies used
+        in Splay and in the mean time get the opportunity to acquire and
+        deepen our knowledge about how the project was working.\\
 
-      At the beginning of this job, the last updates on the project were
-      from 2016, and a number of features and enhancements were developed
-      so far. However the last version of the project wasn't in a stable
-      state and thus Raziel Carvajal Gomez (our supervisor during this
-      part-time job, and also a contributer of the project) took the decision
-      to create a branch from a commit dating from September 2011 to let us
-      start from a stable state.\\
-      We therefore had the benefit of starting with a stable and working
-      base, but that caused a great loss concerning the work that had been
-      achieved during the five years between 2011 and 2016.\\
-      That is the moment when we spotted the first issue and thing we
-      absolutely wanted to change and integrate on the project before
-      starting the development phase: the project had been transfered from
-      its old versioning system on Git and had been uploaded on Github in
-      June 2011. But since that period, the version tagging system offered
-      by Git hadn't been used to mark working and stable releases over time,
-      therefore that was something we would achieve thereafter.\\
+        At the beginning of this job, the last updates on the project were
+        from 2016, and a number of features and enhancements were developed
+        so far. However the last version of the project wasn't in a stable
+        state and thus Raziel Carvajal Gomez (our supervisor during this
+        part-time job, and also a contributer of the project) took the decision
+        to create a branch from a commit dating from September 2011 to let us
+        start from a stable state.\\
+        We therefore had the benefit of starting with a stable and working
+        base, but that caused a great loss concerning the work that had been
+        achieved during the five years between 2011 and 2016.\\
+        That is the moment when we spotted the first issue and thing we
+        absolutely wanted to change and integrate on the project before
+        starting the development phase: the project had been transfered from
+        its old versioning system on Git and had been uploaded on Github in
+        June 2011. But since that period, the version tagging system offered
+        by Git hadn't been used to mark working and stable releases over time,
+        therefore that was something we would achieve thereafter.\\
 
-      Starting from that point, we were able to progressively become more
-      familiar with the way the project was working and its software
-      architecture, identify and understand the different services that
-      were composing it and also understand how they interacted among
-      each other. Once this knowledge acquired, we were able to begin the
-      upgrade of the different technology versions used beginning with the
-      Ruby and the Lua, the two most widely present technologies in Splay.\\
-      With software versions from at most 2011, and because we wanted
-      to upgrade thoses to the most recent available versions of those
-      technologies, we were well aware that at the moment we would apply the
-      versions changes, the whole project would become totally unstable
-      because of numerous function calls that would be now deprecated,
-      modified or even not available anymore and we would have to spend a lot
-      of time changing those before getting the project to be stable again.
-      There again we thought that we could avoid this situation in the future
-      and we really had to change something in the future phases: the project
-      was cruelly lacking of tests, at any level of the application.\\
-
-
-      The major consequence of this fact was that we had to make repairs
-      step by step because of the languages and frameworks version changes,
-      and we had to base ourselves on a certain global understanding of how
-      the project was working and some final execution results of scenarios
-      to estimate that the project was functional again. It was totally
-      impossible to be sure that our changes weren't impacting some internal
-      behaviour of the project in a negative but imperceptible way,
-      consequences that were not avoidable in the end but that we would
-      only discover thereafter when implementing new features.\\
-      It was therefore obvious for us that we would setup series of tests
-      at different levels of the application during the next phases of our
-      work, in order to make the project way more maintainable than in the
-      state we received it and to ensure that further enhancement would
-      be way more easier.\\
+        Starting from that point, we were able to progressively become more
+        familiar with the way the project was working and its software
+        architecture, identify and understand the different services that
+        were composing it and also understand how they interacted among
+        each other. Once this knowledge acquired, we were able to begin the
+        upgrade of the different technology versions used beginning with the
+        Ruby and the Lua, the two most widely present technologies in Splay.\\
+        With software versions from at most 2011, and because we wanted
+        to upgrade thoses to the most recent available versions of those
+        technologies, we were well aware that at the moment we would apply the
+        versions changes, the whole project would become totally unstable
+        because of numerous function calls that would be now deprecated,
+        modified or even not available anymore and we would have to spend a lot
+        of time changing those before getting the project to be stable again.
+        There again we thought that we could avoid this situation in the future
+        and we really had to change something in the future phases: the project
+        was cruelly lacking of tests, at any level of the application.\\
 
 
-      We then succeeded to progressively put back in a working state
-      (partially, as we based this criterion on the main feature) all the
-      elements composing Splay with newer versions, and also updating the
-      libraries used by all the different languages. The main changes
-      speaking of technology versions were the following :
-
-      \begin{itemize}
-        \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
-        \item \textbf{Lua}: 5.1 $\rightarrow$ 5.3
-        \item \textbf{Rails}: 2.1.0 $\rightarrow$ 5.2.0
-      \end{itemize}
-
-      At the end of these ten days of work, we had a healthy and updated
-      base to work with and ready to receive the real work of our thesis.\\
-
-      Besides this, another part of this part-time job was, once the updates
-      achieved, to update the project's documentation and to describe in
-      it how the different services were working and also to take some
-      reflexion time in order to emit thoughts about how we could make
-      enhancement on the system architecture and how it was operating. These
-      were our conclusions :
-
-      \begin{itemize}
-        \item The code organization was not really good and should be changed.
-        The code of the six different services was located in the same and
-        unique repository, this had the consequence of making way harder
-        the navigation in the project's tree during the development, the
-        clarity of the commits in the Git log and therefore the evolution
-        of these different services.
-        \item The fact of using a database as a communication point between
-        the user part and the \textbf{Controller} was maybe not the best
-        way of proceeding today.
-        \item The usage of Ruby as language for the \textbf{Controller} and
-        Lua for the \textbf{Daemons} was maybe not the most relevant choice
-        today, and technology alternatives designed for multi-processes and
-        concurrent applications such as Elixir should be reviewed. A different
-        technology choice might also in the mean time solve our previous
-        thought abot the database.
-      \end{itemize}
-
-      Those thoughts were thereafter discussed with Etienne Riviere, in order
-      to draw up the next objectives we should pursue for the continuation
-      of our work and to begin the version 2 of the Splay project.
+        The major consequence of this fact was that we had to make repairs
+        step by step because of the languages and frameworks version changes,
+        and we had to base ourselves on a certain global understanding of how
+        the project was working and some final execution results of scenarios
+        to estimate that the project was functional again. It was totally
+        impossible to be sure that our changes weren't impacting some internal
+        behaviour of the project in a negative but imperceptible way,
+        consequences that were not avoidable in the end but that we would
+        only discover thereafter when implementing new features.\\
+        It was therefore obvious for us that we would setup series of tests
+        at different levels of the application during the next phases of our
+        work, in order to make the project way more maintainable than in the
+        state we received it and to ensure that further enhancement would
+        be way more easier.\\
 
 
-  \chapter{Architecture}
-  % Old one, change for reasons, develpoment backend, CLI, web_app begin
+        We then succeeded to progressively put back in a working state
+        (partially, as we based this criterion on the main feature) all the
+        elements composing Splay with newer versions, and also updating the
+        libraries used by all the different languages. The main changes
+        speaking of technology versions were the following :
+
+        \begin{itemize}
+          \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
+          \item \textbf{Lua}: 5.1 $\rightarrow$ 5.3
+          \item \textbf{Rails}: 2.1.0 $\rightarrow$ 5.2.0
+        \end{itemize}
+
+        At the end of these ten days of work, we had a healthy and updated
+        base to work with and ready to receive the real work of our thesis.\\
+
+        Besides this, another part of this part-time job was, once the updates
+        achieved, to update the project's documentation and to describe in
+        it how the different services were working and also to take some
+        reflexion time in order to emit thoughts about how we could make
+        enhancement on the system architecture and how it was operating. These
+        were our conclusions :
+
+        \begin{itemize}
+          \item The code organization was not really good and should be changed.
+          The code of the six different services was located in the same and
+          unique repository, this had the consequence of making way harder
+          the navigation in the project's tree during the development, the
+          clarity of the commits in the Git log and therefore the evolution
+          of these different services.
+          \item The fact of using a database as a communication point between
+          the user part and the \textbf{Controller} was maybe not the best
+          way of proceeding today.
+          \item The usage of Ruby as language for the \textbf{Controller} and
+          Lua for the \textbf{Daemons} was maybe not the most relevant choice
+          today, and technology alternatives designed for multi-processes and
+          concurrent applications such as Elixir should be reviewed. A different
+          technology choice might also in the mean time solve our previous
+          thought abot the database.
+        \end{itemize}
+
+        Those thoughts were thereafter discussed with Etienne Riviere, in order
+        to draw up the next objectives we should pursue for the continuation
+        of our work and to begin the version 2 of the Splay project.
+
+  \chapter{Architecture and Development}
+    % Old one, change for reasons, develpoment backend, CLI, web_app begin
+
+    \section{The Base Project}
+
+      \subsection{Architecture}
+
+        The old Splay architecture was composed of :
+
+        \begin{itemize}
+          \item The \textbf{Controller} : The core part of Splay, waits for jobs
+          and dispatch them to the daemons.
+          \item \textbf{Daemons} : Workers registering to the controller and waiting
+          for jobs to achieve.
+          \item A \textbf{MySQL DB} : The communication piece of Splay, allowing
+          communication between the user and the system.
+          \item A \textbf{CLI Server, CLI Client, SplayWeb} : Pair of CLI tools
+          and a web application made in Rails to let user interact with
+          Splay through communication with the MySQL Database.
+        \end{itemize}
+
+        Whether through the usage of the CLI application or the web application,
+        the user was able to interact with the Splay system and to send his
+        jobs, and gather many informations such as the logs or the current
+        state of the running Splayds (the Splay daemons).\\
+
+        The fact that the database was the central piece of communication
+        between the controller and the user applications was a design choice
+        that we decided to respect and to keep working that way. Indeed, the
+        \textbf{Controller} is the central piece within the Splay project,
+        trying to push changes in that design choice and try to implement a
+        different way of communication than the database would have, more
+        than probably, implied a total rewrite of the controller.\\
+
+        That being said, we weren't totally satisfied about the interaction
+        possibilities offered to the user. Indeed, the Ruby on Rails application
+        was quite old, and the client/server pair of the command line interface
+        stack had a hard to maintain and to huge codebase compared to the
+        features that it had to offer.\\
+
+        We thus chose to operate major changes on this part of the Splay
+        project, in order to combine the arrival of our new features and
+        changes onto the core of Splay with a better user experience.
+
+      \subsection{Implementation}
+
+        Describe a bit more precisely how the system works (daemon creation,
+        jobs creation, logging)
+
+    \section{Project Analysis and Modifications}
+
+      Having the project in our hands and free to apply changes to achieve our
+      goals, we analysed which parts of the project were problematic today and
+      how could we change it to ensure a better user experience, a better
+      maintainability and overall software quality.
+
+      \subsection{Better User Services}
+
+        The main issue on the architecture of the user services was a code
+        duplication issue, or at least a duplication related to the solutions
+        created to resolve a common problem. The Rails web application and the
+        CLI server had the common role of letting the user manipulate the
+        database to transmit and gather informations to the \textbf{Controller}.\\
+
+        The first decision to make in order to solve this problem was to
+        merge those two services into a single one and to call that new
+        service according his role among the system: the \textbf{Backend},
+        according to the viewpoint of the client.\\
+        This backend would have the ambition to offer a secured API through
+        the usage of JWT \cite{JWT} and therefore allowing the development
+        of services around that backend, in our case a web application and
+        a command line interface application.\\
+
+        The web application would thus use a recent JavaScript technology
+        allowing dynamic interactions with the user, and the CLI would use
+        a simple and dedicated technology, those two services consuming the
+        same API offered by the backend. The backend, for its part, would
+        stay in the Ruby ecosystem, in order to keep a technology concistency
+        with the global project and the technologies already in use.
+
+      \subsection{Github Repository Reorganization}
+
+        From our analysis on the Splay project, we weren't satisfied about how
+        it was maintained on Github so far. Our major concerns were the
+        following :
+
+        \begin{itemize}
+          \item Lack of version tagging to specify stable versions
+          \item The code organisation was not good and it was hard to
+          understand exactly where the different services were located,
+          everything was more or less in the same source folder.
+        \end{itemize}
+
+        From this analysis we also realized that the project was really
+        lacking of documentation in order to help and guide people interested
+        in Splay to install and run it.\\
+
+        We therefore started with forking the project in a personal repository,
+        allowing us to perform complete reorganization of all the directories
+        and files composing the project and adding some basic documentation.
+        Each service was successfuly placed in a distinct directory while
+        keeping the docker-compose file working.\\
+        The project was cleaner, however, we felt that this wasn't enough
+        and that we could achieve a better structure. The project is big and
+        consisting of multiple services interacting with each other but
+        not sharing any code. We therefore decided to create a new Github
+        organization called \textbf{The Splay Project V2} in which we created
+        a distinct repository for each service and one as the main repository
+        of the project.\\
+
+        The main repository called \textbf{Splay} contains all the other services
+        through the submodule \cite{GitSubmodules} feature of git. These
+        subrepositories representing the new architecture wanted :
+
+        \begin{itemize}
+          \item the cli (command line interface)
+          \item the daemon (also called \textit{splayd} in the project)
+          \item the backend (the merge of the cli\_server and the old web app backend)
+          \item The controller
+          \item The new web application
+        \end{itemize}
+
+        Each of these subrepositories is self-sufficient and contains a Dockerfile
+        allowing the user to create the related container and to use and test
+        the service alone, and therefore also has it's own documentation.\\
+
+        For each master branch of these subrepositories, a link with Dockerhub
+        has been made so that each push on master will trigger an automatic build
+        of a docker image using the source and uploading it on the Dockerhub
+        \cite{DockerHubGithub}.
+        This was especially made to ease the integration testing using a
+        continuous integration service, which would have to build every single
+        image otherwise (we'll talk about this in a dedicated chapter).\\
+
+        Now the services were clearly and logically separated in their
+        distinct repositories, it would be really easier for us to track
+        the changes made in each service and would ease further improvements
+        by Splay maintainers.
+
+    \section{Backend Development}
+
+      In this section, we'll go through the development of our new Backend
+      as the central communication interface with the database for the user
+      applications.\\
+
+      \subsection{The Choice of Rails}
+
+        The controller service and the old pair of services composing the CLI
+        having been developed with the Ruby language, and the old web
+        application having been developed with Ruby on Rails, it was obvious
+        for us to stay within the Ruby ecosystem to create the new service
+        that would become what we called the \textbf{Backend}. The technology
+        we wanted to use for this development had to offer an efficient
+        solution to the following issues :
+
+        \begin{itemize}
+          \item Allowing a simple interfacing with the MySQL database in order
+          to ensure the communication with the controller, and therefore allow
+          the submission of new jobs, the gathering of information about the
+          Daemons, etc...
+          \item Allow to develop and expose a JSON API alloing other front
+          end services (web application and CLI) to make use of this API and
+          interact with the Splay system.
+          \item Offer a large choice of libraries for testing, data
+          serialization using JSON, and other libraries solving the problems
+          we talked about before.
+        \end{itemize}
+
+        The both of us already having a certain experience in using Ruby on
+        Rails, and for the reasons of ecosystem consistency we talked about
+        in the previous sections, we immediately agreed on using this
+        framework for the backend. The fact of staying in the same language
+        ecosystem would allow us to make sure that future contributers to
+        the application would not have to play with too many technologies and
+        therefore make the future evolution of Splay easier.\\
+        It should also be noticed that, as we exposed it when talking about the
+        changes in the renewed software architecture of Splay, the previous
+        web application and the CLI server had a similar role although being
+        specialized for different applications. However, the commom logic
+        of these two Ruby services was already present, and a part of the
+        work was therefore just the matter of isolating this common logic
+        and making it better.\\
+
+        Indeed Rails allow to easily develop, besides traditional MVC web
+        applications, API only applications that doesn't contain all the stuff
+        and complexity needed for presenting HTML views to the user and thus
+        having a lighter and more concise codebases.\\
+        The ActiveRecord \cite{activerecord} ORM shipped with the Rails
+        applications is also a major advantage for this technology, allowing us
+        to easily and efficiently manage the system's jobs and daemons.\\
+        Finally, the availability of some libraries such as RSpec made for the
+        testing (topic on which we'll talk more deeply in a dedicated chapter),
+        Rubocop for the linter, or even the Netflix's fast\_jsonapi library for
+        data serialization has definitely made Rails the right technology to
+        choose for the Backend.
+
+      \subsection{Centralization of Splay's Backend}
+
+        As said before in the technology choices section, one big thing
+        we wanted to achieve was the merge of the old CLI server and
+        the backend part from the full-stack old web application as those two
+        services were basically achieving the same work and holding the
+        same responsibilities.\\
+
+        We started with a fresh Ruby on Rails application, passing the
+        generator the \textit{--api} option so that we were provided with
+        a clean and simple Rails app without all the front-end dedicated
+        files, making it simpler and lighter.\\
+
+        Before writing any line of code, the following tools were added
+        to the project :
+
+        \begin{itemize}
+          \item \textbf{Rspec}: A performant and easy to use Ruby testing
+          framework to be able to begin development following the test
+          driven development approach.
+          \item \textbf{Rubocop}: A static code analyser (linter) to follow
+          good codestyle conventions and avoid bad pattern right from the start.
+          \item \textbf{Travis}
+          \item \textbf{CodeCov} A test coverage tool to get further
+          information on the test suite.
+        \end{itemize}
+
+        Now that the app was ready for development, the major features
+        we wanted to provide were the one provided by the old CLI server and
+        were the following :
+
+        \begin{itemize}
+          \item User and session management (creation, login)
+          \item Job management (creation, deletion, listing, details)
+          \item Daemon querrying (listing, details)
+          \item Job logs querrying
+        \end{itemize}
+
+        Implementing those features would let us immediately reuse the old
+        CLI client for testing purposes and would provide sufficient actions
+        to start the development of the web application, which could unveil
+        need for new endpoints on the backend to provide user with more
+        actions in order to interact the system.\\
+
+        \subsubsection{Models}
+
+          The first phase of this centralized backend development was to
+          put it in charge of the database and the way the data was handled.\\
+
+          For this purpose, we progressively created database migrations
+          for each model of the Splay system (jobs, daemons, users, etc...)
+          with the right constraints on their fields.\\
+          We reflected these constraints inside the generated Rails models to
+          ensure that no corrupted data could be registered into the system,
+          having a double check through the application and through the
+          database schema.\\
+          For each model created, we also wrote model tests to ensure those
+          constraints were respected when creating a new model and trying
+          to save it into the database.
+
+        \subsubsection{User Registration}
+
+          To achieve the registration of users, we simply used the
+          well-known Devise \cite{devise} gem (gems are how ruby libraries are
+          called) which provide out-of-the box an efficient and flexible
+          authentication solution for Rails application.\\
+          As we were to allow the authentication through a future JSON API,
+          the most relevant part in using Devise was to make use of all
+          the user registration process given by the gem, using good principles
+          in terms of password hashing with salt to store them. We didn't
+          have to reinvent the wheel about user registration.\\
+
+          Moreover, for any further development or evolution of the application,
+          we know that Devise also provides user management modules such as
+          Omniauth support, account tracking, registration confirmation
+          through emails, and many other listed on the gem webpage.\\
+
+          Devise was therefore the best choice for our registration management,
+          even for an API only Rails application.
+
+        \subsubsection{User Authentication}
+
+          As we mentioned it before, one of the best way to handle user
+          authentication in JSON API applications is by using the JSON Web
+          Tokens (JWT), following the industry standard from RFC7519.\\
+
+          Upon successful registration or login on the Rails application, a
+          JWT is returned to the calling application to provide it with a way
+          to authenticate further request. This JWT holds encrypted
+          information (with a secret key) such as the user id to allow the Rails
+          app to identify to whom belongs the request. The fact that the token
+          is generated in the backend with a secret key also means that the
+          token cannot be altered or forged by a malicious application.\\
+
+          To make this works, we had to begin the work on the API endpoints.
+          Before starting to work on those endpoints, we agree that we would
+          follow the principles of REST \cite{rest} for the API. Endpoints would
+          represent entities with classic HTTP verbs to interact with them.\\
+
+          Each endpoint inside our system is managed by the following stack :
+
+          \begin{itemize}
+            \item A route entry representing the entity. In this case,
+            authentication is linked to the session entity and achieve through
+            a POST method, as we want to create a new session.
+            \item A controller method corresponding to the endpoint action.
+            Here then, a Session controller exists, with a create method in
+            which the password checking happens and a response is returned
+            accordingly.
+          \end{itemize}
+
+          As we were in the objective of following good practices, we wanted
+          to follow the \textit{"Fat models, skinny controllers"} principle.
+          But instead of bloating our models with the needed inner logic for
+          authentication, we created intermediate layers called services
+          in Rails. Those services hold the needed logic to keep the controllers
+          nice and clean. In the case of authentication the controller receives
+          the request from the router, filled with user data, then delegates
+          the task of password verification, token generation if succeeded,
+          and just return the result in the response.\\
+
+          The same process was also applied to manage registration through
+          the API, as it needed the JWT layer to be in a working state.\\
+
+          Finally we also wrote tests simulating request making use of our
+          API, which we'll explain in more details in a dedicated chapter.
+          Nevertheless, each test is testing the different behaviour of
+          the endpoints, like registering with a bad email, logging in with
+          a non-existant user, etc...
+
+        \subsubsection{Splay Endpoints}
+
+          From all the previous tasks on the backend, we now had all the
+          necessary basis to create the other endpoints in order to let
+          an authenticated user interact with Splay.\\
+
+          Once again, we created an authentication service that would check
+          the request's token to verify whether or not the user was valid or
+          if he had the necessary rights to perform the requested action.\\
+
+          The endpoints we created are the following :
+
+          \begin{itemize}
+            \item \textbf{Users} : Create, destroy, index (get the list of that
+            ressource)
+            \item \textbf{Sessions} : Create
+            \item \textbf{Splayds} : Index
+            \item \textbf{Jobs} : Index, show (get info on a specific entity
+            of that ressource), destroy and create
+            \item \textbf{Logs} : Show
+          \end{itemize}
+
+          The create methods required additional checks in corresponding
+          services, to carefully create the entity in the database with
+          the data sent with the request and make sure those data were
+          satisfying the constraints.\\
+
+        \subsubsection{Error Handling}
+
+          In order to provide the best response to the applications
+          communicating with the backend, we wanted to give response
+          the right HTTP errors code in case of errors.\\
+
+          Indeed a successful request is automatically answered with a 200
+          status code by the Rails application by default.\\
+          Rails has a really conveniant way to raise errors and catch them
+          in the same or upper component on the call stack, we therefore
+          made use of that tool to implement the following error manaegement
+          strategy :
+
+          \begin{itemize}
+            \item Each Controller of our API inherit from a common file
+            called \textit{ApplicationController}
+            \item This ApplicationController holds a set of catchers (rescue
+            in the Ruby language) to catch which errors could happen in our
+            application :
+              \begin{itemize}
+                \item The entity that the user wants to create isn't valid, this
+                means he sent bad parameters through the request
+                \item The requested action is not authorized for this user
+                \item The request is malformed (missing fields or badly forged
+                request)
+                \item The requested entity doesn't exist (for example a user
+                wants to get the job details for a non existing job)
+              \end{itemize}
+            \item Then in any controller or service used by a controller, we
+            can raise an error and associate an error message, which will be
+            autmatically rescued at the root level and trigger a response with
+            the right HTTP status code and the given error message.
+          \end{itemize}
+
+    \section{WebApp Development}
+
+      \subsection{Choosing the Framework}
+
+        As we made the decision that the web application would only be a
+        front-end application making use of a centralized backend offering
+        a complete JSON API, we canted to use a front-end web development
+        framework that would satisfy the following conditions : \\
+
+        \begin{itemize}
+          \item Light
+          \item Ease of development and maintenance
+          \item Access to numerous third-party libraries
+          \item Popular enough to be ensure support over time
+        \end{itemize}
+
+        In order to develop a front-end application, the JavaScript ecosystem
+        was an obvious choice, and we made a pre-selection among the most
+        popular web framework on the market and recognized for their qualities:
+        ReactJS, Angular and VueJS.\\
+        We rapidly removed Angular from our list because we preferred the
+        component-based UI development offered by the two other frameworks,
+        which were lighter and avoiding to have to develop in the MVC style.
+        Even if we both had a previous experience with React thanks to a
+        Cloud Computing course at the UCLouvain, we decided to go for VueJS
+        instead of React.\\
+
+        The first major advantage of Vue is how light it is, we also took into
+        account the fact that this technology was gaining in popularity for
+        multiple years now to be today a huge player in the world of the web
+        technologies. Moreover, as we took some time to develop a proof
+        of concept application using Vue, we were totally satisfied with the
+        simplicity of development that that framework was offering to the
+        developers and allowed us to be totally confident into the fact
+        that going for this technology would allow any further contributer
+        of the Splay project to easily get in and participate to the
+        development.\\
+        Indeed, a Vue application is organized around single components, each
+        having their own HTML template, their CSS style declarations and
+        the associated JavaScript code. No other exotic language is required.\\
+        The fac tthat the framework is in the JavaScript ecosystem and
+        associated to the NPM package manager also allow to take advantage of
+        numerous existing libraries, such as data visualisation libraries,
+        testing libraries, etc... \\
+
+        For all those reasons, Vue revealed itself the best choice for a
+        web application, and also allowing us to develop with a something
+        we liked and with recent technologies, besides providing an efficient
+        solution to the conditions we needed for the technology.
+
+      \subsection{The new front-end application} %TODO: Review - Rewrite
+
+        In this section, we will talk about the new modern web application.
+        The developement story beginning by a complete refactor of all features
+        and finished by the new features developed in the web application side.
+
+        \subsubsection{Single Page Application - Old feature refactor}
+        As the devolment of backend was begon (previous section), we started, in the same time, the
+        developement of the Single Page Application in VueJS. After removing
+        old files of the previous web site, we created a basic VueJS project
+        (version 2.5.X at this time) with the home page and the bootstrap-vue
+        package \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a
+        well know HTML, CSS, and JavaScript framework to create responsive and
+        modern web interface. The full integration of bootstrap in a Vue
+        project is done with the extension of bootstrap package, bootstrap-vue.
+        For us, Bootstrap is like a Swiss knife to make a web page with minimun
+        design and modernity. \\
+
+        The next step was to build a register and login page for the user
+        management. To manage different page in the same Vue project, we
+        installed the Vue-Router package. It is a extension of Vue to navigate
+        through different pages (url) on the single page app (no reload with
+        the server), and the user can switch page as he was on a regular
+        website (backward/forward page, historic, ...). It is commonly used in
+        front end framework to give a better user experience. Then, we created
+        a page for the user registering and connection, directly connected to
+        the backend user API. For the json communication with the backend, we
+        used axios \cite{axios}, a popular HTTP Javascript client. At the end
+        of this version of the web application, the user can create his/her
+        account and connect to it, and the token of authentification (token
+        based authentification) will be save on the client browser (auto-login
+        for the next visit). \\
+
+        % job - splayd list and job form
+        In order to get the same features as the legacy website, we created a
+        monitor page, where important information is given with lists. Indeed,
+        a list of splay daemon (create by controller) is retrieve from the
+        backend and print with global information in a nice bootstrap table.
+        Also, a second table, used for jobs (also via the backend service), is
+        builded with general data. The user can choose to see more details on
+        one splay daemon or a job via a button. Also, he can choose to kill a
+        job through a red button, the controller will do the rest. Moreover, The creation of job is done
+        with a simple form and it is automatically checked with vee-validate
+        package \cite{VeeValidate} (also checked in the backend service, of
+        course). Vee-validate is a small package solutionning the problem of
+        manual checking of form by adding some propreties to inputs, and it
+        makes our code more compact and less messy. At this step, we had
+        almost all legacy feature (for the web application) but in much more
+        nice way, with modern solution and maintenable code. Only the log
+        download was missing at this point. \\
+        {\color{red} TODO : Screen shot of monitor}
+
+        % Log
+        When the log API on the backend was enable, we readd this feature to the website with some
+        improvements. When the job running or endend, the user can see the log (with a button next to details)
+        of merge daemon log with time and daemon indication for each line of log. The user can choose to
+        download as a text file (as before), copy to the clipboard or only verify the log in
+        the website checking for any error. \\
+
+        \subsubsection{The Lua editor}
+        % Lua editor
+        The backend was not ready for the log feature, then we worked on the Lua editor
+        integration. The idea to build our-self entirely the editor was moved aside quickly,
+        it will take too much time and it will be not evolutive. Then, we found a
+        great package, named brace (a browserify version of Ace editor) \cite{Ace}. Ace
+        can handle hundred type of programming language for the coloration, error handling and
+        show line number. The integration of ace is the project was easy and light, Lua is
+        colorize perfectly and a error is show when the syntax is wrong. But, there is not
+        build-in auto-completion for Lua most likely because Lua is not very popular these days.
+        It is possible to add our own completer in the ace edito, but it is a long task
+        for few results, then we decided to move on.
+        {\color{red} TODO : screen shot of Lua editor}
+
+        \subsubsection{Topology creation}
+        % SAM: Topology creation
+        {\color{red} TODO + screen shot}
+
+    \section{CLI Development}
+
+      \subsection{Using Python}
+
+        The old pair of services intented to compose the CLI service was
+        written in LUA on the client side, and the CLI server was in Ruby. As
+        the server's logic would be moved and merged into the \textbf{Backend}
+        service, and as we wanted to keep a command line interfact application
+        in order to run tests of the global project, we needed to reevaluate
+        the relevance of the LUA usage for this application.\\
+
+        It is more than probable that LUA was used for coherence reasons back
+        in the days, and to avoid to scatter Splay around too much different
+        technologies (although Ruby may have been used too instead of LUA).
+        Still, maybe today this choice was not the most relevant for a CLI
+        application. Indeed, our small client CLI had to be :
+
+        \begin{itemize}
+          \item Simple
+          \item Concise
+          \item Written in an easy-to-use language
+          \item Having conveniant libraries allowing to create simple CLI apps
+        \end{itemize}
+
+        However, we inherited of an application scattered in multiples LUA
+        files, each file representing a CLI command. We therefore had a huge
+        source of code duplication, as each file was repeating the process
+        of parsing the user arguments when the program was called, and also
+        repeating the process of reaching the server through a HTTP library
+        in LUA.\\
+        Ruby was indeed a relevant option if we wanted to restrict the number
+        of different technologies in use among the project, but Python was
+        a better choice to write such a simple script as our CLI. Python has
+        a lot of very conveniant libraries to treat HTTP calls and to
+        manage and parse user arguments when creating a CLI application.
+
+      \subsection{Developing the CLI}
+
+    \section{New Features}
+
+      \subsection{Fault injection}
+
+        The fault injection (or crash point) is done on the daemon side. Indeed, we wanted
+        to crash the code in middle of the execution tree, then, only the daemon can
+        handle with presicion the crash. We choose to use domain specific language for
+        crash management that the user can put in a Lua comment. During the execution of job, the first step
+        is to parse the code and manage the execute of the crash point.
+
+        \subsubsection{Domain Specific Language (DSL)}
+
+          We specified a small DSL designed to be simple and flexible, for the user and for the parsing. This DSL need to
+          be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the
+          daemon if the specification (by the user) of the crash is not correct. Also, the number of line between the
+          source code and after the parsing (DSL) need to be the same for error message (to get the correct line number in the trace).
+          For these reasons, a crash point need to be reprensented in \textbf{one line} and beginning by two comma (--) which
+          indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}.
+          The crash append where the crash point is define, then it is possible to
+          crash everywhere (thread, middle of function, etc). \\
+
+          Secondly, a fault is defined by it type, by the moment it occurs and on which nodes it going to happend.
+          These characteristics need to be on the DSL specification. First, we begon to integrate the affected (by crash) nodes choosed
+          (can be several), in this purpose, the user adds, after the keyword \textit{CRASH POINT},
+          the ids of nodes (separated by space). We separated these and the type of fault by adding a colon, the type
+          of fault is defined by its name and a possible extend data (also separated by space). Again, we split the
+          fault type and the moment definition by a colon. The moment definition (when occurs the crash) is a keyword, follows
+          by additional data. Our final DSL looks like (The first line corresponds to one line of crash point):
+          \begin{lstlisting}[style=MyBash]
+    -- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
+    <TYPE> => STOP | RECOVERY <float>
+    <WHEN> => AFTER <int> | RANDOM <float>
+          \end{lstlisting}
+          For now, you can see, there are 2 types of crash and 2 way to define the moment of crash. A stop crash (STOP) means that
+          the nodes will be dead forever. In opposite, when it is the recovery type (RECOVERY), the node will be crash but restart
+          completely after x seconds (float number). Moreover there are 2 way to define when the code will crash. The ATFER keyword
+          is the determinist way, after x pass (int number), the next passage the crash will happen. The non-determinist way is
+          done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage.
+          Here some positive examples of crash points using our DSL :
+
+          \begin{lstlisting}[style=MyLua]
+    -- Crash forever the node 1 and 2 at the 4th passage
+    -- in the code
+    -- CRASH POINT 1 2 : STOP : AFTER    3
+
+    -- At each time that the code (node 1) pass by this comment,
+    -- there is 0.0002 chance to crash the node 1
+    --CRASH POINT 1: STOP : RANDOM 0.0002
+
+    -- Crash immediately when the comment is encouter in
+    -- the node 1, but this node will recover after 2 sec
+    -- CRASH POINT 1: RECOVERY 2 : AFTER 0
+
+    -- Have one chance on two to crash at each pass for
+    -- the node 1, 2, 3, 4, 5. But recover immediately
+    -- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
+            \end{lstlisting}
+
+          Also, we add some negative examples (won't product any crash) :
+
+          \begin{lstlisting}[style=MyLua]
+    -- Won't work because Crash point not in uppercase
+    --Crash Point 1 2 : STOP : AFTER 3
+
+    -- Won't work because no node is specified.
+    -- CRASH POINT :RECOVERY  965 :   AFTER 3
+
+    -- Won't work because RECOVER is not a valid
+    -- type (but warning expected).
+    -- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
+
+    -- Won't work because TIME is not a valid type
+    -- for now (but error expected).
+    -- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
+          \end{lstlisting}
+
+        \subsubsection{Parsing}
+
+          The parsing of the code is done just before that the user code is launched in each node (daemon). The parsing will
+          create a table with information of each crash found in the user code and concerned with this node (with id node).
+          This table is save in the library named "splay.crash", and the access of crash information is done by a number id.
+          The parsing will return a new code where the crash point comment take in account (if no error and concerned this node)
+          is replaced by a function calling, with the right number crash id (as parameter). Then, when the code will execute,
+          and the crash function call, we can act depending of information about this crash (type, when trigger the crash, ...).\\
+
+          The parsing handles savely the error of user about the syntax, with crashing the node. Parsing is done
+          line by line and if there is a error (also in the code of parsing itself), the line will be unchanged and
+          a warning or error log will be written. Also, the parsing is fully write in Lua (of course) with only
+          the regex (not standard regex) matcher of Lua \cite{RegexLua}.
+
+        \subsubsection{Execution}
+
+          Well, we see the definition of the DSL and how we parse it, now we will detail how the crash append and how
+          to handle it to recover. First, the main problem is that Lua multithreading is non-preemptive, then we can't
+          stop a thread from outside \cite{CoroutineLua}. The only to stop directly the Lua interpreter and kill all other
+          thread is to exit the program by a os function. Also, we have the possibility to send a exit status code of the
+          process, it is very convinent for knowing if we need to restart or not after a crash point. \\
+
+          With this way to exit, we can create a artificial crash point, which kill immediately all coroutine (thread)
+          of Lua and the current execution. Moreover, we can pass special exit status code to send message to a other process.
+          To use this exit code, we created a fork (already in the c splay lib) before parse the crash point and execute the user code.
+          Then the process child will execute the parsing of crash point and execute the code, and the parent process will wait
+          to get the exit status code of it child process. We added a Lua function (waitpid) for this purpose and use the
+          original waitpid of C \cite{waitpid}. \\
+
+          When the child process end (either normaly or by a crash), the parent process check the status exit code and act depending.
+          If it is the exit code 65 or 66, it means that a crash has been done (or the user want to exit with one of these values),
+          65 means a STOP crash, then no restart need to be node. On the opposite, 66 (Recovery crash type) means than we need to
+          relaunch the user code,
+          and it is done recursively (with a new fork of course), and the crash table is reset (by reparsing the original code).
+
+      \subsection{Timeline Animation of a graph evolution}
+        % REM
+        {\color{red} TODO}
+
+
 
   \chapter{Quality Assurance}
 
@@ -736,7 +1455,7 @@
         the user specify those crashpoints in the Lua code within the Lua
         editor.
       \subsection{Development}
-      
+
   % TO DISPATCH - this chapter need to be deleted at the end
   \chapter{Splay Version 2}
 
@@ -816,7 +1535,7 @@
       modernize the web application of the legacy project and add some
       features on it (next section)
 
-\subsection{new features}  
+\subsection{new features}
     % REDO this part
     Before create a precise list of features to add to Splay, we first
     thought about scenarios. We imagined how someone would want to exercise
@@ -881,51 +1600,6 @@
       It is important here to discuss about the software architecture of the
       Splay Project as it has impacts on the way we achieved this work
 
-      \subsection{Legacy Architecture}
-
-        The old Splay architecture was composed of :
-
-        \begin{itemize}
-          \item The \textbf{Controller} : The core part of Splay, waits for jobs
-          and dispatch them to the daemons.
-          \item \textbf{Daemons} : Workers registering to the controller and waiting
-          for jobs to achieve.
-          \item A \textbf{MySQL DB} : The communication piece of Splay, allowing
-          communication between the user and the system.
-          \item A \textbf{CLI Server, CLI Client, SplayWeb} : Pair of CLI tools
-          and a web application made in Rails to let user interact with
-          Splay through communication with the MySQL Database.
-        \end{itemize}
-
-        \begin{figure}[H]
-          \centering
-          \includegraphics[scale=0.6]{figures/prev_arch.png}
-          \caption{\label{prev_arch} Previous Splay Architecture}
-        \end{figure}
-
-        Whether through the usage of the CLI application or the web application,
-        the user was able to interact with the Splay system and to send his
-        jobs, and gather many informations such as the logs or the current
-        state of the running Splayds (the Splay daemons).
-
-        The fact that the database was the central piece of communication
-        between the controller and the user applications was a design choice
-        that we decided to respect and to keep working that way. Indeed, the
-        \textbf{Controller} is the central piece within the Splay project,
-        trying to push changes in that design choice and try to implement a
-        different way of communication than the database would have, more
-        than probably, implied a total rewrite of the controller.\\
-
-        That being said, we weren't totally satisfied about the interaction
-        possibilities offered to the user. Indeed, the Ruby on Rails application
-        was quite old, and the client/server pair of the command line interface
-        stack had a hard to maintain and to huge codebase compared to the
-        features that it had to offer.\\
-
-        We thus chose to operate major changes on this part of the Splay
-        project, in order to combine the arrival of our new features and
-        changes onto the core of Splay with a better user experience.
-
       \subsection{Renewed Architecture}
 
         The main issue on the architecture of the user services was a code
@@ -986,141 +1660,6 @@
       \item Details about the implementation, about how Splay is working today.
     \end{itemize}
 
-    \section{Technology choices}
-
-      \subsection{VueJS - Web App}
-
-        As we made the decision that the web application would only be a
-        front-end application making use of a centralized backend offering
-        a complete JSON API, we canted to use a front-end web development
-        framework that would satisfy the following conditions : \\
-
-        \begin{itemize}
-          \item Light
-          \item Ease of development and maintenance
-          \item Access to numerous third-party libraries
-          \item Popular enough to be ensure support over time
-        \end{itemize}
-
-        In order to develop a front-end application, the JavaScript ecosystem
-        was an obvious choice, and we made a pre-selection among the most
-        popular web framework on the market and recognized for their qualities:
-        ReactJS, Angular and VueJS.\\
-        We rapidly removed Angular from our list because we preferred the
-        component-based UI development offered by the two other frameworks,
-        which were lighter and avoiding to have to develop in the MVC style.
-        Even if we both had a previous experience with React thanks to a
-        Cloud Computing course at the UCLouvain, we decided to go for VueJS
-        instead of React.\\
-
-        The first major advantage of Vue is how light it is, we also took into
-        account the fact that this technology was gaining in popularity for
-        multiple years now to be today a huge player in the world of the web
-        technologies. Moreover, as we took some time to develop a proof
-        of concept application using Vue, we were totally satisfied with the
-        simplicity of development that that framework was offering to the
-        developers and allowed us to be totally confident into the fact
-        that going for this technology would allow any further contributer
-        of the Splay project to easily get in and participate to the
-        development.\\
-        Indeed, a Vue application is organized around single components, each
-        having their own HTML template, their CSS style declarations and
-        the associated JavaScript code. No other exotic language is required.\\
-        The fac tthat the framework is in the JavaScript ecosystem and
-        associated to the NPM package manager also allow to take advantage of
-        numerous existing libraries, such as data visualisation libraries,
-        testing libraries, etc... \\
-
-        For all those reasons, Vue revealed itself the best choice for a
-        web application, and also allowing us to develop with a something
-        we liked and with recent technologies, besides providing an efficient
-        solution to the conditions we needed for the technology.
-
-      \subsection{Python - CLI}
-
-        The old pair of services intented to compose the CLI service was
-        written in LUA on the client side, and the CLI server was in Ruby. As
-        the server's logic would be moved and merged into the \textbf{Backend}
-        service, and as we wanted to keep a command line interfact application
-        in order to run tests of the global project, we needed to reevaluate
-        the relevance of the LUA usage for this application.\\
-
-        It is more than probable that LUA was used for coherence reasons back
-        in the days, and to avoid to scatter Splay around too much different
-        technologies (although Ruby may have been used too instead of LUA).
-        Still, maybe today this choice was not the most relevant for a CLI
-        application. Indeed, our small client CLI had to be :
-
-        \begin{itemize}
-          \item Simple
-          \item Concise
-          \item Written in an easy-to-use language
-          \item Having conveniant libraries allowing to create simple CLI apps
-        \end{itemize}
-
-        However, we inherited of an application scattered in multiples LUA
-        files, each file representing a CLI command. We therefore had a huge
-        source of code duplication, as each file was repeating the process
-        of parsing the user arguments when the program was called, and also
-        repeating the process of reaching the server through a HTTP library
-        in LUA.\\
-        Ruby was indeed a relevant option if we wanted to restrict the number
-        of different technologies in use among the project, but Python was
-        a better choice to write such a simple script as our CLI. Python has
-        a lot of very conveniant libraries to treat HTTP calls and to
-        manage and parse user arguments when creating a CLI application.
-
-      \subsection{Ruby on Rails - Backend}
-
-        The controller service and the old pair of services composing the CLI
-        having been developed with the Ruby language, and the old web
-        application having been developed with Ruby on Rails, it was obvious
-        for us to stay within the Ruby ecosystem to create the new service
-        that would become what we called the \textbf{Backend}. The technology
-        we wanted to use for this development had to offer an efficient
-        solution to the following issues :
-
-        \begin{itemize}
-          \item Allowing a simple interfacing with the MySQL database in order
-          to ensure the communication with the controller, and therefore allow
-          the submission of new jobs, the gathering of information about the
-          Daemons, etc...
-          \item Allow to develop and expose a JSON API alloing other front
-          end services (web application and CLI) to make use of this API and
-          interact with the Splay system.
-          \item Offer a large choice of libraries for testing, data
-          serialization using JSON, and other libraries solving the problems
-          we talked about before.
-        \end{itemize}
-
-        The both of us already having a certain experience in using Ruby on
-        Rails, and for the reasons of ecosystem consistency we talked about
-        in the previous sections, we immediately agreed on using this
-        framework for the backend. The fact of staying in the same language
-        ecosystem would allow us to make sure that future contributers to
-        the application would not have to play with too many technologies and
-        therefore make the future evolution of Splay easier.\\
-        It should also be noticed that, as we exposed it when talking about the
-        changes in the renewed software architecture of Splay, the previous
-        web application and the CLI server had a similar role although being
-        specialized for different applications. However, the commom logic
-        of these two Ruby services was already present, and a part of the
-        work was therefore just the matter of isolating this common logic
-        and making it better.\\
-
-        Indeed Rails allow to easily develop, besides traditional MVC web
-        applications, API only applications that doesn't contain all the stuff
-        and complexity needed for presenting HTML views to the user and thus
-        having a lighter and more concise codebases.\\
-        The ActiveRecord \cite{activerecord} ORM shipped with the Rails
-        applications is also a major advantage for this technology, allowing us
-        to easily and efficiently manage the system's jobs and daemons.\\
-        Finally, the availability of some libraries such as RSpec made for the
-        testing (topic on which we'll talk more deeply in a dedicated chapter),
-        Rubocop for the linter, or even the Netflix's fast\_jsonapi library for
-        data serialization has definitely made Rails the right technology to
-        choose for the Backend.
-
     \section{Development}
 
       This section details in a story-telling way all the different part
@@ -1131,63 +1670,7 @@
       our work but is organized by date of beginning. Indeed, some goals
       and features needed further improvement over time.
 
-      \subsection{Github Repository Reorganization}
 
-        From our first analysis during our part-time job period on the Splay
-        project, we weren't satisfied about how it was maintained on Github so
-        far. Our major concern were the following :
-
-        \begin{itemize}
-          \item Lack of version tagging to specify stable versions
-          \item The code organisation was not good and it was hard to
-          understand exactly where the different services were located,
-          everything was more or less in the same source folder.
-        \end{itemize}
-
-        From our last experience we also realized that the project was really
-        lacking of documentation in order to help and guide people interested
-        in Splay to install and run it.\\
-
-        We therefore started with forking the project in a personal repository,
-        allowing us to perform complete reorganization of all the directories
-        and files composing the project and adding some basic documentation.
-        Each service was successfuly placed in a distinct directory while
-        keeping the docker-compose file working.\\
-        The project was cleaner, however, we felt that this wasn't enough
-        and that we could achieve a better structure. The project is big and
-        consisting of multiple services interacting with each other but
-        not sharing any code. We therefore decided to create a new Github
-        organization called \textbf{The Splay Project V2} in which we created
-        a distinct repository for each service and one as the main repository
-        of the project.\\
-
-        The main repository called \textbf{Splay} contains all the other services
-        through the submodule \cite{GitSubmodules} feature of git. These
-        subrepositories representing the new architecture wanted :
-
-        \begin{itemize}
-          \item the cli (command line interface)
-          \item the daemon (also called \textit{splayd} in the project)
-          \item the backend (the merge of the cli\_server and the old web app backend)
-          \item The controller
-          \item The new web application
-        \end{itemize}
-
-        Each of these subrepositories is self-sufficient and contains a Dockerfile
-        allowing the user to create the related container and to use and test
-        the service alone, and therefore also has it's own documentation.\\
-
-        For each master branch of these subrepositories, a link with Dockerhub
-        has been made so that each push on master will trigger an automatic build
-        of a docker image using the source and uploading it on the Dockerhub \cite{DockerHubGithub}.
-        This was especially made to ease the integration testing using a
-        continuous integration service, which would have to build every single
-        image otherwise.\\
-
-        Now the services were clearly and logically separated in their
-        distinct repositories, it would be really easier for us to track
-        the changes made in each service and would ease further improvement
-        by Splay maintainers.
 
       \subsection{Stabilisation of Controller and daemon}
         {\color{red} TODO}
@@ -1198,389 +1681,14 @@
           \item fix bugs controller and daemon
         \end{itemize}
 
-      \subsection{Centralization of Splay's Backend}
 
-        As said before in the technology choices section, one big thing
-        we wanted to achieve was the merge of the old CLI server and
-        the backend part from the full-stack old web application as those two
-        services were basically achieving the same work and holding the
-        same responsibilities.\\
 
-        We started with a fresh Ruby on Rails application, passing the
-        generator the \textit{--api} option so that we were provided with
-        a clean and simple Rails app without all the front-end dedicated
-        files, making it simpler and lighter.\\
-
-        Before writing any line of code, the following tools were added
-        to the project :
-
-        \begin{itemize}
-          \item \textbf{Rspec}: A performant and easy to use Ruby testing
-          framework to be able to begin development following the test
-          driven development approach.
-          \item \textbf{Rubocop}: A static code analyzer (linter) to follow
-          good codestyle conventions and avoid bad pattern right from the start.
-          \item \textbf{Travis}
-          \item \textbf{CodeCov} A test coverage tool to get further
-          information on the test suite.
-        \end{itemize}
-
-        Now that the app was ready for development, the major features
-        we wanted to provide were the one provided by the old CLI server and
-        were the following :
-
-        \begin{itemize}
-          \item User and session management (creation, login)
-          \item Job management (creation, deletion, listing, details)
-          \item Daemon querrying (listing, details)
-          \item Job logs querrying
-        \end{itemize}
-
-        Implementing those features would let us immediately reuse the old
-        CLI client for testing purposes and would provide sufficient actions
-        to start the development of the web application, which could unveil
-        need for new endpoints on the backend to provide user with more
-        actions in order to interact the system.\\
-
-        \subsubsection{Models}
-
-          The first phase of this centralized backend development was to
-          put it in charge of the database and the way the data was handled.\\
-
-          For this purpose, we progressively created database migrations
-          for each model of the Splay system (jobs, daemons, users, etc...)
-          with the right constraints on their fields.\\
-          We reflected these constraints inside the generated Rails models to
-          ensure that no corrupted data could be registered into the system,
-          having a double check through the application and through the
-          database schema.\\
-          For each model created, we also wrote model tests to ensure those
-          constraints were respected when creating a new model and trying
-          to save it into the database.
-
-        \subsubsection{User Registration}
-
-          To achieve the registration of users, we simply used the
-          well-known Devise \cite{devise} gem (gems are how ruby libraries are
-          called) which provide out-of-the box an efficient and flexible
-          authentication solution for Rails application.\\
-          As we were to allow the authentication through a future JSON API,
-          the most relevant part in using Devise was to make use of all
-          the user registration process given by the gem, using good principles
-          in terms of password hashing with salt to store them. We didn't
-          have to reinvent the wheel about user registration.\\
-
-          Moreover, for any further development or evolution of the application,
-          we know that Devise also provides user management modules such as
-          Omniauth support, account tracking, registration confirmation
-          through emails, and many other listed on the gem webpage.\\
-
-          Devise was therefore the best choice for our registration management,
-          even for an API only Rails application.
-
-        \subsubsection{User Authentication}
-
-          As we mentioned it before, one of the best way to handle user
-          authentication in JSON API applications is by using the JSON Web
-          Tokens (JWT), following the industry standard from RFC7519.\\
-
-          Upon successful registration or login on the Rails application, a
-          JWT is returned to the calling application to provide it with a way
-          to authenticate further request. This JWT holds encrypted
-          information (with a secret key) such as the user id to allow the Rails
-          app to identify to whom belongs the request. The fact that the token
-          is generated in the backend with a secret key also means that the
-          token cannot be altered or forged by a malicious application.\\
-
-          To make this works, we had to begin the work on the API endpoints.
-          Before starting to work on those endpoints, we agree that we would
-          follow the principles of REST \cite{rest} for the API. Endpoints would
-          represent entities with classic HTTP verbs to interact with them.\\
-
-          Each endpoint inside our system is managed by the following stack :
-
-          \begin{itemize}
-            \item A route entry representing the entity. In this case,
-            authentication is linked to the session entity and achieve through
-            a POST method, as we want to create a new session.
-            \item A controller method corresponding to the endpoint action.
-            Here then, a Session controller exists, with a create method in
-            which the password checking happens and a response is returned
-            accordingly.
-          \end{itemize}
-
-          As we were in the objective of following good practices, we wanted
-          to follow the \textit{"Fat models, skinny controllers"} principle.
-          But instead of bloating our models with the needed inner logic for
-          authentication, we created intermediate layers called services
-          in Rails. Those services hold the needed logic to keep the controllers
-          nice and clean. In the case of authentication the controller receives
-          the request from the router, filled with user data, then delegates
-          the task of password verification, token generation if succeeded,
-          and just return the result in the response.\\
-
-          The same process was also applied to manage registration through
-          the API, as it needed the JWT layer to be in a working state.\\
-
-          Finally we also wrote tests simulating request making use of our
-          API, which we'll explain in more details in a dedicated chapter.
-          Nevertheless, each test is testing the different behaviour of
-          the endpoints, like registering with a bad email, logging in with
-          a non-existant user, etc...
-
-        \subsubsection{Splay Endpoints}
-
-          From all the previous tasks on the backend, we now had all the
-          necessary basis to create the other endpoints in order to let
-          an authenticated user interact with Splay.\\
-
-          Once again, we created an authentication service that would check
-          the request's token to verify whether or not the user was valid or
-          if he had the necessary rights to perform the requested action.\\
-
-          The endpoints we created are the following :
-
-          \begin{itemize}
-            \item \textbf{Users} : Create, destroy, index (get the list of that
-            ressource)
-            \item \textbf{Sessions} : Create
-            \item \textbf{Splayds} : Index
-            \item \textbf{Jobs} : Index, show (get info on a specific entity
-            of that ressource), destroy and create
-            \item \textbf{Logs} : Show
-          \end{itemize}
-
-          The create methods required additional checks in corresponding
-          services, to carefully create the entity in the database with
-          the data sent with the request and make sure those data were
-          satisfying the constraints.\\
-
-        \subsubsection{Error Handling}
-
-          In order to provide the best response to the applications
-          communicating with the backend, we wanted to give response
-          the right HTTP errors code in case of errors.\\
-
-          Indeed a successful request is automatically answered with a 200
-          status code by the Rails application by default.\\
-          Rails has a really conveniant way to raise errors and catch them
-          in the same or upper component on the call stack, we therefore
-          made use of that tool to implement the following error manaegement
-          strategy :
-
-          \begin{itemize}
-            \item Each Controller of our API inherit from a common file
-            called \textit{ApplicationController}
-            \item This ApplicationController holds a set of catchers (rescue
-            in the Ruby language) to catch which errors could happen in our
-            application :
-              \begin{itemize}
-                \item The entity that the user wants to create isn't valid, this
-                means he sent bad parameters through the request
-                \item The requested action is not authorized for this user
-                \item The request is malformed (missing fields or badly forged
-                request)
-                \item The requested entity doesn't exist (for example a user
-                wants to get the job details for a non existing job)
-              \end{itemize}
-            \item Then in any controller or service used by a controller, we
-            can raise an error and associate an error message, which will be
-            autmatically rescued at the root level and trigger a response with
-            the right HTTP status code and the given error message.
-          \end{itemize}
-
-      \subsection{The new front-end application} %TODO: Review - Rewrite
-
-        In this section, we will talk about the new modern web application.
-        The developement story beginning by a complete refactor of all features
-        and finished by the new features developed in the web application side.
-
-        \subsubsection{Single Page Application - Old feature refactor}
-        As the devolment of backend was begon (previous section), we started, in the same time, the
-        developement of the Single Page Application in VueJS. After removing
-        old files of the previous web site, we created a basic VueJS project
-        (version 2.5.X at this time) with the home page and the bootstrap-vue
-        package \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a
-        well know HTML, CSS, and JavaScript framework to create responsive and
-        modern web interface. The full integration of bootstrap in a Vue
-        project is done with the extension of bootstrap package, bootstrap-vue.
-        For us, Bootstrap is like a Swiss knife to make a web page with minimun
-        design and modernity. \\
-
-        The next step was to build a register and login page for the user
-        management. To manage different page in the same Vue project, we
-        installed the Vue-Router package. It is a extension of Vue to navigate
-        through different pages (url) on the single page app (no reload with
-        the server), and the user can switch page as he was on a regular
-        website (backward/forward page, historic, ...). It is commonly used in
-        front end framework to give a better user experience. Then, we created
-        a page for the user registering and connection, directly connected to
-        the backend user API. For the json communication with the backend, we
-        used axios \cite{axios}, a popular HTTP Javascript client. At the end
-        of this version of the web application, the user can create his/her
-        account and connect to it, and the token of authentification (token
-        based authentification) will be save on the client browser (auto-login
-        for the next visit). \\
-
-        % job - splayd list and job form
-        In order to get the same features as the legacy website, we created a
-        monitor page, where important information is given with lists. Indeed,
-        a list of splay daemon (create by controller) is retrieve from the
-        backend and print with global information in a nice bootstrap table.
-        Also, a second table, used for jobs (also via the backend service), is
-        builded with general data. The user can choose to see more details on
-        one splay daemon or a job via a button. Also, he can choose to kill a
-        job through a red button, the controller will do the rest. Moreover, The creation of job is done
-        with a simple form and it is automatically checked with vee-validate
-        package \cite{VeeValidate} (also checked in the backend service, of
-        course). Vee-validate is a small package solutionning the problem of
-        manual checking of form by adding some propreties to inputs, and it
-        makes our code more compact and less messy. At this step, we had
-        almost all legacy feature (for the web application) but in much more
-        nice way, with modern solution and maintenable code. Only the log
-        download was missing at this point. \\
-        {\color{red} TODO : Screen shot of monitor}
-
-        % Log
-        When the log API on the backend was enable, we readd this feature to the website with some
-        improvements. When the job running or endend, the user can see the log (with a button next to details)
-        of merge daemon log with time and daemon indication for each line of log. The user can choose to
-        download as a text file (as before), copy to the clipboard or only verify the log in
-        the website checking for any error. \\
-
-        \subsubsection{The Lua editor}
-        % Lua editor
-        The backend was not ready for the log feature, then we worked on the Lua editor
-        integration. The idea to build our-self entirely the editor was moved aside quickly,
-        it will take too much time and it will be not evolutive. Then, we found a
-        great package, named brace (a browserify version of Ace editor) \cite{Ace}. Ace
-        can handle hundred type of programming language for the coloration, error handling and
-        show line number. The integration of ace is the project was easy and light, Lua is
-        colorize perfectly and a error is show when the syntax is wrong. But, there is not
-        build-in auto-completion for Lua most likely because Lua is not very popular these days.
-        It is possible to add our own completer in the ace edito, but it is a long task
-        for few results, then we decided to move on.
-        {\color{red} TODO : screen shot of Lua editor}
-
-        \subsubsection{Topology creation}
-        % SAM: Topology creation
-        {\color{red} TODO + screen shot}
 
       \subsection{Rework of the CLI to use new Backend}
 
         All the Command line interface has been redone in Python more clearly and concise. {\color{red} TODO }
 
-      \subsection{Fault injection}
-        The fault injection (or crash point) is done on the daemon side. Indeed, we wanted
-        to crash the code in middle of the execution tree, then, only the daemon can
-        handle with presicion the crash. We choose to use domain specific language for
-        crash management that the user can put in a Lua comment. During the execution of job, the first step
-        is to parse the code and manage the execute of the crash point.
 
-        \subsubsection{Domain Specific Language (DSL)}
-
-        We specified a small DSL designed to be simple and flexible, for the user and for the parsing. This DSL need to
-        be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the
-        daemon if the specification (by the user) of the crash is not correct. Also, the number of line between the
-        source code and after the parsing (DSL) need to be the same for error message (to get the correct line number in the trace).
-        For these reasons, a crash point need to be reprensented in \textbf{one line} and beginning by two comma (--) which
-        indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}.
-        The crash append where the crash point is define, then it is possible to
-        crash everywhere (thread, middle of function, etc). \\
-
-        Secondly, a fault is defined by it type, by the moment it occurs and on which nodes it going to happend.
-        These characteristics need to be on the DSL specification. First, we begon to integrate the affected (by crash) nodes choosed
-        (can be several), in this purpose, the user adds, after the keyword \textit{CRASH POINT},
-        the ids of nodes (separated by space). We separated these and the type of fault by adding a colon, the type
-        of fault is defined by its name and a possible extend data (also separated by space). Again, we split the
-        fault type and the moment definition by a colon. The moment definition (when occurs the crash) is a keyword, follows
-        by additional data. Our final DSL looks like (The first line corresponds to one line of crash point):
-        \begin{lstlisting}[style=MyBash]
--- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
-<TYPE> => STOP | RECOVERY <float>
-<WHEN> => AFTER <int> | RANDOM <float>
-        \end{lstlisting}
-        For now, you can see, there are 2 types of crash and 2 way to define the moment of crash. A stop crash (STOP) means that
-        the nodes will be dead forever. In opposite, when it is the recovery type (RECOVERY), the node will be crash but restart
-        completely after x seconds (float number). Moreover there are 2 way to define when the code will crash. The ATFER keyword
-        is the determinist way, after x pass (int number), the next passage the crash will happen. The non-determinist way is
-        done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage.
-        Here some positive examples of crash points using our DSL :
-
-        \begin{lstlisting}[style=MyLua]
--- Crash forever the node 1 and 2 at the 4th passage
--- in the code
--- CRASH POINT 1 2 : STOP : AFTER    3
-
--- At each time that the code (node 1) pass by this comment,
--- there is 0.0002 chance to crash the node 1
---CRASH POINT 1: STOP : RANDOM 0.0002
-
--- Crash immediately when the comment is encouter in
--- the node 1, but this node will recover after 2 sec
--- CRASH POINT 1: RECOVERY 2 : AFTER 0
-
--- Have one chance on two to crash at each pass for
--- the node 1, 2, 3, 4, 5. But recover immediately
--- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
-          \end{lstlisting}
-
-        Also, we add some negative examples (won't product any crash) :
-
-        \begin{lstlisting}[style=MyLua]
--- Won't work because Crash point not in uppercase
---Crash Point 1 2 : STOP : AFTER 3
-
--- Won't work because no node is specified.
--- CRASH POINT :RECOVERY  965 :   AFTER 3
-
--- Won't work because RECOVER is not a valid
--- type (but warning expected).
--- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
-
--- Won't work because TIME is not a valid type
--- for now (but error expected).
--- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
-        \end{lstlisting}
-
-        \subsubsection{Parsing}
-
-        The parsing of the code is done just before that the user code is launched in each node (daemon). The parsing will
-        create a table with information of each crash found in the user code and concerned with this node (with id node).
-        This table is save in the library named "splay.crash", and the access of crash information is done by a number id.
-        The parsing will return a new code where the crash point comment take in account (if no error and concerned this node)
-        is replaced by a function calling, with the right number crash id (as parameter). Then, when the code will execute,
-        and the crash function call, we can act depending of information about this crash (type, when trigger the crash, ...).\\
-
-        The parsing handles savely the error of user about the syntax, with crashing the node. Parsing is done
-        line by line and if there is a error (also in the code of parsing itself), the line will be unchanged and
-        a warning or error log will be written. Also, the parsing is fully write in Lua (of course) with only
-        the regex (not standard regex) matcher of Lua \cite{RegexLua}.
-
-        \subsubsection{Execution}
-
-        Well, we see the definition of the DSL and how we parse it, now we will detail how the crash append and how
-        to handle it to recover. First, the main problem is that Lua multithreading is non-preemptive, then we can't
-        stop a thread from outside \cite{CoroutineLua}. The only to stop directly the Lua interpreter and kill all other
-        thread is to exit the program by a os function. Also, we have the possibility to send a exit status code of the
-        process, it is very convinent for knowing if we need to restart or not after a crash point. \\
-
-        With this way to exit, we can create a artificial crash point, which kill immediately all coroutine (thread)
-        of Lua and the current execution. Moreover, we can pass special exit status code to send message to a other process.
-        To use this exit code, we created a fork (already in the c splay lib) before parse the crash point and execute the user code.
-        Then the process child will execute the parsing of crash point and execute the code, and the parent process will wait
-        to get the exit status code of it child process. We added a Lua function (waitpid) for this purpose and use the
-        original waitpid of C \cite{waitpid}. \\
-
-        When the child process end (either normaly or by a crash), the parent process check the status exit code and act depending.
-        If it is the exit code 65 or 66, it means that a crash has been done (or the user want to exit with one of these values),
-        65 means a STOP crash, then no restart need to be node. On the opposite, 66 (Recovery crash type) means than we need to
-        relaunch the user code,
-        and it is done recursively (with a new fork of course), and the crash table is reset (by reparsing the original code).
-
-      \subsection{Timeline Animation of a graph evolution}
-      % REM
-      {\color{red} TODO}
 
 
   \chapter{Use Case}
@@ -1644,23 +1752,23 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         \subsubsection{Lua editor}
 
-        We have noticed during the developement of own features that the Lua Editor is  
-        the less important feature. Only for one reason, most of the time, we 
-        create our Lua script in on own editor and then making a copy-paste.  
+        We have noticed during the developement of own features that the Lua Editor is
+        the less important feature. Only for one reason, most of the time, we
+        create our Lua script in on own editor and then making a copy-paste.
         A local modern editor with a Lua package installed offer more (not much because Lua is not popular),
-        feature than our editor. But, with little improvements, it can be better or equals than other, 
+        feature than our editor. But, with little improvements, it can be better or equals than other,
         here a non-exaustif list :
 
         \begin{itemize}
-          \item Basic auto-completion : A basic auto-completion can be done for keyword (as our IDE) and 
-          for named function with the help of Ace Editor package. 
-          \item Specific auto-completion : integration of the splay library to the auto-completion with some 
+          \item Basic auto-completion : A basic auto-completion can be done for keyword (as our IDE) and
+          for named function with the help of Ace Editor package.
+          \item Specific auto-completion : integration of the splay library to the auto-completion with some
           hint. It will be overtake our own IDE.
           \item Color theme : with Ace the color theme can be changed, maybe a user can choose by it-self for him
         \end{itemize}
 
-        Note that, Ace can handle lot of different language, 
-        then if the daemon switch of technology (see next section "Refactor of Controller/Daemon"), 
+        Note that, Ace can handle lot of different language,
+        then if the daemon switch of technology (see next section "Refactor of Controller/Daemon"),
         then it will be easy to change the targeted language.
 
         \subsubsection{Crash point}
@@ -1673,10 +1781,10 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           where the crash lib can ask some restriction on network. \\
 
           Moreover, we can imagine more control for the user to handle much better when the crash append.
-          Indeed, by example, when a condition is meet and equals to true then the crash happend. 
+          Indeed, by example, when a condition is meet and equals to true then the crash happend.
           Global variables can help (access then also by the crash lib) or by parsing modificatation
-          where a extra parameters will by add to the crash function call.\\          
-        
+          where a extra parameters will by add to the crash function call.\\
+
         \subsubsection{Topology Creation}
 
           The creation of topology through a modern interface is very effective to build your own 
