@@ -1374,7 +1374,59 @@
           \caption{\label{global_testing} Global Testing in Splay}
         \end{figure}
 
+    \chapter{Use Case}
+
+      A student following a course on distributed application wants to try raft (focus on the correctness of the leader election)
+      implementation on 5 nodes.
+      He choosed to use Splay for his tests in his own laptop (or cluster of mini-computer) but there
+      is no installation of Splay available for him.
+      We going to described the different step of this student with the usage of Splay.
+
+      \section{Installation of Splay}
+
+        First this student need to get a clean installation of Splay. Fortunately, this work is greatly
+        helped because of a installation documentation and the dockerization of the project.
+        Following the main README file of the main repository (production installation), he installs docker and
+        docker-compose first. Then for running Splay, he runs the requested (by the README) commands in his terminal :
+        \begin{lstlisting}[style=MyBash]
+docker-compose -f docker-compose.prod.yml up -d web_app controller
+# 7 daemons because it is recommended to have more than needed
+docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
+        \end{lstlisting}
+        Then he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
+        \url{http://localhost:8080/}. He creates is own account by the register form and it will be automatically connect next time.
+
+      \section{Implementation of Raft in Lua}
+        After the successful installation, the hard work need to be done, it means to create the implementation of raft
+        with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
+        We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
+        We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
+
+        \subsection{Creation of the algorithm}
+        We will explain the raft election in small piece with each time the Lua code attached to it.
+
+
+        \subsection{First result}
+        % After doing the code of raft, he wants to try on several nodes (5), beginning without network topology (all nodes is directly connect).
+
+        % He sees the log to check if one node is leader and no more.
+      \section{Topology settings}
+
+        % After checking his previous code, he repeats all process with and network topology.
+      {\color{red} TODO}
+
+      \section{Robustness Test through fault injection}
+
+      % He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
+
+      {\color{red} TODO}
+
+      \section{Result with a animation}
+      % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
+      {\color{red} TODO}
+    
   \chapter{Conclusion}
+
     We concludes this report by some suggestion, firstly about our own features and secondly about
     SPLAY it-self. At the end, we summarise our global achievement about this project (objectifs agains realized).
 
@@ -1432,11 +1484,12 @@
             the double work with directed edge via form.
           \end{itemize}
 
-      \subsection{Refactor of Controller/Daemon}
+      \subsection{Refactor of old services}
         We have redid some parts of Splay with more modern technology as explain in the section on the architecture but
         we didn't have make a complete refactor for the daemon and the controller. And we think that it is important,
         for future maintenability or improvement, that these services need to be redid or only passed a meticulously review/refactor.
-
+        Also, small remove in the database schema can be done because some columns are maybe not useful anymore.
+        
         \subsubsection{Daemon}
           The daemon is maybe the critical part of the project and it was build with Lua \cite{Lua}. During, our work, after
           stabilize the whole project, we have seen lot of unused code, small bugs and repeated code. Then,
@@ -1458,9 +1511,26 @@
           significantly the performance and used some distributed libraries to create quickly a new Splay library.
 
         \subsubsection{Controller}
+          
+          The controller is the brain of the projects, manages daemons, read new data from database, 
+          write result on database, dispatch command, ... Indeed, the controller is vital for the project, 
+          sadly, the code is still badly documented, needed a advanced clean at certain place (error management quite messy by example) 
+          and poorly tested (even after our work on it, check the chapter on architecture). We propose
+          2 (most important) differents way (for a possible future developement) to increase the quality and the stability of the controller :
+
+          \begin{itemize}
+            \item Using full Oriented Object with sequel \cite{Sequel} model object for each table in the database. 
+            Indeed, for now there are currently tons of raw call of SQL (by string queries) which can be unsecure (in case
+            we forgot one manual check of injection, see next section) and it is very unreadable. A sequel object model allows 
+            every operation on SQL database through function call in a ruby way (nice and concise), avoid SQL error syntax and 
+            maybe the most important, is independent of the database management system (here MySQL 5.7).
+            \item Meticulous refactor of some part of controller, mostly the management of jobs sended to daemon 
+            (Class named Jobd and the chlideren class of it). We found the most of controller bugs in these classes.
+          \end{itemize}
 
       \subsection{Security aspect}
-      The old project
+      
+        In the description of the legacy project, we 
 
 
     \section{Objectives achievement}
@@ -1742,58 +1812,6 @@
       \subsection{Rework of the CLI to use new Backend}
 
         All the Command line interface has been redone in Python more clearly and concise. {\color{red} TODO }
-
-
-
-
-  \chapter{Use Case}
-    A student following a course on distributed application wants to try raft (focus on the correctness of the leader election)
-    implementation on 5 nodes.
-    He choosed to use Splay for his tests in his own laptop (or cluster of mini-computer) but there
-    is no installation of Splay available for him.
-    We going to described the different step of this student with the usage of Splay.
-
-    \section{Installation of Splay}
-      First this student need to get a clean installation of Splay. Fortunately, this work is greatly
-      helped because of a installation documentation and the dockerization of the project.
-      Following the main README file of the main repository (production installation), he installs docker and
-      docker-compose first. Then for running Splay, he runs the requested (by the README) commands in his terminal :
-      \begin{lstlisting}[style=MyBash]
-docker-compose -f docker-compose.prod.yml up -d web_app controller
-# 7 daemons because it is recommended to have more than needed
-docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
-      \end{lstlisting}
-      Then he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
-      \url{http://localhost:8080/}. He creates is own account by the register form and it will be automatically connect next time.
-
-    \section{Implementation of Raft in Lua}
-      After the successful installation, the hard work need to be done, it means to create the implementation of raft
-      with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
-      We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
-      We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
-
-      \subsection{Creation of the algorithm}
-      We will explain the raft election in small piece with each time the Lua code attached to it.
-
-
-      \subsection{First result}
-      % After doing the code of raft, he wants to try on several nodes (5), beginning without network topology (all nodes is directly connect).
-
-      % He sees the log to check if one node is leader and no more.
-    \section{Topology settings}
-
-      % After checking his previous code, he repeats all process with and network topology.
-    {\color{red} TODO}
-
-    \section{Robustness Test through fault injection}
-
-    % He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
-
-    {\color{red} TODO}
-
-    \section{Result with a animation}
-    % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
-    {\color{red} TODO}
 
 
   \nocite{*}
