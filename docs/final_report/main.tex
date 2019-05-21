@@ -176,6 +176,9 @@
       thus offering a place for a better solution.
 
   \chapter{Problem Statement - Splay}
+  % Aporter les solutions aux problèmes cités dans l'introduction
+  % parler des fonctionnalités actuelles du vieux splay
+  % ce qu'on doit changer et fonctionnalités à apporter
 
     \section{About the Splay Project}
 
@@ -973,6 +976,27 @@
         % REM
         {\color{red} TODO}
 
+    \section{Software Architectures}
+
+      Here is an overview of the previous architecture and the renewed one,
+      so that the reader can have a better and visual understanding
+      of the changes we made and talked about in the previous sections.
+
+      \begin{figure}[!tbp]
+        \centering
+        \begin{minipage}[b]{0.45\textwidth}
+          \includegraphics[width=\textwidth]{figures/prev_arch.png}
+          \caption{Previous Architecture}
+        \end{minipage}
+        \hfill
+        \begin{minipage}[b]{0.45\textwidth}
+          \includegraphics[width=\textwidth]{figures/new_arch.png}
+          \caption{Renewed Architecture}
+        \end{minipage}
+        \caption{Splay Architectural Comparison}
+        \label{fig:test}
+      \end{figure}
+
 
 
   \chapter{Quality Assurance}
@@ -1553,9 +1577,7 @@
   % TO DISPATCH - this chapter need to be deleted at the end
   \chapter{Splay Version 2}
 
-  % Aporter les solutions aux problèmes cités dans l'introduction
-  % parler des fonctionnalités actuelles du vieux splay
-  % ce qu'on doit changer et fonctionnalités à apporter
+
 
     In this chapter, we'll expose and describe the objective of this thesis
     being the version 2 of Splay.\\
@@ -1682,67 +1704,6 @@
       % \textbf{Third scenario : } A employee from a big cloud company want to test the robustness of their new Top Secret distributed algorithm. TODO
 
       % as a employee from a cloud company who want test the robusness of their new Top Secret algorithm.
-
-  \chapter{Architecture}
-
-    % Mixer développement et architecture
-    % expliquer pourquoi on l'a fait ***
-    % fur et à mesure, pas forcément
-
-    \section{Software Architecture}
-
-      It is important here to discuss about the software architecture of the
-      Splay Project as it has impacts on the way we achieved this work
-
-      \subsection{Renewed Architecture}
-
-        The main issue on the architecture of the user services was a code
-        duplication issue, or at least a duplication related to the solutions
-        created to resolve a common problem. The Rails web application and the
-        CLI server had the common role of letting the use manipulate the
-        database to transmit and gather informations to the \textbf{Controller}.\\
-
-        The first decision to make in order to solve this problem was to
-        merge those two services into a single one and to call that new
-        service according his role among the system: the \textbf{backend},
-        according to the viewpoint of the client.\\
-        This backend would have the ambition to offer a secured API through
-        the usage of JWT \cite{JWT} and therefore allowing the development
-        of services around that backend, in our case a web application and
-        a command line interface application.\\
-
-        The web application would thus use a recent JavaScript technology
-        allowing dynamic interactions with the user, and the CLI would use
-        a simple and dedicated technology, those two services consuming the
-        same API offered by the backend. The backend, for its part, would
-        stay in the Ruby ecosystem, in order to keep a technology concistency
-        with the global project and the technologies already in use.\\
-
-        The resulting reworked architecture would therefore be the following :
-
-        \begin{itemize}
-          \item The \textbf{Controller} : The core part of Splay, waits for jobs
-          and dispatch them to the daemons.
-          \item \textbf{Daemons} : Workers registering to the controller and waiting
-          for jobs to achieve.
-          \item A \textbf{MySQL DB} : The communication piece of Splay, allowing
-          communication between the user and the system.
-          \item \textbf{Backend} : The backend of the client side Splay app
-          \item A \textbf{Web-app} : The single-page application
-          \item A \textbf{CLI} : The command-line interface
-        \end{itemize}
-
-        \begin{figure}[H]
-          \centering
-          \includegraphics[scale=0.125]{figures/new_arch.png}
-          \caption{\label{new_arch} New Splay Architecture}
-        \end{figure}
-
-    \section{Hardware Architecture}
-
-      About the Rasp cluster. {\color{red} TODO}
-
-
 
   \chapter{Implementation}
 
