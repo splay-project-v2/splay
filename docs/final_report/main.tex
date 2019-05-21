@@ -1692,8 +1692,30 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           \end{itemize}
 
       \subsection{Refactor of Controller/Daemon}
+        We have redid some parts of Splay with more modern technology as explain in the section on the architecture but 
+        we didn't have make a complete refactor for the daemon and the controller. And we think that it is important,
+        for future maintenability or improvement, that these services need to be redid or only passed a meticulously review/refactor.
+
         \subsubsection{Daemon}
-          
+          The daemon is maybe the critical part of the project and it was build with Lua \cite{Lua}. During, our work, after 
+          stabilize the whole project, we have seen lot of unused code, small bugs and repeated code. Then, 
+          we fixed these issues when we encountered them (we were very careful about what we removed/changed), but 
+          mainly it was not our code and some parts of the SPLAY library was not documented, then we didn't use these 
+          mysterious parts. Indeed, lot of file (lib part) is not used with our usage of splay and there aren't not test 
+          about it. For these reason, we think that a complete check of the lua libraries (by someone knowing the old project) is mandatory 
+          and adding even more busted test (of the splay lib) is a good idea. \\
+
+          Also, maybe, a good solution to clean this service and offer a new alternative for the user, it is completely 
+          redo the daemon in a other technology. The best alternative language is, for us, Python (version 3). Indeed, Python is very 
+          popular (developement of Python will continue), have rich libraries environment and offer a very complete
+          set of tools (basic library). However, the main problem of this solution is the performance in vanilla Python compared 
+          to the very small core of Lua and the C integration of it. For us, the main drawback of Lua, its evolution, Lua have no
+          major updated since 2014 and the libraries used in this project doesn't evoled too. 
+          Moreover, Lua have a very small core, then some basic function need done by the user (or in the splay lib) and 
+          it causes a great number of line for the splay lib in some situation (which includes more bugs). Also, to return 
+          to the performance issue of Python, we can imagine using a Just In Time compiler such as PyPy \cite{PyPy} to boost 
+          significantly the performance and used some distributed libraries to create quickly a new Splay library.
+
         \subsubsection{Controller}
 
       \subsection{Security aspect}
