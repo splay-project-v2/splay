@@ -1398,25 +1398,52 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
 
         \subsection{Creation of the algorithm}
-        We will explain the raft election in small piece with each time the Lua code attached to it.
+        The student created a lua code of raft, it isn't trivial sadly,
+        but if you understand raft, it is not so complicated : 
 
+        % Code of raft with comments
+        {\color{red} TODO}
 
         \subsection{First result}
-        % After doing the code of raft, he wants to try on several nodes (5), beginning without network topology (all nodes is directly connect).
+        After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
+        (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader, 
+        and this one send hearbeat to avoid a other leader election from others nodes.
 
-        % He sees the log to check if one node is leader and no more.
+        % TODO : Show small piece of log result
+        {\color{red} TODO}
+
       \section{Topology settings}
 
-        % After checking his previous code, he repeats all process with and network topology.
-      {\color{red} TODO}
+        Atfer testing the algorithm in a perfect network environment, the student tries different configuration of network topologies
+        created by the network topology interface developed by us. 
+
+        % Show three network configuration : 2 correct and 1 doesn't match with the condition broadTime << electionTimeout << MTBF
+
+        Then, he tries with his implementation on the three configuration, the log result shows that 
+        the 2 firsts one succeeded the leader election and stabilize. But on the last, the leader election append multiple time 
+        even when the leader is still on, it is because the condition broadTime << electionTimeout << MTBF is not met.
+
+        {\color{red} TODO}
 
       \section{Robustness Test through fault injection}
 
-      % He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
+        He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
+        When the leader crash, the student expectes that a other launch the leader election and there is a new leader 
+        after some times. He tests with the 2 corrects topologies (don't change the timeout election).
 
-      {\color{red} TODO}
+        % Show crash + new election 
+        {\color{red} TODO}
+
+        Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
+        his friend the mistake in this "better" code.
+
+        % Show buged piece + fault injection -> buggy log
+        {\color{red} TODO}
 
       \section{Result with a animation}
+        
+        Also, the student wants to see how the network and connection evolving during the execution. For 
+        this purpose with a create a small tool to parse a log and see the evolution.
 
         \subsection{Timeline Animation of a graph evolution}
           % REM
