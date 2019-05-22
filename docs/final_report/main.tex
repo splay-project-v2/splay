@@ -428,7 +428,7 @@
           \item the daemon (also called \textit{splayd} in the project)
           \item the backend (the merge of the cli\_server and the old web app backend)
           \item The controller
-          \item The new web application (named web_app)
+          \item The new web application (named web\_app)
         \end{itemize}
 
         Each of these subrepositories is self-sufficient and contains a Dockerfile
@@ -1536,7 +1536,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         \begin{itemize}
           \item The restriction on socket can be completely by-pass. Indeed, in Lua, there is a way to unload
-          a package dynamically (package.loaded["name_package"] = nil). With this technic, we can onload the socket 
+          a package dynamically (package.loaded["name\_package"] = nil). With this technic, we can onload the socket 
           package (with the restriction), reload (at begin of user code) it and the restriction doesn't exist anymore. 
           \item SQL calls in the controller is done mainly with string interpolation, the most of case, 
           this interpolation is secure manually by adding backslash (specific function). There is not 
