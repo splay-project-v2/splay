@@ -428,11 +428,11 @@
           \item the daemon (also called \textit{splayd} in the project)
           \item the backend (the merge of the cli\_server and the old web app backend)
           \item The controller
-          \item The new web application
+          \item The new web application (named web_app)
         \end{itemize}
 
         Each of these subrepositories is self-sufficient and contains a Dockerfile
-        allowing the user to create the related container and to use and test
+        allowing the user to create the related container, to use and test
         the service alone, and therefore also has it's own documentation.\\
 
         For each master branch of these subrepositories, a link with Dockerhub
@@ -696,7 +696,7 @@
             the right HTTP status code and the given error message.
           \end{itemize}
 
-    \section{WebApp Development}
+    \section{Web Application Development}
 
       \subsection{Choosing the Framework}
 
@@ -736,7 +736,7 @@
         Indeed, a Vue application is organized around single components, each
         having their own HTML template, their CSS style declarations and
         the associated JavaScript code. No other exotic language is required.\\
-        The fac tthat the framework is in the JavaScript ecosystem and
+        The fac that the framework is in the JavaScript ecosystem and
         associated to the NPM package manager also allow to take advantage of
         numerous existing libraries, such as data visualisation libraries,
         testing libraries, etc... \\
@@ -746,7 +746,7 @@
         we liked and with recent technologies, besides providing an efficient
         solution to the conditions we needed for the technology.
 
-      \subsection{The new front-end application} %TODO: Review - Rewrite
+      \subsection{The new front-end application} 
 
         In this section, we will talk about the new modern web application.
         The developement story beginning by a complete refactor of all features
@@ -767,11 +767,11 @@
         The next step was to build a register and login page for the user
         management. To manage different page in the same Vue project, we
         installed the Vue-Router package. It is a extension of Vue to navigate
-        through different pages (url) on the single page app (no reload with
+        through different web pages (uri) on the single page app (no reload with
         the server), and the user can switch page as he was on a regular
-        website (backward/forward page, historic, ...). It is commonly used in
+        website (backward/forward buttons, historic, ...). It is commonly used in
         front end framework to give a better user experience. Then, we created
-        a page for the user registering and connection, directly connected to
+        a route for the user registering and connection, with forms directly connected to
         the backend user API. For the json communication with the backend, we
         used axios \cite{axios}, a popular HTTP Javascript client. At the end
         of this version of the web application, the user can create his/her
@@ -801,42 +801,24 @@
         % Log
         When the log API on the backend was enable, we readd this feature to the website with some
         improvements. When the job running or endend, the user can see the log (with a button next to details)
-        of merge daemon log with time and daemon indication for each line of log. The user can choose to
-        download as a text file (as before), copy to the clipboard or only verify the log in
-        the website checking for any error. \\
-
-        \subsubsection{The Lua editor}
-        % Lua editor
-        The backend was not ready for the log feature, then we worked on the Lua editor
-        integration. The idea to build our-self entirely the editor was moved aside quickly,
-        it will take too much time and it will be not evolutive. Then, we found a
-        great package, named brace (a browserify version of Ace editor) \cite{Ace}. Ace
-        can handle hundred type of programming language for the coloration, error handling and
-        show line number. The integration of ace is the project was easy and light, Lua is
-        colorize perfectly and a error is show when the syntax is wrong. But, there is not
-        build-in auto-completion for Lua most likely because Lua is not very popular these days.
-        It is possible to add our own completer in the ace edito, but it is a long task
-        for few results, then we decided to move on.
-        {\color{red} TODO : screen shot of Lua editor}
-
-        \subsubsection{Topology creation}
-        % SAM: Topology creation
-        {\color{red} TODO + screen shot}
+        of merge daemon logs, with, for each line, time and daemon indication (id). The user can choose to
+        download as a text file (as before), copy to the clipboard or only check for any error in
+        the website itself. 
 
     \section{CLI Development}
 
       \subsection{Using Python}
 
         The old pair of services intented to compose the CLI service was
-        written in LUA on the client side, and the CLI server was in Ruby. As
+        written in Lua on the client side, and the CLI server was in Ruby. As
         the server's logic would be moved and merged into the \textbf{Backend}
         service, and as we wanted to keep a command line interfact application
         in order to run tests of the global project, we needed to reevaluate
-        the relevance of the LUA usage for this application.\\
+        the relevance of the Lua usage for this application.\\
 
-        It is more than probable that LUA was used for coherence reasons back
+        It is more than probable that Lua was used for coherence reasons back
         in the days, and to avoid to scatter Splay around too much different
-        technologies (although Ruby may have been used too instead of LUA).
+        technologies (although Ruby may have been used too instead of Lua).
         Still, maybe today this choice was not the most relevant for a CLI
         application. Indeed, our small client CLI had to be :
 
@@ -847,12 +829,12 @@
           \item Having conveniant libraries allowing to create simple CLI apps
         \end{itemize}
 
-        However, we inherited of an application scattered in multiples LUA
+        However, we inherited of an application scattered in multiples Lua
         files, each file representing a CLI command. We therefore had a huge
         source of code duplication, as each file was repeating the process
         of parsing the user arguments when the program was called, and also
         repeating the process of reaching the server through a HTTP library
-        in LUA.\\
+        in Lua.\\
         Ruby was indeed a relevant option if we wanted to restrict the number
         of different technologies in use among the project, but Python was
         a better choice to write such a simple script as our CLI. Python has
@@ -860,121 +842,7 @@
         manage and parse user arguments when creating a CLI application.
 
       \subsection{Developing the CLI}
-
-    \section{New Features}
-
-      \subsection{Fault injection}
-
-        The fault injection (or crash point) is done on the daemon side. Indeed, we wanted
-        to crash the code in middle of the execution tree, then, only the daemon can
-        handle with presicion the crash. We choose to use domain specific language for
-        crash management that the user can put in a Lua comment. During the execution of job, the first step
-        is to parse the code and manage the execute of the crash point.
-
-        \subsubsection{Domain Specific Language (DSL)}
-
-          We specified a small DSL designed to be simple and flexible, for the user and for the parsing. This DSL need to
-          be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the
-          daemon if the specification (by the user) of the crash is not correct. Also, the number of line between the
-          source code and after the parsing (DSL) need to be the same for error message (to get the correct line number in the trace).
-          For these reasons, a crash point need to be reprensented in \textbf{one line} and beginning by two comma (--) which
-          indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}.
-          The crash append where the crash point is define, then it is possible to
-          crash everywhere (thread, middle of function, etc). \\
-
-          Secondly, a fault is defined by it type, by the moment it occurs and on which nodes it going to happend.
-          These characteristics need to be on the DSL specification. First, we begon to integrate the affected (by crash) nodes choosed
-          (can be several), in this purpose, the user adds, after the keyword \textit{CRASH POINT},
-          the ids of nodes (separated by space). We separated these and the type of fault by adding a colon, the type
-          of fault is defined by its name and a possible extend data (also separated by space). Again, we split the
-          fault type and the moment definition by a colon. The moment definition (when occurs the crash) is a keyword, follows
-          by additional data. Our final DSL looks like (The first line corresponds to one line of crash point):
-          \begin{lstlisting}[style=MyBash]
-    -- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
-    <TYPE> => STOP | RECOVERY <float>
-    <WHEN> => AFTER <int> | RANDOM <float>
-          \end{lstlisting}
-          For now, you can see, there are 2 types of crash and 2 way to define the moment of crash. A stop crash (STOP) means that
-          the nodes will be dead forever. In opposite, when it is the recovery type (RECOVERY), the node will be crash but restart
-          completely after x seconds (float number). Moreover there are 2 way to define when the code will crash. The ATFER keyword
-          is the determinist way, after x pass (int number), the next passage the crash will happen. The non-determinist way is
-          done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage.
-          Here some positive examples of crash points using our DSL :
-
-          \begin{lstlisting}[style=MyLua]
-    -- Crash forever the node 1 and 2 at the 4th passage
-    -- in the code
-    -- CRASH POINT 1 2 : STOP : AFTER    3
-
-    -- At each time that the code (node 1) pass by this comment,
-    -- there is 0.0002 chance to crash the node 1
-    --CRASH POINT 1: STOP : RANDOM 0.0002
-
-    -- Crash immediately when the comment is encouter in
-    -- the node 1, but this node will recover after 2 sec
-    -- CRASH POINT 1: RECOVERY 2 : AFTER 0
-
-    -- Have one chance on two to crash at each pass for
-    -- the node 1, 2, 3, 4, 5. But recover immediately
-    -- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
-            \end{lstlisting}
-
-          Also, we add some negative examples (won't product any crash) :
-
-          \begin{lstlisting}[style=MyLua]
-    -- Won't work because Crash point not in uppercase
-    --Crash Point 1 2 : STOP : AFTER 3
-
-    -- Won't work because no node is specified.
-    -- CRASH POINT :RECOVERY  965 :   AFTER 3
-
-    -- Won't work because RECOVER is not a valid
-    -- type (but warning expected).
-    -- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
-
-    -- Won't work because TIME is not a valid type
-    -- for now (but error expected).
-    -- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
-          \end{lstlisting}
-
-        \subsubsection{Parsing}
-
-          The parsing of the code is done just before that the user code is launched in each node (daemon). The parsing will
-          create a table with information of each crash found in the user code and concerned with this node (with id node).
-          This table is save in the library named "splay.crash", and the access of crash information is done by a number id.
-          The parsing will return a new code where the crash point comment take in account (if no error and concerned this node)
-          is replaced by a function calling, with the right number crash id (as parameter). Then, when the code will execute,
-          and the crash function call, we can act depending of information about this crash (type, when trigger the crash, ...).\\
-
-          The parsing handles savely the error of user about the syntax, with crashing the node. Parsing is done
-          line by line and if there is a error (also in the code of parsing itself), the line will be unchanged and
-          a warning or error log will be written. Also, the parsing is fully write in Lua (of course) with only
-          the regex (not standard regex) matcher of Lua \cite{RegexLua}.
-
-        \subsubsection{Execution}
-
-          Well, we see the definition of the DSL and how we parse it, now we will detail how the crash append and how
-          to handle it to recover. First, the main problem is that Lua multithreading is non-preemptive, then we can't
-          stop a thread from outside \cite{CoroutineLua}. The only to stop directly the Lua interpreter and kill all other
-          thread is to exit the program by a os function. Also, we have the possibility to send a exit status code of the
-          process, it is very convinent for knowing if we need to restart or not after a crash point. \\
-
-          With this way to exit, we can create a artificial crash point, which kill immediately all coroutine (thread)
-          of Lua and the current execution. Moreover, we can pass special exit status code to send message to a other process.
-          To use this exit code, we created a fork (already in the c splay lib) before parse the crash point and execute the user code.
-          Then the process child will execute the parsing of crash point and execute the code, and the parent process will wait
-          to get the exit status code of it child process. We added a Lua function (waitpid) for this purpose and use the
-          original waitpid of C \cite{waitpid}. \\
-
-          When the child process end (either normaly or by a crash), the parent process check the status exit code and act depending.
-          If it is the exit code 65 or 66, it means that a crash has been done (or the user want to exit with one of these values),
-          65 means a STOP crash, then no restart need to be node. On the opposite, 66 (Recovery crash type) means than we need to
-          relaunch the user code,
-          and it is done recursively (with a new fork of course), and the crash table is reset (by reparsing the original code).
-
-      \subsection{Timeline Animation of a graph evolution}
-        % REM
-        {\color{red} TODO}
+        % TODO
 
     \section{Software Architectures}
 
@@ -996,8 +864,6 @@
         \caption{Splay Architectural Comparison}
         \label{fig:test}
       \end{figure}
-
-
 
   \chapter{Quality Assurance}
 
@@ -1374,6 +1240,135 @@
           \caption{\label{global_testing} Global Testing in Splay}
         \end{figure}
 
+    \chapter{New Features}
+      \section{Web Application enhancement}
+        \subsection{The Lua editor}
+          % Lua editor
+          One of our objectif was to propose a integrated Lua editor on the web application.
+          The idea to build our-self entirely the editor was moved aside quickly,
+          it will take too much time and it will be not evolutive. Then, we found a
+          great package, named brace, a browserify version of Ace editor \cite{Ace}. Ace
+          can handle hundred type of programming language for the coloration, error handling and
+          show line number. The integration of ace is the project was easy and light, Lua is
+          colorize perfectly and a error is show when the syntax is wrong. But, there is not
+          build-in auto-completion for Lua most likely because Lua is not very popular these days.
+          It is possible to add our own completer in the ace edito, but it is a long task
+          for few results, then we decided to move on.
+          {\color{red} TODO : screen shot of Lua editor}
+
+      \subsection{Topology creation}
+        % SAM: Topology creation
+        {\color{red} TODO + screen shot}
+
+      \section{Fault injection}
+
+        The fault injection (or crash point) is done on the daemon side. Indeed, we wanted
+        to crash the code in middle of the execution tree, then, only the daemon can
+        handle with presicion the crash. We choose to use domain specific language for
+        crash management that the user can put in a Lua comment. During the execution of job, the first step
+        is to parse the code and manage the execute of the crash point.
+
+        \subsection{Domain Specific Language (DSL)}
+
+          We specified a small DSL designed to be simple and flexible, for the user and for the parsing. This DSL need to
+          be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the
+          daemon if the specification (by the user) of the crash is not correct. Also, the number of line between the
+          source code and after the parsing (DSL) need to be the same for error message (to get the correct line number in the trace).
+          For these reasons, a crash point need to be reprensented in \textbf{one line} and beginning by two comma (--) which
+          indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}.
+          The crash append where the crash point is define, then it is possible to
+          crash everywhere (thread, middle of function, etc). \\
+
+          Secondly, a fault is defined by it type, by the moment it occurs and on which nodes it going to happend.
+          These characteristics need to be on the DSL specification. First, we begon to integrate the affected (by crash) nodes choosed
+          (can be several), in this purpose, the user adds, after the keyword \textit{CRASH POINT},
+          the ids of nodes (separated by space). We separated these and the type of fault by adding a colon, the type
+          of fault is defined by its name and a possible extend data (also separated by space). Again, we split the
+          fault type and the moment definition by a colon. The moment definition (when occurs the crash) is a keyword, follows
+          by additional data. Our final DSL looks like (The first line corresponds to one line of crash point):
+          \begin{lstlisting}[style=MyBash]
+-- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
+<TYPE> => STOP | RECOVERY <float>
+<WHEN> => AFTER <int> | RANDOM <float>
+          \end{lstlisting}
+          For now, you can see, there are 2 types of crash and 2 way to define the moment of crash. A stop crash (STOP) means that
+          the nodes will be dead forever. In opposite, when it is the recovery type (RECOVERY), the node will be crash but restart
+          completely after x seconds (float number). Moreover there are 2 way to define when the code will crash. The ATFER keyword
+          is the determinist way, after x pass (int number), the next passage the crash will happen. The non-determinist way is
+          done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage.
+          Here some positive examples of crash points using our DSL :
+
+          \begin{lstlisting}[style=MyLua]
+-- Crash forever the node 1 and 2 at the 4th passage
+-- in the code
+-- CRASH POINT 1 2 : STOP : AFTER    3
+
+-- At each time that the code (node 1) pass by this comment,
+-- there is 0.0002 chance to crash the node 1
+--CRASH POINT 1: STOP : RANDOM 0.0002
+
+-- Crash immediately when the comment is encouter in
+-- the node 1, but this node will recover after 2 sec
+-- CRASH POINT 1: RECOVERY 2 : AFTER 0
+
+-- Have one chance on two to crash at each pass for
+-- the node 1, 2, 3, 4, 5. But recover immediately
+-- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
+            \end{lstlisting}
+
+          Also, we add some negative examples (won't product any crash) :
+
+          \begin{lstlisting}[style=MyLua]
+-- Won't work because Crash point not in uppercase
+--Crash Point 1 2 : STOP : AFTER 3
+
+-- Won't work because no node is specified.
+-- CRASH POINT :RECOVERY  965 :   AFTER 3
+
+-- Won't work because RECOVER is not a valid
+-- type (but warning expected).
+-- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
+
+-- Won't work because TIME is not a valid type
+-- for now (but error expected).
+-- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
+          \end{lstlisting}
+
+        \subsection{Parsing}
+
+          The parsing of the code is done just before that the user code is launched in each node (daemon). The parsing will
+          create a table with information of each crash found in the user code and concerned with this node (with id node).
+          This table is save in the library named "splay.crash", and the access of crash information is done by a number id.
+          The parsing will return a new code where the crash point comment take in account (if no error and concerned this node)
+          is replaced by a function calling, with the right number crash id (as parameter). Then, when the code will execute,
+          and the crash function call, we can act depending of information about this crash (type, when trigger the crash, ...).\\
+
+          The parsing handles savely the error of user about the syntax, with crashing the node. Parsing is done
+          line by line and if there is a error (also in the code of parsing itself), the line will be unchanged and
+          a warning or error log will be written. Also, the parsing is fully write in Lua (of course) with only
+          the regex (not standard regex) matcher of Lua \cite{RegexLua}.
+
+        \subsection{Execution}
+
+          Well, we see the definition of the DSL and how we parse it, now we will detail how the crash append and how
+          to handle it to recover. First, the main problem is that Lua multithreading is non-preemptive, then we can't
+          stop a thread from outside \cite{CoroutineLua}. The only to stop directly the Lua interpreter and kill all other
+          thread is to exit the program by a os function. Also, we have the possibility to send a exit status code of the
+          process, it is very convinent for knowing if we need to restart or not after a crash point. \\
+
+          With this way to exit, we can create a artificial crash point, which kill immediately all coroutine (thread)
+          of Lua and the current execution. Moreover, we can pass special exit status code to send message to a other process.
+          To use this exit code, we created a fork (already in the c splay lib) before parse the crash point and execute the user code.
+          Then the process child will execute the parsing of crash point and execute the code, and the parent process will wait
+          to get the exit status code of it child process. We added a Lua function (waitpid) for this purpose and use the
+          original waitpid of C \cite{waitpid}. \\
+
+          When the child process end (either normaly or by a crash), the parent process check the status exit code and act depending.
+          If it is the exit code 65 or 66, it means that a crash has been done (or the user want to exit with one of these values),
+          65 means a STOP crash, then no restart need to be node. On the opposite, 66 (Recovery crash type) means than we need to
+          relaunch the user code,
+          and it is done recursively (with a new fork of course), and the crash table is reset (by reparsing the original code).
+
     \chapter{Use Case}
 
       A student following a course on distributed application wants to try raft (focus on the correctness of the leader election)
@@ -1422,8 +1417,14 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       {\color{red} TODO}
 
       \section{Result with a animation}
-      % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
-      {\color{red} TODO}
+
+        \subsection{Timeline Animation of a graph evolution}
+          % REM
+          {\color{red} TODO}
+
+        \subsection{Result with raft}
+          % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
+          {\color{red} TODO}
     
   \chapter{Conclusion}
 
@@ -1551,7 +1552,6 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
 \part{TO SORT}
 
-
   \chapter{New Features}
 
     \section{Complete Lua editor on the website}
@@ -1660,8 +1660,6 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
   % TO DISPATCH - this chapter need to be deleted at the end
   \chapter{Splay Version 2}
-
-
 
     In this chapter, we'll expose and describe the objective of this thesis
     being the version 2 of Splay.\\
@@ -1809,8 +1807,6 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       our work but is organized by date of beginning. Indeed, some goals
       and features needed further improvement over time.
 
-
-
       \subsection{Stabilisation of Controller and daemon}
         {\color{red} TODO}
         \begin{itemize}
@@ -1819,9 +1815,6 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           \item update openssl daemon
           \item fix bugs controller and daemon
         \end{itemize}
-
-
-
 
       \subsection{Rework of the CLI to use new Backend}
 
