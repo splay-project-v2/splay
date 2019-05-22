@@ -257,10 +257,13 @@
           state we received it and to ensure that further enhancement would
           be way more easier.\\
 
-        \subsubsection{Architectural Change}
+        \subsubsection{Front-end Refreshment}
 
-
-
+          The current full-stack Rails application was quite old and not
+          really enjoyable to use for interacting with the Splay system.
+          We therefore would need to improve this application in order to
+          provide a better user experience and easier way to learn distributed
+          algorithm through Splay.
 
       \subsection{New Features}
 
@@ -364,10 +367,7 @@
           the user specify those crashpoints in the Lua code within the Lua
           editor.
 
-
-
-  \chapter{Architecture and Development}
-    % Old one, change for reasons, develpoment backend, CLI, web_app begin
+  \chapter{Architecture and Changes Development}
 
     \section{The Base Project}
 
@@ -810,58 +810,72 @@
         and finished by the new features developed in the web application side.
 
         \subsubsection{Single Page Application - Old feature refactor}
-        As the devolment of backend was begon (previous section), we started, in the same time, the
-        developement of the Single Page Application in VueJS. After removing
-        old files of the previous web site, we created a basic VueJS project
-        (version 2.5.X at this time) with the home page and the bootstrap-vue
-        package \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a
-        well know HTML, CSS, and JavaScript framework to create responsive and
-        modern web interface. The full integration of bootstrap in a Vue
-        project is done with the extension of bootstrap package, bootstrap-vue.
-        For us, Bootstrap is like a Swiss knife to make a web page with minimun
-        design and modernity. \\
 
-        The next step was to build a register and login page for the user
-        management. To manage different page in the same Vue project, we
-        installed the Vue-Router package. It is a extension of Vue to navigate
-        through different web pages (uri) on the single page app (no reload with
-        the server), and the user can switch page as he was on a regular
-        website (backward/forward buttons, historic, ...). It is commonly used in
-        front end framework to give a better user experience. Then, we created
-        a route for the user registering and connection, with forms directly connected to
-        the backend user API. For the json communication with the backend, we
-        used axios \cite{axios}, a popular HTTP Javascript client. At the end
-        of this version of the web application, the user can create his/her
-        account and connect to it, and the token of authentification (token
-        based authentification) will be save on the client browser (auto-login
-        for the next visit). \\
+          As the development of the backend was started (detailed in the
+          previous section), we started in the mean time the development of a
+          Single Page Application using the VueJS framework.\\
 
-        % job - splayd list and job form
-        In order to get the same features as the legacy website, we created a
-        monitor page, where important information is given with lists. Indeed,
-        a list of splay daemon (create by controller) is retrieve from the
-        backend and print with global information in a nice bootstrap table.
-        Also, a second table, used for jobs (also via the backend service), is
-        builded with general data. The user can choose to see more details on
-        one splay daemon or a job via a button. Also, he can choose to kill a
-        job through a red button, the controller will do the rest. Moreover, The creation of job is done
-        with a simple form and it is automatically checked with vee-validate
-        package \cite{VeeValidate} (also checked in the backend service, of
-        course). Vee-validate is a small package solutionning the problem of
-        manual checking of form by adding some propreties to inputs, and it
-        makes our code more compact and less messy. At this step, we had
-        almost all legacy feature (for the web application) but in much more
-        nice way, with modern solution and maintenable code. Only the log
-        download was missing at this point. \\
-        {\color{red} TODO : Screen shot of monitor}
+          After removing the old files of the previous web application, we
+          created a basic VueJS project (version 2.5.X at that time) having a
+          simple home page and using the bootstrap-vue package
+          \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a well
+          known HTML, CSS and JavaScript framework used to create responsive
+          and modern web interface.\\
+          Bootstrap is a real Swiss-army knife among the design framework
+          and helped us building a visually pleasant and easy to use
+          web application with minimal custom CSS and JavaScript code.\\
 
-        % Log
-        When the log API on the backend was enable, we readd this feature to the website with some
-        improvements. When the job running or endend, the user can see the log (with a button next to details)
-        of merge daemon logs, with, for each line, time and daemon indication (id). The user can choose to
-        download as a text file (as before), copy to the clipboard or only check for any error in
-        the website itself.
+          The next step was to build a register and a login page to allow
+          user management. In order to manage different pages in the same Vue
+          project, we installed the Vue-Router packagem a Vue extension
+          allowing the navigation through different URI within the same
+          single page application (without any reload and additional requests
+          to the web server), allowing the user to switch from page to page
+          as he was on a regular website. Those pages being in fact components
+          loaded depending the selected URI in a root component.\\
+          We then created the associated routes for the user registration and
+          connection, the forms directly using the freshly written API available
+          on the backend.\\
+          In order to use that JSON API and allow communications with the
+          backend, we used axios \cite{axios}, a popular HTTP Javascript client.
+          This being done, our web application allowed the user to create its
+          account and connect to it, receiving an authentication token that
+          was stored on the client browser to allow auto-login on next visits.\\
 
+          In order to get the same features as the legacy web application,
+          we created a \textbf{monitoring} page, on which the the important
+          informations would be displayed to the user in lists.\\
+          A list of Splay daemons (created by the controller) is retrieved
+          from the backend and displayed with global information in a nice
+          bootstrap table.\\
+          A second table used for jobs (also fetched from the backend) is also
+          displayed with general data about these jobs. The user can choose to
+          get more details about a specific Splay daemon or job using a button
+          on the application. He can also choose to kill a job, sending the
+          related command to the backend to let the controller achieve that job
+          killing.\\
+          The creation of a job is done through a simple form and we implemented
+          automatic check of the fields using the vee-validate package
+          \cite{VeeValidate}. As the data sent to the backend is also checked
+          before using those to create a new job, vee-validate offers us
+          a double validation and allows giving the user a better feedback
+          about any field he would have forgotten or wrongly filled.\\
+          Vee-validate is a small package solving the problem of
+          manual checking of forms by adding some propreties to inputs, and it
+          makes our code more compact and less messy.
+
+          This being done, we almost retrieved all the legacy features (for the
+          web application) but in a much more nice way, with a modern solution
+          and maintenable code. Only the log downloading functionnality was
+          missing at this point. \\
+          As soon as we completed the backend with the logging endpoint, we
+          add this feature to the website with some improvements. When the
+          job is running or is finished, the user can see the log (using a
+          button next to the job details) which holds the involved daemons logs
+          with, for each line, the time and the daemon id indication. The user
+          can then choose to download the logs as a textfile (as it was possible
+          before) and check how its job performed.
+          
     \section{CLI Development}
 
       \subsection{Using Python}
