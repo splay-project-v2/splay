@@ -193,7 +193,7 @@
 
     \section{A Solution Definition}
 
-    \section{What the Old Splay Offered}
+    \section{What Splay Offered}
 
     \section{A first update}
 
@@ -223,7 +223,147 @@
 
       \subsection{Changes}
 
+        \subsubsection{Github Organization Recast}
+
+          During the part-time job we realized that he code organization
+          was not really good and should be changed.\\
+          The code of the six different services was located in the same and
+          unique repository, this had the consequence of making way harder
+          the navigation in the project's tree during the development, the
+          clarity of the commits in the Git log and therefore the evolution
+          of these different services.\\
+
+          Having to start back from a 2011 commit also made us realize that the
+          project wasn't making use of the git version tagging system, that
+          can mark the stable releases of the different version of the project
+          through history, and we should accomplish this from now on.
+
+        \subsubsection{Testing Implementation}
+
+          The version upgrade process revealed a cruel lack of testing among
+          the project, at any level of the application.\\
+          The major consequence of this fact was that we had to make repairs
+          step by step because of the languages and frameworks version changes,
+          and we had to base ourselves on a certain global understanding of how
+          the project was working and some final execution results of scenarios
+          to estimate that the project was functional again. It was totally
+          impossible to be sure that our changes weren't impacting some internal
+          behaviour of the project in a negative but imperceptible way,
+          consequences that were not avoidable in the end but that we would
+          only discover thereafter when implementing new features.\\
+          It was therefore obvious for us that we would setup series of tests
+          at different levels of the application during the next phases of our
+          work, in order to make the project way more maintainable than in the
+          state we received it and to ensure that further enhancement would
+          be way more easier.\\
+
+        \subsubsection{Architectural Change}
+
+
+
+
       \subsection{New Features}
+
+        \subsubsection{Complete Lua editor on the website}
+
+          The first web application of Splay already allowed the user to send
+          his own Lua code to create the job but the system was not really
+          user-friendly.\\
+
+          As we were going to rebuild the web application and modernize it,
+          we wanted to provide the user with a conveniant way to prepare
+          the job he wanted to send into the Splay system. For that purpose,
+          we wanted to integrate an algorithm editor with the following
+          characteristics :
+
+          \begin{itemize}
+            \item Standalone editor
+            \item Code coloration for the Lua language
+            \item Error parsing
+            \item Optionnaly some auto-completion features
+          \end{itemize}
+
+          Having this feature available within the job creation page, the user
+          could easily and comfortably achieve his tasks on the system.
+
+        \subsubsection{Topology creator/visualisation}
+
+          The legacy project managed a definition of a network topology when
+          submitting a job. A user could define this topology by setting
+          parameters such as :
+
+          \begin{itemize}
+            \item Nodes
+            \item Edges with latency, bandwidth, packet loss rate and queing
+            length
+            \item Specs with latency, bandwidth, packet loss rate and queing
+            length, that could be used by edges to easly acquire those
+            attributes
+          \end{itemize}
+
+          Special nodes like router could also be added to the topology in order
+          to create more complex networks. The Splay system will then
+          approximate the true parameters for each source-destination by
+          emulating this topology.\\
+
+          This topology definition in the legacy project was done through
+          the senting of an XML file following a specific format described
+          in ModelNet \cite{ModelNet}.\\
+          This format not being really user-friendly and quite hard to read,
+          and with the fact that ModelNet documentation is not easy to find
+          on the Internet, we decided that the new web application would have
+          to provide an easy way for the user to define it's own topology
+          still following the ModelNet standards.\\
+
+          This topology editor should provide a graphical interface with
+          buttons and fields allowing an easy configuration. Each change
+          using this interface would result in an immediate visual feedback
+          thanks to a topology visualisation tool, such that the user would
+          have a better view about his topology than by reading XML lines.
+          Nevertheless, an XML editor and visualisation tool should be included
+          in the topology editor which would translate the visual output of
+          the tool into readable XML, or translate its XML content into the
+          visualisation tool.\\
+
+          In summary, this tool should provide the user with :
+
+          \begin{itemize}
+            \item A topology editor with simple input fields
+            \item A topology visualisation tool
+            \item An XML editor
+            \item A way to convert the visual topology in XML, and conversely
+          \end{itemize}
+
+        \subsubsection{Fault Injection}
+
+          The creation of distributed algorithm is a difficult task, and
+          moreover, it is hard to make real code which is reliable. Robustness
+          and correctness of a distributed solution is the key point to test
+          for a designed solution, and manually injecting of fault is painful
+          and can take some time. \\
+
+          With the legacy project and the dockerization, it was obviously
+          possible to crash a single daemon during the execution of a job, just
+          by killing the running container of that daemon.\\
+          However, the main problem of this trivial solution is that we cannot
+          control where the crash may happen during the code execution.
+          We wanted to improve this by providing the user with a feature
+          allowing him to choose when one or multiple daemon would crash during
+          the execution. We came up with two ideas :
+
+          \begin{itemize}
+            \item A hard crash in which the node is completely put down
+            \item A recovery crash in which the node is relaunched after some
+            down time
+          \end{itemize}
+
+          To sum up, our fault injection tool would allow the user to choose
+          when (in the execution tree) and where (one or several nodes) the
+          crash happens in the daemon, in an user friendly way. The best and
+          most straigthforward way to achieve this would have been to let
+          the user specify those crashpoints in the Lua code within the Lua
+          editor.
+
 
 
   \chapter{Architecture and Development}
@@ -1469,189 +1609,6 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
 \part{TO SORT}
 
-  \chapter{Old Splay Upgrade}
-
-    Starting from that point, we were able to progressively become more
-    familiar with the way the project was working and its software
-    architecture, identify and understand the different services that
-    were composing it and also understand how they interacted among
-    each other. Once this knowledge acquired, we were able to begin the
-    upgrade of the different technology versions used beginning with the
-    Ruby and the Lua, the two most widely present technologies in Splay.\\
-    With software versions from at most 2011, and because we wanted
-    to upgrade thoses to the most recent available versions of those
-    technologies, we were well aware that at the moment we would apply the
-    versions changes, the whole project would become totally unstable
-    because of numerous function calls that would be now deprecated,
-    modified or even not available anymore and we would have to spend a lot
-    of time changing those before getting the project to be stable again.
-    There again we thought that we could avoid this situation in the future
-    and we really had to change something in the future phases: the project
-    was cruelly lacking of tests, at any level of the application.\\
-
-
-    The major consequence of this fact was that we had to make repairs
-    step by step because of the languages and frameworks version changes,
-    and we had to base ourselves on a certain global understanding of how
-    the project was working and some final execution results of scenarios
-    to estimate that the project was functional again. It was totally
-    impossible to be sure that our changes weren't impacting some internal
-    behaviour of the project in a negative but imperceptible way,
-    consequences that were not avoidable in the end but that we would
-    only discover thereafter when implementing new features.\\
-    It was therefore obvious for us that we would setup series of tests
-    at different levels of the application during the next phases of our
-    work, in order to make the project way more maintainable than in the
-    state we received it and to ensure that further enhancement would
-    be way more easier.\\
-
-
-    We then succeeded to progressively put back in a working state
-    (partially, as we based this criterion on the main feature) all the
-    elements composing Splay with newer versions, and also updating the
-    libraries used by all the different languages. The main changes
-    speaking of technology versions were the following :
-
-
-
-    At the end of these ten days of work, we had a healthy and updated
-    base to work with and ready to receive the real work of our thesis.\\
-
-    Besides this, another part of this part-time job was, once the updates
-    achieved, to update the project's documentation and to describe in
-    it how the different services were working and also to take some
-    reflexion time in order to emit thoughts about how we could make
-    enhancement on the system architecture and how it was operating. These
-    were our conclusions :
-
-    \begin{itemize}
-      \item The code organization was not really good and should be changed.
-      The code of the six different services was located in the same and
-      unique repository, this had the consequence of making way harder
-      the navigation in the project's tree during the development, the
-      clarity of the commits in the Git log and therefore the evolution
-      of these different services.
-      \item The fact of using a database as a communication point between
-      the user part and the \textbf{Controller} was maybe not the best
-      way of proceeding today.
-      \item The usage of Ruby as language for the \textbf{Controller} and
-      Lua for the \textbf{Daemons} was maybe not the most relevant choice
-      today, and technology alternatives designed for multi-processes and
-      concurrent applications such as Elixir should be reviewed. A different
-      technology choice might also in the mean time solve our previous
-      thought abot the database.
-    \end{itemize}
-
-    Those thoughts were thereafter discussed with Etienne Riviere, in order
-    to draw up the next objectives we should pursue for the continuation
-    of our work and to begin the version 2 of the Splay project.
-
-
-  \chapter{New Features}
-
-    \section{Complete Lua editor on the website}
-      \subsection{Objectives}
-        The first web application of Splay already allowed the user to send
-        his own Lua code to create the job but the system was not really
-        user-friendly.\\
-
-        As we were going to rebuild the web application and modernize it,
-        we wanted to provide the user with a conveniant way to prepare
-        the job he wanted to send into the Splay system. For that purpose,
-        we wanted to integrate an algorithm editor with the following
-        characteristics :
-
-        \begin{itemize}
-          \item Standalone editor
-          \item Code coloration for the Lua language
-          \item Error parsing
-          \item Optionnaly some auto-completion features
-        \end{itemize}
-
-        Having this feature available within the job creation page, the user
-        could easily and comfortably achieve his tasks on the system.
-      \subsection{Development}
-
-    \section{Topology creator/visualisation}
-      \subsection{Objectives}
-        The legacy project managed a definition of a network topology when
-        submitting a job. A user could define this topology by setting
-        parameters such as :
-
-        \begin{itemize}
-          \item Nodes
-          \item Edges with latency, bandwidth, packet loss rate and queing
-          length
-          \item Specs with latency, bandwidth, packet loss rate and queing
-          length, that could be used by edges to easly acquire those
-          attributes
-        \end{itemize}
-
-        Special nodes like router could also be added to the topology in order
-        to create more complex networks. The Splay system will then
-        approximate the true parameters for each source-destination by
-        emulating this topology.\\
-
-        This topology definition in the legacy project was done through
-        the senting of an XML file following a specific format described
-        in ModelNet \cite{ModelNet}.\\
-        This format not being really user-friendly and quite hard to read,
-        and with the fact that ModelNet documentation is not easy to find
-        on the Internet, we decided that the new web application would have
-        to provide an easy way for the user to define it's own topology
-        still following the ModelNet standards.\\
-
-        This topology editor should provide a graphical interface with
-        buttons and fields allowing an easy configuration. Each change
-        using this interface would result in an immediate visual feedback
-        thanks to a topology visualisation tool, such that the user would
-        have a better view about his topology than by reading XML lines.
-        Nevertheless, an XML editor and visualisation tool should be included
-        in the topology editor which would translate the visual output of
-        the tool into readable XML, or translate its XML content into the
-        visualisation tool.\\
-
-        In summary, this tool should provide the user with :
-
-        \begin{itemize}
-          \item A topology editor with simple input fields
-          \item A topology visualisation tool
-          \item An XML editor
-          \item A way to convert the visual topology in XML, and conversely
-        \end{itemize}
-      \subsection{Development}
-
-    \section{Fault Injection}
-
-      \subsection{Objectives}
-        The creation of distributed algorithm is a difficult task, and
-        moreover, it is hard to make real code which is reliable. Robustness
-        and correctness of a distributed solution is the key point to test
-        for a designed solution, and manually injecting of fault is painful
-        and can take some time. \\
-
-        With the legacy project and the dockerization, it was obviously
-        possible to crash a single daemon during the execution of a job, just
-        by killing the running container of that daemon.\\
-        However, the main problem of this trivial solution is that we cannot
-        control where the crash may happen during the code execution.
-        We wanted to improve this by providing the user with a feature
-        allowing him to choose when one or multiple daemon would crash during
-        the execution. We came up with two ideas :
-
-        \begin{itemize}
-          \item A hard crash in which the node is completely put down
-          \item A recovery crash in which the node is relaunched after some
-          down time
-        \end{itemize}
-
-        To sum up, our fault injection tool would allow the user to choose
-        when (in the execution tree) and where (one or several nodes) the
-        crash happens in the daemon, in an user friendly way. The best and
-        most straigthforward way to achieve this would have been to let
-        the user specify those crashpoints in the Lua code within the Lua
-        editor.
-      \subsection{Development}
 
   % TO DISPATCH - this chapter need to be deleted at the end
   \chapter{Splay Version 2}
