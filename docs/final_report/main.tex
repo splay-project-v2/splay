@@ -82,6 +82,9 @@
 
   \tableofcontents
 
+  % TODO or XXX
+  % -
+
   \chapter{Introduction}
 
     % Discuter de la problématique de tester des algorithmes distribues
@@ -187,13 +190,69 @@
 
 
   \chapter{Problem Statement - Splay}
-  % Aporter les solutions aux problèmes cités dans l'introduction
-  % parler des fonctionnalités actuelles du vieux splay
-  % ce qu'on doit changer et fonctionnalités à apporter
 
-    \section{A Solution Definition}
+    % Aporter les solutions aux problèmes cités dans l'introduction
+    % parler des fonctionnalités actuelles du vieux splay
+    % ce qu'on doit changer et fonctionnalités à apporter
 
-    \section{What Splay Offered}
+    \section{A Solution Definition} % TODO : TODO
+
+      From the previous problems we identified before, we wanted to have an
+      application that could allow students and professors to ...
+
+    \section{What Splay Offered} % TODO : TODO
+
+      What SPlay offered before in terms of services ...
+
+    \section{User Scenarios} % TODO : MODIFY
+
+      Before create a precise list of features to add to Splay, we first
+      thought about scenarios. We imagined how someone would want to exercise
+      and experiment with his distributed algorithm, using a platform like
+      Splay. From these scenarios we would then get the precise new features
+      we had to implement in order to make those scenarios possible and
+      concrete.\\
+
+      These scenarios would be useful to keep track of the progression of our
+      work as we would progressively making those reality, but also useful
+      to use them to create tests (needed, as we explained before) and ensure
+      these features would be covered.
+      % REDO this part
+      \subsection{Scenarios} % REDO this part
+        We will present different scenarios where Splay can be a solid solution.
+
+        \subsubsection{First Scenario}
+
+          As a student, I'd like to be able to put in practice what I learned
+          during my courses about distributed systems and applications.\\
+          Hopefully, my university provides an existing installation of Splay
+          available through the university network.\\
+          I can access this service on the web through a web application. After
+          registration and login, I have access to a complete Lua Editor that
+          allows me to create my own distributed algorithm.\\
+          I can also choose parameters such as the number of daemons on
+          which run my algorithms, a topology editor to emulate network
+          conditions, inject faults, etc...\\
+          Once I submitted my job, I can get logs about how my algorithm
+          performed in the system. I can also choose to kill my job in case
+          I did something wrong and the job is not finishing at all.
+
+        \subsubsection{Second Scenario}
+
+          As a professor, I would like to be able to experiment with a new
+          approach of solving the leader election problem among a set of
+          nodes.\\
+          I can use the Splay system which is linked with a cluster of
+          Raspberry Pi's.\\
+          The new approach described in a paper with some pseudo-code and some difficult
+          cases when the network topology is quite exotic
+          The new leader election approach is described in a paper with some
+          pseudo-code and has special cases of execution when the topology is
+          a bit exotic.\\
+          Thanks to Splay, I can rewrite the pseudo-code in actual Lua code
+          in a dedicated editor, and create special cases of topologies
+          thanks to a topology editor, and get all the informations about
+          the algorithm execution thanks to the Splay logging system.
 
     \section{A first update}
 
@@ -265,7 +324,7 @@
           provide a better user experience and easier way to learn distributed
           algorithm through Splay.
 
-      \subsection{New Features}
+      \subsection{New Features} % TODO : Modify
 
         \subsubsection{Complete Lua editor on the website}
 
@@ -875,7 +934,7 @@
           with, for each line, the time and the daemon id indication. The user
           can then choose to download the logs as a textfile (as it was possible
           before) and check how its job performed.
-          
+
     \section{CLI Development}
 
       \subsection{Using Python}
@@ -1698,60 +1757,6 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       maintainability and refactor some old code. Moreover, we wanted to
       modernize the web application of the legacy project and add some
       features on it (next section)
-
-\subsection{new features}
-    % REDO this part
-    Before create a precise list of features to add to Splay, we first
-    thought about scenarios. We imagined how someone would want to exercise
-    and experiment with his distributed algorithm, using a platform like
-    Splay. From these scenarios we would then get the precise new features
-    we had to implement in order to make those scenarios possible and
-    concrete.\\
-
-    These scenarios would be useful to keep track of the progression of our
-    work as we would progressively making those reality, but also useful
-    to use them to create tests (needed, as we explained before) and ensure
-    these features would be covered.
-    % REDO this part
-    \subsection{Scenarios} % REDO this part
-      We will present different scenarios where Splay can be a solid solution.
-
-      \subsubsection{First Scenario}
-
-        As a student, I'd like to be able to put in practice what I learned
-        during my courses about distributed systems and applications.\\
-        Hopefully, my university provides an existing installation of Splay
-        available through the university network.\\
-        I can access this service on the web through a web application. After
-        registration and login, I have access to a complete Lua Editor that
-        allows me to create my own distributed algorithm.\\
-        I can also choose parameters such as the number of daemons on
-        which run my algorithms, a topology editor to emulate network
-        conditions, inject faults, etc...\\
-        Once I submitted my job, I can get logs about how my algorithm
-        performed in the system. I can also choose to kill my job in case
-        I did something wrong and the job is not finishing at all.
-
-      \subsubsection{Second Scenario}
-
-        As a professor, I would like to be able to experiment with a new
-        approach of solving the leader election problem among a set of
-        nodes.\\
-        I can use the Splay system which is linked with a cluster of
-        Raspberry Pi's.\\
-        The new approach described in a paper with some pseudo-code and some difficult
-        cases when the network topology is quite exotic
-        The new leader election approach is described in a paper with some
-        pseudo-code and has special cases of execution when the topology is
-        a bit exotic.\\
-        Thanks to Splay, I can rewrite the pseudo-code in actual Lua code
-        in a dedicated editor, and create special cases of topologies
-        thanks to a topology editor, and get all the informations about
-        the algorithm execution thanks to the Splay logging system.
-
-      % \textbf{Third scenario : } A employee from a big cloud company want to test the robustness of their new Top Secret distributed algorithm. TODO
-
-      % as a employee from a cloud company who want test the robusness of their new Top Secret algorithm.
 
   \nocite{*}
   \bibliographystyle{plain}
