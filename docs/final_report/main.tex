@@ -1440,19 +1440,28 @@
 
       \section{Web Application enhancement}
 
-        \subsection{The Lua editor} % TODO : Modify
-          % Lua editor
-          One of our objectif was to propose a integrated Lua editor on the web application.
-          The idea to build our-self entirely the editor was moved aside quickly,
-          it will take too much time and it will be not evolutive. Then, we found a
-          great package, named brace, a browserify version of Ace editor \cite{Ace}. Ace
-          can handle hundred type of programming language for the coloration, error handling and
-          show line number. The integration of ace is the project was easy and light, Lua is
-          colorize perfectly and a error is show when the syntax is wrong. But, there is not
-          build-in auto-completion for Lua most likely because Lua is not very popular these days.
-          It is possible to add our own completer in the ace edito, but it is a long task
-          for few results, then we decided to move on.
-          {\color{red} TODO : screen shot of Lua editor}
+        \subsection{The Lua editor}
+
+          One of our objective for the web application was to provide the user
+          with a fully integrated LUA editor within the application and
+          available during the job creation process.\\
+          The idea of entirely building ourselves this editor was quickly
+          moved aside, as it would take too much time to achieve and wouldn't
+          be a solution allowing easy evolution through time.\\
+          We then found a great package named \textbf{Brace}, a browserified
+          version of the Ace editor \cite{Ace}. Ace can handle hundred types
+          of different programming languages concerning the syntax coloration,
+          error handling, line number displaying.\\
+
+          The integration of Ace in the project was really easy and light thanks
+          to the available npm package, and the editor now display LUA code
+          perfectly colorized and errors are shown in case of syntax errors.\\
+
+          Sadly, no built-in auto-completion module were available from the
+          Brace package. It would have been possible for us to add our own
+          auto-complete script in the Ace editor, but that was a too long
+          task to achieve for the time we had, we thus decided to move on and
+          keep the result as it was.
 
       \subsection{Topology creation}
         % SAM: Topology creation
