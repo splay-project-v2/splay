@@ -998,7 +998,47 @@
         manage and parse user arguments when creating a CLI application.
 
       \subsection{Developing the CLI}
-        % TODO
+
+        A nice CLI client was still needed within the project, whether it
+        would be for quick testing from people experienced with using the
+        Splay application and wanting to have small scripts making their
+        work faster, for the developers in order to allow easy manual testing
+        of the Splay endpoints or, and most importantly, to allow automatic
+        feature testing and continuous integration (this would still be
+        possible using the web application but would require a lot more
+        configuration to handle a headless browser, making the test suite
+        too much complicated).\\
+
+        We started by creating a simple Python script allowing to be launched
+        through Bash and running the version 3 of Python.\\
+
+        The first step was to setup the available commands to create our CLI.
+        In order to make the code the cleanest and simplest as possible, we
+        decided to use the \textbf{Click} \cite{click} library, a perfect
+        Python package designed to create beautiful CLI's with just a little
+        code.\\
+        The steps for creating a command are :
+
+        \begin{itemize}
+          \item Declare the creation of a command
+          \item Declare eventual arguments and constraints on those arguments
+          \item Declare eventual options for the command
+          \item Write the body of the related command
+        \end{itemize}
+
+        Each command or option can be supplemented with help messages. Then,
+        back in the scenes, Click reassembles all of this and format the
+        output of your CLI, displaying you help details if requested and even
+        help details for specific commands.\\
+
+        The next step was to make real use of the Backend's API, thus we used
+        \textbf{request} \cite{request} and \textbf{json} Python's libraries to
+        achieve the HTTP communication and the JSON requests encoding and
+        responses parsing.\\
+
+        This complete rewrite of the CLI allowed us to reduce thousands of
+        LUA lines of code and to obtain a most two hundred of simple and
+        maintainable Python code achieving the same features than before.
 
     \section{Software Architectures}
 
@@ -1397,8 +1437,10 @@
         \end{figure}
 
     \chapter{New Features}
+
       \section{Web Application enhancement}
-        \subsection{The Lua editor}
+
+        \subsection{The Lua editor} % TODO : Modify
           % Lua editor
           One of our objectif was to propose a integrated Lua editor on the web application.
           The idea to build our-self entirely the editor was moved aside quickly,
@@ -1416,7 +1458,7 @@
         % SAM: Topology creation
         {\color{red} TODO + screen shot}
 
-      \section{Fault injection}
+      \section{Fault injection} % TODO : Modify
 
         The fault injection (or crash point) is done on the daemon side. Indeed, we wanted
         to crash the code in middle of the execution tree, then, only the daemon can
@@ -1424,7 +1466,7 @@
         crash management that the user can put in a Lua comment. During the execution of job, the first step
         is to parse the code and manage the execute of the crash point.
 
-        \subsection{Domain Specific Language (DSL)}
+        \subsection{Domain Specific Language (DSL)} % TODO : Modify
 
           We specified a small DSL designed to be simple and flexible, for the user and for the parsing. This DSL need to
           be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the
@@ -1490,7 +1532,7 @@
 -- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
           \end{lstlisting}
 
-        \subsection{Parsing}
+        \subsection{Parsing} % TODO : Modify
 
           The parsing of the code is done just before that the user code is launched in each node (daemon). The parsing will
           create a table with information of each crash found in the user code and concerned with this node (with id node).
@@ -1504,7 +1546,7 @@
           a warning or error log will be written. Also, the parsing is fully write in Lua (of course) with only
           the regex (not standard regex) matcher of Lua \cite{RegexLua}.
 
-        \subsection{Execution}
+        \subsection{Execution} % TODO : Modify
 
           Well, we see the definition of the DSL and how we parse it, now we will detail how the crash append and how
           to handle it to recover. First, the main problem is that Lua multithreading is non-preemptive, then we can't
@@ -1525,7 +1567,7 @@
           relaunch the user code,
           and it is done recursively (with a new fork of course), and the crash table is reset (by reparsing the original code).
 
-    \chapter{Use Case}
+    \chapter{Use Case} % TODO : Modify
 
       A student following a course on distributed application wants to try raft (focus on the correctness of the leader election)
       implementation on 5 nodes.
@@ -1533,7 +1575,7 @@
       is no installation of Splay available for him.
       We going to described the different step of this student with the usage of Splay.
 
-      \section{Installation of Splay}
+      \section{Installation of Splay} % TODO : Modify
 
         First this student need to get a clean installation of Splay. Fortunately, this work is greatly
         helped because of a installation documentation and the dockerization of the project.
@@ -1547,20 +1589,20 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         Then he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
         \url{http://localhost:8080/}. He creates is own account by the register form and it will be automatically connect next time.
 
-      \section{Implementation of Raft in Lua}
+      \section{Implementation of Raft in Lua} % TODO : Modify
         After the successful installation, the hard work need to be done, it means to create the implementation of raft
         with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
         We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
         We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
 
-        \subsection{Creation of the algorithm}
+        \subsection{Creation of the algorithm} % TODO : Modify
         The student created a lua code of raft, it isn't trivial sadly,
         but if you understand raft, it is not so complicated :
 
         % Code of raft with comments
         {\color{red} TODO}
 
-        \subsection{First result}
+        \subsection{First result} % TODO : Modify
         After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
         (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
         and this one send hearbeat to avoid a other leader election from others nodes.
@@ -1568,7 +1610,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         % TODO : Show small piece of log result
         {\color{red} TODO}
 
-      \section{Topology settings}
+      \section{Topology settings} % TODO : Modify
 
         Atfer testing the algorithm in a perfect network environment, the student tries different configuration of network topologies
         created by the network topology interface developed by us.
@@ -1581,7 +1623,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         {\color{red} TODO}
 
-      \section{Robustness Test through fault injection}
+      \section{Robustness Test through fault injection} % TODO : Modify
 
         He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
         When the leader crash, the student expectes that a other launch the leader election and there is a new leader
@@ -1596,30 +1638,30 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         % Show buged piece + fault injection -> buggy log
         {\color{red} TODO}
 
-      \section{Result with a animation}
+      \section{Result with a animation} % TODO : Modify
 
         Also, the student wants to see how the network and connection evolving during the execution. For
         this purpose with a create a small tool to parse a log and see the evolution.
 
-        \subsection{Timeline Animation of a graph evolution}
+        \subsection{Timeline Animation of a graph evolution} % TODO : Modify
           % REM
           {\color{red} TODO}
 
-        \subsection{Result with raft}
+        \subsection{Result with raft} % TODO : Modify
           % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
           {\color{red} TODO}
 
-  \chapter{Conclusion}
+  \chapter{Conclusion} % TODO : Modify
 
     We concludes this report by some suggestion, firstly about our own features and secondly about
     SPLAY it-self. At the end, we summarise our global achievement about this project (objectifs agains realized).
 
-    \section{Improvements}
+    \section{Improvements} % TODO : Modify
 
       % Our features
-      \subsection{New features improvement}
+      \subsection{New features improvement} % TODO : Modify
 
-        \subsubsection{Lua editor}
+        \subsubsection{Lua editor} % TODO : Modify
 
         We have noticed during the developement of own features that the Lua Editor is
         the less important feature. Only for one reason, most of the time, we
@@ -1640,7 +1682,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         then if the daemon switch of technology (see next section "Refactor of Controller/Daemon"),
         then it will be easy to change the targeted language.
 
-        \subsubsection{Crash point}
+        \subsubsection{Crash point} % TODO : Modify
 
           The crash point feature handle 2 type of crash and 2 specification of when crash happend.
           This feature is very usefull to simulate hard stop of a machine (by lack of power by example).
@@ -1654,7 +1696,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           Global variables can help (access then also by the crash lib) or by parsing modificatation
           where a extra parameters will by add to the crash function call.\\
 
-        \subsubsection{Topology Creation}
+        \subsubsection{Topology Creation} % TODO : Modify
 
           The creation of topology through a modern interface is very effective to build your own
           network topology quickly. However, we have more ideas (not exaustif) to improve this features, not possible to do ourself
@@ -1668,13 +1710,13 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
             the double work with directed edge via form.
           \end{itemize}
 
-      \subsection{Refactor of old services}
+      \subsection{Refactor of old services} % TODO : Modify
         We have redid some parts of Splay with more modern technology as explain in the section on the architecture but
         we didn't have make a complete refactor for the daemon and the controller. And we think that it is important,
         for future maintenability or improvement, that these services need to be redid or only passed a meticulously review/refactor.
         Also, small remove in the database schema can be done because some columns are maybe not useful anymore.
 
-        \subsubsection{Daemon}
+        \subsubsection{Daemon} % TODO : Modify
           The daemon is maybe the critical part of the project and it was build with Lua \cite{Lua}. During, our work, after
           stabilize the whole project, we have seen lot of unused code, small bugs and repeated code. Then,
           we fixed these issues when we encountered them (we were very careful about what we removed/changed), but
@@ -1694,7 +1736,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           to the performance issue of Python, we can imagine using a Just In Time compiler such as PyPy \cite{PyPy} to boost
           significantly the performance and used some distributed libraries to create quickly a new Splay library.
 
-        \subsubsection{Controller}
+        \subsubsection{Controller} % TODO : Modify
 
           The controller is the brain of the projects, manages daemons, read new data from database,
           write result on database, dispatch command, ... Indeed, the controller is vital for the project,
@@ -1712,7 +1754,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
             (Class named Jobd and the chlideren class of it). We found the most of controller bugs in these classes.
           \end{itemize}
 
-      \subsection{Security aspect}
+      \subsection{Security aspect} % TODO : Modify
 
         In the description of the legacy project, we can see that the user job is normally in a restricted area and the project
         is secure in general. Maybe it was before, but actually, we think that it is not enough secure for multiple reasons :
