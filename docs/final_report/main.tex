@@ -198,7 +198,27 @@
     \section{A Solution Definition} % TODO : TODO
 
       From the previous problems we identified before, we wanted to have an
-      application that could allow students and professors to ...
+      application that could allow students and professors to develop and
+      test their distributed algorithms with the best possible experience.
+      To answers those problems, these are the qualities needed for the
+      solution we wanted to develop :
+
+      \begin{itemize}
+        \item The whole system should be easy to use for beginners and people
+        who just started to learn Distributed Systems but also for professors.
+        \item The application should allow the user to define parameters about
+        the network and nodes he's running his algorithm in, like latencies
+        or specific network configurations so that it would correctly
+        impact the way its algorithm is running.
+        \item The application should provide an enjoyable way for the user
+        to write his algorithm.
+        \item The application should allow the user to get detailed informations
+        about how its algorithm performed within the system.
+        \item The application would offer services focused on the development
+        of algorithm, therefore and as we identified it as an issue before, no
+        or barely no time should be spent on the configuration of the machines
+        needed to created a distributed system ready to receive algorithms.
+      \end{itemize}
 
     \section{What Splay Offered} % TODO : TODO
 
@@ -217,8 +237,9 @@
       work as we would progressively making those reality, but also useful
       to use them to create tests (needed, as we explained before) and ensure
       these features would be covered.
-      % REDO this part
-      \subsection{Scenarios} % REDO this part
+
+      \subsection{Scenarios}
+
         We will present different scenarios where Splay can be a solid solution.
 
         \subsubsection{First Scenario}
@@ -323,6 +344,11 @@
           We therefore would need to improve this application in order to
           provide a better user experience and easier way to learn distributed
           algorithm through Splay.
+
+        \subsubsection{Features Fixing} % TODO : TODO
+
+          Fixing what was not working in Splay 2011?
+
 
       \subsection{New Features} % TODO : Modify
 
@@ -1529,14 +1555,14 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         \subsection{Creation of the algorithm}
         The student created a lua code of raft, it isn't trivial sadly,
-        but if you understand raft, it is not so complicated : 
+        but if you understand raft, it is not so complicated :
 
         % Code of raft with comments
         {\color{red} TODO}
 
         \subsection{First result}
         After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
-        (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader, 
+        (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
         and this one send hearbeat to avoid a other leader election from others nodes.
 
         % TODO : Show small piece of log result
@@ -1545,12 +1571,12 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       \section{Topology settings}
 
         Atfer testing the algorithm in a perfect network environment, the student tries different configuration of network topologies
-        created by the network topology interface developed by us. 
+        created by the network topology interface developed by us.
 
         % Show three network configuration : 2 correct and 1 doesn't match with the condition broadTime << electionTimeout << MTBF
 
-        Then, he tries with his implementation on the three configuration, the log result shows that 
-        the 2 firsts one succeeded the leader election and stabilize. But on the last, the leader election append multiple time 
+        Then, he tries with his implementation on the three configuration, the log result shows that
+        the 2 firsts one succeeded the leader election and stabilize. But on the last, the leader election append multiple time
         even when the leader is still on, it is because the condition broadTime << electionTimeout << MTBF is not met.
 
         {\color{red} TODO}
@@ -1558,10 +1584,10 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       \section{Robustness Test through fault injection}
 
         He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
-        When the leader crash, the student expectes that a other launch the leader election and there is a new leader 
+        When the leader crash, the student expectes that a other launch the leader election and there is a new leader
         after some times. He tests with the 2 corrects topologies (don't change the timeout election).
 
-        % Show crash + new election 
+        % Show crash + new election
         {\color{red} TODO}
 
         Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
@@ -1571,8 +1597,8 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         {\color{red} TODO}
 
       \section{Result with a animation}
-        
-        Also, the student wants to see how the network and connection evolving during the execution. For 
+
+        Also, the student wants to see how the network and connection evolving during the execution. For
         this purpose with a create a small tool to parse a log and see the evolution.
 
         \subsection{Timeline Animation of a graph evolution}
