@@ -6,7 +6,7 @@ source "$DIR/functions.sh"
 # bash integration_tests/build_run.sh 
 
 #--
-submit "app_test/raft.lua"
+submit "app_test/raft_election.lua"
 
 #--
 get_logs 15

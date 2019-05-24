@@ -1734,6 +1734,8 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           about it. For these reason, we think that a complete check of the lua libraries (by someone knowing the old project) is mandatory
           and adding even more busted test (of the splay lib) is a good idea. \\
 
+          % TODO problem with toplogy - client socket doesn't take in account !
+
           Also, maybe, a good solution to clean this service and offer a new alternative for the user, it is completely
           redo the daemon in a other technology. The best alternative language is, for us, Python (version 3). Indeed, Python is very
           popular (developement of Python will continue), have rich libraries environment and offer a very complete
