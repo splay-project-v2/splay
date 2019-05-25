@@ -1713,26 +1713,49 @@
           This feature is fully wrote in LUA using a regex matcher
           \cite{RegexLua}.
 
-        \subsection{Execution} % TODO : Modify
+        \subsection{Execution}
 
-          Well, we see the definition of the DSL and how we parse it, now we will detail how the crash append and how
-          to handle it to recover. First, the main problem is that Lua multithreading is non-preemptive, then we can't
-          stop a thread from outside \cite{CoroutineLua}. The only to stop directly the Lua interpreter and kill all other
-          thread is to exit the program by a os function. Also, we have the possibility to send a exit status code of the
-          process, it is very convinent for knowing if we need to restart or not after a crash point. \\
+          We saw how exactly we defined our DSL and how we achieve the parsing,
+          we shall now see in details how the crashes exactly happen, how they
+          are handled and how the nodes recover if they have to.\\
 
-          With this way to exit, we can create a artificial crash point, which kill immediately all coroutine (thread)
-          of Lua and the current execution. Moreover, we can pass special exit status code to send message to a other process.
-          To use this exit code, we created a fork (already in the c splay lib) before parse the crash point and execute the user code.
-          Then the process child will execute the parsing of crash point and execute the code, and the parent process will wait
-          to get the exit status code of it child process. We added a Lua function (waitpid) for this purpose and use the
-          original waitpid of C \cite{waitpid}. \\
+          The main problem with the LUA language is that the multithreading
+          is non-preemptive, this means that we cannot stop a thread from the
+          outside \cite{CoroutineLua}. The only way to stop directly the LUA
+          interpreter and kill any other thread is to exit the program using
+          an OS function. We also have the possibility of sending an exit
+          status code to the process, which is very convenient for knowing
+          if we need to restart or stay down after a crash point was
+          triggered.\\
 
-          When the child process end (either normaly or by a crash), the parent process check the status exit code and act depending.
-          If it is the exit code 65 or 66, it means that a crash has been done (or the user want to exit with one of these values),
-          65 means a STOP crash, then no restart need to be node. On the opposite, 66 (Recovery crash type) means than we need to
-          relaunch the user code,
-          and it is done recursively (with a new fork of course), and the crash table is reset (by reparsing the original code).
+
+          With this way of exiting, we can create artificials crash points which
+          will immediately kill every coroutines (threads) of LUA and its
+          current execution. Moreover, we can pass special exit status codes
+          in order to send messages to another process.\\
+          In order to use these exit codes, we created a fork (available from
+          the C splay library) before parsing the crash point and executing
+          the user code.\\
+          Therefore, the child process will execute the parsing of the crash
+          point and proceed to the code execution, and the parent process will
+          wait to receive the exit status code of its child. We added a LUA
+          function (waitpid) for this purpose and used the original waitpid
+          of C \cite{waitpid}.\\
+
+          When the child process terminates (either in a normal way or because
+          of a crash), the parent process checks the exit status code and act
+          accordingly. If the exit status code is 65 or 66, it means that a
+          crash has been triggered (or that the user wants to exit
+          with one of these values).
+
+          \begin{itemize}
+            \item \textbf{65} : Means a STOP crash, no restart is needed
+            \item \textbf{66} : Means a RECOVERY crash
+          \end{itemize}
+
+          The recovery crash is then achieved recursively, the parent process
+          creating another fork, and the crash table is reset when reparsing
+          the original code.
 
     \chapter{Use Case} % TODO : Modify
 
