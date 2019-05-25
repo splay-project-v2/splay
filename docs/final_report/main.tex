@@ -1687,19 +1687,31 @@
             -- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
           \end{lstlisting}
 
-        \subsection{Parsing} % TODO : Modify
+        \subsection{Parsing}
 
-          The parsing of the code is done just before that the user code is launched in each node (daemon). The parsing will
-          create a table with information of each crash found in the user code and concerned with this node (with id node).
-          This table is save in the library named "splay.crash", and the access of crash information is done by a number id.
-          The parsing will return a new code where the crash point comment take in account (if no error and concerned this node)
-          is replaced by a function calling, with the right number crash id (as parameter). Then, when the code will execute,
-          and the crash function call, we can act depending of information about this crash (type, when trigger the crash, ...).\\
+          The code parsing phase is achieved just before that the user code
+          is effectively launched on each node (daemon). The parsing will
+          create a table with information about each crash point found in the
+          user code and which nodes this crash should occurs on.\\
+          This table is then saved in a library called \textit{"splay.crash"},
+          and is used by the nodes to get the crash information using an id
+          number which will retrieve the corresponding crash informations.\\
 
-          The parsing handles savely the error of user about the syntax, with crashing the node. Parsing is done
-          line by line and if there is a error (also in the code of parsing itself), the line will be unchanged and
-          a warning or error log will be written. Also, the parsing is fully write in Lua (of course) with only
-          the regex (not standard regex) matcher of Lua \cite{RegexLua}.
+          The parsing phase actually assign to the nodes a new code where the
+          crash points comments specified by the users are transformed and
+          replaced (if no error is found) by a function call containing the
+          crash id number. Therefore, when the code executes, the crash function
+          call will access the library and will act depending on what
+          informations are stored into the crash table (type of crash, moment
+          of trigger)
+
+          The parsing handles any error the user could have done about the
+          syntax of the crash poin, still crashing the node.\\
+          Parsing is done line by line and if any error is found (also error
+          about the code itself), the concerned line will be unchanged and
+          a warning or error message will be written in the logs.\\
+          This feature is fully wrote in LUA using a regex matcher
+          \cite{RegexLua}.
 
         \subsection{Execution} % TODO : Modify
 
