@@ -1442,7 +1442,7 @@
 
         \subsection{The Lua editor}
 
-          One of our objective for the web application was to provide the user
+          One of our objectives for the web application was to provide the user
           with a fully integrated LUA editor within the application and
           available during the job creation process.\\
           The idea of entirely building ourselves this editor was quickly
@@ -1465,7 +1465,103 @@
 
       \subsection{Topology creation}
         % SAM: Topology creation
-        {\color{red} TODO + screen shot}
+          The second objective concerning the web application was to provide the
+          user with an easy way to create the topology details he would like
+          the job to be run in. The previous and only way to send a topology
+          to the server was to write a whole XML file following the ModelNet
+          topology representation, a somehow tedious and error-prone process.\\
+
+          The first step in our solution was to create a user interface with
+          form fields for each of the components of the topology :
+
+          \begin{itemize}
+            \item \textbf{Nodes} : being virtual nodes or gateways.
+            \item \textbf{Specs} : being a set of predefined settings such as the
+            bandwith and packet loss rate which would then be used by
+            a link.
+            \item \textbf{Links} : Linking two nodes, choosing a spec to
+            inherit its settings and maybe overriding one of the spec settings
+            with its own.
+          \end{itemize}
+
+          \begin{figure}[H]
+            \centering
+            \includegraphics[scale=0.6]{figures/editor_topology.png}
+            \caption{\label{editor_topology} UI Topology Editor}
+          \end{figure}
+
+          Following this way, we could set validations behind the scenes and
+          prevent user from creating wrong settings such as a link having the
+          same node as source and destination and ensure the topology would
+          fit in the Splay system. To help the user manage the created
+          elements of his topology, a simple summary of his elements is
+          output on the page with the related information and a click on those
+          allows to delete the corresponding element from the topology.\\
+          Indeed, any deletion of a node would delete the link it's associated
+          to, or any deletion of a spec would delete the associated links.\\
+
+          \begin{figure}[H]
+            \centering
+            \includegraphics[scale=0.6]{figures/recap_topology.png}
+            \caption{\label{recap_topology} Interactive Recap of the topology}
+          \end{figure}
+
+          To help the user get a better visualisation of his topology, we
+          decided to implement a network visualisation solution using the
+          Cytoscape \textbf{cytoscape} library.\\
+          On any update from the form explained above, the change is reflected
+          inside our network visualisation component adding the new links or
+          nodes created by the user so that he can keep track of his topology
+          evolution in a more pleasant way.\\
+
+          \begin{figure}[H]
+            \centering
+            \includegraphics[scale=0.6]{figures/visual_topology.png}
+            \caption{\label{visual_topology} Visualisation of the topology}
+          \end{figure}
+
+          Once the user is done editing his topology, he doesn't have to
+          do anything more. We created the editor so that the saved entities
+          of it (being JSON elements) would be directly transformed into the
+          corresponding XML file and sent to the backend alongside with his
+          job.\\
+
+          However, using a visual tools with buttons and inputs is not always
+          the fastest and most practical thing for someone more experienced. We
+          thought that some Splay user would probably not want to be obliged
+          to play with our topology editor and would keep their topology
+          settings in some file alongside with their code.\\
+          We therefore wanted to allow the user to play with XML directly
+          if he wanted to, offering the following service :
+
+          \begin{itemize}
+            \item A user creating the topology could also translate what's
+            displayed in the visual editor into the XML definition.
+            \item A user creating the topology could directly paste
+            his XML topology in some editor and also have the option of
+            translating it into our visualisation solution.
+          \end{itemize}
+
+          Addressing these two issues was an extremely easy task, the job of
+          converting the topology in XML was already available and done on
+          the job submission. We therefore reused the Brace package used
+          for the LUA code editor to create an XML Topology editor.\\
+          The user could then trigger an XML creation into the Brace editor
+          before sending the job, or paste its code into the Brace editor and
+          then ask for reflecting the XML topology into the visual editor. It
+          was just then the matter of parsing the XML and generating the
+          corresponding JSON entities, reusing the functions we already wrote
+          for the Vue components composing this global feature.
+
+          \begin{figure}[H]
+            \centering
+            \includegraphics[scale=0.5]{figures/xml_topology.png}
+            \caption{\label{xml_topology} XML Display and Editor}
+          \end{figure}
+
+
+
+
 
       \section{Fault injection} % TODO : Modify
 
