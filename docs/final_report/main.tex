@@ -1574,78 +1574,117 @@
             \caption{\label{xml_topology} XML Display and Editor}
           \end{figure}
 
-      \section{Fault injection} % TODO : Modify
+      \section{Fault injection}
 
-        The fault injection (or crash point) is done on the daemon side. Indeed, we wanted
-        to crash the code in middle of the execution tree, then, only the daemon can
-        handle with presicion the crash. We choose to use domain specific language for
-        crash management that the user can put in a Lua comment. During the execution of job, the first step
-        is to parse the code and manage the execute of the crash point.
+        The fault injection feature (or crash points) is achieved on the daemon
+        side of the application. Indeed, we wanted to be able to trigger crash
+        of the code in the middle of the execution tree, therefore only the
+        daemon was able to handle with precision this crash.\\
 
-        \subsection{Domain Specific Language (DSL)} % TODO : Modify
+        We therefore made the decision to use a domain specific language (DSL)
+        for the crash management so that a user could define the crash point
+        in the LUA code as a comment. During the job execution phase, the first
+        step is to parse the code and gather those crash points to manage the
+        crashes.
 
-          We specified a small DSL designed to be simple and flexible, for the user and for the parsing. This DSL need to
-          be integrated to the Lua code without modificatation of this one, and trying to avoid crashing the
-          daemon if the specification (by the user) of the crash is not correct. Also, the number of line between the
-          source code and after the parsing (DSL) need to be the same for error message (to get the correct line number in the trace).
-          For these reasons, a crash point need to be reprensented in \textbf{one line} and beginning by two comma (--) which
-          indicate comment in Lua and to avoid interpretate user comments, we add the keyword \textit{CRASH POINT}.
-          The crash append where the crash point is define, then it is possible to
-          crash everywhere (thread, middle of function, etc). \\
+        \subsection{Domain Specific Language (DSL)}
 
-          Secondly, a fault is defined by it type, by the moment it occurs and on which nodes it going to happend.
-          These characteristics need to be on the DSL specification. First, we begon to integrate the affected (by crash) nodes choosed
-          (can be several), in this purpose, the user adds, after the keyword \textit{CRASH POINT},
-          the ids of nodes (separated by space). We separated these and the type of fault by adding a colon, the type
-          of fault is defined by its name and a possible extend data (also separated by space). Again, we split the
-          fault type and the moment definition by a colon. The moment definition (when occurs the crash) is a keyword, follows
-          by additional data. Our final DSL looks like (The first line corresponds to one line of crash point):
+          We defined our small domain specific language to be simple to user
+          for the user and flexible enough for the parsing phase. This DSL
+          needed to be integrated into the LUA code without any modification of
+          it, trying to avoid totally crashing the daemon in case of the crash
+          points specified by the user were not correct.\\
+          Also, the difference in terms of number of lines of code between the
+          source code before and after the parsing needed to be the same in
+          order to keep our error messages right (getting the same line line
+          number when locating the error).\\
+
+          For these reasons, we designed the feature so that a crash point has
+          to be represented as \textbf{one line} of code and beginning by
+          two hyphens (--) which indicates a LUA comment.\\
+          To avoid interpreting any other comment, those crash points must
+          contain the keyword \textit{CRASH POINT}. Achieving this by comments
+          was probably the best option, so that the real code doesn't get any
+          interference with our crash point functionnality. The crash then
+          happens exactly where the crash point is defined, it is therefore
+          possible to make the execution code crashing anywhere (thread, middle
+          of a function, etc...)\\
+
+          Secondly, a fault is defined by a type, the moment it should occur and
+          on which node it should occur. These characteristics also needed to
+          be specified within our DSL. Each characteristics follows the
+          \textit{CRASH POINT} keyword and are separated by a colon, and are
+          defined by their keyword and values if needed.
+
+          \begin{itemize}
+            \item First, the chosen nodes to be affected by the crash must be
+            specified. For this purpose, the user must add the id's of the
+            affected nodes separated by a space.
+            \item The type of crash can be specified by its name and optional
+            parameters
+            \item The moment where the crash occurs
+          \end{itemize}
+
+          Our final DSL looks like this :
+
           \begin{lstlisting}[style=MyBash]
--- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
-<TYPE> => STOP | RECOVERY <float>
-<WHEN> => AFTER <int> | RANDOM <float>
+            -- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
+            <TYPE> => STOP | RECOVERY <float>
+            <WHEN> => AFTER <int> | RANDOM <float>
           \end{lstlisting}
-          For now, you can see, there are 2 types of crash and 2 way to define the moment of crash. A stop crash (STOP) means that
-          the nodes will be dead forever. In opposite, when it is the recovery type (RECOVERY), the node will be crash but restart
-          completely after x seconds (float number). Moreover there are 2 way to define when the code will crash. The ATFER keyword
-          is the determinist way, after x pass (int number), the next passage the crash will happen. The non-determinist way is
-          done with the RANDOM keyword, there is a x probability of crash (float number between 0 and 1) at each passage.
-          Here some positive examples of crash points using our DSL :
+
+          As you can see, we defined two types of crash and two ways to define
+          the moment of the crash.\\
+          A stop crash means that the node will die forever, conversely a
+          recovery crash means that the node will crash and recover after a
+          number of seconds specified by the user.\\
+          Concerning the moment of the crash :
+          \begin{itemize}
+            \item The \textbf{AFTER} keyword means that the user specifies a
+            number of loops to achieve before the crash occurs. For example
+            the value 5 in a loop means that this loop will execute 5 times
+            before triggering the crash.
+            \item The \textbf{RANDOM} keyword means that the user specifies a
+            probability between 0 and 1 that the node crashes each times it
+            encounters the crash point through the code execution.
+          \end{itemize}
+
+          Here are some positive examples of crash points using our DSL :
 
           \begin{lstlisting}[style=MyLua]
--- Crash forever the node 1 and 2 at the 4th passage
--- in the code
--- CRASH POINT 1 2 : STOP : AFTER    3
+            -- Crash forever the node 1 and 2 at the 4th passage
+            -- in the code
+            -- CRASH POINT 1 2 : STOP : AFTER    3
 
--- At each time that the code (node 1) pass by this comment,
--- there is 0.0002 chance to crash the node 1
---CRASH POINT 1: STOP : RANDOM 0.0002
+            -- At each time that the code (node 1) pass by this comment,
+            -- there is 0.0002 chance to crash the node 1
+            --CRASH POINT 1: STOP : RANDOM 0.0002
 
--- Crash immediately when the comment is encouter in
--- the node 1, but this node will recover after 2 sec
--- CRASH POINT 1: RECOVERY 2 : AFTER 0
+            -- Crash immediately when the comment is encouter in
+            -- the node 1, but this node will recover after 2 sec
+            -- CRASH POINT 1: RECOVERY 2 : AFTER 0
 
--- Have one chance on two to crash at each pass for
--- the node 1, 2, 3, 4, 5. But recover immediately
--- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
+            -- Have one chance on two to crash at each pass for
+            -- the node 1, 2, 3, 4, 5. But recover immediately
+            -- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
             \end{lstlisting}
 
-          Also, we add some negative examples (won't product any crash) :
+          Also, we added some negative examples (won't trigger any crash) :
 
           \begin{lstlisting}[style=MyLua]
--- Won't work because Crash point not in uppercase
---Crash Point 1 2 : STOP : AFTER 3
+            -- Won't work because Crash point not in uppercase
+            --Crash Point 1 2 : STOP : AFTER 3
 
--- Won't work because no node is specified.
--- CRASH POINT :RECOVERY  965 :   AFTER 3
+            -- Won't work because no node is specified.
+            -- CRASH POINT :RECOVERY  965 :   AFTER 3
 
--- Won't work because RECOVER is not a valid
--- type (but warning expected).
--- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
+            -- Won't work because RECOVER is not a valid
+            -- type (but warning expected).
+            -- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
 
--- Won't work because TIME is not a valid type
--- for now (but error expected).
--- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
+            -- Won't work because TIME is not a valid type
+            -- for now (but error expected).
+            -- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
           \end{lstlisting}
 
         \subsection{Parsing} % TODO : Modify
