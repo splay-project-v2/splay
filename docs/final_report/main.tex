@@ -905,9 +905,8 @@
 
       \subsection{The new front-end application}
 
-        In this section, we will talk about the new modern web application.
-        The developement story beginning by a complete refactor of all features
-        and finished by the new features developed in the web application side.
+        In this section, we will talk about the new modern web application with
+        all old features.
 
         \subsubsection{Single Page Application - Old feature refactor}
 
@@ -1054,6 +1053,52 @@
         This complete rewrite of the CLI allowed us to reduce thousands of
         LUA lines of code and to obtain a most two hundred of simple and
         maintainable Python code achieving the same features than before.
+    \section{Bug fix on Daemon and Controller}
+      
+      As explained, before only the daemon and the controller didn't get a complete refactor
+      but obviously, these services weren't not stable and lot of bugs happened 
+      during our tests. Then we presented all our change on these, sometimes
+      to fix issues or only to have more maintainable code.
+
+      \subsection{Controller changes} 
+        We have fixed lot of issues on the controller, mainly because
+        of sequel call. Then, you can see a no exaustive list of change on the controller :
+        \begin{itemize}
+          \item Sequel calls : we have seen that in the old source code, someone tried to change 
+          the old library dbd-mysql \cite{dbdMysql} to Sequel \cite{Sequel} (issue in the old project \cite{dbdMysqlToSequel}).
+           We are completely agree with this 
+          change (dbd-mysql is not updated since 2010, have still bugs and Sequel manages different type of Database)
+          , but most of the SQL calls through 
+          Sequel was wrongly written, then lot of call returned nothing (select case) or insert nothing (insert case).
+          We have checked every Sequel usage in the all code, and change when it was mandatory, also we tried to 
+          clean as much as possible (but remaining a lot) raw string SQL call with interpolation (see the improvements section in the conclusion).
+          \item Communicatation with daemon : the comminucation with daemons was not coherent with
+          the daemon protocol. By example, the logs retrievement was buggy because of protocol not coherent between 
+          the two services. Logs retrievement and creation has be improved to by more readable (issue of the old project \cite{logTimestamps}).
+          \item Small changes : we added more logs when needed and removed some less useful. we removed the creation 
+          of the database from the controller (backend). Also, we used Rubocop \cite{Rubocop} to have a certain logic
+          in the code. 
+        \end{itemize}
+
+      \subsection{Daemons changes} 
+        We changed/fixed small parts of daemon to be consistent with the controller (communication) and maked some improvements
+        of Lua Splay library (again not exaustif): 
+        
+        \begin{itemize}
+          \item As explain in the controller part, we fixed the protocol with the controller, mainly for the logs and 
+          the registering of the daemon.
+          \item The topology socket restriction is now automatically done when a topology is set. This restriction is used
+          to simulate the toplogy settings, then limited the bandwidth and created the latency.
+          The topology socket has a main issue in its design, indeed the restriction is based only on the ip and port (one), then 
+          if the daemon used a client port (tcp or udp), the server will answer into a unknwon port without any restriction.
+          Then to bypass of this issued, we created a new topology restriction based only on the ip, but it means that 
+          all nodes (daemons) need to have a different ip (with docker-compose, it is the case). But obviously, it is 
+          something to improve and change (check improvements section).
+          \item Removed LuaCrypto library from the daemon and added luaossl to replace it. The main reasons were LuaCrypto can't use 
+          the last openssl linux package (security issue and old version can't be used in new OS), 
+          it was not updated anymore and a issue on this was open in the old project \cite{sslLib}. Then the code was updated depending of this update.
+          \item Multiple bug fix due (mainly) to the change of version of Lua has be solved. 
+        \end{itemize}
 
     \section{Software Architectures}
 
@@ -1900,13 +1945,13 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
             the double work with directed edge via form.
           \end{itemize}
 
-      \subsection{Refactor of old services} % TODO : Modify
+      \subsection{Refactor of old services} 
         We have redid some parts of Splay with more modern technology as explain in the section on the architecture but
         we didn't have make a complete refactor for the daemon and the controller. And we think that it is important,
         for future maintenability or improvement, that these services need to be redid or only passed a meticulously review/refactor.
         Also, small remove in the database schema can be done because some columns are maybe not useful anymore.
 
-        \subsubsection{Daemon} % TODO : Modify
+        \subsubsection{Daemon}
           The daemon is maybe the critical part of the project and it was build with Lua \cite{Lua}. During, our work, after
           stabilize the whole project, we have seen lot of unused code, small bugs and repeated code. Then,
           we fixed these issues when we encountered them (we were very careful about what we removed/changed), but
@@ -1915,7 +1960,12 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           about it. For these reason, we think that a complete check of the lua libraries (by someone knowing the old project) is mandatory
           and adding even more busted test (of the splay lib) is a good idea. \\
 
-          % TODO problem with toplogy - client socket doesn't take in account !
+          Moreover, we seen at the end of the project that the socket topology restriction don't take in account the packet 
+          loss rate and the queue length (maybe the github code is not really the last one). 
+          Then, the topology settings is limited to the bandwidth and the latency. Furthermore, we have seen 
+          (in the section of daemon changement) that the topology restriction is based on the ip + a single port, causing 
+          unkowning client socket (because port is different than the server port) and useless restriction.
+          For these reason the the socket topology (coming with SplayNet module) need to be improved.
 
           Also, maybe, a good solution to clean this service and offer a new alternative for the user, it is completely
           redo the daemon in a other technology. The best alternative language is, for us, Python (version 3). Indeed, Python is very
@@ -1928,7 +1978,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           to the performance issue of Python, we can imagine using a Just In Time compiler such as PyPy \cite{PyPy} to boost
           significantly the performance and used some distributed libraries to create quickly a new Splay library.
 
-        \subsubsection{Controller} % TODO : Modify
+        \subsubsection{Controller} 
 
           The controller is the brain of the projects, manages daemons, read new data from database,
           write result on database, dispatch command, ... Indeed, the controller is vital for the project,
