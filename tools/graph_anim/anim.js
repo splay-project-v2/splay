@@ -34,6 +34,7 @@ const NodeColor = Object.freeze({
 function submit() {
     var textInput = document.getElementById('textInput');
     var speedInput = document.getElementById('speedInput');
+    var autoInput = document.getElementById('auto');
 
     var text = textInput.value
     if (text == null) {
@@ -42,7 +43,8 @@ function submit() {
 
     var timeline = parseLog(text)
     console.log(timeline)
-    graph(timeline, parseFloat(speedInput.value))
+    console.log(autoInput.value)
+    graph(timeline, parseFloat(speedInput.value), autoInput.value=="on")
 
 }
 
@@ -135,7 +137,7 @@ function parseLog(text) {
 }
 
 
-function graph(timeline, speedFactor) {
+function graph(timeline, speedFactor, autoconnect) {
 
     const sleep = (milliseconds) => {
         return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -181,7 +183,51 @@ function graph(timeline, speedFactor) {
                     background: NodeColor.default.background
                 }
             })
-
+            if (autoconnect == true) {
+                nodes.forEach(function (d, i) {
+                    if (d.id != timedata.id){
+                        console.log("Add edges betweens " + d.id + " and " +  timedata.id)
+                        const idEdgeTo = "" + timedata.id + "-" + d.id
+                        edges.update({
+                            to: timedata.id,
+                            from: d.id,
+                            arrows: "to",
+                            width: 2,
+                            id: idEdgeTo,
+                            length: 300,
+                            color : {
+                                inherit: false,
+                                color: '#2B7CE9',
+                                highlight: '#2B7CE9',
+                                hover: '#2B7CE9'
+                            }
+                        })
+                        packets[idEdgeTo] = {
+                            nb: 0,
+                            labels: []
+                        }
+                        const idEdgeFrom = "" + d.id + "-" + timedata.id
+                        edges.update({
+                            to: d.id,
+                            from: timedata.id,
+                            arrows: "to",
+                            width: 2,
+                            id: idEdgeFrom,
+                            length: 300,
+                            color : {
+                                inherit: false,
+                                color: '#2B7CE9',
+                                highlight: '#2B7CE9',
+                                hover: '#2B7CE9'
+                            }
+                        })
+                        packets[idEdgeFrom] = {
+                            nb: 0,
+                            labels: []
+                        }
+                    }
+                })
+            }
         } else if (timedata.type === EventGraph.addEdge) {
             const idEdge = "" + timedata.to + "-" + timedata.from
             edges.update({
@@ -197,7 +243,6 @@ function graph(timeline, speedFactor) {
                     highlight: '#2B7CE9',
                     hover: '#2B7CE9'
                 }
-
             })
             packets[idEdge] = {
                 nb: 0,
@@ -205,7 +250,7 @@ function graph(timeline, speedFactor) {
             }
         } else if (timedata.type === EventGraph.packetSend) {
             const idEdge = "" + timedata.from + "-" + timedata.to
-
+            console.log("packet send " + idEdge)
             packets[idEdge].nb += 1
 
             edges.update([{
@@ -222,6 +267,8 @@ function graph(timeline, speedFactor) {
 
         } else if (timedata.type === EventGraph.packetReceive) {
             const idEdge = "" + timedata.to + "-" + timedata.from
+            console.log("packet receive " + idEdge)
+
             packets[idEdge].nb -= 1
             if (packets[idEdge].nb == 0) {
                 edges.update([{

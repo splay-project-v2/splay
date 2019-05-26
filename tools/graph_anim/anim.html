@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-
 <head>
+    <meta charset="UTF-8"> 
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
     <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
     
@@ -9,7 +9,13 @@
 </head>
 
 <body>
-    <textarea id="textInput"></textarea>Speed factor : <input id="speedInput" type="text" value="0.5">
+    <textarea id="textInput"></textarea>
+    <div> Speed factor : <input id="speedInput" type="text" value="0.5"></div>
+   
+    <div>
+        <input type="checkbox" id="auto" name="auto" checked>
+        <label for="auto">Auto-connect</label>
+    </div>
     <button id="submit" onclick="submit()">Submit</button>
     <h1>Network during time</h1>
     <h2 id="time"></h2>
