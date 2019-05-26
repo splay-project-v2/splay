@@ -1051,7 +1051,7 @@
         responses parsing.\\
 
         This complete rewrite of the CLI allowed us to reduce thousands of
-        LUA lines of code and to obtain a most two hundred of simple and
+        Lua lines of code and to obtain a most two hundred of simple and
         maintainable Python code achieving the same features than before.
     \section{Bug fix on Daemon and Controller}
       
@@ -1503,7 +1503,7 @@
         \subsection{The Lua editor}
 
           One of our objectives for the web application was to provide the user
-          with a fully integrated LUA editor within the application and
+          with a fully integrated Lua editor within the application and
           available during the job creation process.\\
           The idea of entirely building ourselves this editor was quickly
           moved aside, as it would take too much time to achieve and wouldn't
@@ -1514,7 +1514,7 @@
           error handling, line number displaying.\\
 
           The integration of Ace in the project was really easy and light thanks
-          to the available npm package, and the editor now display LUA code
+          to the available npm package, and the editor now display Lua code
           perfectly colorized and errors are shown in case of syntax errors.\\
 
           Sadly, no built-in auto-completion module were available from the
@@ -1605,7 +1605,7 @@
           Addressing these two issues was an extremely easy task, the job of
           converting the topology in XML was already available and done on
           the job submission. We therefore reused the Brace package used
-          for the LUA code editor to create an XML Topology editor.\\
+          for the Lua code editor to create an XML Topology editor.\\
           The user could then trigger an XML creation into the Brace editor
           before sending the job, or paste its code into the Brace editor and
           then ask for reflecting the XML topology into the visual editor. It
@@ -1621,32 +1621,32 @@
 
       \section{Fault injection}
 
-        The fault injection feature (or crash points) is achieved on the daemon
+        The fault injection feature (or crash point) is achieved on the daemon
         side of the application. Indeed, we wanted to be able to trigger crash
         of the code in the middle of the execution tree, therefore only the
-        daemon was able to handle with precision this crash.\\
+        daemon was able to handle with precision the crash.\\
 
         We therefore made the decision to use a domain specific language (DSL)
         for the crash management so that a user could define the crash point
-        in the LUA code as a comment. During the job execution phase, the first
-        step is to parse the code and gather those crash points to manage the
+        in the Lua code as a comment. During the job execution phase, just before 
+        execute the user code, we parse the code and gather those crash points to manage the
         crashes.
 
         \subsection{Domain Specific Language (DSL)}
 
           We defined our small domain specific language to be simple to user
           for the user and flexible enough for the parsing phase. This DSL
-          needed to be integrated into the LUA code without any modification of
-          it, trying to avoid totally crashing the daemon in case of the crash
-          points specified by the user were not correct.\\
+          needed to be integrated into the Lua code without any modification of
+          it (expected for rigthful crash comments), trying to avoid totally crashing
+          the daemon in case of the crash points specified by the user were not correct.\\
           Also, the difference in terms of number of lines of code between the
           source code before and after the parsing needed to be the same in
-          order to keep our error messages right (getting the same line line
+          order to keep the feedback error messages right (getting the same line
           number when locating the error).\\
 
           For these reasons, we designed the feature so that a crash point has
           to be represented as \textbf{one line} of code and beginning by
-          two hyphens (--) which indicates a LUA comment.\\
+          two hyphens (--) which indicates a Lua comment.\\
           To avoid interpreting any other comment, those crash points must
           contain the keyword \textit{CRASH POINT}. Achieving this by comments
           was probably the best option, so that the real code doesn't get any
@@ -1664,7 +1664,7 @@
           \begin{itemize}
             \item First, the chosen nodes to be affected by the crash must be
             specified. For this purpose, the user must add the id's of the
-            affected nodes separated by a space.
+            affected nodes separated by a space (ids begin at 1 -> number of daemon used).
             \item The type of crash can be specified by its name and optional
             parameters
             \item The moment where the crash occurs
@@ -1673,63 +1673,67 @@
           Our final DSL looks like this :
 
           \begin{lstlisting}[style=MyBash]
-            -- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
-            <TYPE> => STOP | RECOVERY <float>
-            <WHEN> => AFTER <int> | RANDOM <float>
+-- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
+<TYPE> => STOP | RECOVERY <float>
+<WHEN> => AFTER <int> | RANDOM <float>
           \end{lstlisting}
 
           As you can see, we defined two types of crash and two ways to define
           the moment of the crash.\\
           A stop crash means that the node will die forever, conversely a
           recovery crash means that the node will crash and recover after a
-          number of seconds specified by the user.\\
+          number of seconds specified by the user (float number).\\
           Concerning the moment of the crash :
           \begin{itemize}
             \item The \textbf{AFTER} keyword means that the user specifies a
             number of loops to achieve before the crash occurs. For example
-            the value 5 in a loop means that this loop will execute 5 times
-            before triggering the crash.
+            the value 5 in a begining of the loop means that this loop will 
+            execute 5 times before triggering the crash. And if you want crash immediately when
+            the line is execute for the first time, you can define AFTER 0.
             \item The \textbf{RANDOM} keyword means that the user specifies a
             probability between 0 and 1 that the node crashes each times it
-            encounters the crash point through the code execution.
+            encounters the crash point through the code execution. By example,
+            if you specified 1, the crash will occure in the first execution 
+            (similar to AFTER 0).
           \end{itemize}
 
           Here are some positive examples of crash points using our DSL :
 
           \begin{lstlisting}[style=MyLua]
-            -- Crash forever the node 1 and 2 at the 4th passage
-            -- in the code
-            -- CRASH POINT 1 2 : STOP : AFTER    3
+-- Crash forever the node 1 and 2 at the 4th passage
+-- in the code
+-- CRASH POINT 1 2 : STOP : AFTER    3
 
-            -- At each time that the code (node 1) pass by this comment,
-            -- there is 0.0002 chance to crash the node 1
-            --CRASH POINT 1: STOP : RANDOM 0.0002
+-- At each time that the code (node 1) pass by this comment,
+-- there is 0.0002 chance to crash the node 1
+--CRASH POINT 1: STOP : RANDOM 0.0002
 
-            -- Crash immediately when the comment is encouter in
-            -- the node 1, but this node will recover after 2 sec
-            -- CRASH POINT 1: RECOVERY 2 : AFTER 0
+-- Crash immediately when the comment is encouter in
+-- the node 1, but this node will recover after 2 sec
+-- CRASH POINT 1: RECOVERY 2 : AFTER 0
 
-            -- Have one chance on two to crash at each pass for
-            -- the node 1, 2, 3, 4, 5. But recover immediately
-            -- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
+-- Have one chance on two to crash at each pass for
+-- the node 1, 2, 3, 4, 5. But recover immediately
+-- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
             \end{lstlisting}
 
-          Also, we added some negative examples (won't trigger any crash) :
+          Also, we added some negative examples (won't trigger any crash
+          and won't crash the daemon) :
 
           \begin{lstlisting}[style=MyLua]
-            -- Won't work because Crash point not in uppercase
-            --Crash Point 1 2 : STOP : AFTER 3
+-- Won't work because Crash point not in uppercase
+--Crash Point 1 2 : STOP : AFTER 3
 
-            -- Won't work because no node is specified.
-            -- CRASH POINT :RECOVERY  965 :   AFTER 3
+-- Won't work because no node is specified.
+-- CRASH POINT :RECOVERY  965 :   AFTER 3
 
-            -- Won't work because RECOVER is not a valid
-            -- type (but warning expected).
-            -- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
+-- Won't work because RECOVER is not a valid
+-- type (but warning expected).
+-- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
 
-            -- Won't work because TIME is not a valid type
-            -- for now (but error expected).
-            -- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
+-- Won't work because TIME is not a valid type
+-- for now (but error expected).
+-- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
           \end{lstlisting}
 
         \subsection{Parsing}
@@ -1742,21 +1746,21 @@
           and is used by the nodes to get the crash information using an id
           number which will retrieve the corresponding crash informations.\\
 
-          The parsing phase actually assign to the nodes a new code where the
-          crash points comments specified by the users are transformed and
-          replaced (if no error is found) by a function call containing the
-          crash id number. Therefore, when the code executes, the crash function
+          The parsing phase actually assign, to the nodes choosed by the user through ids,
+          a new code where the crash points comments is specified by the users.
+          This new replaced (if no error is found) the crash comment by a function call 
+          containing the crash id number (as parameters). Therefore, when the code executes, the crash function
           call will access the library and will act depending on what
           informations are stored into the crash table (type of crash, moment
-          of trigger)
+          of trigger).
 
           The parsing handles any error the user could have done about the
-          syntax of the crash poin, still crashing the node.\\
+          syntax of the crash point.\\
           Parsing is done line by line and if any error is found (also error
-          about the code itself), the concerned line will be unchanged and
+          about the parsing code itself), the concerned line will be unchanged and
           a warning or error message will be written in the logs.\\
-          This feature is fully wrote in LUA using a regex matcher
-          \cite{RegexLua}.
+          This feature is fully wrote in Lua using the basic regex matcher of Lua
+          \cite{RegexLua} (it isn't a complete Regex implementation).
 
         \subsection{Execution}
 
@@ -1764,26 +1768,25 @@
           we shall now see in details how the crashes exactly happen, how they
           are handled and how the nodes recover if they have to.\\
 
-          The main problem with the LUA language is that the multithreading
+          The main problem with the Lua language is that the multithreading
           is non-preemptive, this means that we cannot stop a thread from the
-          outside \cite{CoroutineLua}. The only way to stop directly the LUA
+          outside \cite{CoroutineLua}. The only way to stop directly the Lua
           interpreter and kill any other thread is to exit the program using
-          an OS function. We also have the possibility of sending an exit
+          an OS function (os.exit). We also have the possibility of sending an exit
           status code to the process, which is very convenient for knowing
           if we need to restart or stay down after a crash point was
           triggered.\\
 
-
           With this way of exiting, we can create artificials crash points which
-          will immediately kill every coroutines (threads) of LUA and its
+          will immediately kill every coroutines (threads) of Lua and its
           current execution. Moreover, we can pass special exit status codes
-          in order to send messages to another process.\\
+          in order to send messages to the parent process.\\
           In order to use these exit codes, we created a fork (available from
           the C splay library) before parsing the crash point and executing
           the user code.\\
           Therefore, the child process will execute the parsing of the crash
           point and proceed to the code execution, and the parent process will
-          wait to receive the exit status code of its child. We added a LUA
+          wait to receive the exit status code of its child. We added a Lua
           function (waitpid) for this purpose and used the original waitpid
           of C \cite{waitpid}.\\
 
@@ -1800,7 +1803,10 @@
 
           The recovery crash is then achieved recursively, the parent process
           creating another fork, and the crash table is reset when reparsing
-          the original code.
+          the original code. Moreover, when it is a recovery crash, the user
+          can be defined the down time, our simple solution of that is using 
+          the non-preemptive feature of Lua and force to sleep x seconds without any coroutine yield
+          (then other coroutines can't execute any code) before crashing.
 
     \chapter{Use Case} % TODO : Modify
 
@@ -1886,17 +1892,16 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
           {\color{red} TODO}
 
-  \chapter{Conclusion} % TODO : Modify
+  \chapter{Conclusion} % TODO : Finish
 
     We concludes this report by some suggestion, firstly about our own features and secondly about
     SPLAY it-self. At the end, we summarise our global achievement about this project (objectifs agains realized).
 
-    \section{Improvements} % TODO : Modify
+    \section{Improvements} % TODO : Check
 
-      % Our features
-      \subsection{New features improvement} % TODO : Modify
+      \subsection{New features improvements}
 
-        \subsubsection{Lua editor} % TODO : Modify
+        \subsubsection{Lua editor} % TODO : Check
 
         We have noticed during the developement of own features that the Lua Editor is
         the less important feature. Only for one reason, most of the time, we
@@ -1917,7 +1922,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         then if the daemon switch of technology (see next section "Refactor of Controller/Daemon"),
         then it will be easy to change the targeted language.
 
-        \subsubsection{Crash point} % TODO : Modify
+        \subsubsection{Crash point} % TODO : Check
 
           The crash point feature handle 2 type of crash and 2 specification of when crash happend.
           This feature is very usefull to simulate hard stop of a machine (by lack of power by example).
@@ -1931,7 +1936,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           Global variables can help (access then also by the crash lib) or by parsing modificatation
           where a extra parameters will by add to the crash function call.\\
 
-        \subsubsection{Topology Creation} % TODO : Modify
+        \subsubsection{Topology Creation} % TODO : Check
 
           The creation of topology through a modern interface is very effective to build your own
           network topology quickly. However, we have more ideas (not exaustif) to improve this features, not possible to do ourself
@@ -1945,13 +1950,13 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
             the double work with directed edge via form.
           \end{itemize}
 
-      \subsection{Refactor of old services} 
+      \subsection{Refactor of old services} % TODO : Check
         We have redid some parts of Splay with more modern technology as explain in the section on the architecture but
         we didn't have make a complete refactor for the daemon and the controller. And we think that it is important,
         for future maintenability or improvement, that these services need to be redid or only passed a meticulously review/refactor.
         Also, small remove in the database schema can be done because some columns are maybe not useful anymore.
 
-        \subsubsection{Daemon}
+        \subsubsection{Daemon} % TODO : Check
           The daemon is maybe the critical part of the project and it was build with Lua \cite{Lua}. During, our work, after
           stabilize the whole project, we have seen lot of unused code, small bugs and repeated code. Then,
           we fixed these issues when we encountered them (we were very careful about what we removed/changed), but
@@ -1965,7 +1970,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           Then, the topology settings is limited to the bandwidth and the latency. Furthermore, we have seen 
           (in the section of daemon changement) that the topology restriction is based on the ip + a single port, causing 
           unkowning client socket (because port is different than the server port) and useless restriction.
-          For these reason the the socket topology (coming with SplayNet module) need to be improved.
+          For these reason the the socket topology (coming with SplayNet module) need to be improved. \\
 
           Also, maybe, a good solution to clean this service and offer a new alternative for the user, it is completely
           redo the daemon in a other technology. The best alternative language is, for us, Python (version 3). Indeed, Python is very
@@ -1978,7 +1983,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           to the performance issue of Python, we can imagine using a Just In Time compiler such as PyPy \cite{PyPy} to boost
           significantly the performance and used some distributed libraries to create quickly a new Splay library.
 
-        \subsubsection{Controller} 
+        \subsubsection{Controller} % TODO : Check
 
           The controller is the brain of the projects, manages daemons, read new data from database,
           write result on database, dispatch command, ... Indeed, the controller is vital for the project,
@@ -1996,7 +2001,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
             (Class named Jobd and the chlideren class of it). We found the most of controller bugs in these classes.
           \end{itemize}
 
-      \subsection{Security aspect} % TODO : Modify
+      \subsection{Security aspect} % TODO : Check
 
         In the description of the legacy project, we can see that the user job is normally in a restricted area and the project
         is secure in general. Maybe it was before, but actually, we think that it is not enough secure for multiple reasons :
@@ -2015,7 +2020,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         And then, it is important to have future work to secure SPLAY to be able to run everywhere. Note that we didn't
         work especially in the security aspect, we just see some issues to report.
 
-    \section{Objectives achievement}
+    \section{Objectives achievement} % TODO : resume of the project
 
   \nocite{*}
   \bibliographystyle{plain}
