@@ -20,7 +20,7 @@ fi
 
 #--
 step "Verify the logs (2)"
-if [[ ${LOGS[@]} != *"I become the LEADER"* ]]; then
+if [[ ${LOGS[@]} != *"I Become the LEADER now"* ]]; then
     echo "${LOGS[@]}"
     error "No leader"
 fi
