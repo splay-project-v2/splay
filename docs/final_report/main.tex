@@ -4,20 +4,37 @@
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{hyperref}
+\usepackage[final]{graphicx}
+\usepackage{subcaption}
+
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 
 \lstdefinestyle{MyLua}{
   language         = [5.3]Lua,
-  basicstyle       = \ttfamily,
+  basicstyle       = \small\ttfamily,
   keywordstyle=\color{magenta},
   stringstyle=\color{blue},
   commentstyle=\color{black!50}
 }
 
+\lstdefinestyle{MySmallLua}{
+  language         = [5.3]Lua,
+  basicstyle       = \tiny\ttfamily,
+  keywordstyle=\color{magenta},
+  stringstyle=\color{blue},
+  commentstyle=\color{black!50},
+  frame=single,
+  tabsize=2,
+  showspaces=false,
+  showstringspaces=false,
+  numbers=left,
+  literate={\ \ }{{\ }}1
+}
+
 \lstdefinestyle{MyBash}{
   language = bash,
-  basicstyle=\ttfamily,
+  basicstyle=\small\ttfamily,
   showstringspaces=false,
   commentstyle=\color{red},
   keywordstyle=\color{blue}
@@ -1827,34 +1844,85 @@ docker-compose -f docker-compose.prod.yml up -d web_app controller
 # 7 daemons because it is recommended to have more than needed
 docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         \end{lstlisting}
-        Then he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
+        Then, he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
         \url{http://localhost:8080/}. He creates is own account by the register form and it will be automatically connect next time.
 
       \section{Implementation of Raft in Lua} % TODO : Modify
-        After the successful installation, the hard work need to be done, it means to create the implementation of raft
+        After the successful installation, the main work need to be done, it means to create the implementation of Raft
         with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
         We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
-        We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
+        We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. 
+        We present and focus only on the election subproblem of the Raft because the log replication 
+        increases a lot the complexity and the readability: \\
+
+       
 
         \subsection{Creation of the algorithm} % TODO : Modify
         The student created a lua code of raft, it isn't trivial sadly,
         but if you understand raft, it is not so complicated :
 
-        % Code of raft with comments
-        {\color{red} TODO}
+        \lstinputlisting[style=MySmallLua]{raft_election.lua}
 
         \subsection{First result} % TODO : Modify
         After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
         (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
-        and this one send hearbeat to avoid a other leader election from others nodes.
-
-        % TODO : Show small piece of log result
-        {\color{red} TODO}
+        and this one send hearbeat to avoid a other leader election from others nodes : 
+          \begin{lstlisting}[style=MyBash]
+2019-05-29 12:57:13.7139 (7)  Election Trigger - upgrade term and become candidate 
+2019-05-29 12:57:13.7144 (7)  Send request to 1 - {"port":11691,"ip":"172.18.0.7"}
+2019-05-29 12:57:13.7153 (7)  Send request to 3 - {"port":11691,"ip":"172.18.0.10"}
+2019-05-29 12:57:13.7156 (7)  Send request to 4 - {"port":11691,"ip":"172.18.0.12"}
+2019-05-29 12:57:13.7158 (7)  Send request to 5 - {"port":11552,"ip":"172.18.0.13"}
+2019-05-29 12:57:13.7174 (3)  RPC Request Vote FROM 2.0 Term : 1.0
+2019-05-29 12:57:13.7174 (3)  Stepdown : 1.0 > 0
+2019-05-29 12:57:13.7184 (6)  RPC Request Vote FROM 2.0 Term : 1.0
+2019-05-29 12:57:13.7184 (6)  Stepdown : 1.0 > 0
+2019-05-29 12:57:13.7193 (4)  RPC Request Vote FROM 2.0 Term : 1.0
+2019-05-29 12:57:13.7193 (4)  Stepdown : 1.0 > 0
+2019-05-29 12:57:13.7212 (1)  RPC Request Vote FROM 2.0 Term : 1.0
+2019-05-29 12:57:13.7214 (1)  Stepdown : 1.0 > 0
+2019-05-29 12:57:13.7242 (7)  Vote Request result 1.0 : true from 3
+2019-05-29 12:57:13.7242 (7)  Vote Request result 1.0 : true from 5
+2019-05-29 12:57:13.7242 (7)  I Become the LEADER now
+2019-05-29 12:57:13.7246 (7)  Vote Request result 1.0 : true from 4
+2019-05-29 12:57:13.7248 (7)  Send append entry (null) to 1
+2019-05-29 12:57:13.7249 (7)  Send append entry (null) to 3
+2019-05-29 12:57:13.7251 (7)  Send append entry (null) to 4
+2019-05-29 12:57:13.7251 (7)  Send append entry (null) to 5
+2019-05-29 12:57:13.7260 (7)  Vote Request result 1.0 : true from 1
+2019-05-29 12:57:13.7265 (3)  RPC Append entry FROM 2.0 Term : 1.0 Entry : null
+2019-05-29 12:57:13.7269 (1)  RPC Append entry FROM 2.0 Term : 1.0 Entry : null
+2019-05-29 12:57:13.7274 (4)  RPC Append entry FROM 2.0 Term : 1.0 Entry : null
+2019-05-29 12:57:13.7279 (6)  RPC Append entry FROM 2.0 Term : 1.0 Entry : null
+          \end{lstlisting}
 
       \section{Topology settings} % TODO : Modify
 
-        Atfer testing the algorithm in a perfect network environment, the student tries different configuration of network topologies
-        created by the network topology interface developed by us.
+        Atfer testing the algorithm in a perfect network environment, the student tries with 3 different configurations
+        of network topology created by the network topology interface developed by us : 
+
+        \begin{figure}[H]
+          \begin{subfigure}{.33\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
+            \caption{1a}
+            \label{fig:topo1}
+          \end{subfigure}%
+          \begin{subfigure}{.33\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
+            \caption{1b}
+            \label{fig:topo2}
+          \end{subfigure}
+          \begin{subfigure}{.33\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_fail.png}
+            \caption{1c}
+            \label{fig:topo3}
+          \end{subfigure}
+          \caption{plots of topologies}
+          \label{fig:topologies}
+        \end{figure}
 
         % Show three network configuration : 2 correct and 1 doesn't match with the condition broadTime << electionTimeout << MTBF
 
