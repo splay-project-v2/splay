@@ -1868,25 +1868,34 @@
           coroutines can't execute any code) before crashing.
 
     \chapter{Use Case}
-      A student following a course on distributed application wants to try raft (focus on the correctness of the leader election)
-      implementation on 5 nodes.
-      He choosed to use Splay for his tests in his own laptop (or cluster of mini-computer) but there
-      is no installation of Splay available for him.
-      We going to described the different step of this student with the usage of Splay.
+      A student following a course on distributed application wants to prototype the raft election algorithm
+      on 5 different nodes. He choosed to use Splay for his tests in his own laptop (or if available on a cluster of mini-computer) 
+      and he has no pre-install installation of Splay available for him. We going to described the different
+      step of this student with the usage of Splay. \\
+      First, he needs to install a Splay environment on his own materials.
+      Secondly, with the help of Splay library, he builds a basic raft election implementation. Thirdly, he 
+      wants to test with differents network topology and after analyse the robustness of his solution by creating
+      some fault injection at key points. Also, one of his friend send to him a slightly different version
+      avoiding some writings on disk, and he wants to prove, by a example, the illness of the solution.
+      And for conclude his tests on Raft, he wants show a animation of the evolution of the endpoint state. 
 
       \section{Installation of Splay}
 
-        First this student need to get a clean installation of Splay. Fortunately, this work is greatly
-        helped because of a installation documentation and the dockerization of the project.
-        Following the main README file of the main repository (production installation), he installs docker and
-        docker-compose first. Then for running Splay, he runs the requested (by the README) commands in his terminal :
+        The student have only his laptop to work, and hopefully, he found on the main github repository \cite{SplayV2Git},
+        that the installation doesn't depend of Operating System or Hardware. The README file of the github project discribed 
+        precisely how to install Splay. Then, following the instructions, he clones the main repository (no need submodule),
+        installs docker and docker-compose on his computer. For running Splay in production, 
+        he runs the requested commands in his terminal :
         \begin{lstlisting}[style=MyBash]
 docker-compose -f docker-compose.prod.yml up -d web_app controller
 # 7 daemons because it is recommended to have more than needed
 docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         \end{lstlisting}
-        Then, he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
-        \url{http://localhost:8080/}. He creates is own account by the register form and it will be automatically connect next time.
+        He waits during, the download of prebuild images (from dockerhub) of each services and the time for services to start.
+        After the success of the installation, he access to the web application of Splay with his favorite modern browser 
+        (not lynx, please) with this url : \url{http://localhost:8080/}. 
+        He creates is own account by the register form and it will be automatically connect next time. Now, he can prototype
+        easily his own distributed job.
 
       \section{Implementation of Raft in Lua}
         After the successful installation, the hard work need to be done, it means to create the implementation of raft
@@ -1895,8 +1904,6 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. 
         We present and focus only on the election subproblem of the Raft because the log replication 
         increases a lot the complexity and the readability: \\
-
-       
 
         \subsection{Creation of the algorithm}
         The student created a lua code of raft, it isn't trivial sadly,
@@ -1969,15 +1976,16 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         Then, he tries with his implementation on the three configuration, the log result shows that
         the 2 firsts one succeeded the leader election and stabilize. But on the last, the leader election append multiple time
-        even when the leader is still on, it is because the condition broadTime << electionTimeout << MTBF is not met.
+        even when the leader is still on, it is because the condition $broadcast time << election timeout$ is not met.
 
         {\color{red} TODO}
 
       \section{Robustness Test through fault injection}
 
-        He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
-        When the leader crash, the student expectes that a other launch the leader election and there is a new leader
-        after some times. He tests with the 2 corrects topologies (don't change the timeout election).
+        He wants to test the correctness of his code by making crash the leader essentialy, but also the others.
+        When the leader crash, the student expects that a other leader election will be trigger by a remain node 
+        , and then a new leader will appear.
+        He tests with the 2 corrects topologies (don't change the timeout election).
 
         % Show crash + new election
         {\color{red} TODO}
