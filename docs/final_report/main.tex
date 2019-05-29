@@ -82,9 +82,6 @@
 
   \tableofcontents
 
-  % TODO or XXX
-  % -
-
   \chapter{Introduction}
 
     % Discuter de la problématique de tester des algorithmes distribues
@@ -298,7 +295,6 @@
       At the end of those ten days of work, we had a healthy and updated
       base to work with and ready to receive the real work of our thesis.\\
 
-
     \section{Roadmap}
 
       \subsection{Changes}
@@ -469,7 +465,19 @@
 
   \chapter{Architecture and Changes Development}
 
+    This chapter will detail our work on the Splay project concerning the
+    architectural changes and the modifications of already present features
+    of the system.\\
+    We'll first go through a more detailed explanations on the base Splay
+    project we started working from, then go through each change we listed
+    in our roadmap.
+
     \section{The Base Project}
+
+      Before going any further, we'll see the internal details of the system
+      such as the original software architecture and some implementation
+      details so that the reader will be able to precisely understand the
+      changes we achieved in the following sections.
 
       \subsection{Architecture}
 
@@ -855,6 +863,10 @@
 
     \section{Web Application Development}
 
+      This section will detail the development of the new web application,
+      starting with the choice of technology required to achieve this task, and
+      then going through the development details.
+
       \subsection{Choosing the Framework}
 
         As we made the decision that the web application would only be a
@@ -903,79 +915,78 @@
         we liked and with recent technologies, besides providing an efficient
         solution to the conditions we needed for the technology.
 
-      \subsection{The new front-end application}
+      \subsection{The new front-end application development}
 
-        In this section, we will talk about the new modern web application with
-        all old features.
+        As the development of the backend was started (detailed in the
+        previous section), we started in the mean time the development of a
+        Single Page Application using the VueJS framework.\\
 
-        \subsubsection{Single Page Application - Old feature refactor}
+        After removing the old files of the previous web application, we
+        created a basic VueJS project (version 2.5.X at that time) having a
+        simple home page and using the bootstrap-vue package
+        \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a well
+        known HTML, CSS and JavaScript framework used to create responsive
+        and modern web interface.\\
+        Bootstrap is a real Swiss-army knife among the design framework
+        and helped us building a visually pleasant and easy to use
+        web application with minimal custom CSS and JavaScript code.\\
 
-          As the development of the backend was started (detailed in the
-          previous section), we started in the mean time the development of a
-          Single Page Application using the VueJS framework.\\
+        The next step was to build a register and a login page to allow
+        user management. In order to manage different pages in the same Vue
+        project, we installed the Vue-Router packagem a Vue extension
+        allowing the navigation through different URI within the same
+        single page application (without any reload and additional requests
+        to the web server), allowing the user to switch from page to page
+        as he was on a regular website. Those pages being in fact components
+        loaded depending the selected URI in a root component.\\
+        We then created the associated routes for the user registration and
+        connection, the forms directly using the freshly written API available
+        on the backend.\\
+        In order to use that JSON API and allow communications with the
+        backend, we used axios \cite{axios}, a popular HTTP Javascript client.
+        This being done, our web application allowed the user to create its
+        account and connect to it, receiving an authentication token that
+        was stored on the client browser to allow auto-login on next visits.\\
 
-          After removing the old files of the previous web application, we
-          created a basic VueJS project (version 2.5.X at that time) having a
-          simple home page and using the bootstrap-vue package
-          \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a well
-          known HTML, CSS and JavaScript framework used to create responsive
-          and modern web interface.\\
-          Bootstrap is a real Swiss-army knife among the design framework
-          and helped us building a visually pleasant and easy to use
-          web application with minimal custom CSS and JavaScript code.\\
+        In order to get the same features as the legacy web application,
+        we created a \textbf{monitoring} page, on which the the important
+        informations would be displayed to the user in lists.\\
+        A list of Splay daemons (created by the controller) is retrieved
+        from the backend and displayed with global information in a nice
+        bootstrap table.\\
+        A second table used for jobs (also fetched from the backend) is also
+        displayed with general data about these jobs. The user can choose to
+        get more details about a specific Splay daemon or job using a button
+        on the application. He can also choose to kill a job, sending the
+        related command to the backend to let the controller achieve that job
+        killing.\\
+        The creation of a job is done through a simple form and we implemented
+        automatic check of the fields using the vee-validate package
+        \cite{VeeValidate}. As the data sent to the backend is also checked
+        before using those to create a new job, vee-validate offers us
+        a double validation and allows giving the user a better feedback
+        about any field he would have forgotten or wrongly filled.\\
+        Vee-validate is a small package solving the problem of
+        manual checking of forms by adding some propreties to inputs, and it
+        makes our code more compact and less messy.
 
-          The next step was to build a register and a login page to allow
-          user management. In order to manage different pages in the same Vue
-          project, we installed the Vue-Router packagem a Vue extension
-          allowing the navigation through different URI within the same
-          single page application (without any reload and additional requests
-          to the web server), allowing the user to switch from page to page
-          as he was on a regular website. Those pages being in fact components
-          loaded depending the selected URI in a root component.\\
-          We then created the associated routes for the user registration and
-          connection, the forms directly using the freshly written API available
-          on the backend.\\
-          In order to use that JSON API and allow communications with the
-          backend, we used axios \cite{axios}, a popular HTTP Javascript client.
-          This being done, our web application allowed the user to create its
-          account and connect to it, receiving an authentication token that
-          was stored on the client browser to allow auto-login on next visits.\\
-
-          In order to get the same features as the legacy web application,
-          we created a \textbf{monitoring} page, on which the the important
-          informations would be displayed to the user in lists.\\
-          A list of Splay daemons (created by the controller) is retrieved
-          from the backend and displayed with global information in a nice
-          bootstrap table.\\
-          A second table used for jobs (also fetched from the backend) is also
-          displayed with general data about these jobs. The user can choose to
-          get more details about a specific Splay daemon or job using a button
-          on the application. He can also choose to kill a job, sending the
-          related command to the backend to let the controller achieve that job
-          killing.\\
-          The creation of a job is done through a simple form and we implemented
-          automatic check of the fields using the vee-validate package
-          \cite{VeeValidate}. As the data sent to the backend is also checked
-          before using those to create a new job, vee-validate offers us
-          a double validation and allows giving the user a better feedback
-          about any field he would have forgotten or wrongly filled.\\
-          Vee-validate is a small package solving the problem of
-          manual checking of forms by adding some propreties to inputs, and it
-          makes our code more compact and less messy.
-
-          This being done, we almost retrieved all the legacy features (for the
-          web application) but in a much more nice way, with a modern solution
-          and maintenable code. Only the log downloading functionnality was
-          missing at this point. \\
-          As soon as we completed the backend with the logging endpoint, we
-          add this feature to the website with some improvements. When the
-          job is running or is finished, the user can see the log (using a
-          button next to the job details) which holds the involved daemons logs
-          with, for each line, the time and the daemon id indication. The user
-          can then choose to download the logs as a textfile (as it was possible
-          before) and check how its job performed.
+        This being done, we almost retrieved all the legacy features (for the
+        web application) but in a much more nice way, with a modern solution
+        and maintenable code. Only the log downloading functionnality was
+        missing at this point. \\
+        As soon as we completed the backend with the logging endpoint, we
+        add this feature to the website with some improvements. When the
+        job is running or is finished, the user can see the log (using a
+        button next to the job details) which holds the involved daemons logs
+        with, for each line, the time and the daemon id indication. The user
+        can then choose to download the logs as a textfile (as it was possible
+        before) and check how its job performed.
 
     \section{CLI Development}
+
+      This section will detail the CLI application development, starting
+      with an explanation of why we chose a precise technology to achieve
+      this application, then detailing how we implemented it om the system.
 
       \subsection{Using Python}
 
@@ -1042,8 +1053,8 @@
 
         Each command or option can be supplemented with help messages. Then,
         back in the scenes, Click reassembles all of this and format the
-        output of your CLI, displaying you help details if requested and even
-        help details for specific commands.\\
+        output of the CLI, displaying to the user help details if requested
+        and even help details for specific commands.\\
 
         The next step was to make real use of the Backend's API, thus we used
         \textbf{request} \cite{request} and \textbf{json} Python's libraries to
@@ -1053,51 +1064,80 @@
         This complete rewrite of the CLI allowed us to reduce thousands of
         Lua lines of code and to obtain a most two hundred of simple and
         maintainable Python code achieving the same features than before.
-    \section{Bug fix on Daemon and Controller}
-      
-      As explained, before only the daemon and the controller didn't get a complete refactor
-      but obviously, these services weren't not stable and lot of bugs happened 
-      during our tests. Then we presented all our change on these, sometimes
-      to fix issues or only to have more maintainable code.
 
-      \subsection{Controller changes} 
-        We have fixed lot of issues on the controller, mainly because
-        of sequel call. Then, you can see a no exaustive list of change on the controller :
+    \section{Bug fix on Daemon and Controller}
+
+      As we explained before, the daemon and controller are the only services
+      among Splay that weren't assigned a complete refactor because of how
+      complex and long that task would have been. Nevertheless, these services
+      weren't stable enough and a lot of bugs happened during our tests.\\
+      We therefore needed to apply a lot of corrective changes on those, and
+      this section's goal is to detail this part of our work.
+
+      \subsection{Controller changes}
+
+        The major source of issues on the controller were due to a previous
+        maintainers misuse of the sequel calls (a Ruby library offering a MySQL
+        toolkit), but this is an overall list of all the changes that we
+        applied:
+
         \begin{itemize}
-          \item Sequel calls : we have seen that in the old source code, someone tried to change 
-          the old library dbd-mysql \cite{dbdMysql} to Sequel \cite{Sequel} (issue in the old project \cite{dbdMysqlToSequel}).
-           We are completely agree with this 
-          change (dbd-mysql is not updated since 2010, have still bugs and Sequel manages different type of Database)
-          , but most of the SQL calls through 
-          Sequel was wrongly written, then lot of call returned nothing (select case) or insert nothing (insert case).
-          We have checked every Sequel usage in the all code, and change when it was mandatory, also we tried to 
-          clean as much as possible (but remaining a lot) raw string SQL call with interpolation (see the improvements section in the conclusion).
-          \item Communicatation with daemon : the comminucation with daemons was not coherent with
-          the daemon protocol. By example, the logs retrievement was buggy because of protocol not coherent between 
-          the two services. Logs retrievement and creation has be improved to by more readable (issue of the old project \cite{logTimestamps}).
-          \item Small changes : we added more logs when needed and removed some less useful. we removed the creation 
-          of the database from the controller (backend). Also, we used Rubocop \cite{Rubocop} to have a certain logic
-          in the code. 
+          \item \textbf{Sequel Calls}: We have detected that in the legacy
+          source code, a maintainer wanted to change and replace the old library
+          called dbd-mysql \cite{dbdMysql} for the Sequel \cite{Sequel} one. We
+          totally agreed with this as dbd-mysql has not been not updated since
+          2010 and still has bugs whereas Sequel manages different type of
+          rmdb's and is still an active project.\\
+          The problem was that most of the SQL calls through Sequel were wrongly
+          written, therefore a lot of call were returning no data at all or
+          inserting nothing. We thus had to check every Sequel usage in all the
+          code and change for the right call. We also tried in the same process
+          to clean as much as possible the raw SQL string calls by using
+          interpolation (see the improvements section in the conclusion).
+          \item \textbf{Communication with daemons}: The communication with
+          daemons was not coherent with the daemon protocol. By example, the
+          logs retrievement was buggy because of protocol not coherent between
+          the two services. Logs retrievement and creation has be improved to by
+          more readable (issue of the old project \cite{logTimestamps}). % REMYWHAT
+          \item \textbf{Small Changes}: We added more logs when needed and
+          removed the unneeded ones, the database creation responsibility has
+          been delegated to the backend (previously held by the controller). We
+          also used Rubocop \cite{Rubocop} in order to get an uniformized code
+          style and correct wrong patterns in the code.
         \end{itemize}
 
-      \subsection{Daemons changes} 
-        We changed/fixed small parts of daemon to be consistent with the controller (communication) and maked some improvements
-        of Lua Splay library (again not exaustif): 
-        
+      \subsection{Daemons changes}
+
+        We had to change and fix small parts of the daemon in order to make
+        it consistent with the controller (concerning the communication part)
+        and also made some improvements on the Splay's Lua library.
+
         \begin{itemize}
-          \item As explain in the controller part, we fixed the protocol with the controller, mainly for the logs and 
-          the registering of the daemon.
-          \item The topology socket restriction is now automatically done when a topology is set. This restriction is used
-          to simulate the toplogy settings, then limited the bandwidth and created the latency.
-          The topology socket has a main issue in its design, indeed the restriction is based only on the ip and port (one), then 
-          if the daemon used a client port (tcp or udp), the server will answer into a unknwon port without any restriction.
-          Then to bypass of this issued, we created a new topology restriction based only on the ip, but it means that 
-          all nodes (daemons) need to have a different ip (with docker-compose, it is the case). But obviously, it is 
-          something to improve and change (check improvements section).
-          \item Removed LuaCrypto library from the daemon and added luaossl to replace it. The main reasons were LuaCrypto can't use 
-          the last openssl linux package (security issue and old version can't be used in new OS), 
-          it was not updated anymore and a issue on this was open in the old project \cite{sslLib}. Then the code was updated depending of this update.
-          \item Multiple bug fix due (mainly) to the change of version of Lua has be solved. 
+          \item As explained in the controller part, we fixed the communication
+          protocol used between the daemon and the controller, mainly for
+          the logging and the registration of daemons on the controller.
+          \item The topology socket restriction is now automatically achieved
+          when a topology is given with a job. This restriction is used to
+          simulate the topology settings, limitating the bandwidth and creating
+          latency.\\
+          The topology socket has a major issue in its design, the restriction
+          is only based on the ip and port, therefore if a daemon uses a client
+          port (tcp or udp), the server will answer respond to an unknown port
+          without any restriction.\\
+          To bypass this, we created a new topology restriction only based on
+          the ip, but that means that all the nodes (daemons) need to have a
+          different ip (thanks to docker, this is the case), but that is
+          something that should be improved and changed and we will talk about
+          it in the improvements section.
+          \item We removed the LuaCrypto library from the daemon and added
+          luaossl to replace it. The main reason of this change was that
+          LuaCrypto cannot use the last Linux's OpenSSL package (due to a
+          security issue, and older versions cannot be used in newer OS),
+          LuaCrypto was also not updated anymore and moreover and issue about
+          this was open in the old project repository \cite{sslLib}.\\
+          We therefore updated the code to make use of the new luaossl library.
+          \item Multiple bug fixes mainly due to the Lua version change needed
+          to be solved.
         \end{itemize}
 
     \section{Software Architectures}
@@ -1276,7 +1316,6 @@
           ESLint confguration to ensure following common guidelines among the Vue
           community and make sure any developper joining the Splay project will
           be able to work on the web application seamlessly.
-
 
       \subsection{Testing in Backend}
 
@@ -1524,7 +1563,7 @@
           keep the result as it was.
 
       \subsection{Topology creation}
-        % SAM: Topology creation
+
           The second objective concerning the web application was to provide the
           user with an easy way to create the topology details he would like
           the job to be run in. The previous and only way to send a topology
@@ -1628,11 +1667,11 @@
 
         We therefore made the decision to use a domain specific language (DSL)
         for the crash management so that a user could define the crash point
-        in the Lua code as a comment. During the job execution phase, just before 
+        in the Lua code as a comment. During the job execution phase, just before
         execute the user code, we parse the code and gather those crash points to manage the
         crashes.
 
-        \subsection{Domain Specific Language (DSL)}
+        \subsection{Domain Specific Language (DSL)} % TODO : Translate
 
           We defined our small domain specific language to be simple to user
           for the user and flexible enough for the parsing phase. This DSL
@@ -1687,13 +1726,13 @@
           \begin{itemize}
             \item The \textbf{AFTER} keyword means that the user specifies a
             number of loops to achieve before the crash occurs. For example
-            the value 5 in a begining of the loop means that this loop will 
+            the value 5 in a begining of the loop means that this loop will
             execute 5 times before triggering the crash. And if you want crash immediately when
             the line is execute for the first time, you can define AFTER 0.
             \item The \textbf{RANDOM} keyword means that the user specifies a
             probability between 0 and 1 that the node crashes each times it
             encounters the crash point through the code execution. By example,
-            if you specified 1, the crash will occure in the first execution 
+            if you specified 1, the crash will occure in the first execution
             (similar to AFTER 0).
           \end{itemize}
 
@@ -1736,7 +1775,7 @@
 -- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
           \end{lstlisting}
 
-        \subsection{Parsing}
+        \subsection{Parsing} % TODO : Translate
 
           The code parsing phase is achieved just before that the user code
           is effectively launched on each node (daemon). The parsing will
@@ -1748,7 +1787,7 @@
 
           The parsing phase actually assign, to the nodes choosed by the user through ids,
           a new code where the crash points comments is specified by the users.
-          This new replaced (if no error is found) the crash comment by a function call 
+          This new replaced (if no error is found) the crash comment by a function call
           containing the crash id number (as parameters). Therefore, when the code executes, the crash function
           call will access the library and will act depending on what
           informations are stored into the crash table (type of crash, moment
@@ -1762,7 +1801,7 @@
           This feature is fully wrote in Lua using the basic regex matcher of Lua
           \cite{RegexLua} (it isn't a complete Regex implementation).
 
-        \subsection{Execution}
+        \subsection{Execution} % TODO : Translate
 
           We saw how exactly we defined our DSL and how we achieve the parsing,
           we shall now see in details how the crashes exactly happen, how they
@@ -1804,11 +1843,11 @@
           The recovery crash is then achieved recursively, the parent process
           creating another fork, and the crash table is reset when reparsing
           the original code. Moreover, when it is a recovery crash, the user
-          can be defined the down time, our simple solution of that is using 
+          can be defined the down time, our simple solution of that is using
           the non-preemptive feature of Lua and force to sleep x seconds without any coroutine yield
           (then other coroutines can't execute any code) before crashing.
 
-    \chapter{Use Case} % TODO : Modify
+    \chapter{Use Case} % TODO : Translate
 
       A student following a course on distributed application wants to try raft (focus on the correctness of the leader election)
       implementation on 5 nodes.
@@ -1816,7 +1855,7 @@
       is no installation of Splay available for him.
       We going to described the different step of this student with the usage of Splay.
 
-      \section{Installation of Splay} % TODO : Modify
+      \section{Installation of Splay} % TODO : Translate
 
         First this student need to get a clean installation of Splay. Fortunately, this work is greatly
         helped because of a installation documentation and the dockerization of the project.
@@ -1830,20 +1869,20 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         Then he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
         \url{http://localhost:8080/}. He creates is own account by the register form and it will be automatically connect next time.
 
-      \section{Implementation of Raft in Lua} % TODO : Modify
+      \section{Implementation of Raft in Lua} % TODO : Translate
         After the successful installation, the hard work need to be done, it means to create the implementation of raft
         with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
         We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
         We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
 
-        \subsection{Creation of the algorithm} % TODO : Modify
+        \subsection{Creation of the algorithm} % TODO : Translate
         The student created a lua code of raft, it isn't trivial sadly,
         but if you understand raft, it is not so complicated :
 
         % Code of raft with comments
         {\color{red} TODO}
 
-        \subsection{First result} % TODO : Modify
+        \subsection{First result} % TODO : Translate
         After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
         (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
         and this one send hearbeat to avoid a other leader election from others nodes.
@@ -1851,7 +1890,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         % TODO : Show small piece of log result
         {\color{red} TODO}
 
-      \section{Topology settings} % TODO : Modify
+      \section{Topology settings} % TODO : Translate
 
         Atfer testing the algorithm in a perfect network environment, the student tries different configuration of network topologies
         created by the network topology interface developed by us.
@@ -1864,7 +1903,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         {\color{red} TODO}
 
-      \section{Robustness Test through fault injection} % TODO : Modify
+      \section{Robustness Test through fault injection} % TODO : Translate
 
         He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
         When the leader crash, the student expectes that a other launch the leader election and there is a new leader
@@ -1879,16 +1918,16 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         % Show buged piece + fault injection -> buggy log
         {\color{red} TODO}
 
-      \section{Result with a animation} % TODO : Modify
+      \section{Result with a animation} % TODO : Translate
 
         Also, the student wants to see how the network and connection evolving during the execution. For
         this purpose with a create a small tool to parse a log and see the evolution.
 
-        \subsection{Timeline Animation of a graph evolution} % TODO : Modify
+        \subsection{Timeline Animation of a graph evolution} % TODO : Translate
           % REM
           {\color{red} TODO}
 
-        \subsection{Result with raft} % TODO : Modify
+        \subsection{Result with raft} % TODO : Translate
           % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
           {\color{red} TODO}
 
@@ -1965,10 +2004,10 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           about it. For these reason, we think that a complete check of the lua libraries (by someone knowing the old project) is mandatory
           and adding even more busted test (of the splay lib) is a good idea. \\
 
-          Moreover, we seen at the end of the project that the socket topology restriction don't take in account the packet 
-          loss rate and the queue length (maybe the github code is not really the last one). 
-          Then, the topology settings is limited to the bandwidth and the latency. Furthermore, we have seen 
-          (in the section of daemon changement) that the topology restriction is based on the ip + a single port, causing 
+          Moreover, we seen at the end of the project that the socket topology restriction don't take in account the packet
+          loss rate and the queue length (maybe the github code is not really the last one).
+          Then, the topology settings is limited to the bandwidth and the latency. Furthermore, we have seen
+          (in the section of daemon changement) that the topology restriction is based on the ip + a single port, causing
           unkowning client socket (because port is different than the server port) and useless restriction.
           For these reason the the socket topology (coming with SplayNet module) need to be improved. \\
 
