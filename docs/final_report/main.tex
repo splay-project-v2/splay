@@ -1671,13 +1671,14 @@
         execute the user code, we parse the code and gather those crash points to manage the
         crashes.
 
-        \subsection{Domain Specific Language (DSL)} % TODO : Translate
+        \subsection{Domain Specific Language (DSL)}
 
           We defined our small domain specific language to be simple to user
           for the user and flexible enough for the parsing phase. This DSL
-          needed to be integrated into the Lua code without any modification of
-          it (expected for rigthful crash comments), trying to avoid totally crashing
-          the daemon in case of the crash points specified by the user were not correct.\\
+          needed to be integrated into the Lua code without forcing the user to
+          modify its algorithm code, and trying to avoid totally crashing
+          the daemon in case of the crash points specified by the user were
+          not correct.\\
           Also, the difference in terms of number of lines of code between the
           source code before and after the parsing needed to be the same in
           order to keep the feedback error messages right (getting the same line
@@ -1703,7 +1704,8 @@
           \begin{itemize}
             \item First, the chosen nodes to be affected by the crash must be
             specified. For this purpose, the user must add the id's of the
-            affected nodes separated by a space (ids begin at 1 -> number of daemon used).
+            affected nodes separated by a space (ids begin at 1 -> number of
+            daemon used).
             \item The type of crash can be specified by its name and optional
             parameters
             \item The moment where the crash occurs
@@ -1727,12 +1729,12 @@
             \item The \textbf{AFTER} keyword means that the user specifies a
             number of loops to achieve before the crash occurs. For example
             the value 5 in a begining of the loop means that this loop will
-            execute 5 times before triggering the crash. And if you want crash immediately when
-            the line is execute for the first time, you can define AFTER 0.
+            execute 5 times before triggering the crash, whereas 0 triggers
+            an immediate crash.
             \item The \textbf{RANDOM} keyword means that the user specifies a
             probability between 0 and 1 that the node crashes each times it
-            encounters the crash point through the code execution. By example,
-            if you specified 1, the crash will occure in the first execution
+            encounters the crash point through the code execution. For example,
+            if the user specified 1, the crash will occure at first execution
             (similar to AFTER 0).
           \end{itemize}
 
@@ -1756,7 +1758,7 @@
 -- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
             \end{lstlisting}
 
-          Also, we added some negative examples (won't trigger any crash
+          We also added some negative examples (won't trigger any crash
           and won't crash the daemon) :
 
           \begin{lstlisting}[style=MyLua]
@@ -1775,7 +1777,7 @@
 -- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
           \end{lstlisting}
 
-        \subsection{Parsing} % TODO : Translate
+        \subsection{Parsing}
 
           The code parsing phase is achieved just before that the user code
           is effectively launched on each node (daemon). The parsing will
@@ -1785,13 +1787,13 @@
           and is used by the nodes to get the crash information using an id
           number which will retrieve the corresponding crash informations.\\
 
-          The parsing phase actually assign, to the nodes choosed by the user through ids,
-          a new code where the crash points comments is specified by the users.
-          This new replaced (if no error is found) the crash comment by a function call
-          containing the crash id number (as parameters). Therefore, when the code executes, the crash function
-          call will access the library and will act depending on what
-          informations are stored into the crash table (type of crash, moment
-          of trigger).
+          The parsing phase actually assign to the nodes a new code where the
+          crash points comments specified by the user are transformed and
+          replaced (if no error is found) by a function call containing the
+          crash id number. Therefore, when the code executes, the crash
+          function will access the library and will act depending on what
+          informations are stored into the crash table (type of crash,
+          moment of trigger).
 
           The parsing handles any error the user could have done about the
           syntax of the crash point.\\
@@ -1801,7 +1803,7 @@
           This feature is fully wrote in Lua using the basic regex matcher of Lua
           \cite{RegexLua} (it isn't a complete Regex implementation).
 
-        \subsection{Execution} % TODO : Translate
+        \subsection{Execution}
 
           We saw how exactly we defined our DSL and how we achieve the parsing,
           we shall now see in details how the crashes exactly happen, how they
@@ -1843,19 +1845,19 @@
           The recovery crash is then achieved recursively, the parent process
           creating another fork, and the crash table is reset when reparsing
           the original code. Moreover, when it is a recovery crash, the user
-          can be defined the down time, our simple solution of that is using
-          the non-preemptive feature of Lua and force to sleep x seconds without any coroutine yield
-          (then other coroutines can't execute any code) before crashing.
+          can define the down time. Our simple solution to achieve this is by
+          using the non-preemptive feature of Lua and forcing the process
+          to sleep x seconds without any yield coroutine (therefore other
+          coroutines can't execute any code) before crashing.
 
-    \chapter{Use Case} % TODO : Translate
-
+    \chapter{Use Case}
       A student following a course on distributed application wants to try raft (focus on the correctness of the leader election)
       implementation on 5 nodes.
       He choosed to use Splay for his tests in his own laptop (or cluster of mini-computer) but there
       is no installation of Splay available for him.
       We going to described the different step of this student with the usage of Splay.
 
-      \section{Installation of Splay} % TODO : Translate
+      \section{Installation of Splay}
 
         First this student need to get a clean installation of Splay. Fortunately, this work is greatly
         helped because of a installation documentation and the dockerization of the project.
@@ -1869,20 +1871,20 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         Then he access to the web application of Splay with his favorite modern browser (not lynx, please) with this url :
         \url{http://localhost:8080/}. He creates is own account by the register form and it will be automatically connect next time.
 
-      \section{Implementation of Raft in Lua} % TODO : Translate
+      \section{Implementation of Raft in Lua}
         After the successful installation, the hard work need to be done, it means to create the implementation of raft
         with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
         We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
         We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. \\
 
-        \subsection{Creation of the algorithm} % TODO : Translate
+        \subsection{Creation of the algorithm}
         The student created a lua code of raft, it isn't trivial sadly,
         but if you understand raft, it is not so complicated :
 
         % Code of raft with comments
         {\color{red} TODO}
 
-        \subsection{First result} % TODO : Translate
+        \subsection{First result}
         After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
         (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
         and this one send hearbeat to avoid a other leader election from others nodes.
@@ -1890,7 +1892,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         % TODO : Show small piece of log result
         {\color{red} TODO}
 
-      \section{Topology settings} % TODO : Translate
+      \section{Topology settings}
 
         Atfer testing the algorithm in a perfect network environment, the student tries different configuration of network topologies
         created by the network topology interface developed by us.
@@ -1903,7 +1905,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         {\color{red} TODO}
 
-      \section{Robustness Test through fault injection} % TODO : Translate
+      \section{Robustness Test through fault injection}
 
         He wants to test the correctness of his code by making crash the leader essentialy, but also the other.
         When the leader crash, the student expectes that a other launch the leader election and there is a new leader
@@ -1918,16 +1920,16 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         % Show buged piece + fault injection -> buggy log
         {\color{red} TODO}
 
-      \section{Result with a animation} % TODO : Translate
+      \section{Result with a animation}
 
         Also, the student wants to see how the network and connection evolving during the execution. For
         this purpose with a create a small tool to parse a log and see the evolution.
 
-        \subsection{Timeline Animation of a graph evolution} % TODO : Translate
+        \subsection{Timeline Animation of a graph evolution}
           % REM
           {\color{red} TODO}
 
-        \subsection{Result with raft} % TODO : Translate
+        \subsection{Result with raft}
           % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
           {\color{red} TODO}
 
@@ -1936,57 +1938,84 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
     We concludes this report by some suggestion, firstly about our own features and secondly about
     SPLAY it-self. At the end, we summarise our global achievement about this project (objectifs agains realized).
 
-    \section{Improvements} % TODO : Check
+    \section{Improvements}
+
+      This section will hold our thoughts about the further improvements
+      that could be made on the project, these improvements are mainly about
+      our new features, the improvements that could be made on the "legacy"
+      services and also some improvements thoughts about the security.
 
       \subsection{New features improvements}
 
-        \subsubsection{Lua editor} % TODO : Check
+        Our new features on the Splay system may be improved over the future
+        and we will expose our ideas and thoughts for each one of these
+        features.
 
-        We have noticed during the developement of own features that the Lua Editor is
-        the less important feature. Only for one reason, most of the time, we
-        create our Lua script in on own editor and then making a copy-paste.
-        A local modern editor with a Lua package installed offer more (not much because Lua is not popular),
-        feature than our editor. But, with little improvements, it can be better or equals than other,
-        here a non-exaustif list :
+        \subsubsection{Lua editor}
+
+        During the development of our features, we noticed that the Lua Editor
+        is probably the less important one. The main reason making this feature
+        the less important is that, most of the time, users create their own Lua
+        scripts on their favourite editor and then apply a copy-paste on the
+        system.\\
+        A fully-integrated IDE with a Lua an installed Lua package offers more
+        than our editor, but with little improvements our editor could equal
+        any other:
 
         \begin{itemize}
-          \item Basic auto-completion : A basic auto-completion can be done for keyword (as our IDE) and
-          for named function with the help of Ace Editor package.
-          \item Specific auto-completion : integration of the splay library to the auto-completion with some
-          hint. It will be overtake our own IDE.
-          \item Color theme : with Ace the color theme can be changed, maybe a user can choose by it-self for him
+          \item \textbf{Basic Auto-Completion}: A basic auto-completion can be
+          done for keywords (as any other IDE) and for named functions with
+          the help of the Ace Editor package.
+          \item \textbf{Specific Auto-Completion}: The integration of the Splay
+          Lua library to the auto-completion feature with some hints would
+          be a great achievement and make the Lua editor an even better
+          option than an IDE.
+          \item \textbf{Color Theme}: Ace allows to set a color scheme for
+          the editor, an option for the user to change this color scheme
+          might be a great option to make the development environment
+          truly enjoyable.
         \end{itemize}
 
-        Note that, Ace can handle lot of different language,
-        then if the daemon switch of technology (see next section "Refactor of Controller/Daemon"),
-        then it will be easy to change the targeted language.
+        As Ace can handle a lot of different languages, if in any further
+        improvement a decision to switch the daemon technology was made (see
+        next section about refactors), then it would be easy to change the
+        targeted language.
 
-        \subsubsection{Crash point} % TODO : Check
+        \subsubsection{Crash point}
 
-          The crash point feature handle 2 type of crash and 2 specification of when crash happend.
-          This feature is very usefull to simulate hard stop of a machine (by lack of power by example).
-          However we can improve it by adding new types of crash, by example a network crash, it means
-          that the node will not handle to communicate with all or some other node during a defined time.
-          Then we can imagine to modify, the socket wrapping done for topology (or making a new wrapping),
-          where the crash lib can ask some restriction on network. \\
+          The crash point feature now handles two types of crashes and two
+          behaviour to adopt in case of a crash. This feature is very useful
+          to simulate a hard stop of a machine (power loss, for example).\\
+          However, we could improve this by adding new types of crash like a
+          network crash or a network compartmentalization meaning that the
+          nodes would still be running but could not communicate anymore
+          with other nodes during the downtime.\\
+          For this purpose we could modify the socket wrapping done to achieve
+          topology (or creating a new one) where our crash library could ask
+          for restrictions over the network simulation.\\
 
-          Moreover, we can imagine more control for the user to handle much better when the crash append.
-          Indeed, by example, when a condition is meet and equals to true then the crash happend.
-          Global variables can help (access then also by the crash lib) or by parsing modificatation
-          where a extra parameters will by add to the crash function call.\\
+          Moreover, we can imagine providing the user with more control options
+          to configure more precisely what should happen in case of crash or
+          when the crash should happen. For example, crashing when some
+          precise conditions are met.
 
-        \subsubsection{Topology Creation} % TODO : Check
+        \subsubsection{Topology Creation}
 
-          The creation of topology through a modern interface is very effective to build your own
-          network topology quickly. However, we have more ideas (not exaustif) to improve this features, not possible to do ourself
-          with the time constraint:
+          The actual topology creation through the modern interface is very
+          useful to build a precise topology in a quick way. However, we have
+          a non-exhaustive list of ideas that could improve this feature, but
+          wasn't achievable now because of time constraints:
+
           \begin{itemize}
-            \item Modification of items on click : For now, you can't modify a edge, node or specification
-            easily, we need to remove the specific item et redo the appropriate form to fix this item. It can
-            be painful, especially if you want change a global specification (if you remove it, remove each edge using this specification)
-            \item Edge both direction : we can only add directed edge between nodes.
-            Then adding a radio button (or else) to specify that a edge is in both direction, is good idea and avoid
-            the double work with directed edge via form.
+            \item \textbf{Modifications of items on click}: For now, it is hard
+            to modify existing edges, nodes or specs. The user need to remove
+            the specified item or modify it in the XML code, therefore
+            an option to modify existing items through a form would be a good
+            idea.
+            \item \textbf{Edge in both directions}: Right now the user can only
+            add directed edges between nodes, adding an option to directly
+            created edges in both direction would be a good idea and
+            avoid a double work with the directed edges through the form.
           \end{itemize}
 
       \subsection{Refactor of old services} % TODO : Check
