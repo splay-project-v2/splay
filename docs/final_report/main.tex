@@ -2122,6 +2122,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         useful anymore.
 
         \subsubsection{Daemon}
+
           The daemon is, with the controller, one of the most critical parts of
           the project and has been built using Lua \cite{Lua}.\\
           During our work, after having stabilized the project, we encountered
@@ -2148,7 +2149,6 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           and useless restrictions. For all these reasons, the socket topology
           (coming with the SplayNet module) needs to be improved.\\
 
-
           A radical solution to clean this service and offer a new alternative
           to users would be to completely rewrite the Daemon service using
           another technology.\\
@@ -2169,22 +2169,31 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           using some distributed libraries to quickly create a new Splay library
           may be a solution.
 
-        \subsubsection{Controller} % TODO : Check
-
-          The controller is the brain of the projects, manages daemons, read new data from database,
-          write result on database, dispatch command, ... Indeed, the controller is vital for the project,
-          sadly, the code is still badly documented, needed a advanced clean at certain place (error management quite messy by example)
-          and poorly tested (even after our work on it, check the chapter on architecture). We propose
-          2 (most important) differents way (for a possible future developement) to increase the quality and the stability of the controller :
+        \subsubsection{Controller}
+        
+          The controller service is the brain of the project, it manages the
+          different daemons, reads new data from the database and writes the
+          results, dispatch the different jobs.\\
+          Despite being such a central piece of the project, the code is still
+          badly documented, and still needs an advanced cleanup in its
+          different parts, and it is also poorly tested even after we worked
+          on it. We may therefore propore two different ways to increase
+          the quality and maintainability of the controller for future
+          development phases:
 
           \begin{itemize}
-            \item Using full Oriented Object with sequel \cite{Sequel} model object for each table in the database.
-            Indeed, for now there are currently tons of raw call of SQL (by string queries) which can be unsecure (in case
-            we forgot one manual check of injection, see next section) and it is very unreadable. A sequel object model allows
-            every operation on SQL database through function call in a ruby way (nice and concise), avoid SQL error syntax and
-            maybe the most important, is independent of the database management system (here MySQL 5.7).
-            \item Meticulous refactor of some part of controller, mostly the management of jobs sended to daemon
-            (Class named Jobd and the chlideren class of it). We found the most of controller bugs in these classes.
+            \item Usinf full object oriented with sequel \cite{Sequel} model
+            object for each table of the database. The SQL queries are now
+            raw ones which can be insecure (in case one forgets to manually
+            checking against injections) and which is hard to read.\\
+            A sequel model object allows every operations on a SQL database
+            through function calls in a nice an concise Ruby way, avoiding
+            SQL error syntax and most importantly it is independent of the
+            database management system.
+            \item A meticulous refactor of some part of the controller may be
+            a good idea, and more specifically the management of jobs sent to
+            the daemons (a Ruby class named Jobd and its children classes), we
+            indeed found most of the controller bugs in this part.
           \end{itemize}
 
       \subsection{Security aspect} % TODO : Check
