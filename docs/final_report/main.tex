@@ -1906,8 +1906,8 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         increases a lot the complexity and the readability: \\
 
         \subsection{Creation of the algorithm}
-        The student created a lua code of raft, it isn't trivial sadly,
-        but if you understand raft, it is not so complicated :
+        The student created the Lua code of a the Raft election sub-problem, it isn't trivial,
+        but it is gratly healped with comments in the code :
 
         \lstinputlisting[style=MySmallLua]{raft_election.lua}
 
@@ -1916,90 +1916,105 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
         and this one send hearbeat to avoid a other leader election from others nodes : 
           \begin{lstlisting}[style=MyBash]
-2019-05-29 12:57:13.7139 (7)  Election Trigger - upgrade term and become candidate 
-2019-05-29 12:57:13.7144 (7)  Send request to 1 - {"port":11691,"ip":"172.18.0.7"}
-2019-05-29 12:57:13.7153 (7)  Send request to 3 - {"port":11691,"ip":"172.18.0.10"}
-2019-05-29 12:57:13.7156 (7)  Send request to 4 - {"port":11691,"ip":"172.18.0.12"}
-2019-05-29 12:57:13.7158 (7)  Send request to 5 - {"port":11552,"ip":"172.18.0.13"}
-2019-05-29 12:57:13.7174 (3)  RPC Request Vote FROM 2.0 Term : 1.0
-2019-05-29 12:57:13.7174 (3)  Stepdown : 1.0 > 0
-2019-05-29 12:57:13.7184 (6)  RPC Request Vote FROM 2.0 Term : 1.0
-2019-05-29 12:57:13.7184 (6)  Stepdown : 1.0 > 0
-2019-05-29 12:57:13.7193 (4)  RPC Request Vote FROM 2.0 Term : 1.0
-2019-05-29 12:57:13.7193 (4)  Stepdown : 1.0 > 0
-2019-05-29 12:57:13.7212 (1)  RPC Request Vote FROM 2.0 Term : 1.0
-2019-05-29 12:57:13.7214 (1)  Stepdown : 1.0 > 0
-2019-05-29 12:57:13.7242 (7)  Vote Request result 1.0 : true from 3
-2019-05-29 12:57:13.7242 (7)  Vote Request result 1.0 : true from 5
-2019-05-29 12:57:13.7242 (7)  I Become the LEADER now
-2019-05-29 12:57:13.7246 (7)  Vote Request result 1.0 : true from 4
-2019-05-29 12:57:13.7248 (7)  Send append entry (null) to 1
-2019-05-29 12:57:13.7249 (7)  Send append entry (null) to 3
-2019-05-29 12:57:13.7251 (7)  Send append entry (null) to 4
-2019-05-29 12:57:13.7251 (7)  Send append entry (null) to 5
-2019-05-29 12:57:13.7260 (7)  Vote Request result 1.0 : true from 1
-2019-05-29 12:57:13.7265 (3)  RPC Append entry FROM 2.0 Term : 1.0 Entry : null
-2019-05-29 12:57:13.7269 (1)  RPC Append entry FROM 2.0 Term : 1.0 Entry : null
-2019-05-29 12:57:13.7274 (4)  RPC Append entry FROM 2.0 Term : 1.0 Entry : null
-2019-05-29 12:57:13.7279 (6)  RPC Append entry FROM 2.0 Term : 1.0 Entry : null
+2019-05-30 08:20:10.0501 (3)  2 : Election Trigger -> term+1, become candidate
+2019-05-30 08:20:10.0504 (3)  2 : Send vote request to node 1
+2019-05-30 08:20:10.0506 (3)  2 : Send vote request to node 3
+2019-05-30 08:20:10.0508 (3)  2 : Send vote request to node 4
+2019-05-30 08:20:10.0508 (3)  2 : Send vote request to node 5
+2019-05-30 08:20:10.0522 (2)  3 : RPC Request Vote FROM 2.0 Term : 1.0
+2019-05-30 08:20:10.0527 (2)  3 : Stepdown : 1.0 > 0
+2019-05-30 08:20:10.0525 (4)  5 : RPC Request Vote FROM 2.0 Term : 1.0
+2019-05-30 08:20:10.0525 (4)  5 : Stepdown : 1.0 > 0
+2019-05-30 08:20:10.0539 (1)  4 : RPC Request Vote FROM 2.0 Term : 1.0
+2019-05-30 08:20:10.0539 (1)  4 : Stepdown : 1.0 > 0
+2019-05-30 08:20:10.0557 (7)  1 : RPC Request Vote FROM 2.0 Term : 1.0
+2019-05-30 08:20:10.0557 (7)  1 : Stepdown : 1.0 > 0
+2019-05-30 08:20:10.0576 (3)  2 : Vote Request result 1.0 : true from 3
+2019-05-30 08:20:10.0576 (3)  2 : Vote Request result 1.0 : true from 4
+2019-05-30 08:20:10.0576 (3)  2 : I Become the LEADER !
+2019-05-30 08:20:10.0580 (3)  2 : Vote Request result 1.0 : true from 5
+2019-05-30 08:20:10.0583 (3)  2 : Send append entry (null) to node 1
+2019-05-30 08:20:10.0585 (3)  2 : Send append entry (null) to node 3
+2019-05-30 08:20:10.0587 (3)  2 : Send append entry (null) to node 4
+2019-05-30 08:20:10.0587 (3)  2 : Send append entry (null) to node 5
+2019-05-30 08:20:10.0599 (3)  2 : Vote Request result 1.0 : true from 1
+2019-05-30 08:20:10.0608 (4)  5 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
+2019-05-30 08:20:10.0611 (1)  4 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
+2019-05-30 08:20:10.0617 (7)  1 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
+2019-05-30 08:20:10.0622 (2)  3 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
           \end{lstlisting}
+      
+      \section{Robustness of solution}
+        \subsection{Topology settings}
 
-      \section{Topology settings}
+          Atfer testing the algorithm in a perfect network environment, the student tries with 3 different configurations
+          of network topology created by the network topology interface developed. We show the representation of 
+          the topology, and we add the specifications of edge between the node-router and router-router. We are focus, 
+          only on the latency because the bandwidth constraints rarely the Raft leader election (very small packets and not a lot). 
 
-        Atfer testing the algorithm in a perfect network environment, the student tries with 3 different configurations
-        of network topology created by the network topology interface developed by us : 
+          \begin{figure}[H]
+            \begin{subfigure}{.33\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
+              \caption{First topology - Normal : Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
+              \label{fig:topo1}
+            \end{subfigure}
+            \begin{subfigure}{.33\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
+              \caption{Second topology - Two sites : Router-Router -> 150 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
+              \label{fig:topo2}
+            \end{subfigure}
+            \begin{subfigure}{.33\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_fail.png}
+              \caption{Third topology - Extreme : Router-Router -> 600 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
+              \label{fig:topo3}
+            \end{subfigure}
+            \caption{plots of three topologies}
+            \label{fig:topologies}
+          \end{figure}
 
-        \begin{figure}[H]
-          \begin{subfigure}{.33\textwidth}
-            \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
-            \caption{1a}
-            \label{fig:topo1}
-          \end{subfigure}%
-          \begin{subfigure}{.33\textwidth}
-            \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
-            \caption{1b}
-            \label{fig:topo2}
-          \end{subfigure}
-          \begin{subfigure}{.33\textwidth}
-            \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_fail.png}
-            \caption{1c}
-            \label{fig:topo3}
-          \end{subfigure}
-          \caption{plots of topologies}
-          \label{fig:topologies}
-        \end{figure}
+          Then, he tries with his implementation on the three configuration, the log result shows that
+          the 2 firsts one succeeded the leader election and stabilize.\\
 
-        % Show three network configuration : 2 correct and 1 doesn't match with the condition broadTime << electionTimeout << MTBF
+          But on the last, the leader election append multiple time
+          even when the leader is still on, it is because the condition $broadcast time << election timeout$ 
+          (election timeout is at miminum 1.5 second and maximun 3.0, random distribution) is not met (1.83 << [1.5, 3.0]). 
+          Then, with this final topology network, we show that raft need still a appropriate configuration depending 
+          of the network. However, we show a extreme case of topology, most of the case the condition above is 
+          respected. 
 
-        Then, he tries with his implementation on the three configuration, the log result shows that
-        the 2 firsts one succeeded the leader election and stabilize. But on the last, the leader election append multiple time
-        even when the leader is still on, it is because the condition $broadcast time << election timeout$ is not met.
+          {\color{red} TODO}
 
-        {\color{red} TODO}
+        \subsection{Fault injection}
 
-      \section{Robustness Test through fault injection}
+          He wants to test the correctness of his code by making crash the leader essentialy, but also the others.
+          When the leader crash, the student expects that a other leader election will be trigger by a remain node 
+          , and then a new leader will appear.
+          He tests with the 2 corrects topologies (don't change the timeout election).
 
-        He wants to test the correctness of his code by making crash the leader essentialy, but also the others.
-        When the leader crash, the student expects that a other leader election will be trigger by a remain node 
-        , and then a new leader will appear.
-        He tests with the 2 corrects topologies (don't change the timeout election).
+          % Show crash + new election
+          {\color{red} TODO}
 
-        % Show crash + new election
-        {\color{red} TODO}
+          Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
+          his friend the mistake in this "better" code.
 
-        Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
-        his friend the mistake in this "better" code.
+          % Show buged piece + fault injection -> buggy log
+          {\color{red} TODO}
+        
+      \section{Buggy code proof}
 
-        % Show buged piece + fault injection -> buggy log
-        {\color{red} TODO}
 
       \section{Result with a animation}
 
-        Also, the student wants to see how the network and connection evolving during the execution. For
-        this purpose with a create a small tool to parse a log and see the evolution.
+        The student wants to see how the network and connection evolving during the execution. For
+        this purpose, we create a small tool to parse a log and see the evolution during the execution.
+        Indeed, the tool is a single HTML page with some javascript, it shows the endpoint (node) state
+        (follower, candidate or leader), if a packet is travelling between two nodes and time indication 
+        following the animation. The tool is helped with vis.js library \cite{VisJS} (dynamic graph library)
+        and the raft code is modified to print appropriate log
+        (code here \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).
 
         \subsection{Timeline Animation of a graph evolution}
           % REM
