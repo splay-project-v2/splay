@@ -1869,22 +1869,22 @@
 
     \chapter{Use Case}
       A student following a course on distributed application wants to prototype the raft election algorithm
-      on 5 different nodes. He choosed to use Splay for his tests in his own laptop (or if available on a cluster of mini-computer) 
+      on 5 different nodes. He choosed to use Splay for his tests in his own laptop (or if available on a cluster of mini-computer)
       and he has no pre-install installation of Splay available for him. We going to described the different
       step of this student with the usage of Splay. \\
       First, he needs to install a Splay environment on his own materials.
-      Secondly, with the help of Splay library, he builds a basic raft election implementation. Thirdly, he 
+      Secondly, with the help of Splay library, he builds a basic raft election implementation. Thirdly, he
       wants to test with differents network topology and after analyse the robustness of his solution by creating
       some fault injection at key points. Also, one of his friend send to him a slightly different version
       avoiding some writings on disk, and he wants to prove, by a example, the illness of the solution.
-      And for conclude his tests on Raft, he wants show a animation of the evolution of the endpoint state. 
+      And for conclude his tests on Raft, he wants show a animation of the evolution of the endpoint state.
 
       \section{Installation of Splay}
 
         The student have only his laptop to work, and hopefully, he found on the main github repository \cite{SplayV2Git},
-        that the installation doesn't depend of Operating System or Hardware. The README file of the github project discribed 
+        that the installation doesn't depend of Operating System or Hardware. The README file of the github project discribed
         precisely how to install Splay. Then, following the instructions, he clones the main repository (no need submodule),
-        installs docker and docker-compose on his computer. For running Splay in production, 
+        installs docker and docker-compose on his computer. For running Splay in production,
         he runs the requested commands in his terminal :
         \begin{lstlisting}[style=MyBash]
 docker-compose -f docker-compose.prod.yml up -d web_app controller
@@ -1892,8 +1892,8 @@ docker-compose -f docker-compose.prod.yml up -d web_app controller
 docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         \end{lstlisting}
         He waits during, the download of prebuild images (from dockerhub) of each services and the time for services to start.
-        After the success of the installation, he access to the web application of Splay with his favorite modern browser 
-        (not lynx, please) with this url : \url{http://localhost:8080/}. 
+        After the success of the installation, he access to the web application of Splay with his favorite modern browser
+        (not lynx, please) with this url : \url{http://localhost:8080/}.
         He creates is own account by the register form and it will be automatically connect next time. Now, he can prototype
         easily his own distributed job.
 
@@ -1901,8 +1901,8 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         After the successful installation, the hard work need to be done, it means to create the implementation of raft
         with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
         We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
-        We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}. 
-        We present and focus only on the election subproblem of the Raft because the log replication 
+        We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}.
+        We present and focus only on the election subproblem of the Raft because the log replication
         increases a lot the complexity and the readability: \\
 
         \subsection{Creation of the algorithm}
@@ -1914,7 +1914,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         \subsection{First result}
         After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
         (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
-        and this one send hearbeat to avoid a other leader election from others nodes : 
+        and this one send hearbeat to avoid a other leader election from others nodes :
           \begin{lstlisting}[style=MyBash]
 2019-05-30 08:20:10.0501 (3)  2 : Election Trigger -> term+1, become candidate
 2019-05-30 08:20:10.0504 (3)  2 : Send vote request to node 1
@@ -1943,14 +1943,15 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 2019-05-30 08:20:10.0617 (7)  1 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
 2019-05-30 08:20:10.0622 (2)  3 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
           \end{lstlisting}
-      
+
       \section{Robustness of solution}
+
         \subsection{Topology settings}
 
           Atfer testing the algorithm in a perfect network environment, the student tries with 3 different configurations
-          of network topology created by the network topology interface developed. We show the representation of 
-          the topology, and we add the specifications of edge between the node-router and router-router. We are focus, 
-          only on the latency because the bandwidth constraints rarely the Raft leader election (very small packets and not a lot). 
+          of network topology created by the network topology interface developed. We show the representation of
+          the topology, and we add the specifications of edge between the node-router and router-router. We are focus,
+          only on the latency because the bandwidth constraints rarely the Raft leader election (very small packets and not a lot).
 
           \begin{figure}[H]
             \begin{subfigure}{.33\textwidth}
@@ -1979,18 +1980,18 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           the 2 firsts one succeeded the leader election and stabilize.\\
 
           But on the last, the leader election append multiple time
-          even when the leader is still on, it is because the condition $broadcast time << election timeout$ 
-          (election timeout is at miminum 1.5 second and maximun 3.0, random distribution) is not met (1.83 << [1.5, 3.0]). 
-          Then, with this final topology network, we show that raft need still a appropriate configuration depending 
-          of the network. However, we show a extreme case of topology, most of the case the condition above is 
-          respected. 
+          even when the leader is still on, it is because the condition $broadcast time << election timeout$
+          (election timeout is at miminum 1.5 second and maximun 3.0, random distribution) is not met (1.83 << [1.5, 3.0]).
+          Then, with this final topology network, we show that raft need still a appropriate configuration depending
+          of the network. However, we show a extreme case of topology, most of the case the condition above is
+          respected.
 
           {\color{red} TODO}
 
         \subsection{Fault injection}
 
           He wants to test the correctness of his code by making crash the leader essentialy, but also the others.
-          When the leader crash, the student expects that a other leader election will be trigger by a remain node 
+          When the leader crash, the student expects that a other leader election will be trigger by a remain node
           , and then a new leader will appear.
           He tests with the 2 corrects topologies (don't change the timeout election).
 
@@ -2002,7 +2003,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
           % Show buged piece + fault injection -> buggy log
           {\color{red} TODO}
-        
+
       \section{Buggy code proof}
 
 
@@ -2011,7 +2012,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         The student wants to see how the network and connection evolving during the execution. For
         this purpose, we create a small tool to parse a log and see the evolution during the execution.
         Indeed, the tool is a single HTML page with some javascript, it shows the endpoint (node) state
-        (follower, candidate or leader), if a packet is travelling between two nodes and time indication 
+        (follower, candidate or leader), if a packet is travelling between two nodes and time indication
         following the animation. The tool is helped with vis.js library \cite{VisJS} (dynamic graph library)
         and the raft code is modified to print appropriate log
         (code here \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).
@@ -2026,8 +2027,9 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
   \chapter{Conclusion} % TODO : Finish
 
-    We concludes this report by some suggestion, firstly about our own features and secondly about
-    SPLAY it-self. At the end, we summarise our global achievement about this project (objectifs agains realized).
+    We'll first conclude this report by going through a list of improvements
+    idea over the project, and then summarize our global achievements on the
+    project comparing our initial objectives with the work we achieved.
 
     \section{Improvements}
 
@@ -2109,38 +2111,63 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
             avoid a double work with the directed edges through the form.
           \end{itemize}
 
-      \subsection{Refactor of old services} % TODO : Check
-        We have redid some parts of Splay with more modern technology as explain in the section on the architecture but
-        we didn't have make a complete refactor for the daemon and the controller. And we think that it is important,
-        for future maintenability or improvement, that these services need to be redid or only passed a meticulously review/refactor.
-        Also, small remove in the database schema can be done because some columns are maybe not useful anymore.
+      \subsection{Refactor of old services}
 
-        \subsubsection{Daemon} % TODO : Check
-          The daemon is maybe the critical part of the project and it was build with Lua \cite{Lua}. During, our work, after
-          stabilize the whole project, we have seen lot of unused code, small bugs and repeated code. Then,
-          we fixed these issues when we encountered them (we were very careful about what we removed/changed), but
-          mainly it was not our code and some parts of the SPLAY library was not documented, then we didn't use these
-          mysterious parts. Indeed, lot of file (lib part) is not used with our usage of splay and there aren't not test
-          about it. For these reason, we think that a complete check of the lua libraries (by someone knowing the old project) is mandatory
-          and adding even more busted test (of the splay lib) is a good idea. \\
+        We have rebuilt some parts of Splay using modern technologies as
+        explained in the related section but we haven't made a complete
+        refactor of the daemon and the controller. We think that those two
+        services would need, in the future, a complete refactor or even be
+        rewrote maybe using newer technologies. A database schema cleaning
+        would also follow, as some fields of the various entities may no be
+        useful anymore.
 
-          Moreover, we seen at the end of the project that the socket topology restriction don't take in account the packet
-          loss rate and the queue length (maybe the github code is not really the last one).
-          Then, the topology settings is limited to the bandwidth and the latency. Furthermore, we have seen
-          (in the section of daemon changement) that the topology restriction is based on the ip + a single port, causing
-          unkowning client socket (because port is different than the server port) and useless restriction.
-          For these reason the the socket topology (coming with SplayNet module) need to be improved. \\
+        \subsubsection{Daemon}
+          The daemon is, with the controller, one of the most critical parts of
+          the project and has been built using Lua \cite{Lua}.\\
+          During our work, after having stabilized the project, we encountered
+          a lot of unused code lines, small bugs and code repetition in the
+          Daemon codebase and we therefore carefully fixed those issues when
+          encountered.\\
+          We therefore reduced the usage of the Splay library by the Daemon,
+          and ended up with a lot of unused and undocumented code in this
+          library. For these reasons, we think that a complete check of the
+          Splay Lua library should be performed (with the help of a previous
+          maintainer of the project) to provide it with helpful documentation
+          that would ease its usage and would allow enhancing our busted test
+          suite.\\
 
-          Also, maybe, a good solution to clean this service and offer a new alternative for the user, it is completely
-          redo the daemon in a other technology. The best alternative language is, for us, Python (version 3). Indeed, Python is very
-          popular (developement of Python will continue), have rich libraries environment and offer a very complete
-          set of tools (basic library). However, the main problem of this solution is the performance in vanilla Python compared
-          to the very small core of Lua and the C integration of it. For us, the main drawback of Lua, its evolution, Lua have no
-          major updated since 2014 and the libraries used in this project doesn't evoled too.
-          Moreover, Lua have a very small core, then some basic function need done by the user (or in the splay lib) and
-          it causes a great number of line for the splay lib in some situation (which includes more bugs). Also, to return
-          to the performance issue of Python, we can imagine using a Just In Time compiler such as PyPy \cite{PyPy} to boost
-          significantly the performance and used some distributed libraries to create quickly a new Splay library.
+          Moreover, we saw by the end of the project that the socket
+          topology restriction wasn't actually taking into account
+          the packet loss rate and the queue length (maybe this feature was
+          a work in progress in the latest version of the legacy codebase).\\
+          Therefore, the topology settings that can be tweaked are limited to
+          the bandwith and latency.\\
+          Furthermore, we saw taht the topology restriction is based on the
+          \textbf{IP} combined to a single port number, this causes unkown
+          client sockets (because the port is different than the server port)
+          and useless restrictions. For all these reasons, the socket topology
+          (coming with the SplayNet module) needs to be improved.\\
+
+
+          A radical solution to clean this service and offer a new alternative
+          to users would be to completely rewrite the Daemon service using
+          another technology.\\
+          The best alternative for the language would be Python, Python being a
+          very popular language with a supportive community and constantly
+          updated, having rich libraries offering complete sets of tools.\\
+          However, the main problem of this solution would be the performance
+          offered by vanilla Python compared to the very small core of Lua and
+          its C integration. But the main drawback of Lua is evolution, Lua has
+          not reveived major updates since 2014 and the libraries used in this
+          project are not evolving too. Moreover, the tiny core of Lua forces
+          the user to write its own basic functions that are built-in in many
+          other languages and thus were placed in the Splay lib in our case.\\
+          This results in a greater number of lines of codes fore the Splay lib,
+          which thus includes more chances of bugs.\\
+          Going back to the performance question, using a just-in-time compiler
+          such as PyPy \cite{PyPy} to significantly boost the performance and
+          using some distributed libraries to quickly create a new Splay library
+          may be a solution.
 
         \subsubsection{Controller} % TODO : Check
 
