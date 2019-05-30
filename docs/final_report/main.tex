@@ -2170,7 +2170,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           may be a solution.
 
         \subsubsection{Controller}
-        
+
           The controller service is the brain of the project, it manages the
           different daemons, reads new data from the database and writes the
           results, dispatch the different jobs.\\
@@ -2196,24 +2196,33 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
             indeed found most of the controller bugs in this part.
           \end{itemize}
 
-      \subsection{Security aspect} % TODO : Check
+      \subsection{Security aspect}
 
-        In the description of the legacy project, we can see that the user job is normally in a restricted area and the project
-        is secure in general. Maybe it was before, but actually, we think that it is not enough secure for multiple reasons :
-
+        In the description of the legacy project, we saw that the user's job is
+        supposed to be running in a restricted area and the project is secure in
+        general.\\
+        But with further analysis, we found out that the project wasn't secure
+        in various ways:\\
         \begin{itemize}
-          \item The restriction on socket can be completely by-pass. Indeed, in Lua, there is a way to unload
-          a package dynamically (package.loaded["name\_package"] = nil). With this technic, we can onload the socket
-          package (with the restriction), reload (at begin of user code) it and the restriction doesn't exist anymore.
-          \item SQL calls in the controller is done mainly with string interpolation, the most of case,
-          this interpolation is secure manually by adding backslash (specific function). There is not
-          security issue if all SQL call is protect by backslash verification, but it is a bad practice (now)
-          to use string interpolation for this and one missing of manual checking and all the database is compromised.
+          \item The restriction on the socket can actually be completely
+          bypassed. Indeed, using Lua there is a way to unload a package
+          dynamically (package.loaded["name\_package"] = nil). Using this
+          technique, we can unload the socket package (that was loaded with a
+          restriction) and reload it with the corresponding statements placed
+          at the beginning of the job code and the restriction won't exist
+          anymore.
+          \item SQL calls in the controller are using string interpolation,
+          in most of the cases the call is secure manually adding escape
+          characters in the string. Indeed there is no security issue if
+          each call is protected with escaping, but the fact this is done
+          manually is a bad practice and will create a security issue if
+          any verification is mistakenly skipped by a developper.
         \end{itemize}
 
-        Then we concluded that a installation of Splay need to be used only by trusted people in a trusted environment.
-        And then, it is important to have future work to secure SPLAY to be able to run everywhere. Note that we didn't
-        work especially in the security aspect, we just see some issues to report.
+        We therefore concluded that an installation of Splay needs to be only
+        used by trusted people in a trusted environment. It is therefore
+        extremely important for the project to have future work about the
+        securization of the platform so that it could be used everywhere.
 
     \section{Objectives achievement} % TODO : resume of the project
 
