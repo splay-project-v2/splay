@@ -1986,26 +1986,47 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           of the network. However, we show a extreme case of topology, most of the case the condition above is
           respected.
 
-          {\color{red} TODO}
-
         \subsection{Fault injection}
 
-          He wants to test the correctness of his code by making crash the leader essentialy, but also the others.
-          When the leader crash, the student expects that a other leader election will be trigger by a remain node
-          , and then a new leader will appear.
-          He tests with the 2 corrects topologies (don't change the timeout election).
+          He wants to test the correctness of his code by making crash the leader essentialy, but also the others nodes.
+          When the leader crash, the student expects that a other leader election will be trigger by a remain node,
+          and then a new leader will elect. For this purpose, he adds a recovery crash point where the heartbeat is trigger : 
+          
+          \begin{lstlisting}[style=MyLua]
+...
+function heartbeat()
+  -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : AFTER 5
+  for i, n in pairs(job.nodes) do
+...
+          \end{lstlisting}
 
-          % Show crash + new election
-          {\color{red} TODO}
-
-          Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
-          his friend the mistake in this "better" code.
-
-          % Show buged piece + fault injection -> buggy log
-          {\color{red} TODO}
+          This crash point will be trigger only by the leader (heartbeat is only used by the leader) after 5 heartbeat (when the 6th is called).
+          When the crash append, the node will recovery after 0.5 seconds. 
+          Also, the student adds other crash point no depending of the state node, but triggering 
+          less often. By example, when a RCP vote request is receive :
+          \begin{lstlisting}[style=MyLua]
+...
+function request_vote(term, candidate_id)
+    -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : RANDOM 0.05
+    print("RPC Request Vote FROM "..candidate_id.." Term : "..term)
+...
+          \end{lstlisting}
+          This one will be trigger by node when node received a vote request from a candidate with a probability of 0.05 (one chance on 20). 
+          The student create other crash point in other key step of the algorithm (before save persistant state, when a vote is granted, ...),
+          to see the behaviour of the raft election, when there is fault. \\
+            
+          After some tests, he checks logs for the differents topologies setting and he sees that all happens as expected.
+          Indeed, when the leader crashes, a other node will trigger a new election and become candidate, if there is 
+          no conflict with a other candidate (election trigger in a other node in the same time), this candidate will become
+          the leader. Also, when other crash happens the all system is working, extected when more than two nodes is 
+          currently crash, because no majority can be done and then no leader is elected.
 
       \section{Buggy code proof}
+        Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
+        his friend the mistake in this "better" code.
 
+        % Show buged piece + fault injection -> buggy log
+        {\color{red} TODO}
 
       \section{Result with a animation}
 
