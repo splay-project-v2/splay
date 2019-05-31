@@ -1872,12 +1872,13 @@
       on 5 different nodes. He choosed to use Splay for his tests in his own laptop (or if available on a cluster of mini-computer)
       and he has no pre-install installation of Splay available for him. We going to described the different
       step of this student with the usage of Splay. \\
+      
       First, he needs to install a Splay environment on his own materials.
-      Secondly, with the help of Splay library, he builds a basic raft election implementation. Thirdly, he
-      wants to test with differents network topology and after analyse the robustness of his solution by creating
-      some fault injection at key points. Also, one of his friend send to him a slightly different version
+      Secondly, with the help of Splay library, he builds a basic raft election implementation.
+      Thirdly, he wants understand what happend during the execution of raft by showing a animation of the evolution of the endpoint state.
+      Moreover, he wants to test with differents network topology and after analyse the robustness of his solution by creating
+      some fault injection at key points. And for conclude, one of his friend send to him a slightly different version
       avoiding some writings on disk, and he wants to prove, by a example, the illness of the solution.
-      And for conclude his tests on Raft, he wants show a animation of the evolution of the endpoint state.
 
       \section{Installation of Splay}
 
@@ -1944,14 +1945,33 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 2019-05-30 08:20:10.0622 (2)  3 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
           \end{lstlisting}
 
+      \section{Timeline Animation}
+      
+        Before test the robustness of his solution, the student wants to see how the network and connection evolving during the execution.
+        For this purpose, we create a small tool to parse a log and see the evolution during the execution.
+        Indeed, the tool is a single HTML page with some javascript, it shows the endpoint (node) state
+        (follower, candidate or leader), if a packet is travelling between two nodes and time indication
+        following the animation. The tool is helped with vis.js library \cite{VisJS} (dynamic graph library)
+        and the raft code is modified to print appropriate log
+        (code here \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).\\
+
+        The tool takes a log text, a speed factor and auto-connect checkbox as inputs. This tool is just for 
+        illustrate our Raft election during time. Without topology and crash points, Raft election follows this pattern 
+        most of the case :
+
+        % TODO illustration no topo, no crash
+
       \section{Robustness of solution}
+
+        The student is not sur about his code, then he wants try to break his raft election by testing
+        with different network settings and adding some fault injection at some key points.
 
         \subsection{Topology settings}
 
           Atfer testing the algorithm in a perfect network environment, the student tries with 3 different configurations
           of network topology created by the network topology interface developed. We show the representation of
           the topology, and we add the specifications of edge between the node-router and router-router. We are focus,
-          only on the latency because the bandwidth constraints rarely the Raft leader election (very small packets and not a lot).
+          only on the latency, because the bandwidth constraints rarely the Raft leader election (very small packets and not a lot).
 
           \begin{figure}[H]
             \begin{subfigure}{.33\textwidth}
@@ -1968,23 +1988,18 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
             \end{subfigure}
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_fail.png}
-              \caption{Third topology - Extreme : Router-Router -> 600 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_3.png}
+              \caption{Third topology - Extreme : Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
               \label{fig:topo3}
             \end{subfigure}
             \caption{plots of three topologies}
             \label{fig:topologies}
           \end{figure}
 
-          Then, he tries with his implementation on the three configuration, the log result shows that
-          the 2 firsts one succeeded the leader election and stabilize.\\
-
-          But on the last, the leader election append multiple time
-          even when the leader is still on, it is because the condition $broadcast time << election timeout$
-          (election timeout is at miminum 1.5 second and maximun 3.0, random distribution) is not met (1.83 << [1.5, 3.0]).
-          Then, with this final topology network, we show that raft need still a appropriate configuration depending
-          of the network. However, we show a extreme case of topology, most of the case the condition above is
-          respected.
+          Then, he tries his implementation on the three configurations, the log result shows that 
+          daemons succeed at doing the leader election succeed and stabilizes quickly 
+          (one leader, other are followers). But as we know, Raft is also fault-tolerant when a majority of node is 
+          still alive, then failure can happen at some points. \\
 
         \subsection{Fault injection}
 
@@ -2021,30 +2036,17 @@ function request_vote(term, candidate_id)
           the leader. Also, when other crash happens the all system is working, extected when more than two nodes is 
           currently crash, because no majority can be done and then no leader is elected.
 
+        \subsection{Animation result}
+
+          % Animation with crashed 
+
+
       \section{Buggy code proof}
         Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
         his friend the mistake in this "better" code.
 
         % Show buged piece + fault injection -> buggy log
         {\color{red} TODO}
-
-      \section{Result with a animation}
-
-        The student wants to see how the network and connection evolving during the execution. For
-        this purpose, we create a small tool to parse a log and see the evolution during the execution.
-        Indeed, the tool is a single HTML page with some javascript, it shows the endpoint (node) state
-        (follower, candidate or leader), if a packet is travelling between two nodes and time indication
-        following the animation. The tool is helped with vis.js library \cite{VisJS} (dynamic graph library)
-        and the raft code is modified to print appropriate log
-        (code here \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).
-
-        \subsection{Timeline Animation of a graph evolution}
-          % REM
-          {\color{red} TODO}
-
-        \subsection{Result with raft}
-          % For any case, he wants to see the evolution of the nodes graph during the execution by parsing the log.
-          {\color{red} TODO}
 
   \chapter{Conclusion} % TODO : Finish
 
