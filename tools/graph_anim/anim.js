@@ -268,8 +268,10 @@ function graph(timeline, speedFactor, autoconnect) {
         } else if (timedata.type === EventGraph.packetReceive) {
             const idEdge = "" + timedata.to + "-" + timedata.from
             console.log("packet receive " + idEdge)
-
-            packets[idEdge].nb -= 1
+            if (packets[idEdge].nb > 0){
+                packets[idEdge].nb -= 1
+            }
+            
             if (packets[idEdge].nb == 0) {
                 edges.update([{
                     width: 2,
