@@ -6,7 +6,7 @@ source "$DIR/functions.sh"
 # bash integration_tests/build_run.sh 
 
 #--
-submit "app_test/raft.lua"
+submit "app_test/raft_election.lua"
 
 #--
 get_logs 15
@@ -20,7 +20,7 @@ fi
 
 #--
 step "Verify the logs (2)"
-if [[ ${LOGS[@]} != *"I become the LEADER"* ]]; then
+if [[ ${LOGS[@]} != *"I Become the LEADER now"* ]]; then
     echo "${LOGS[@]}"
     error "No leader"
 fi
