@@ -13,14 +13,7 @@ get_logs 15
 
 #--
 step "Verify the logs (1)"
-if [[ ${LOGS[@]} != *"RAFT.LUA START"* || ${LOGS[@]} != *"RAFT.LUA EXIT"* ]]; then
-    echo "${LOGS[@]}"
-    error "The logs don't contain the correct result (START - EXIT)"
-fi
-
-#--
-step "Verify the logs (2)"
-if [[ ${LOGS[@]} != *"I Become the LEADER now"* ]]; then
+if [[ ${LOGS[@]} != *"I Become the LEADER"* ]]; then
     echo "${LOGS[@]}"
     error "No leader"
 fi
