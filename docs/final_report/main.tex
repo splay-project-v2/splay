@@ -1874,7 +1874,7 @@
     \chapter{Use Case}
 
       We will take the example of a student followign a course on distributed
-      applications and distributed systems who wants to prototype the raft
+      applications and distributed systems who wants to prototype the Raft
       leader election algorithm on five different nodes. He choosed to use
       Splay for his tests using his own laptop (or if available, a cluster
       of mini-computers) and right now he has no available installation of the
@@ -1882,13 +1882,13 @@
       student will go through by using the Splay application.\\
 
       First, he needs to install a Splay environment on his own computer. Then,
-      with the help of the Splay library, he will build a basic raft leader
+      with the help of the Splay library, he will build a basic Raft leader
       election implementation.\\
       Following this, he would like to understand what's happening during the
-      execution of raft by showing an animation of the evolution of the
+      execution of Raft by showing an animation of the evolution of the
       endpoints states.\\
       Moreover, he would like to test its algorithm implementation through
-      different network topologies and therafter analyse its solution's
+      different network topologies and theRafter analyse its solution's
       robustness by adding fault injection in key parts of the algorithm.\\
       To conclude, one of his friend sent him a slightly different version
       of the algorithm avoiding some writings on disk, and he would like to
@@ -1925,7 +1925,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       \section{Implementation of Raft in Lua}
 
         After the successful easy installation, the real work can start, our
-        student will create his own implementation of raft using the Splay
+        student will create his own implementation of Raft using the Splay
         library.\\
 
         \textit{Raft is not a trivial algorithm, but still an easlily understandable
@@ -1943,7 +1943,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           election subproblem, which is not trivial, but made really
           understandable through comments in the code:
 
-          \lstinputlisting[style=MySmallLua]{raft_election.lua}
+          \lstinputlisting[style=MySmallLua]{Raft_election.lua}
 
         \subsection{First Results}
 
@@ -1996,7 +1996,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         indications following the animation. This tool uses the vis.js library
         \cite{VisJS} (dynamic graph library) and the Raft code has been slightly
         modified in order to print the appropriate logs (code can be found here
-        \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).\\
+        \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/Raft_election_anim.lua}}).\\
 
         This tool takes a text-based log, a speed factor and auto-connect
         checkbox as inputs, and is just used to illustrate our Raft election
@@ -2012,7 +2012,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         network settings and by adding some fault injection in the critical
         parts of the process.
 
-        \subsection{Topology settings} % TODO : Rewrite
+        \subsection{Topology settings}
 
           After testing the algorithm in a perfect network environment
           simulation, the student tries it with three different network
@@ -2027,19 +2027,19 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           \begin{figure}[H]
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_1.png}
               \caption{First topology - Normal : Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
               \label{fig:topo1}
             \end{subfigure}
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_2.png}
               \caption{Second topology - Two sites : Router-Router -> 150 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
               \label{fig:topo2}
             \end{subfigure}
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_3.png}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_3.png}
               \caption{Third topology - Extreme : Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
               \label{fig:topo3}
             \end{subfigure}
@@ -2055,11 +2055,15 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           nodes are still actives, the user therefore would like to test this
           fault-tolerance characteristics of the algorithm.
 
-        \subsection{Fault injection} % TODO : Rewrite
+        \subsection{Fault injection}
 
-          He wants to test the correctness of his code by making crash the leader essentialy, but also the others nodes.
-          When the leader crash, the student expects that a other leader election will be trigger by a remain node,
-          and then a new leader will elect. For this purpose, he adds a recovery crash point where the heartbeat is trigger :
+          The user now wants to test the correcntess of his implementation
+          essentially by making the leader crash, but also the other nodes.\\
+          When the leader crashes, the student expect from the Raft specification
+          that an other leader election will be triggered by the remaining
+          nodes, and therefore a new leader will be elected.\\
+          To achieve this, the student adds a recovery crash point where the
+          hearbeat is triggered in the code:
 
           \begin{lstlisting}[style=MyLua]
 ...
@@ -2069,10 +2073,14 @@ function heartbeat()
 ...
           \end{lstlisting}
 
-          This crash point will be trigger only by the leader (heartbeat is only used by the leader) after 5 heartbeat (when the 6th is called).
-          When the crash append, the node will recovery after 0.5 seconds.
-          Also, the student adds other crash point no depending of the state node, but triggering
-          less often. By example, when a RCP vote request is receive :
+          This crash point will only be triggered by the leader (as hearbet
+          is only used by the currently elected leader) after five heartbeats
+          (when the 6th is called).\\
+          When the crash happens, the node will recover after 0.5 seconds.\\
+          Also, the student adds other crash points no depending on the
+          node's state, but triggering less often. For example, when a RCP vote
+          request is received:
+
           \begin{lstlisting}[style=MyLua]
 ...
 function request_vote(term, candidate_id)
@@ -2080,29 +2088,36 @@ function request_vote(term, candidate_id)
     print("RPC Request Vote FROM "..candidate_id.." Term : "..term)
 ...
           \end{lstlisting}
-          This one will be trigger by node when node received a vote request from a candidate with a probability of 0.05 (one chance on 20).
-          The student create other crash point in other key step of the algorithm (before save persistant state, when a vote is granted, ...),
-          to see the behaviour of the raft election, when there is fault. \\
 
-          After some tests, he checks logs for the differents topologies setting and he sees that all happens as expected.
-          Indeed, when the leader crashes, a other node will trigger a new election and become candidate, if there is
-          no conflict with a other candidate (election trigger in a other node in the same time), this candidate will become
-          the leader. Also, when other crash happens the all system is working, extected when more than two nodes is
-          currently crash, because no majority can be done and then no leader is elected.
+          This one will be triggered by a node when it receives a vote request
+          from a candidate with a probability of 0.05 (one chance on 20).\\
+          The student creates other crash points in other key steps of
+          the algorithm (before saving persistant state, when a vote is granted)
+          to observe the behaviour of the Raft election when there is a fault.\\
+
+          After some tests, he checks the logs for the different topology
+          settings and he sees that everything went as expected. Indeed, when
+          the leader crashes an other node will trigger a new leader
+          election and become a candidate. If there is no conflict with another
+          candidate (election triggered by two nodes at the same time), this
+          candidate will become leader.\\
 
         \subsection{Animation result}
 
           % Animation with crashed
 
 
-      \section{Buggy code proof} % TODO : Rewrite
-        Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
-        his friend the mistake in this "better" code.
+      \section{Buggy code proof}
+
+        A friend of our student sent him a supposely better code, but he is not
+        convinced. The student therefore executes this algorithm implementation
+        with fault injection to prove his friend that a mistake exists in his
+        algorithm.
 
         % Show buged piece + fault injection -> buggy log
         {\color{red} TODO}
 
-  \chapter{Conclusion} % TODO : Finish
+  \chapter{Conclusion}
 
     We'll first conclude this report by going through a list of improvements
     idea over the project, and then summarize our global achievements on the
