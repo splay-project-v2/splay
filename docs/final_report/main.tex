@@ -578,7 +578,7 @@
         \end{itemize}
 
         Whether through the usage of the CLI application or the web application,
-        the user was able to interact with the Splay system and to send his
+        the user was able to interact with the Splay system, to send his
         jobs, and gather many information such as the logs or the current
         state of the running Splayds (the Splay daemons).\\
 
@@ -622,7 +622,7 @@
 
         The first decision to make in order to solve this problem was to
         merge those two services into a single one and to call that new
-        service according his role among the system: the \textbf{Backend},
+        service according his role among the system: The \textbf{Backend},
         according to the viewpoint of the client.\\
         This backend would have the ambition to offer a secured API through
         the usage of JWT \cite{JWT} and therefore allowing the development
@@ -650,13 +650,13 @@
         \end{itemize}
 
         From this analysis we also realized that the project was really
-        lacking of documentation in order to help and guide people interested
+        lacking documentation in order to help and guide people interested
         in Splay to install and run it.\\
 
         We therefore started with forking the project in a personal repository,
         allowing us to perform complete reorganization of all the directories
         and files composing the project and adding some basic documentation.
-        Each service was successfuly placed in a distinct directory while
+        Each service was successfully placed in a distinct directory while
         keeping the docker-compose file working.\\
         The project was cleaner, however, we felt that this wasn't enough
         and that we could achieve a better structure. The project is big and
@@ -716,8 +716,8 @@
           to ensure the communication with the controller, and therefore allow
           the submission of new jobs, the gathering of information about the
           Daemons, etc...
-          \item Allow to develop and expose a JSON API alloing other front
-          end services (web application and CLI) to make use of this API and
+          \item Allow to develop and expose a JSON API allowing other front-end
+          services (web application and CLI) to make use of this API and
           interact with the Splay system.
           \item Offer a large choice of libraries for testing, data
           serialization using JSON, and other libraries solving the problems
@@ -728,18 +728,18 @@
         Rails, and for the reasons of ecosystem consistency we talked about
         in the previous sections, we immediately agreed on using this
         framework for the backend. The fact of staying in the same language
-        ecosystem would allow us to make sure that future contributers to
+        ecosystem would allow us to make sure that future contributors to
         the application would not have to play with too many technologies and
         therefore make the future evolution of Splay easier.\\
         It should also be noticed that, as we exposed it when talking about the
         changes in the renewed software architecture of Splay, the previous
         web application and the CLI server had a similar role although being
-        specialized for different applications. However, the commom logic
+        specialized for different applications. However, the common logic
         of these two Ruby services was already present, and a part of the
         work was therefore just the matter of isolating this common logic
         and making it better.\\
 
-        Indeed Rails allow to easily develop, besides traditional MVC web
+        Indeed, Rails allow to easily develop, besides traditional MVC web
         applications, API only applications that doesn't contain all the stuff
         and complexity needed for presenting HTML views to the user and thus
         having a lighter and more concise codebases.\\
@@ -834,7 +834,7 @@
 
         \subsubsection{User Authentication}
 
-          As we mentioned it before, one of the best way to handle user
+          As we mentioned it before, one of the best ways to handle user
           authentication in JSON API applications is by using the JSON Web
           Tokens (JWT), following the industry standard from RFC7519.\\
 
@@ -859,7 +859,7 @@
             a POST method, as we want to create a new session.
             \item A controller method corresponding to the endpoint action.
             Here then, a Session controller exists, with a create method in
-            which the password checking happens and a response is returned
+            which the password checking happens, and a response is returned
             accordingly.
           \end{itemize}
 
@@ -868,19 +868,19 @@
           But instead of bloating our models with the needed inner logic for
           authentication, we created intermediate layers called services
           in Rails. Those services hold the needed logic to keep the controllers
-          nice and clean. In the case of authentication the controller receives
-          the request from the router, filled with user data, then delegates
+          nice and clean. In the case of authentication, the controller receives
+          the request from the router filled with user data, then delegates
           the task of password verification, token generation if succeeded,
           and just return the result in the response.\\
 
           The same process was also applied to manage registration through
           the API, as it needed the JWT layer to be in a working state.\\
 
-          Finally we also wrote tests simulating request making use of our
+          Finally, we also wrote tests simulating request making use of our
           API, which we'll explain in more details in a dedicated chapter.
           Nevertheless, each test is testing the different behavior of
           the endpoints, like registering with a bad email, logging in with
-          a non-existant user, etc...
+          a non-existent user, etc...
 
         \subsubsection{Splay Endpoints}
 
@@ -915,11 +915,11 @@
           communicating with the backend, we wanted to give response
           the right HTTP errors code in case of errors.\\
 
-          Indeed a successful request is automatically answered with a 200
+          Indeed, a successful request is automatically answered with a 200
           status code by the Rails application by default.\\
           Rails has a really convenient way to raise errors and catch them
           in the same or upper component on the call stack, we therefore
-          made use of that tool to implement the following error manaegement
+          made use of that tool to implement the following error management
           strategy:
 
           \begin{itemize}
@@ -935,11 +935,11 @@
                 \item The request is malformed (missing fields or badly forged
                 request)
                 \item The requested entity doesn't exist (for example a user
-                wants to get the job details for a non existing job)
+                wants to get the job details for a non-existing job)
               \end{itemize}
             \item Then in any controller or service used by a controller, we
             can raise an error and associate an error message, which will be
-            autmatically rescued at the root level and trigger a response with
+            automatically rescued at the root level and trigger a response with
             the right HTTP status code and the given error message.
           \end{itemize}
 
@@ -953,7 +953,7 @@
 
         As we made the decision that the web application would only be a
         front-end application making use of a centralized backend offering
-        a complete JSON API, we canted to use a front-end web development
+        a complete JSON API, we wanted to use a front-end web development
         framework that would satisfy the following conditions: \\
 
         \begin{itemize}
@@ -969,7 +969,7 @@
         ReactJS, Angular and VueJS.\\
         We rapidly removed Angular from our list because we preferred the
         component-based UI development offered by the two other frameworks,
-        which were lighter and avoiding to have to develop in the MVC style.
+        which were lighter and avoided having to develop in the MVC style.
         Even if we both had a previous experience with React thanks to a
         Cloud Computing course at the UCLouvain, we decided to go for VueJS
         instead of React.\\
@@ -981,7 +981,7 @@
         of concept application using Vue, we were totally satisfied with the
         simplicity of development that that framework was offering to the
         developers and allowed us to be totally confident into the fact
-        that going for this technology would allow any further contributer
+        that going for this technology would allow any further contributor
         of the Splay project to easily get in and participate to the
         development.\\
         Indeed, a Vue application is organized around single components, each
@@ -1000,14 +1000,14 @@
       \subsection{The new front-end application development}
 
         As the development of the backend was started (detailed in the
-        previous section), we started in the mean time the development of a
+        previous section), we started in the meantime the development of a
         Single Page Application using the VueJS framework.\\
 
         After removing the old files of the previous web application, we
         created a basic VueJS project (version 2.5.X at that time) having a
         simple home page and using the bootstrap-vue package
-        \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a well
-        known HTML, CSS and JavaScript framework used to create responsive
+        \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a
+        well-known HTML, CSS and JavaScript framework used to create responsive
         and modern web interface.\\
         Bootstrap is a real Swiss-army knife among the design framework
         and helped us building a visually pleasant and easy to use
@@ -1015,7 +1015,7 @@
 
         The next step was to build a register and a login page to allow
         user management. In order to manage different pages in the same Vue
-        project, we installed the Vue-Router packagem a Vue extension
+        project, we installed the Vue-Router package, a Vue extension
         allowing the navigation through different URI within the same
         single page application (without any reload and additional requests
         to the web server), allowing the user to switch from page to page
@@ -1031,7 +1031,7 @@
         was stored on the client browser to allow auto-login on next visits.\\
 
         In order to get the same features as the legacy web application,
-        we created a \textbf{monitoring} page, on which the the important
+        we created a \textbf{monitoring} page, on which the important
         information would be displayed to the user in lists.\\
         A list of Splay daemons (created by the controller) is retrieved
         from the backend and displayed with global information in a nice
@@ -1049,12 +1049,12 @@
         a double validation and allows giving the user a better feedback
         about any field he would have forgotten or wrongly filled.\\
         Vee-validate is a small package solving the problem of
-        manual checking of forms by adding some propreties to inputs, and it
+        manual checking of forms by adding some properties to inputs, and it
         makes our code more compact and less messy.
 
         This being done, we almost retrieved all the legacy features (for the
-        web application) but in a much more nice way, with a modern solution
-        and maintenable code. Only the log downloading functionnality was
+        web application) but in a much nicer way, with a modern solution
+        and maintainable code. Only the log downloading functionality was
         missing at this point. \\
         As soon as we completed the backend with the logging endpoint, we
         add this feature to the website with some improvements. When the
@@ -1072,15 +1072,15 @@
 
       \subsection{Using Python}
 
-        The old pair of services intented to compose the CLI service was
+        The old pair of services intended to compose the CLI service was
         written in Lua on the client side, and the CLI server was in Ruby. As
         the server's logic would be moved and merged into the \textbf{Backend}
-        service, and as we wanted to keep a command line interfact application
+        service, and as we wanted to keep a command line interface application
         in order to run tests of the global project, we needed to reevaluate
         the relevance of the Lua usage for this application.\\
 
         It is more than probable that Lua was used for coherence reasons back
-        in the days, and to avoid to scatter Splay around too much different
+        in the days, and to avoid scattering Splay around too much different
         technologies (although Ruby may have been used too instead of Lua).
         Still, maybe today this choice was not the most relevant for a CLI
         application. Indeed, our small client CLI had to be:
@@ -1177,10 +1177,10 @@
           to clean as much as possible the raw SQL string calls by using
           interpolation (see the improvements section in the conclusion).
           \item \textbf{Communication with daemons}: The communication between daemons
-          and the controller wasn't consistent is some case. By example, the
+          and the controller wasn't consistent is some cases. By example, the
           logs retrievement was buggy because daemon sended more information than 
           the controller expected.
-          Then, logs retrievement and creation has be corrected, improved to be
+          Then, logs retrievement and creation has be fixed, but also improved to be
           cleaner and more readable (take in account one issue of the old project \cite{logTimestamps}).
           \item \textbf{Small Changes}: We added more logs when needed and
           removed the unneeded ones, the database creation responsibility has
@@ -1216,7 +1216,7 @@
           luaossl to replace it. The main reason of this change was that
           LuaCrypto cannot use the last Linux's OpenSSL package (due to a
           security issue, and older versions cannot be used in newer OS),
-          LuaCrypto was also not updated anymore and moreover and issue about
+          LuaCrypto was also not updated anymore and moreover, an issue about
           this was open in the old project repository \cite{sslLib}.\\
           We therefore updated the code to make use of the new luaossl library.
           \item Multiple bug fixes mainly due to the Lua version change needed
@@ -1253,7 +1253,7 @@
 
     \section{Development Methodology}
 
-      Indeed, the fact of being two student on this development project necessarily
+      Indeed, the fact of being two students on this development project necessarily
       implied a way of organizing ourselves a bit more serious than a
       development project alone.\\
 
@@ -1286,10 +1286,10 @@
 
         \subsection{Testing and Validation}
 
-          The details of our testing and validation suites will be explicited
+          The details of our testing and validation suites will be detailed
           in the following section, but we wanted to integrate testing and
           validation process as part of our development methodology and
-          therefore followed a test driven development approach.\\
+          therefore followed a test-driven development approach.\\
           The tests and quality were thus not only a validation technique to
           apply on our work afterward, but a complete part of the development
           and helping us reaching our goals.
@@ -1328,7 +1328,7 @@
           errors or bugs, this process also allowed each of us to keep itself
           aware and keep itself up to date with all the different changes
           happening on the different services. Indeed, it was impossible for
-          us to work together in the mean time on each single service, because
+          us to work together in the meantime on each single service, because
           of the number of services and inter-dependant features we had to
           develop.
 
@@ -1342,7 +1342,7 @@
 
       The fact that Splay had barely no tests at all in the state we receive it
       motivated us into developing a solid test suite for the system.
-      Indeed that fact made our task much more harder because we were progressing
+      Indeed, that fact made our task much more harder because we were progressing
       in the dark, each minor change was prone to create dysfunctions that we
       might only notice way later during our work.\\
 
@@ -1355,7 +1355,7 @@
       \subsection{Testing in Web App}
 
         As we choosed Vue as our framework for the web application service,
-        all we had to deal with was components. As Vue is organised around
+        all we had to deal with was components. As Vue is organized around
         the use of components, the immediate reward of this was that we would
         be able to write tests dedicated to isolated and simple components.
 
@@ -1368,9 +1368,9 @@
           Testing JavaScript is not always the simplest thing to achieve, the
           ecosystem being in constant evolution with diverse solutions emerging
           trying to fit with the evolution and the apparition of a lot of
-          other JavaScript framework.\\
+          other JavaScript frameworks.\\
           But Jest was a really good pick as testing framework, as it was
-          developped by Facebook and designed to fit with the majority of the
+          developed by Facebook and designed to fit with the majority of the
           most used front-end framework and this with almost no configuration and
           providing us with a really simple API.\\
 
@@ -1384,20 +1384,20 @@
           we wanted to test was the triggered action we wrote ourselves and
           were simply functions.\\
           Each file therefore tests that the related components can be
-          successfuly instanciated among the application, then run a serie
+          successfully instantiated among the application, then run a serie
           of \textbf{unit tests} validating the methods expected behavior.
 
         \subsubsection{ESLint}
 
           Provided almost by default when creating a new Vue project, ESLint
-          \cite{eslint} is a JavaScript linter that allows the developper to
+          \cite{eslint} is a JavaScript linter that allows the developer to
           make sure he's not writing code inducing problematic patterns or not
           respecting code guidelines.\\
           This helps to keep a consistent codestyle as we were two people working
           on this project, and increase the overall code quality and
           maintainability. We chose not to change any preset of the shipped-in
           ESLint confguration to ensure following common guidelines among the Vue
-          community and make sure any developper joining the Splay project will
+          community and make sure any developer joining the Splay project will
           be able to work on the web application seamlessly.
 
       \subsection{Testing in Backend}
@@ -1417,7 +1417,7 @@
         tables to models. These models are thus granted with attributes,
         constraints to comply with on these attributes following the constraints
         listed in the database schema, but also granted with methods. This data
-        modelisation allow us to do model testing.
+        modelization allow us to do model testing.
 
         The backend role being only to offer a JSON API to the different client
         services through an authentication system using JSON Web tokens, a
@@ -1430,8 +1430,8 @@
         \subsubsection{RSpec}
 
           RSpec \cite{rspec} is a library aiming to ease behavior Driven
-          Development on Ruby projects. BDD and TDD (Test Driven Development) are
-          practices we wantedto follow for our work on the Splay development,
+          Development on Ruby projects. BDD and TDD (Test-Driven Development) are
+          practices we wanted to follow for our work on the Splay development,
           this would allow us to adopt a green-red-refactor work cycles but also
           to focus on writing natural language scenarios and then translating
           them into test scenarios.
@@ -1474,7 +1474,7 @@
           \end{figure}
 
           Each route of the application is tested, exploring different possible
-          scenarios for the incoming request (the idenfication token provided
+          scenarios for the incoming request (the identification token provided
           is invalid, the token is valid but the requested action is not
           authorized for the associated user). We therefore have a testing set
           that uses the whole application, simply by sending request and
@@ -1483,7 +1483,7 @@
         \subsubsection{Code Coverage - Simple Cov}
 
           We chose to use Simple Cov in combination of the testing applied to
-          the Backend. This tool allow to measure the code coverage of Ruby
+          the Backend. This tool allows to measure the code coverage of Ruby
           application and to provide the developer with useful information
           thanks to its test execution analysis.\\
 
@@ -1514,7 +1514,7 @@
           the code quality within the service. Rubocop is a static code analysis
           tool (linter) allowing to detect violations to a set of rules about
           the code style and good practices (too many lines of code for a method,
-          to many variables instanciations, too many conditional branching
+          to many variables instantiations, too many conditional branching
           in the code, ...).
 
       \subsection{Testing in Daemons}
@@ -1523,21 +1523,21 @@
         with the controller to receive the jobs, run the jobs and return
         information to the controller about the job state. But the Daemon also
         provides the user with a rich Splay library written in Lua.\\
-        In the legacy project, only a few test were present and their
+        In the legacy project, only a few tests were present and their
         task was to check the installation and to test some very basic features
         (small functionalities) of the Lua Splay library. Some of those tests
-        weren't passing anymore (if they did passed one day), and no testing
+        weren't passing anymore (if they did pass one day), and no testing
         library were used.\\
 
         We wanted to change this, so we started by adding a testing library
         called Busted \cite{busted}. This library allowed elegant unit testing,
         still under active development and fully integrated with Lua 5.3.\\
-        Then we successfuly transformed the old existing tests into busted
+        Then we successfully transformed the old existing tests into busted
         tests. With only this single change, we were able to detect some
         anomalies in the lib code and to fix these. We added some tests steps
-        in the docker inage creation to avoid creating malformed images.\\
+        in the docker image creation to avoid creating malformed images.\\
 
-        Moreovr, we added a lot of tests about each modification we made
+        Moreover, we added a lot of tests about each modification we made
         (openssl updated, new misc functions, small changes in existing
         functions, ...) and also about the new features.\\
         Sadly the whole Splay lib of the Daemon isn't entirely tested,
@@ -1572,11 +1572,9 @@
           file.
           \item Starting up the services.
           \item Executing commands through the CLI.
-          \item Checking the returned responsed sent by the CLI and displaying
+          \item Checking the returned response sent by the CLI and displaying
           whether the test phase has succeeded or failed in the terminal.
         \end{itemize}
-
-        {\color{red} Link with scenarios}\\
 
         By proceeding this way and with the fact of using our user scenarios to
         determine the actions described in the test suite, we can make sure
@@ -1610,7 +1608,7 @@
         Here is a figure detailing the whole Splay project with the different
         test suites and procedures that have been described in the previous
         sections so that the reader can get the grasp on the overall
-        organisation of this.
+        organization of this.
 
         \begin{figure}[H]
           \centering
@@ -1708,7 +1706,7 @@
           corresponding XML file and sent to the backend alongside with his
           job.\\
 
-          However, using a visual tools with buttons and inputs is not always
+          However, using a visual tool with buttons and inputs is not always
           the fastest and most practical thing for someone more experienced. We
           thought that some Splay user would probably not want to be obliged
           to play with our topology editor and would keep their topology
@@ -1751,15 +1749,15 @@
         We therefore made the decision to use a domain specific language (DSL)
         for the crash management so that a user could define the crash point
         in the Lua code as a comment. During the job execution phase, just before
-        execute the user code, we parse the code and gather those crash points to manage the
-        crashes.
+        executing the user code, we parse the code and gather those crash
+        points to manage the crashes.
 
         \subsection{Domain Specific Language (DSL)}
 
           We defined our small domain specific language to be simple to user
           for the user and flexible enough for the parsing phase. This DSL
           needed to be integrated into the Lua code without forcing the user to
-          modify its algorithm code, and trying to avoid totally crashing
+          modify its algorithm code and trying to avoid totally crashing
           the daemon in case of the crash points specified by the user were
           not correct.\\
           Also, the difference in terms of number of lines of code between the
@@ -1773,20 +1771,20 @@
           To avoid interpreting any other comment, those crash points must
           contain the keyword \textit{CRASH POINT}. Achieving this by comments
           was probably the best option, so that the real code doesn't get any
-          interference with our crash point functionnality. The crash then
+          interference with our crash point functionality. The crash then
           happens exactly where the crash point is defined, it is therefore
           possible to make the execution code crashing anywhere (thread, middle
           of a function, etc...)\\
 
           Secondly, a fault is defined by a type, the moment it should occur and
           on which node it should occur. These characteristics also needed to
-          be specified within our DSL. Each characteristics follows the
+          be specified within our DSL. Each characteristic follows the
           \textit{CRASH POINT} keyword and are separated by a colon, and are
           defined by their keyword and values if needed.
 
           \begin{itemize}
             \item First, the chosen nodes to be affected by the crash must be
-            specified. For this purpose, the user must add the id's of the
+            specified. For this purpose, the user must add the ids of the
             affected nodes separated by a space (ids begin at 1 -> number of
             daemon used).
             \item The type of crash can be specified by its name and optional
@@ -1808,9 +1806,10 @@
           recovery crash means that the node will crash and recover after a
           number of seconds specified by the user (float number).\\
           Concerning the moment of the crash:
+
           \begin{itemize}
             \item The \textbf{AFTER} keyword means that the user specifies a
-            number of loops to achieve before the crash occurs. For example
+            number of loops to achieve before the crash occurs. For example,
             the value 5 in a begining of the loop means that this loop will
             execute 5 times before triggering the crash, whereas 0 triggers
             an immediate crash.
@@ -1881,9 +1880,9 @@
           The parsing handles any error the user could have done about the
           syntax of the crash point.\\
           Parsing is done line by line and if any error is found (also error
-          about the parsing code itself), the concerned line will be unchanged and
+          about the parsing code itself), the concerned line will be unchanged, and
           a warning or error message will be written in the logs.\\
-          This feature is fully wrote in Lua using the basic regex matcher of Lua
+          This feature is fully written in Lua using the basic regex matcher of Lua
           \cite{RegexLua} (it isn't a complete Regex implementation).
 
         \subsection{Execution}
@@ -1901,7 +1900,7 @@
           if we need to restart or stay down after a crash point was
           triggered.\\
 
-          With this way of exiting, we can create artificials crash points which
+          With this way of exiting, we can create artificial crash points which
           will immediately kill every coroutines (threads) of Lua and its
           current execution. Moreover, we can pass special exit status codes
           in order to send messages to the parent process.\\
@@ -1935,9 +1934,9 @@
 
     \chapter{Use Case}
 
-      We will take the example of a student followign a course on distributed
+      We will take the example of a student following a course on distributed
       applications and distributed systems who wants to prototype the Raft
-      leader election algorithm on five different nodes. He choosed to use
+      leader election algorithm on five different nodes. He chose to use
       Splay for his tests using his own laptop (or if available, a cluster
       of mini-computers) and right now he has no available installation of the
       Splay system. We are going to describe the different steps that our
@@ -1952,7 +1951,7 @@
       Moreover, he would like to test its algorithm implementation through
       different network topologies and theRafter analyse its solution's
       robustness by adding fault injection in key parts of the algorithm.\\
-      To conclude, one of his friend sent him a slightly different version
+      To conclude, one of his friends sent him a slightly different version
       of the algorithm avoiding some writings on disk, and he would like to
       prove by example that his friend's solution isn't valid.
 
@@ -1975,10 +1974,10 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         \end{lstlisting}
 
         The images are downloaded from prebuilt images (from dockerhub) for
-        each services, some little wait time is requested for this download
-        phase and for each servic to start.\\
+        each service, some little wait time is requested for this download
+        phase and for each service to start.\\
         Once this is done, the student has access to the web application of
-        the Splay system, using his favourite web browser with this url:
+        the Splay system, using his favorite web browser with this url:
         \url{http://localhost:8080/}.\\
         He creates his own account by registering on the platform, opens a new
         session (which will be kept open for the next time he wants to use
@@ -1990,7 +1989,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         student will create his own implementation of Raft using the Splay
         library.\\
 
-        \textit{Raft is not a trivial algorithm, but still an easlily understandable
+        \textit{Raft is not a trivial algorithm, but still an easily understandable
         one. The algorithm we will present in the next subsection is based on
         some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide}
         \cite{RaftSite}. We have done the Lua code of the Raft consensus leader
@@ -2014,7 +2013,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           paired to each other without any latency).\\
           Once he sent the job, it can be observed in the logs that a node
           effectively becomes the leader and it is sending heartbeats to avoid
-          an election process from the others nodes:
+          an election process from the other nodes:
 
           \begin{lstlisting}[style=MyBash]
 2019-05-30 08:20:10.0501 (3)  2: Election Trigger -> term+1, become candidate
@@ -2092,9 +2091,9 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           simulation, the student tries it with three different network
           topology configurations created through the network topology tool on
           the web application.\\
-          Here are a representation of the topology, with specifications on
+          Here are representations of the topology, with specifications on
           the edges between nodes-routers and routers-routers.\\
-          The specifications are focused on latency only, bandwidth constraints
+          These specifications are focused on latency only, bandwidth constraints
           are not really influencing Raft as it is producing small and few
           packets.
 
@@ -2127,17 +2126,17 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           become followers) in those different network configurations.\\
           But as we know, Raft election is also fault-tolerant when a majority of
           nodes are still actives, the user therefore would like to test this
-          fault-tolerance characteristics of the algorithm.
+          fault-tolerance characteristic of the algorithm.
 
         \subsection{Fault injection}
 
-          The user now wants to test the correcntess of his implementation
+          The user now wants to test the correctness of his implementation
           essentially by making the leader crash, but also the other nodes.\\
           When the leader crashes, the student expect from the Raft specification
           that an other leader election will be triggered by the remaining
           nodes, and therefore a new leader will be elected.\\
           To achieve this, the student adds a recovery crash point where the
-          hearbeat is triggered in the code:
+          heartbeat is triggered in the code:
 
           \begin{lstlisting}[style=MyLua]
 ...
@@ -2147,11 +2146,11 @@ function heartbeat()
 ...
           \end{lstlisting}
 
-          This crash point will only be triggered by the leader (as hearbet
+          This crash point will only be triggered by the leader (as heartbaet
           is only used by the currently elected leader) after five heartbeats
           (when the 6th is called).\\
           When the crash happens, the node will recover after 0.5 seconds.\\
-          Also, the student adds other crash points no depending on the
+          Also, the student adds other crash points not depending on the
           node's state, but triggering less often. For example, when a RCP vote
           request is received:
 
@@ -2170,7 +2169,7 @@ function request_vote(term, candidate_id)
           to observe the behavior of the Raft election when there is a fault.\\
 
           After some tests, he checks the logs for the different topology
-          settings and he sees that everything went as expected. Indeed, when
+          settings, and he sees that everything went as expected. Indeed, when
           the leader crashes an other node will trigger a new leader
           election and become a candidate. If there is no conflict with another
           candidate (election triggered by two nodes at the same time), this
@@ -2192,7 +2191,7 @@ function request_vote(term, candidate_id)
 
       \section{Buggy code proof}
 
-        A friend of our student sent him a supposely better code, but he is not
+        A friend of our student sent him a supposedly better code, but he is not
         convinced. The student therefore executes this algorithm implementation
         with fault injection to prove his friend that a mistake exists in his
         algorithm.
@@ -2224,9 +2223,9 @@ function request_vote(term, candidate_id)
         During the development of our features, we noticed that the Lua Editor
         is probably the less important one. The main reason making this feature
         the less important is that, most of the time, users create their own Lua
-        scripts on their favourite editor and then apply a copy-paste on the
+        scripts on their favorite editor and then apply a copy-paste on the
         system.\\
-        A fully-integrated IDE with a Lua an installed Lua package offers more
+        A fully integrated IDE with a Lua an installed Lua package offers more
         than our editor, but with little improvements our editor could equal
         any other:
 
@@ -2258,7 +2257,7 @@ function request_vote(term, candidate_id)
           network crash or a network compartmentalization meaning that the
           nodes would still be running but could not communicate anymore
           with other nodes during the downtime.\\
-          For this purpose we could modify the socket wrapping done to achieve
+          For this purpose, we could modify the socket wrapping done to achieve
           topology (or creating a new one) where our crash library could ask
           for restrictions over the network simulation.\\
 
@@ -2276,11 +2275,11 @@ function request_vote(term, candidate_id)
 
           \begin{itemize}
             \item \textbf{Modifications of items on click}: For now, it is hard
-            to modify existing edges, nodes or specs. The user need to remove
+            to modify existing edges, nodes or specs. The user needs to remove
             the specified item or modify it in the XML code, therefore
             an option to modify existing items through a form would be a good
             idea.
-            \item \textbf{Edge in both directions}: Right now the user can only
+            \item \textbf{Edge in both directions}: Right now, the user can only
             add directed edges between nodes, adding an option to directly
             created edges in both direction would be a good idea and
             avoid a double work with the directed edges through the form.
@@ -2289,7 +2288,7 @@ function request_vote(term, candidate_id)
       \subsection{Refactor of old services}
 
         We have rebuilt some parts of Splay using modern technologies as
-        explained in the related section but we haven't made a complete
+        explained in the related section, but we haven't made a complete
         refactor of the daemon and the controller. We think that those two
         services would need, in the future, a complete refactor or even be
         rewrote maybe using newer technologies. A database schema cleaning
@@ -2304,7 +2303,7 @@ function request_vote(term, candidate_id)
           a lot of unused code lines, small bugs and code repetition in the
           Daemon codebase and we therefore carefully fixed those issues when
           encountered.\\
-          We therefore reduced the usage of the Splay library by the Daemon,
+          We therefore reduced the usage of the Splay library by the Daemon
           and ended up with a lot of unused and undocumented code in this
           library. For these reasons, we think that a complete check of the
           Splay Lua library should be performed (with the help of a previous
@@ -2317,9 +2316,9 @@ function request_vote(term, candidate_id)
           the packet loss rate and the queue length (maybe this feature was
           a work in progress in the latest version of the legacy codebase).\\
           Therefore, the topology settings that can be tweaked are limited to
-          the bandwith and latency.\\
-          Furthermore, we saw taht the topology restriction is based on the
-          \textbf{IP} combined to a single port number, this causes unkown
+          the bandwidth and latency.\\
+          Furthermore, we saw that the topology restriction is based on the
+          \textbf{IP} combined to a single port number, this causes unknown
           client sockets (because the port is different than the server port)
           and useless restrictions. For all these reasons, the socket topology
           (coming with the SplayNet module) needs to be improved.\\
@@ -2333,11 +2332,11 @@ function request_vote(term, candidate_id)
           However, the main problem of this solution would be the performance
           offered by vanilla Python compared to the very small core of Lua and
           its C integration. But the main drawback of Lua is evolution, Lua has
-          not reveived major updates since 2014 and the libraries used in this
+          not received major updates since 2014 and the libraries used in this
           project are not evolving too. Moreover, the tiny core of Lua forces
           the user to write its own basic functions that are built-in in many
           other languages and thus were placed in the Splay lib in our case.\\
-          This results in a greater number of lines of codes fore the Splay lib,
+          This results in a greater number of lines of codes for the Splay lib,
           which thus includes more chances of bugs.\\
           Going back to the performance question, using a just-in-time compiler
           such as PyPy \cite{PyPy} to significantly boost the performance and
@@ -2352,16 +2351,16 @@ function request_vote(term, candidate_id)
           Despite being such a central piece of the project, the code is still
           badly documented, and still needs an advanced cleanup in its
           different parts, and it is also poorly tested even after we worked
-          on it. We may therefore propore two different ways to increase
+          on it. We may therefore propose two different ways to increase
           the quality and maintainability of the controller for future
           development phases:
 
           \begin{itemize}
-            \item Usinf full object oriented with sequel \cite{Sequel} model
+            \item Using full object oriented with sequel \cite{Sequel} model
             object for each table of the database. The SQL queries are now
             raw ones which can be insecure (in case one forgets to manually
-            checking against injections) and which is hard to read.\\
-            A sequel model object allows every operations on a SQL database
+            check against injections) and which is hard to read.\\
+            A sequel model object allows every operation on a SQL database
             through function calls in a nice an concise Ruby way, avoiding
             SQL error syntax and most importantly it is independent of the
             database management system.
@@ -2388,10 +2387,10 @@ function request_vote(term, candidate_id)
           anymore.
           \item SQL calls in the controller are using string interpolation,
           in most of the cases the call is secure manually adding escape
-          characters in the string. Indeed there is no security issue if
+          characters in the string. Indeed,there is no security issue if
           each call is protected with escaping, but the fact this is done
           manually is a bad practice and will create a security issue if
-          any verification is mistakenly skipped by a developper.
+          any verification is mistakenly skipped by a developer.
         \end{itemize}
 
         We therefore concluded that an installation of Splay needs to be only
