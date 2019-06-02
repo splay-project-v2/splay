@@ -101,51 +101,71 @@
 
   \chapter{Introduction}
 
+    % # Intro
+    % vue générale de ce qu'est le contexte; quel est le problème; les
+    % contributions (déjà parler de ce qu'on a fait dans les grandes lignes)
+
     % Discuter de la problématique de tester des algorithmes distribues
     % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features
     % amener implicitement les features
-    \section{Issue of Distributed Algorithms Creation}
 
-      Distributed algorithms are a key aspect of a lot of different
-      applications in different domains such as cloud computing, networking
-      or artificial intelligence \cite{DistributedArtificialIntelligence}.\\
-      We can say that an algorithm is a distributed one when it is designed to
-      run on several processors or machines being linked together, achieving
-      a common task together or dividing the workload among them in order to
-      achieve it.\\
-      The main reasons making this need to distribute the work over multiple
-      nodes may be performance reasons, availability, scalability, replication
-      needs, etc..\\
-      As we start pursuing the development of distributed applications, having
-      the previous needs, we start encountering specific problems related to
-      distributed applications :
+    Distributed algorithms are a key aspect of a lot of different
+    applications in different domains such as cloud computing, networking
+    or artificial intelligence \cite{DistributedArtificialIntelligence}.\\
+    We can say that an algorithm is a distributed one when it is designed to
+    run on several processors or machines being linked together, achieving
+    a common task together or dividing the workload among them in order to
+    achieve it.\\
+    The main reasons making this need to distribute the work over multiple
+    nodes may be performance reasons, availability, scalability, replication
+    needs, etc...\\
+    As we start pursuing the development of distributed applications, having
+    the previous needs, we start encountering specific problems related to
+    distributed applications:
+    \begin{itemize}
+      \item In case we want our nodes to organize themselves automatically and
+      make them choose a leader to orchestrate their work, how to achieve
+      this leader election?
+      \item In case we want our nodes to agree on something, how to make
+      them decide and on which value proposed by one of the nodes should they
+      agree with?
+    \end{itemize}
+
+    A distributed application therefore needs specific distributed algorithms
+    designed to solve those new raised problems.
+
+    \section{Learning Distributed Algorithms}
+
+      However, the process of learning distributed algorithms
+      is usually undermined by the difficulty of being able for one to test
+      and apply what he learns.\\
+      Usually, students are learning the theoretical components of the
+      classic algorithms (consensus, leader election) and if ever they want
+      to start playing with a real implementation of it to deepen their
+      knowledge, that's where the problems are starting to appear:
+
       \begin{itemize}
-        \item In case we want our nodes to organize themselves automatically and
-        make them choose a leader to orchestrate their work, how to achieve
-        this leader election?
-        \item In case we want our nodes to agree on something, how to make
-        them decide and on which value proposed by one of the nodes should they
-        agree with?
+        \item The first issue comes from the nature of the algorithms: they are
+        distributed. This means a student will need to setup a testing
+        environment by deploying or simulating a collection of machines on
+        which he would run his algorithm implementation.
+        \item This collection of machines needs to be set up, each machine has
+        to communicate with each other in order to achieve their common task.
+        \item The student will also need to get feedback on how his
+        algorithm performed among the machines.
+        \item From the previous two points, either the student will need to
+        bloat his simple translation of the algorithm's pseudo-code
+        with all the needed code to achieve logging and communication, either
+        he will spend a lot of time implementing a complex system to allow
+        this behind the scene, which may be a cause of errors unrelated to its
+        implementation and will drag him out of his main goal of learning
+        distributed algorithms either way.
+        \item Distributed algorithm are designed to have resilience
+        properties in cases of node crashes or other events, how the student
+        could experiment, from our leader election case, what should
+        happen when the leader dies? This will result in even more code
+        bloating or in an even more complex home-made system.
       \end{itemize}
-
-      A distributed application therefore needs specific distributed algorithms
-      designed to solve those new raised problems.\\
-
-      However, the creation of distributed algorithms is a time consuming,
-      complex and error prone activity. Moreover, testing these algorithms is
-      a mandatory step to avoid errors in specific configurations (from our
-      leader election case, what should happen when the leader dies?) and in
-      order to gain trust in the correctness of the whole system.\\
-      These tests are painful to do manually if you want to reproduce close
-      to reality situation by deploying or simulating a collection of machines,
-      creating the needed code to tie your nodes together before even being
-      able to work on the precise distributed algorithm you want to experiment
-      with, and also writing the needed code to gather statistics and result
-      from your experiments.\\
-      With all these steps, the prototyping of algorithms is time consuming,
-      produces thousands of lines of code not directly related to the work,
-      and thus also increasing the chance of creating bugs not related to the
-      distributed algorithm.\\
 
       Another issue with distributed algorithms is that the pseudo-code,
       from paper for examples, is usually far from what a true solution to the
@@ -154,12 +174,15 @@
       increasing the gap between the theoretical specifications and the real
       life.
 
-    \section{Existing Solutions}
+    \section{A Need for a Solution}
 
-      Some testbeds exist aiming to facilitate the testing of the
+      From the previous issues listed before exists a need for a solution
+      which would help any student with the distributed algorithm learning
+      process.\\
+      Some testbeds exist, aiming to facilitate the testing of the
       distributed algorithms such as emulab \cite{Emulab}, ModelNet
       \cite{ModelNet} or PlanetLab \cite{PlanetLab}. But these solutions have
-      some serious drawbacks :
+      some serious drawbacks:
 
       \begin{itemize}
         \item They are quite complicated to use and hard to learn
@@ -169,7 +192,7 @@
 
       Concerning the code itself, supplying a high level library helping the
       creation of distributed algorithms is indeed a solution and those
-      exists for that precise purpose in different languages, such as :
+      exists for that precise purpose in different languages, such as:
 
       \begin{itemize}
         \item Mace \cite{Mace} in C++
@@ -203,19 +226,60 @@
       restrict the usage of the network depending of that.
 
 
+    \section{Our Work on Splay}
+
+      Our thesis represents our work on the Splay project. We relaunched
+      the development of the system, starting from a supposedly stable
+      version of the project and progressively updating it and adding new
+      features on it in order to reach the goal of making it a perfect
+      tool for the learning and experimentation of distributed algorithm,
+      focused around the algorithm itself and allowing to perform testing
+      under different conditions about the network or the nodes themselves.\\
+
+      Through all our work of this thesis on the Splay project, we performed
+      the following tasks:
+
+      \begin{itemize}
+        \item An extensive work of updates and bug fixes on the base project
+        during all along our work.
+        \item Changes in the software and services architecture of Splay,
+        even rewriting some services, to propose an easier to maintain, more
+        testable and more logical project.
+        \item Deep changes on the project management side, forking the
+        previous one and reorganizing the repositories and setting up tools
+        like automatic builds and continuous integration.
+        \item Ensuring code quality by writing a lot of test suites for the
+        different services composing Splay, testing services individually,
+        globally and using different techniques of testing.
+        \item Enhancing the project with features designed to provide a
+        student with all the necessary environment for an easier and convenient
+        way of learning distributed algorithms.
+      \end{itemize}
+
+      This document will present all this work in details. In the next chapter,
+      we will explicit why and what have been our work on Splay to address
+      the problem. Then, a chapter will explain in detail all our
+      development, implementation and architecture changes on Splay. The
+      following chapter will present all our work to ensure code quality
+      in the project. We'll then explain the development of the new features
+      of Splay, present a real scenario of usage and then conclude this document.
+
   \chapter{Problem Statement - Splay}
 
-    % Aporter les solutions aux problèmes cités dans l'introduction
-    % parler des fonctionnalités actuelles du vieux splay
-    % ce qu'on doit changer et fonctionnalités à apporter
+    In this chapter, we will explicit the solution needed to help the
+    students learns distributed algorithms, then compare it with what Splay
+    offered when we first put our hands on it. Based on user scenarios
+    describing a user experience, we will then draw the roadmap of modifications
+    and enhancement we needed to perform on the old Splay to reach our
+    perfect solution.
 
-    \section{A Solution Definition} % TODO : TODO
+    \section{A Solution Definition}
 
       From the previous problems we identified before, we wanted to have an
       application that could allow students and professors to develop and
       test their distributed algorithms with the best possible experience.
       To answers those problems, these are the qualities needed for the
-      solution we wanted to develop :
+      solution we wanted to develop:
 
       \begin{itemize}
         \item The whole system should be easy to use for beginners and people
@@ -226,19 +290,19 @@
         impact the way its algorithm is running.
         \item The application should provide an enjoyable way for the user
         to write his algorithm.
-        \item The application should allow the user to get detailed informations
+        \item The application should allow the user to get detailed information
         about how its algorithm performed within the system.
         \item The application would offer services focused on the development
         of algorithm, therefore and as we identified it as an issue before, no
         or barely no time should be spent on the configuration of the machines
-        needed to created a distributed system ready to receive algorithms.
+        needed to create a distributed system ready to receive algorithms.
       \end{itemize}
 
-    \section{What Splay Offered} % TODO : TODO
+    \section{What Splay Offered} % TODO: TODO
 
       What SPlay offered before in terms of services ...
 
-    \section{User Scenarios} % TODO : MODIFY
+    \section{User Scenarios}
 
       Before create a precise list of features to add to Splay, we first
       thought about scenarios. We imagined how someone would want to exercise
@@ -274,34 +338,32 @@
 
         \subsubsection{Second Scenario}
 
-          As a professor, I would like to be able to experiment with a new
+          As a professor, I would like to be able to experiment a new
           approach of solving the leader election problem among a set of
           nodes.\\
           I can use the Splay system which is linked with a cluster of
           Raspberry Pi's.\\
-          The new approach described in a paper with some pseudo-code and some difficult
-          cases when the network topology is quite exotic
           The new leader election approach is described in a paper with some
           pseudo-code and has special cases of execution when the topology is
           a bit exotic.\\
           Thanks to Splay, I can rewrite the pseudo-code in actual Lua code
           in a dedicated editor, and create special cases of topologies
-          thanks to a topology editor, and get all the informations about
+          thanks to a topology editor, and get all the information about
           the algorithm execution thanks to the Splay logging system.
 
     \section{A first update}
 
       Before starting this thesis, we had the opportunity to get a part-time
       job with the objective of updating the languages and frameworks versions
-      used within the project anf to get familiar with it. The project being
-      paused sinced 2016 on an unstable version, Raziel made us start on a
-      commit from September 2011 which was stable enough, loosing the
+      used within the project and to get familiar with it. The project being
+      paused since 2016 on an unstable version, Raziel made us start on a
+      commit from September 2011 which was stable enough, losing the
       accomplished work between 2011 and 2016 but with no other choice.\\
 
       We progressively became more familiar with the project and started to
       understand how it was working behind the scene, and eventually succeeded
       to upgrades the different versions and get back the project in a working
-      state, those versions being :
+      state, those versions being:
 
       \begin{itemize}
         \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
@@ -313,6 +375,10 @@
       base to work with and ready to receive the real work of our thesis.\\
 
     \section{Roadmap}
+
+      This section presents our roadmap of the updates and new features
+      we wanted to perform on the Splay system. We will first go through
+      the changes and updates, and then will talk about the new features.
 
       \subsection{Changes}
 
@@ -341,7 +407,7 @@
           the project was working and some final execution results of scenarios
           to estimate that the project was functional again. It was totally
           impossible to be sure that our changes weren't impacting some internal
-          behaviour of the project in a negative but imperceptible way,
+          behavior of the project in a negative but imperceptible way,
           consequences that were not avoidable in the end but that we would
           only discover thereafter when implementing new features.\\
           It was therefore obvious for us that we would setup series of tests
@@ -363,22 +429,21 @@
           During our first work on Splay, we noticed that the installation and the
           usage  of the system was easy to handle. Some services were dockerized
           and a docker-compose file was present which already facilitated the
-          installation, but these docker images were not perfectly build :
+          installation, but these docker images were not perfectly build:
           healthcheck were missing, big distribution images were used slowing down
           the setup phase and image building.\\
-          Also there wasn't a proper \textbf{one-click install} script for
+          Also, there wasn't a proper \textbf{one-click install} script for
           making quick tests.\\
           Therefore, one of our goals was to get clean, small and with updated
           libraries docker images. These images needed to be fully integrated
           between them through the docker-compose file. An automated install
-          script and running script, shoud be made available for the user.
+          script and running script, should be made available for the user.
 
-        \subsubsection{Features Fixing} % TODO : TODO
+        \subsubsection{Features Fixing} % TODO: TODO
 
           Fixing what was not working in Splay 2011?
 
-
-      \subsection{New Features} % TODO : Modify
+      \subsection{New Features}
 
         \subsubsection{Complete Lua editor on the website}
 
@@ -387,33 +452,33 @@
           user-friendly.\\
 
           As we were going to rebuild the web application and modernize it,
-          we wanted to provide the user with a conveniant way to prepare
+          we wanted to provide the user with a convenient way to prepare
           the job he wanted to send into the Splay system. For that purpose,
           we wanted to integrate an algorithm editor with the following
-          characteristics :
+          characteristics:
 
           \begin{itemize}
             \item Standalone editor
             \item Code coloration for the Lua language
             \item Error parsing
-            \item Optionnaly some auto-completion features
+            \item Optionally some auto-completion features
           \end{itemize}
 
           Having this feature available within the job creation page, the user
           could easily and comfortably achieve his tasks on the system.
 
-        \subsubsection{Topology creator/visualisation}
+        \subsubsection{Topology creator/visualization}
 
           The legacy project managed a definition of a network topology when
           submitting a job. A user could define this topology by setting
-          parameters such as :
+          parameters such as:
 
           \begin{itemize}
             \item Nodes
-            \item Edges with latency, bandwidth, packet loss rate and queing
+            \item Edges with latency, bandwidth, packet loss rate and queuing
             length
-            \item Specs with latency, bandwidth, packet loss rate and queing
-            length, that could be used by edges to easly acquire those
+            \item Specs with latency, bandwidth, packet loss rate and queiung
+            length, that could be used by edges to easily acquire those
             attributes
           \end{itemize}
 
@@ -423,7 +488,7 @@
           emulating this topology.\\
 
           This topology definition in the legacy project was done through
-          the senting of an XML file following a specific format described
+          the sending of an XML file following a specific format described
           in ModelNet \cite{ModelNet}.\\
           This format not being really user-friendly and quite hard to read,
           and with the fact that ModelNet documentation is not easy to find
@@ -434,18 +499,18 @@
           This topology editor should provide a graphical interface with
           buttons and fields allowing an easy configuration. Each change
           using this interface would result in an immediate visual feedback
-          thanks to a topology visualisation tool, such that the user would
+          thanks to a topology visualization tool, such that the user would
           have a better view about his topology than by reading XML lines.
-          Nevertheless, an XML editor and visualisation tool should be included
+          Nevertheless, an XML editor and visualization tool should be included
           in the topology editor which would translate the visual output of
-          the tool into readable XML, or translate its XML content into the
-          visualisation tool.\\
+          the tool into readable XML or translate its XML content into the
+          visualization tool.\\
 
-          In summary, this tool should provide the user with :
+          In summary, this tool should provide the user with:
 
           \begin{itemize}
             \item A topology editor with simple input fields
-            \item A topology visualisation tool
+            \item A topology visualization tool
             \item An XML editor
             \item A way to convert the visual topology in XML, and conversely
           \end{itemize}
@@ -465,7 +530,7 @@
           control where the crash may happen during the code execution.
           We wanted to improve this by providing the user with a feature
           allowing him to choose when one or multiple daemon would crash during
-          the execution. We came up with two ideas :
+          the execution. We came up with two ideas:
 
           \begin{itemize}
             \item A hard crash in which the node is completely put down
@@ -476,7 +541,7 @@
           To sum up, our fault injection tool would allow the user to choose
           when (in the execution tree) and where (one or several nodes) the
           crash happens in the daemon, in an user friendly way. The best and
-          most straigthforward way to achieve this would have been to let
+          most straightforward way to achieve this would have been to let
           the user specify those crashpoints in the Lua code within the Lua
           editor.
 
@@ -498,23 +563,23 @@
 
       \subsection{Architecture}
 
-        The old Splay architecture was composed of :
+        The old Splay architecture was composed of:
 
         \begin{itemize}
-          \item The \textbf{Controller} : The core part of Splay, waits for jobs
+          \item The \textbf{Controller}: The core part of Splay, waits for jobs
           and dispatch them to the daemons.
-          \item \textbf{Daemons} : Workers registering to the controller and waiting
+          \item \textbf{Daemons}: Workers registering to the controller and waiting
           for jobs to achieve.
-          \item A \textbf{MySQL DB} : The communication piece of Splay, allowing
+          \item A \textbf{MySQL DB}: The communication piece of Splay, allowing
           communication between the user and the system.
-          \item A \textbf{CLI Server, CLI Client, SplayWeb} : Pair of CLI tools
+          \item A \textbf{CLI Server, CLI Client, SplayWeb}: Pair of CLI tools
           and a web application made in Rails to let user interact with
           Splay through communication with the MySQL Database.
         \end{itemize}
 
         Whether through the usage of the CLI application or the web application,
         the user was able to interact with the Splay system and to send his
-        jobs, and gather many informations such as the logs or the current
+        jobs, and gather many information such as the logs or the current
         state of the running Splayds (the Splay daemons).\\
 
         The fact that the database was the central piece of communication
@@ -543,7 +608,7 @@
     \section{Project Analysis and Modifications}
 
       Having the project in our hands and free to apply changes to achieve our
-      goals, we analysed which parts of the project were problematic today and
+      goals, we analyzed which parts of the project were problematic today and
       how could we change it to ensure a better user experience, a better
       maintainability and overall software quality.
 
@@ -553,7 +618,7 @@
         duplication issue, or at least a duplication related to the solutions
         created to resolve a common problem. The Rails web application and the
         CLI server had the common role of letting the user manipulate the
-        database to transmit and gather informations to the \textbf{Controller}.\\
+        database to transmit and gather information to the \textbf{Controller}.\\
 
         The first decision to make in order to solve this problem was to
         merge those two services into a single one and to call that new
@@ -568,14 +633,14 @@
         allowing dynamic interactions with the user, and the CLI would use
         a simple and dedicated technology, those two services consuming the
         same API offered by the backend. The backend, for its part, would
-        stay in the Ruby ecosystem, in order to keep a technology concistency
+        stay in the Ruby ecosystem, in order to keep a technology consistency
         with the global project and the technologies already in use.
 
       \subsection{Github Repository Reorganization}
 
         From our analysis on the Splay project, we weren't satisfied about how
         it was maintained on Github so far. Our major concerns were the
-        following :
+        following:
 
         \begin{itemize}
           \item Lack of version tagging to specify stable versions
@@ -603,7 +668,7 @@
 
         The main repository called \textbf{Splay} contains all the other services
         through the submodule \cite{GitSubmodules} feature of git. These
-        subrepositories representing the new architecture wanted :
+        subrepositories representing the new architecture wanted:
 
         \begin{itemize}
           \item the cli (command line interface)
@@ -644,7 +709,7 @@
         for us to stay within the Ruby ecosystem to create the new service
         that would become what we called the \textbf{Backend}. The technology
         we wanted to use for this development had to offer an efficient
-        solution to the following issues :
+        solution to the following issues:
 
         \begin{itemize}
           \item Allowing a simple interfacing with the MySQL database in order
@@ -701,7 +766,7 @@
         files, making it simpler and lighter.\\
 
         Before writing any line of code, the following tools were added
-        to the project :
+        to the project:
 
         \begin{itemize}
           \item \textbf{Rspec}: A performant and easy to use Ruby testing
@@ -716,7 +781,7 @@
 
         Now that the app was ready for development, the major features
         we wanted to provide were the one provided by the old CLI server and
-        were the following :
+        were the following:
 
         \begin{itemize}
           \item User and session management (creation, login)
@@ -786,7 +851,7 @@
           follow the principles of REST \cite{rest} for the API. Endpoints would
           represent entities with classic HTTP verbs to interact with them.\\
 
-          Each endpoint inside our system is managed by the following stack :
+          Each endpoint inside our system is managed by the following stack:
 
           \begin{itemize}
             \item A route entry representing the entity. In this case,
@@ -813,7 +878,7 @@
 
           Finally we also wrote tests simulating request making use of our
           API, which we'll explain in more details in a dedicated chapter.
-          Nevertheless, each test is testing the different behaviour of
+          Nevertheless, each test is testing the different behavior of
           the endpoints, like registering with a bad email, logging in with
           a non-existant user, etc...
 
@@ -827,16 +892,16 @@
           the request's token to verify whether or not the user was valid or
           if he had the necessary rights to perform the requested action.\\
 
-          The endpoints we created are the following :
+          The endpoints we created are the following:
 
           \begin{itemize}
-            \item \textbf{Users} : Create, destroy, index (get the list of that
+            \item \textbf{Users}: Create, destroy, index (get the list of that
             ressource)
-            \item \textbf{Sessions} : Create
-            \item \textbf{Splayds} : Index
-            \item \textbf{Jobs} : Index, show (get info on a specific entity
+            \item \textbf{Sessions}: Create
+            \item \textbf{Splayds}: Index
+            \item \textbf{Jobs}: Index, show (get info on a specific entity
             of that ressource), destroy and create
-            \item \textbf{Logs} : Show
+            \item \textbf{Logs}: Show
           \end{itemize}
 
           The create methods required additional checks in corresponding
@@ -852,17 +917,17 @@
 
           Indeed a successful request is automatically answered with a 200
           status code by the Rails application by default.\\
-          Rails has a really conveniant way to raise errors and catch them
+          Rails has a really convenient way to raise errors and catch them
           in the same or upper component on the call stack, we therefore
           made use of that tool to implement the following error manaegement
-          strategy :
+          strategy:
 
           \begin{itemize}
             \item Each Controller of our API inherit from a common file
             called \textit{ApplicationController}
             \item This ApplicationController holds a set of catchers (rescue
             in the Ruby language) to catch which errors could happen in our
-            application :
+            application:
               \begin{itemize}
                 \item The entity that the user wants to create isn't valid, this
                 means he sent bad parameters through the request
@@ -889,7 +954,7 @@
         As we made the decision that the web application would only be a
         front-end application making use of a centralized backend offering
         a complete JSON API, we canted to use a front-end web development
-        framework that would satisfy the following conditions : \\
+        framework that would satisfy the following conditions: \\
 
         \begin{itemize}
           \item Light
@@ -924,7 +989,7 @@
         the associated JavaScript code. No other exotic language is required.\\
         The fac that the framework is in the JavaScript ecosystem and
         associated to the NPM package manager also allow to take advantage of
-        numerous existing libraries, such as data visualisation libraries,
+        numerous existing libraries, such as data visualization libraries,
         testing libraries, etc... \\
 
         For all those reasons, Vue revealed itself the best choice for a
@@ -967,7 +1032,7 @@
 
         In order to get the same features as the legacy web application,
         we created a \textbf{monitoring} page, on which the the important
-        informations would be displayed to the user in lists.\\
+        information would be displayed to the user in lists.\\
         A list of Splay daemons (created by the controller) is retrieved
         from the backend and displayed with global information in a nice
         bootstrap table.\\
@@ -1018,13 +1083,13 @@
         in the days, and to avoid to scatter Splay around too much different
         technologies (although Ruby may have been used too instead of Lua).
         Still, maybe today this choice was not the most relevant for a CLI
-        application. Indeed, our small client CLI had to be :
+        application. Indeed, our small client CLI had to be:
 
         \begin{itemize}
           \item Simple
           \item Concise
           \item Written in an easy-to-use language
-          \item Having conveniant libraries allowing to create simple CLI apps
+          \item Having convenient libraries allowing to create simple CLI apps
         \end{itemize}
 
         However, we inherited of an application scattered in multiples Lua
@@ -1036,7 +1101,7 @@
         Ruby was indeed a relevant option if we wanted to restrict the number
         of different technologies in use among the project, but Python was
         a better choice to write such a simple script as our CLI. Python has
-        a lot of very conveniant libraries to treat HTTP calls and to
+        a lot of very convenient libraries to treat HTTP calls and to
         manage and parse user arguments when creating a CLI application.
 
       \subsection{Developing the CLI}
@@ -1059,7 +1124,7 @@
         decided to use the \textbf{Click} \cite{click} library, a perfect
         Python package designed to create beautiful CLI's with just a little
         code.\\
-        The steps for creating a command are :
+        The steps for creating a command are:
 
         \begin{itemize}
           \item Declare the creation of a command
@@ -1201,7 +1266,7 @@
 
           The first tool we put in place, and this from the very beginning of
           the update period of Splay, was a Kanban using the online website
-          Trello \cite{trello}. The kanban allowed us to : \\
+          Trello \cite{trello}. The kanban allowed us to: \\
 
           \begin{itemize}
             \item Have a clear and precise view about the remaining tasks we had
@@ -1312,14 +1377,14 @@
           hierarchy reflecting the Vue components hierarchy we created, thus
           a test file corresponding to a component file. In each of these
           test specifications, we decided to target the core part of each
-          components : the methods.\\
+          components: the methods.\\
           Indeed, there is no need to test whether or not a click on a button
           triggers the associated action as this is part of the Vue system. What
           we wanted to test was the triggered action we wrote ourselves and
           were simply functions.\\
           Each file therefore tests that the related components can be
           successfuly instanciated among the application, then run a serie
-          of \textbf{unit tests} validating the methods expected behaviour.
+          of \textbf{unit tests} validating the methods expected behavior.
 
         \subsubsection{ESLint}
 
@@ -1337,7 +1402,7 @@
       \subsection{Testing in Backend}
 
         As a reminder, the Backend such as we conceived it has the following
-        roles :
+        roles:
 
         \begin{itemize}
           \item It has the responsibility of handling the database and
@@ -1363,7 +1428,7 @@
 
         \subsubsection{RSpec}
 
-          RSpec \cite{rspec} is a library aiming to ease Behaviour Driven
+          RSpec \cite{rspec} is a library aiming to ease behavior Driven
           Development on Ruby projects. BDD and TDD (Test Driven Development) are
           practices we wantedto follow for our work on the Splay development,
           this would allow us to adopt a green-red-refactor work cycles but also
@@ -1396,10 +1461,10 @@
           testing the implemented features inside of this Splay service.\\
 
           The request specs among the RSpec tool are made to simulate
-          the behaviour of a third-party application sending a request to
+          the behavior of a third-party application sending a request to
           our service and therefore making the whole Rails stack running
           to provide an answer to this request.\\
-          Each request is therefore going through those elements :\\
+          Each request is therefore going through those elements:\\
 
           \begin{figure}[H]
             \centering
@@ -1427,7 +1492,7 @@
           with a test suite, and thus chose to use that tool.\\
 
           The benefits we found in using a code coverage tool were the
-          following :
+          following:
 
           \begin{itemize}
             \item Encourage the TDD approach, as it's easier and better to
@@ -1491,14 +1556,14 @@
         For these functional tests, we didn't use a complex technology and
         thought that a Bash scripts serie would be more than sufficient to
         reach our goal. Bash scripts could indeed not allow us to recreate user
-        behaviour using Splay through the web application, but as this
+        behavior using Splay through the web application, but as this
         application is using the exact same API offered by the Backend than the
-        CLI application, we could simulate user behaviour through that CLI (and
+        CLI application, we could simulate user behavior through that CLI (and
         that's partially the reason why the decided to keep a CLI application
         within the project).\\
 
         The integration tests were placed in a dedicated directory at the Splay
-        project's root, and execute the following actions for each test :
+        project's root, and execute the following actions for each test:
 
         \begin{itemize}
           \item Cleaning the containers.
@@ -1588,14 +1653,14 @@
           topology representation, a somehow tedious and error-prone process.\\
 
           The first step in our solution was to create a user interface with
-          form fields for each of the components of the topology :
+          form fields for each of the components of the topology:
 
           \begin{itemize}
-            \item \textbf{Nodes} : being virtual nodes or gateways.
-            \item \textbf{Specs} : being a set of predefined settings such as the
+            \item \textbf{Nodes}: being virtual nodes or gateways.
+            \item \textbf{Specs}: being a set of predefined settings such as the
             bandwith and packet loss rate which would then be used by
             a link.
-            \item \textbf{Links} : Linking two nodes, choosing a spec to
+            \item \textbf{Links}: Linking two nodes, choosing a spec to
             inherit its settings and maybe overriding one of the spec settings
             with its own.
           \end{itemize}
@@ -1622,18 +1687,18 @@
             \caption{\label{recap_topology} Interactive Recap of the topology}
           \end{figure}
 
-          To help the user get a better visualisation of his topology, we
-          decided to implement a network visualisation solution using the
+          To help the user get a better visualization of his topology, we
+          decided to implement a network visualization solution using the
           Cytoscape \textbf{cytoscape} library.\\
           On any update from the form explained above, the change is reflected
-          inside our network visualisation component adding the new links or
+          inside our network visualization component adding the new links or
           nodes created by the user so that he can keep track of his topology
           evolution in a more pleasant way.\\
 
           \begin{figure}[H]
             \centering
             \includegraphics[scale=0.6]{figures/visual_topology.png}
-            \caption{\label{visual_topology} Visualisation of the topology}
+            \caption{\label{visual_topology} visualization of the topology}
           \end{figure}
 
           Once the user is done editing his topology, he doesn't have to
@@ -1648,14 +1713,14 @@
           to play with our topology editor and would keep their topology
           settings in some file alongside with their code.\\
           We therefore wanted to allow the user to play with XML directly
-          if he wanted to, offering the following service :
+          if he wanted to, offering the following service:
 
           \begin{itemize}
             \item A user creating the topology could also translate what's
             displayed in the visual editor into the XML definition.
             \item A user creating the topology could directly paste
             his XML topology in some editor and also have the option of
-            translating it into our visualisation solution.
+            translating it into our visualization solution.
           \end{itemize}
 
           Addressing these two issues was an extremely easy task, the job of
@@ -1728,20 +1793,20 @@
             \item The moment where the crash occurs
           \end{itemize}
 
-          Our final DSL looks like this :
+          Our final DSL looks like this:
 
           \begin{lstlisting}[style=MyBash]
--- CRASH POINT id_splayd [id_splayd [...]] : <TYPE> : <WHEN>
+-- CRASH POINT id_splayd [id_splayd [...]]: <TYPE>: <WHEN>
 <TYPE> => STOP | RECOVERY <float>
 <WHEN> => AFTER <int> | RANDOM <float>
           \end{lstlisting}
 
-          As you can see, we defined two types of crash and two ways to define
-          the moment of the crash.\\
+          As the reader can see, we defined two types of crash and two ways to
+          define the moment of the crash.\\
           A stop crash means that the node will die forever, conversely a
           recovery crash means that the node will crash and recover after a
           number of seconds specified by the user (float number).\\
-          Concerning the moment of the crash :
+          Concerning the moment of the crash:
           \begin{itemize}
             \item The \textbf{AFTER} keyword means that the user specifies a
             number of loops to achieve before the crash occurs. For example
@@ -1755,43 +1820,43 @@
             (similar to AFTER 0).
           \end{itemize}
 
-          Here are some positive examples of crash points using our DSL :
+          Here are some positive examples of crash points using our DSL:
 
           \begin{lstlisting}[style=MyLua]
 -- Crash forever the node 1 and 2 at the 4th passage
 -- in the code
--- CRASH POINT 1 2 : STOP : AFTER    3
+-- CRASH POINT 1 2: STOP: AFTER    3
 
 -- At each time that the code (node 1) pass by this comment,
 -- there is 0.0002 chance to crash the node 1
---CRASH POINT 1: STOP : RANDOM 0.0002
+--CRASH POINT 1: STOP: RANDOM 0.0002
 
 -- Crash immediately when the comment is encouter in
 -- the node 1, but this node will recover after 2 sec
--- CRASH POINT 1: RECOVERY 2 : AFTER 0
+-- CRASH POINT 1: RECOVERY 2: AFTER 0
 
 -- Have one chance on two to crash at each pass for
 -- the node 1, 2, 3, 4, 5. But recover immediately
--- CRASH POINT 1 2 3 4 5 :RECOVERY 0:RANDOM 0.5
+-- CRASH POINT 1 2 3 4 5:RECOVERY 0:RANDOM 0.5
             \end{lstlisting}
 
           We also added some negative examples (won't trigger any crash
-          and won't crash the daemon) :
+          and won't crash the daemon):
 
           \begin{lstlisting}[style=MyLua]
 -- Won't work because Crash point not in uppercase
---Crash Point 1 2 : STOP : AFTER 3
+--Crash Point 1 2: STOP: AFTER 3
 
 -- Won't work because no node is specified.
--- CRASH POINT :RECOVERY  965 :   AFTER 3
+-- CRASH POINT:RECOVERY  965:   AFTER 3
 
 -- Won't work because RECOVER is not a valid
 -- type (but warning expected).
--- CRASH POINT 1 2 :RECOVER 1 : AFTER 3
+-- CRASH POINT 1 2:RECOVER 1: AFTER 3
 
 -- Won't work because TIME is not a valid type
 -- for now (but error expected).
--- CRASH POINT 1 2 :RECOVERY 1 : TIME 3
+-- CRASH POINT 1 2:RECOVERY 1: TIME 3
           \end{lstlisting}
 
         \subsection{Parsing}
@@ -1802,14 +1867,14 @@
           user code and which nodes this crash should occurs on.\\
           This table is then saved in a library called \textit{"splay.crash"},
           and is used by the nodes to get the crash information using an id
-          number which will retrieve the corresponding crash informations.\\
+          number which will retrieve the corresponding crash information.\\
 
           The parsing phase actually assign to the nodes a new code where the
           crash points comments specified by the user are transformed and
           replaced (if no error is found) by a function call containing the
           crash id number. Therefore, when the code executes, the crash
           function will access the library and will act depending on what
-          informations are stored into the crash table (type of crash,
+          information are stored into the crash table (type of crash,
           moment of trigger).
 
           The parsing handles any error the user could have done about the
@@ -1855,8 +1920,8 @@
           with one of these values).
 
           \begin{itemize}
-            \item \textbf{65} : Means a STOP crash, no restart is needed
-            \item \textbf{66} : Means a RECOVERY crash
+            \item \textbf{65}: Means a STOP crash, no restart is needed
+            \item \textbf{66}: Means a RECOVERY crash
           \end{itemize}
 
           The recovery crash is then achieved recursively, the parent process
@@ -1868,187 +1933,252 @@
           coroutines can't execute any code) before crashing.
 
     \chapter{Use Case}
-      A student following a course on distributed application wants to prototype the raft election algorithm
-      on 5 different nodes. He choosed to use Splay for his tests in his own laptop (or if available on a cluster of mini-computer)
-      and he has no pre-install installation of Splay available for him. We going to described the different
-      step of this student with the usage of Splay. \\
-      
-      First, he needs to install a Splay environment on his own materials.
-      Secondly, with the help of Splay library, he builds a basic raft election implementation.
-      Thirdly, he wants understand what happend during the execution of raft by showing a animation of the evolution of the endpoint state.
-      Moreover, he wants to test with differents network topology and after analyse the robustness of his solution by creating
-      some fault injection at key points. And for conclude, one of his friend send to him a slightly different version
-      avoiding some writings on disk, and he wants to prove, by a example, the illness of the solution.
+
+      We will take the example of a student followign a course on distributed
+      applications and distributed systems who wants to prototype the Raft
+      leader election algorithm on five different nodes. He choosed to use
+      Splay for his tests using his own laptop (or if available, a cluster
+      of mini-computers) and right now he has no available installation of the
+      Splay system. We are going to describe the different steps that our
+      student will go through by using the Splay application.\\
+
+      First, he needs to install a Splay environment on his own computer. Then,
+      with the help of the Splay library, he will build a basic Raft leader
+      election implementation.\\
+      Following this, he would like to understand what's happening during the
+      execution of Raft by showing an animation of the evolution of the
+      endpoints states.\\
+      Moreover, he would like to test its algorithm implementation through
+      different network topologies and theRafter analyse its solution's
+      robustness by adding fault injection in key parts of the algorithm.\\
+      To conclude, one of his friend sent him a slightly different version
+      of the algorithm avoiding some writings on disk, and he would like to
+      prove by example that his friend's solution isn't valid.
 
       \section{Installation of Splay}
 
-        The student have only his laptop to work, and hopefully, he found on the main github repository \cite{SplayV2Git},
-        that the installation doesn't depend of Operating System or Hardware. The README file of the github project discribed
-        precisely how to install Splay. Then, following the instructions, he clones the main repository (no need submodule),
-        installs docker and docker-compose on his computer. For running Splay in production,
-        he runs the requested commands in his terminal :
+        The student only has his laptop to work on his distributed algorithms
+        courses, and hopefully he found out on the Splay's main Github
+        repository \cite{SplayV2Git} that the installation doesn't depend on
+        any operating system or hardware. The README file of the Github project
+        precisely describes how to install Splay. Then, following the
+        instructions, he clones the main repository and installs docker and
+        docker-compose on his computer.\\
+        In order to run Splay on production mode, he runs the following
+        commands in his terminal emulator: \\
+
         \begin{lstlisting}[style=MyBash]
 docker-compose -f docker-compose.prod.yml up -d web_app controller
 # 7 daemons because it is recommended to have more than needed
 docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         \end{lstlisting}
-        He waits during, the download of prebuild images (from dockerhub) of each services and the time for services to start.
-        After the success of the installation, he access to the web application of Splay with his favorite modern browser
-        (not lynx, please) with this url : \url{http://localhost:8080/}.
-        He creates is own account by the register form and it will be automatically connect next time. Now, he can prototype
-        easily his own distributed job.
+
+        The images are downloaded from prebuilt images (from dockerhub) for
+        each services, some little wait time is requested for this download
+        phase and for each servic to start.\\
+        Once this is done, the student has access to the web application of
+        the Splay system, using his favourite web browser with this url:
+        \url{http://localhost:8080/}.\\
+        He creates his own account by registering on the platform, opens a new
+        session (which will be kept open for the next time he wants to use
+        the system) and now he can easily prototype his own distributed job.
 
       \section{Implementation of Raft in Lua}
-        After the successful installation, the hard work need to be done, it means to create the implementation of raft
-        with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
-        We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
-        We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}.
-        We present and focus only on the election subproblem of the Raft because the log replication
-        increases a lot the complexity and the readability: \\
 
-        \subsection{Creation of the algorithm}
-        The student created the Lua code of a the Raft election sub-problem, it isn't trivial,
-        but it is gratly healped with comments in the code :
+        After the successful easy installation, the real work can start, our
+        student will create his own implementation of Raft using the Splay
+        library.\\
 
-        \lstinputlisting[style=MySmallLua]{raft_election.lua}
+        \textit{Raft is not a trivial algorithm, but still an easlily understandable
+        one. The algorithm we will present in the next subsection is based on
+        some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide}
+        \cite{RaftSite}. We have done the Lua code of the Raft consensus leader
+        election part with the help of the Splay lib \cite{SplayLib}.
+        We will therefore present and focus only on the election subproblem of
+        Raft because the log replication heavily increases the complexity and
+        the readability.}
 
-        \subsection{First result}
-        After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
-        (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
-        and this one send hearbeat to avoid a other leader election from others nodes :
+        \subsection{Creation of the Algorithm}
+
+          The student finally created the Lua version of the Raft leader
+          election subproblem, which is not trivial, but made really
+          understandable through comments in the code:
+
+          \lstinputlisting[style=MySmallLua]{raft_election.lua}
+
+        \subsection{First Results}
+
+          After having wrote the Raft's code, he wants to try it on five nodes
+          and without any network topology (that means all nodes are directly
+          paired to each other without any latency).\\
+          Once he sent the job, it can be observed in the logs that a node
+          effectively becomes the leader and it is sending heartbeats to avoid
+          an election process from the others nodes:
+
           \begin{lstlisting}[style=MyBash]
-2019-05-30 08:20:10.0501 (3)  2 : Election Trigger -> term+1, become candidate
-2019-05-30 08:20:10.0504 (3)  2 : Send vote request to node 1
-2019-05-30 08:20:10.0506 (3)  2 : Send vote request to node 3
-2019-05-30 08:20:10.0508 (3)  2 : Send vote request to node 4
-2019-05-30 08:20:10.0508 (3)  2 : Send vote request to node 5
-2019-05-30 08:20:10.0522 (2)  3 : RPC Request Vote FROM 2.0 Term : 1.0
-2019-05-30 08:20:10.0527 (2)  3 : Stepdown : 1.0 > 0
-2019-05-30 08:20:10.0525 (4)  5 : RPC Request Vote FROM 2.0 Term : 1.0
-2019-05-30 08:20:10.0525 (4)  5 : Stepdown : 1.0 > 0
-2019-05-30 08:20:10.0539 (1)  4 : RPC Request Vote FROM 2.0 Term : 1.0
-2019-05-30 08:20:10.0539 (1)  4 : Stepdown : 1.0 > 0
-2019-05-30 08:20:10.0557 (7)  1 : RPC Request Vote FROM 2.0 Term : 1.0
-2019-05-30 08:20:10.0557 (7)  1 : Stepdown : 1.0 > 0
-2019-05-30 08:20:10.0576 (3)  2 : Vote Request result 1.0 : true from 3
-2019-05-30 08:20:10.0576 (3)  2 : Vote Request result 1.0 : true from 4
-2019-05-30 08:20:10.0576 (3)  2 : I Become the LEADER !
-2019-05-30 08:20:10.0580 (3)  2 : Vote Request result 1.0 : true from 5
-2019-05-30 08:20:10.0583 (3)  2 : Send append entry (null) to node 1
-2019-05-30 08:20:10.0585 (3)  2 : Send append entry (null) to node 3
-2019-05-30 08:20:10.0587 (3)  2 : Send append entry (null) to node 4
-2019-05-30 08:20:10.0587 (3)  2 : Send append entry (null) to node 5
-2019-05-30 08:20:10.0599 (3)  2 : Vote Request result 1.0 : true from 1
-2019-05-30 08:20:10.0608 (4)  5 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
-2019-05-30 08:20:10.0611 (1)  4 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
-2019-05-30 08:20:10.0617 (7)  1 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
-2019-05-30 08:20:10.0622 (2)  3 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
+2019-05-30 08:20:10.0501 (3)  2: Election Trigger -> term+1, become candidate
+2019-05-30 08:20:10.0504 (3)  2: Send vote request to node 1
+2019-05-30 08:20:10.0506 (3)  2: Send vote request to node 3
+2019-05-30 08:20:10.0508 (3)  2: Send vote request to node 4
+2019-05-30 08:20:10.0508 (3)  2: Send vote request to node 5
+2019-05-30 08:20:10.0522 (2)  3: RPC Request Vote FROM 2.0 Term: 1.0
+2019-05-30 08:20:10.0527 (2)  3: Stepdown: 1.0 > 0
+2019-05-30 08:20:10.0525 (4)  5: RPC Request Vote FROM 2.0 Term: 1.0
+2019-05-30 08:20:10.0525 (4)  5: Stepdown: 1.0 > 0
+2019-05-30 08:20:10.0539 (1)  4: RPC Request Vote FROM 2.0 Term: 1.0
+2019-05-30 08:20:10.0539 (1)  4: Stepdown: 1.0 > 0
+2019-05-30 08:20:10.0557 (7)  1: RPC Request Vote FROM 2.0 Term: 1.0
+2019-05-30 08:20:10.0557 (7)  1: Stepdown: 1.0 > 0
+2019-05-30 08:20:10.0576 (3)  2: Vote Request result 1.0: true from 3
+2019-05-30 08:20:10.0576 (3)  2: Vote Request result 1.0: true from 4
+2019-05-30 08:20:10.0576 (3)  2: I Become the LEADER !
+2019-05-30 08:20:10.0580 (3)  2: Vote Request result 1.0: true from 5
+2019-05-30 08:20:10.0583 (3)  2: Send append entry (null) to node 1
+2019-05-30 08:20:10.0585 (3)  2: Send append entry (null) to node 3
+2019-05-30 08:20:10.0587 (3)  2: Send append entry (null) to node 4
+2019-05-30 08:20:10.0587 (3)  2: Send append entry (null) to node 5
+2019-05-30 08:20:10.0599 (3)  2: Vote Request result 1.0: true from 1
+2019-05-30 08:20:10.0608 (4)  5: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
+2019-05-30 08:20:10.0611 (1)  4: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
+2019-05-30 08:20:10.0617 (7)  1: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
+2019-05-30 08:20:10.0622 (2)  3: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
           \end{lstlisting}
 
       \section{Timeline Animation}
-      
-        Before test the robustness of his solution, the student wants to see how the network and connection evolving during the execution.
-        For this purpose, we create a small tool to parse a log and see the evolution during the execution.
-        Indeed, the tool is a single HTML page with some javascript, it shows the endpoint (node) state
-        (follower, candidate or leader), if a packet is travelling between two nodes and time indication
-        following the animation. The tool is helped with vis.js library \cite{VisJS} (dynamic graph library)
-        and the raft code is modified to print appropriate log
-        (code here \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).\\
 
-        The tool takes a log text, a speed factor and auto-connect checkbox as inputs. This tool is just for 
-        illustrate our Raft election during time. Without topology and crash points, Raft election follows this pattern 
-        most of the case :
+        Before testing the robustness of his solution, our student wants to
+        see how the network and the connection is evolving during his job's
+        execution.\\
+        For this purpose, Splay contains a small tool designed to parse the
+        logs and allow the user to see that evolution during the job's
+        execution. This tool is embedded in the web application with some
+        JavaScript and shows the node states (follower, candidate or leader),
+        shows if a packet is travelling between two nodes and shows time
+        indications following the animation. This tool uses the vis.js library
+        \cite{VisJS} (dynamic graph library) and the Raft code has been slightly
+        modified in order to print the appropriate logs (code can be found here
+        \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/Raft_election_anim.lua}}).\\
+
+        This tool takes a text-based log, a speed factor and auto-connect
+        checkbox as inputs, and is just used to illustrate our Raft election
+        process evolution over time. Without topology or crash points, the
+        Raft ellection follows this pattern most of the case:
 
         % TODO illustration no topo, no crash
 
       \section{Robustness of solution}
 
-        The student is not sur about his code, then he wants try to break his raft election by testing
-        with different network settings and adding some fault injection at some key points.
+        The student is not totally sure his solution is correct, and he would
+        like to try to break his Raft election by testing it with different
+        network settings and by adding some fault injection in the critical
+        parts of the process.
 
         \subsection{Topology settings}
 
-          Atfer testing the algorithm in a perfect network environment, the student tries with 3 different configurations
-          of network topology created by the network topology interface developed. We show the representation of
-          the topology, and we add the specifications of edge between the node-router and router-router. We are focus,
-          only on the latency, because the bandwidth constraints rarely the Raft leader election (very small packets and not a lot).
+          After testing the algorithm in a perfect network environment
+          simulation, the student tries it with three different network
+          topology configurations created through the network topology tool on
+          the web application.\\
+          Here are a representation of the topology, with specifications on
+          the edges between nodes-routers and routers-routers.\\
+          The specifications are focused on latency only, bandwidth constraints
+          are not really influencing Raft as it is producing small and few
+          packets.
 
           \begin{figure}[H]
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
-              \caption{First topology - Normal : Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_1.png}
+              \caption{First topology - Normal: Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
               \label{fig:topo1}
             \end{subfigure}
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
-              \caption{Second topology - Two sites : Router-Router -> 150 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_2.png}
+              \caption{Second topology - Two sites: Router-Router -> 150 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
               \label{fig:topo2}
             \end{subfigure}
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_3.png}
-              \caption{Third topology - Extreme : Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_3.png}
+              \caption{Third topology - Extreme: Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
               \label{fig:topo3}
             \end{subfigure}
             \caption{plots of three topologies}
             \label{fig:topologies}
           \end{figure}
 
-          Then, he tries his implementation on the three configurations, the log result shows that 
-          daemons succeed at doing the leader election succeed and stabilizes quickly 
-          (one leader, other are followers). But as we know, Raft is also fault-tolerant when a majority of node is 
-          still alive, then failure can happen at some points. \\
+          The student then tries his implementation of the three configurations,
+          the log results show that Daemons succeeded at achieving the leader
+          election and quickly stabilize (one becomes the leader, the other
+          become followers) in those different network configurations.\\
+          But as we know, Raft is also fault-tolerant when a majority of
+          nodes are still actives, the user therefore would like to test this
+          fault-tolerance characteristics of the algorithm.
 
         \subsection{Fault injection}
 
-          He wants to test the correctness of his code by making crash the leader essentialy, but also the others nodes.
-          When the leader crash, the student expects that a other leader election will be trigger by a remain node,
-          and then a new leader will elect. For this purpose, he adds a recovery crash point where the heartbeat is trigger : 
-          
+          The user now wants to test the correcntess of his implementation
+          essentially by making the leader crash, but also the other nodes.\\
+          When the leader crashes, the student expect from the Raft specification
+          that an other leader election will be triggered by the remaining
+          nodes, and therefore a new leader will be elected.\\
+          To achieve this, the student adds a recovery crash point where the
+          hearbeat is triggered in the code:
+
           \begin{lstlisting}[style=MyLua]
 ...
 function heartbeat()
-  -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : AFTER 5
+  -- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: AFTER 5
   for i, n in pairs(job.nodes) do
 ...
           \end{lstlisting}
 
-          This crash point will be trigger only by the leader (heartbeat is only used by the leader) after 5 heartbeat (when the 6th is called).
-          When the crash append, the node will recovery after 0.5 seconds. 
-          Also, the student adds other crash point no depending of the state node, but triggering 
-          less often. By example, when a RCP vote request is receive :
+          This crash point will only be triggered by the leader (as hearbet
+          is only used by the currently elected leader) after five heartbeats
+          (when the 6th is called).\\
+          When the crash happens, the node will recover after 0.5 seconds.\\
+          Also, the student adds other crash points no depending on the
+          node's state, but triggering less often. For example, when a RCP vote
+          request is received:
+
           \begin{lstlisting}[style=MyLua]
 ...
 function request_vote(term, candidate_id)
-    -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : RANDOM 0.05
-    print("RPC Request Vote FROM "..candidate_id.." Term : "..term)
+    -- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: RANDOM 0.05
+    print("RPC Request Vote FROM "..candidate_id.." Term: "..term)
 ...
           \end{lstlisting}
-          This one will be trigger by node when node received a vote request from a candidate with a probability of 0.05 (one chance on 20). 
-          The student create other crash point in other key step of the algorithm (before save persistant state, when a vote is granted, ...),
-          to see the behaviour of the raft election, when there is fault. \\
-            
-          After some tests, he checks logs for the differents topologies setting and he sees that all happens as expected.
-          Indeed, when the leader crashes, a other node will trigger a new election and become candidate, if there is 
-          no conflict with a other candidate (election trigger in a other node in the same time), this candidate will become
-          the leader. Also, when other crash happens the all system is working, extected when more than two nodes is 
-          currently crash, because no majority can be done and then no leader is elected.
+
+          This one will be triggered by a node when it receives a vote request
+          from a candidate with a probability of 0.05 (one chance on 20).\\
+          The student creates other crash points in other key steps of
+          the algorithm (before saving persistant state, when a vote is granted)
+          to observe the behavior of the Raft election when there is a fault.\\
+
+          After some tests, he checks the logs for the different topology
+          settings and he sees that everything went as expected. Indeed, when
+          the leader crashes an other node will trigger a new leader
+          election and become a candidate. If there is no conflict with another
+          candidate (election triggered by two nodes at the same time), this
+          candidate will become leader.\\
 
         \subsection{Animation result}
 
-          % Animation with crashed 
+          % Animation with crashed
 
 
       \section{Buggy code proof}
-        Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
-        his friend the mistake in this "better" code.
+
+        A friend of our student sent him a supposely better code, but he is not
+        convinced. The student therefore executes this algorithm implementation
+        with fault injection to prove his friend that a mistake exists in his
+        algorithm.
 
         % Show buged piece + fault injection -> buggy log
         {\color{red} TODO}
 
-  \chapter{Conclusion} % TODO : Finish
+  \chapter{Conclusion}
 
     We'll first conclude this report by going through a list of improvements
     idea over the project, and then summarize our global achievements on the
@@ -2100,7 +2230,7 @@ function request_vote(term, candidate_id)
         \subsubsection{Crash point}
 
           The crash point feature now handles two types of crashes and two
-          behaviour to adopt in case of a crash. This feature is very useful
+          behavior to adopt in case of a crash. This feature is very useful
           to simulate a hard stop of a machine (power loss, for example).\\
           However, we could improve this by adding new types of crash like a
           network crash or a network compartmentalization meaning that the
@@ -2219,7 +2349,7 @@ function request_vote(term, candidate_id)
             indeed found most of the controller bugs in this part.
           \end{itemize}
 
-      \subsection{Security aspect}
+      \subsection{Security Aspects }
 
         In the description of the legacy project, we saw that the user's job is
         supposed to be running in a restricted area and the project is secure in
@@ -2247,7 +2377,7 @@ function request_vote(term, candidate_id)
         extremely important for the project to have future work about the
         securization of the platform so that it could be used everywhere.
 
-    \section{Objectives achievement} % TODO : resume of the project
+    \section{Objectives achievement} % TODO: resume of the project
 
   \nocite{*}
   \bibliographystyle{plain}
