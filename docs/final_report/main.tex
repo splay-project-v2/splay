@@ -1,4 +1,4 @@
-on a large% EPL master thesis covers template
+% EPL master thesis covers template
 \documentclass{eplmastersthesis}
 \usepackage{float}
 \usepackage{xcolor}
@@ -140,7 +140,7 @@ on a large% EPL master thesis covers template
       is usually undermined by the difficulty of being able for one to test
       and apply what he learns.\\
       Usually, students are learning the theoretical components of the
-      classic algorithms (consensus, leader election) and if ever they want
+      classic algorithms (consensus, leader election, resource allocation, ...) and if ever they want
       to start playing with a real implementation of it to deepen their
       knowledge, that's where the problems are starting to appear:
 
@@ -187,6 +187,7 @@ on a large% EPL master thesis covers template
       \begin{itemize}
         \item They are quite complicated to use and hard to learn
         \item Difficult to install or deploy
+        \item Performance cost due to heavy solution
         \item Offering partial solutions to the issues we listed before
       \end{itemize}
 
@@ -207,6 +208,7 @@ on a large% EPL master thesis covers template
         \item Focused around the development of the algorithm
         \item Allowing simulation of real-life conditions
         \item Easy to use and install for any user
+        \item Light enough for low hardware
       \end{itemize}
 
       This is where the Splay project takes its origins.
@@ -224,7 +226,6 @@ on a large% EPL master thesis covers template
       topology, SplayNet \cite{SplayNet}. This middleware implements an easy
       way to set the topology network between the endpoints (machines) and
       restrict the usage of the network depending on that.
-
 
     \section{Our Work on Splay}
 
@@ -382,6 +383,8 @@ on a large% EPL master thesis covers template
 
       \subsection{Changes}
 
+        % TODO : the project need changes/refactor for maintability reasons
+
         \subsubsection{Github Organization Recast}
 
           During the part-time job, we realized that the code organization
@@ -444,6 +447,8 @@ on a large% EPL master thesis covers template
           Fixing what was not working in Splay 2011?
 
       \subsection{New Features}
+
+        % TODO : quick explication of enhancement of SPLAY
 
         \subsubsection{Complete Lua editor on the website}
 
@@ -1140,7 +1145,7 @@ on a large% EPL master thesis covers template
         and even help details for specific commands.\\
 
         The next step was to make real use of the Backend's API, thus we used
-        \textbf{request} \cite{request} and \textbf{json} Python's libraries to
+        \textbf{requests} \cite{requests} and \textbf{json} Python's libraries to
         achieve the HTTP communication and the JSON requests encoding and
         responses parsing.\\
 
@@ -2107,19 +2112,19 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           \begin{figure}[H]
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_1.png}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
               \caption{First topology - Normal: Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
               \label{fig:topo1}
             \end{subfigure}
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_2.png}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
               \caption{Second topology - Two sites: Router-Router -> 150 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
               \label{fig:topo2}
             \end{subfigure}
             \begin{subfigure}{.33\textwidth}
               \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_3.png}
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_3.png}
               \caption{Third topology - Extreme: Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
               \label{fig:topo3}
             \end{subfigure}

@@ -10,7 +10,7 @@
 \RequirePackage{microtype}   % Improves typography
 \RequirePackage[T1]{fontenc}
 \RequirePackage{lmodern}
-\RequirePackage[pdftex]{graphicx}
+\RequirePackage[final]{graphicx}
 \RequirePackage{color}
 \RequirePackage{geometry}
 \RequirePackage{tabto}		 % Tabulation
