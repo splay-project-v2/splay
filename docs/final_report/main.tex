@@ -1176,11 +1176,12 @@
           code and change for the right call. We also tried in the same process
           to clean as much as possible the raw SQL string calls by using
           interpolation (see the improvements section in the conclusion).
-          \item \textbf{Communication with daemons}: The communication with
-          daemons was not coherent with the daemon protocol. By example, the
-          logs retrievement was buggy because of protocol not coherent between
-          the two services. Logs retrievement and creation has be improved to by
-          more readable (issue of the old project \cite{logTimestamps}). % REMYWHAT
+          \item \textbf{Communication with daemons}: The communication between daemons
+          and the controller wasn't consistent is some case. By example, the
+          logs retrievement was buggy because daemon sended more information than 
+          the controller expected.
+          Then, logs retrievement and creation has be corrected, improved to be
+          cleaner and more readable (take in account one issue of the old project \cite{logTimestamps}).
           \item \textbf{Small Changes}: We added more logs when needed and
           removed the unneeded ones, the database creation responsibility has
           been delegated to the backend (previously held by the controller). We
@@ -2060,34 +2061,27 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/Raft_election_anim.lua}}).\\
 
         This tool takes a text-based log, a speed factor and auto-connect
-        checkbox as inputs, and is just used to illustrate our Raft election
-        process evolution over time. Without topology or crash points, the
-        Raft election is mainly divide in two states :
+        checkbox as inputs, and here, is used to illustrate our Raft election
+        process evolution over time. We reprensents, on the graph, the node (job) state 
+        by different color : blue for follower, green for candidates and red for the leader.
+        Also, network packets currently travelling between nodes, change the color 
+        of the directed edge into black and become larger (depending of number of packets).
 
         \begin{figure}[H]
-          \begin{subfigure}{.5\textwidth}
-            \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/no_crash_no_topo1.png}
-            \caption{Before the election, all nodes are followers}
-            \label{fig:topo1}
-          \end{subfigure}
-          \begin{subfigure}{.5\textwidth}
-            \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/no_crash_no_topo2.png}
-            \caption{After the election, the node (job) 2 is the leader (red) and others nodes is still followers}
-            \label{fig:topo2}
-          \end{subfigure}
-          \caption{Evolution of raft election with 5 nodes, without network topology and fault injection}
-          \label{fig:topologies}
+          \centering
+          \includegraphics[width=1.0\linewidth]{figures/user_case/anim_pres.png}
+          \caption{Timeline animation example}
         \end{figure}
 
-        As see, we can't see the leader election happened, indeed, because there are no network topology,
-        RPC massage travel instantaneous between the nodes. Then, the leader election finishs very quickly (< 7 ms) and impossible 
-        to capture in the visualisation (or with a extreme small speed factor).
+        If we observe the leader election from the first result (without topology network and no crashes) with this tool, 
+        we won't see clearly the evolution of node states, because the leader election finishs very quickly (< 8 ms) and 
+        it is hard to capture the visualisation of it (or with a extreme small speed factor). The main reason, it is the 
+        lack of latency between nodes, indeed, without topology, the RPC massages travel instantaneous, and then a candidate
+        get its vote grants fast (and become the leader directly, with almost no chance of conflict with other node).
 
       \section{Robustness of solution}
 
-        The student is not totally sure his solution is correct, and he would
+        The student is not totally sure that his solution is correct, and he would
         like to try to break his Raft election by testing it with different
         network settings and by adding some fault injection in the critical
         parts of the process.
@@ -2131,7 +2125,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           the log results show that Daemons succeeded at achieving the leader
           election and quickly stabilize (one becomes the leader, the other
           become followers) in those different network configurations.\\
-          But as we know, Raft is also fault-tolerant when a majority of
+          But as we know, Raft election is also fault-tolerant when a majority of
           nodes are still actives, the user therefore would like to test this
           fault-tolerance characteristics of the algorithm.
 
@@ -2171,8 +2165,8 @@ function request_vote(term, candidate_id)
 
           This one will be triggered by a node when it receives a vote request
           from a candidate with a probability of 0.05 (one chance on 20).\\
-          The student creates other crash points in other key steps of
-          the algorithm (before saving persistant state, when a vote is granted)
+          The student creates other crash points in a other key step of
+          the algorithm (when a vote is granted)
           to observe the behavior of the Raft election when there is a fault.\\
 
           After some tests, he checks the logs for the different topology
@@ -2180,11 +2174,20 @@ function request_vote(term, candidate_id)
           the leader crashes an other node will trigger a new leader
           election and become a candidate. If there is no conflict with another
           candidate (election triggered by two nodes at the same time), this
-          candidate will become leader.\\
+          candidate will become leader.
 
-        \subsection{Animation result}
+        \subsection{Animation results}
 
-          % Animation with crashed
+          Then, the student tried his raft election on different topologies and with some 
+          crash points to understand the fault tolerant capability. With the help of the animation
+          tool, he sees intersting results. 
+
+          A complete raft election can be chopped in multiple step, see at next figure, a complete 
+          election with a conflict between two candidates (two candidate asking almost in the same time
+          vote requests to the others). Only one with become the leader (get the majority of job),
+          and the other candidate will be a follower again.
+
+          % Show four step of election: all followers -> two candidate -> one leader -> leader + heartbeat
 
 
       \section{Buggy code proof}
