@@ -1871,52 +1871,81 @@
           to sleep x seconds without any yield coroutine (therefore other
           coroutines can't execute any code) before crashing.
 
-    \chapter{Use Case} % TODO : Rewrite
-      A student following a course on distributed application wants to prototype the raft election algorithm
-      on 5 different nodes. He choosed to use Splay for his tests in his own laptop (or if available on a cluster of mini-computer)
-      and he has no pre-install installation of Splay available for him. We going to described the different
-      step of this student with the usage of Splay. \\
+    \chapter{Use Case}
 
-      First, he needs to install a Splay environment on his own materials.
-      Secondly, with the help of Splay library, he builds a basic raft election implementation.
-      Thirdly, he wants understand what happend during the execution of raft by showing a animation of the evolution of the endpoint state.
-      Moreover, he wants to test with differents network topology and after analyse the robustness of his solution by creating
-      some fault injection at key points. And for conclude, one of his friend send to him a slightly different version
-      avoiding some writings on disk, and he wants to prove, by a example, the illness of the solution.
+      We will take the example of a student followign a course on distributed
+      applications and distributed systems who wants to prototype the raft
+      leader election algorithm on five different nodes. He choosed to use
+      Splay for his tests using his own laptop (or if available, a cluster
+      of mini-computers) and right now he has no available installation of the
+      Splay system. We are going to describe the different steps that our
+      student will go through by using the Splay application.\\
+
+      First, he needs to install a Splay environment on his own computer. Then,
+      with the help of the Splay library, he will build a basic raft leader
+      election implementation.\\
+      Following this, he would like to understand what's happening during the
+      execution of raft by showing an animation of the evolution of the
+      endpoints states.\\
+      Moreover, he would like to test its algorithm implementation through
+      different network topologies and therafter analyse its solution's
+      robustness by adding fault injection in key parts of the algorithm.\\
+      To conclude, one of his friend sent him a slightly different version
+      of the algorithm avoiding some writings on disk, and he would like to
+      prove by example that his friend's solution isn't valid.
 
       \section{Installation of Splay} % TODO : Rewrite
 
-        The student have only his laptop to work, and hopefully, he found on the main github repository \cite{SplayV2Git},
-        that the installation doesn't depend of Operating System or Hardware. The README file of the github project discribed
-        precisely how to install Splay. Then, following the instructions, he clones the main repository (no need submodule),
-        installs docker and docker-compose on his computer. For running Splay in production,
-        he runs the requested commands in his terminal :
+        The student only has his laptop to work on his distributed algorithms
+        courses, and hopefully he found out on the Splay's main Github
+        repository \cite{SplayV2Git} that the installation doesn't depend on
+        any operating system or hardware. The README file of the Github project
+        precisely describes how to install Splay. Then, following the
+        instructions, he clones the main repository and installs docker and
+        docker-compose on his computer.\\
+        In order to run Splay on production mode, he runs the following
+        commands in his terminal emulator: \\
+
         \begin{lstlisting}[style=MyBash]
 docker-compose -f docker-compose.prod.yml up -d web_app controller
 # 7 daemons because it is recommended to have more than needed
 docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         \end{lstlisting}
-        He waits during, the download of prebuild images (from dockerhub) of each services and the time for services to start.
-        After the success of the installation, he access to the web application of Splay with his favorite modern browser
-        (not lynx, please) with this url : \url{http://localhost:8080/}.
-        He creates is own account by the register form and it will be automatically connect next time. Now, he can prototype
-        easily his own distributed job.
 
-      \section{Implementation of Raft in Lua} % TODO : Rewrite
-        After the successful installation, the hard work need to be done, it means to create the implementation of raft
-        with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
-        We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
-        We have done the Lua code of the leader election of raft consensus helped with the Splay lib \cite{SplayLib}.
-        We present and focus only on the election subproblem of the Raft because the log replication
-        increases a lot the complexity and the readability: \\
+        The images are downloaded from prebuilt images (from dockerhub) for
+        each services, some little wait time is requested for this download
+        phase and for each servic to start.\\
+        Once this is done, the student has access to the web application of
+        the Splay system, using his favourite web browser with this url :
+        \url{http://localhost:8080/}.\\
+        He creates his own account by registering on the platform, opens a new
+        session (which will be kept open for the next time he wants to use
+        the system) and now he can easily prototype his own distributed job.
 
-        \subsection{Creation of the algorithm} % TODO : Rewrite
-        The student created the Lua code of a the Raft election sub-problem, it isn't trivial,
-        but it is gratly healped with comments in the code :
+      \section{Implementation of Raft in Lua}
 
-        \lstinputlisting[style=MySmallLua]{raft_election.lua}
+        After the successful easy installation, the real work can start, our
+        student will create his own implementation of raft using the Splay
+        library.\\
 
-        \subsection{First result} % TODO : Rewrite
+        \textit{Raft is not a trivial algorithm, but still an easlily understandable
+        one. The algorithm we will present in the next subsection is based on
+        some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide}
+        \cite{RaftSite}. We have done the Lua code of the Raft consensus leader
+        election part with the help of the Splay lib \cite{SplayLib}.
+        We will therefore present and focus only on the election subproblem of
+        Raft because the log replication heavily increases the complexity and
+        the readability.}
+
+        \subsection{Creation of the Algorithm}
+
+          The student finally created the Lua version of the Raft leader
+          election subproblem, which is not trivial, but made really
+          understandable through comments in the code:
+
+          \lstinputlisting[style=MySmallLua]{raft_election.lua}
+
+        \subsection{First Results} % TODO : Rewrite
         After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
         (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
         and this one send hearbeat to avoid a other leader election from others nodes :
