@@ -101,6 +101,10 @@
 
   \chapter{Introduction}
 
+    % # Intro
+    % vue générale de ce qu'est le contexte; quel est le problème; les
+    % contributions (déjà parler de ce qu'on a fait dans les grandes lignes)
+
     % Discuter de la problématique de tester des algorithmes distribues
     % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features
     % amener implicitement les features
@@ -1867,12 +1871,12 @@
           to sleep x seconds without any yield coroutine (therefore other
           coroutines can't execute any code) before crashing.
 
-    \chapter{Use Case}
+    \chapter{Use Case} % TODO : Rewrite
       A student following a course on distributed application wants to prototype the raft election algorithm
       on 5 different nodes. He choosed to use Splay for his tests in his own laptop (or if available on a cluster of mini-computer)
       and he has no pre-install installation of Splay available for him. We going to described the different
       step of this student with the usage of Splay. \\
-      
+
       First, he needs to install a Splay environment on his own materials.
       Secondly, with the help of Splay library, he builds a basic raft election implementation.
       Thirdly, he wants understand what happend during the execution of raft by showing a animation of the evolution of the endpoint state.
@@ -1880,7 +1884,7 @@
       some fault injection at key points. And for conclude, one of his friend send to him a slightly different version
       avoiding some writings on disk, and he wants to prove, by a example, the illness of the solution.
 
-      \section{Installation of Splay}
+      \section{Installation of Splay} % TODO : Rewrite
 
         The student have only his laptop to work, and hopefully, he found on the main github repository \cite{SplayV2Git},
         that the installation doesn't depend of Operating System or Hardware. The README file of the github project discribed
@@ -1898,7 +1902,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         He creates is own account by the register form and it will be automatically connect next time. Now, he can prototype
         easily his own distributed job.
 
-      \section{Implementation of Raft in Lua}
+      \section{Implementation of Raft in Lua} % TODO : Rewrite
         After the successful installation, the hard work need to be done, it means to create the implementation of raft
         with the help of the Splay library. Raft is not a trivial algorithm, but a understandable one.
         We based our algorithm on some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide} \cite{RaftSite}.
@@ -1906,13 +1910,13 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         We present and focus only on the election subproblem of the Raft because the log replication
         increases a lot the complexity and the readability: \\
 
-        \subsection{Creation of the algorithm}
+        \subsection{Creation of the algorithm} % TODO : Rewrite
         The student created the Lua code of a the Raft election sub-problem, it isn't trivial,
         but it is gratly healped with comments in the code :
 
         \lstinputlisting[style=MySmallLua]{raft_election.lua}
 
-        \subsection{First result}
+        \subsection{First result} % TODO : Rewrite
         After doing the code of raft, he wants to try on several nodes (5), beginning without network topology
         (all nodes is directly connect with no lantency). Then, we can see in the log that a node become the leader,
         and this one send hearbeat to avoid a other leader election from others nodes :
@@ -1945,8 +1949,8 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 2019-05-30 08:20:10.0622 (2)  3 : RPC Append entry FROM 2.0 Term : 1.0 Entry : null
           \end{lstlisting}
 
-      \section{Timeline Animation}
-      
+      \section{Timeline Animation} % TODO : Rewrite
+
         Before test the robustness of his solution, the student wants to see how the network and connection evolving during the execution.
         For this purpose, we create a small tool to parse a log and see the evolution during the execution.
         Indeed, the tool is a single HTML page with some javascript, it shows the endpoint (node) state
@@ -1955,18 +1959,18 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         and the raft code is modified to print appropriate log
         (code here \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).\\
 
-        The tool takes a log text, a speed factor and auto-connect checkbox as inputs. This tool is just for 
-        illustrate our Raft election during time. Without topology and crash points, Raft election follows this pattern 
+        The tool takes a log text, a speed factor and auto-connect checkbox as inputs. This tool is just for
+        illustrate our Raft election during time. Without topology and crash points, Raft election follows this pattern
         most of the case :
 
         % TODO illustration no topo, no crash
 
-      \section{Robustness of solution}
+      \section{Robustness of solution} % TODO : Rewrite
 
         The student is not sur about his code, then he wants try to break his raft election by testing
         with different network settings and adding some fault injection at some key points.
 
-        \subsection{Topology settings}
+        \subsection{Topology settings} % TODO : Rewrite
 
           Atfer testing the algorithm in a perfect network environment, the student tries with 3 different configurations
           of network topology created by the network topology interface developed. We show the representation of
@@ -1996,17 +2000,17 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
             \label{fig:topologies}
           \end{figure}
 
-          Then, he tries his implementation on the three configurations, the log result shows that 
-          daemons succeed at doing the leader election succeed and stabilizes quickly 
-          (one leader, other are followers). But as we know, Raft is also fault-tolerant when a majority of node is 
+          Then, he tries his implementation on the three configurations, the log result shows that
+          daemons succeed at doing the leader election succeed and stabilizes quickly
+          (one leader, other are followers). But as we know, Raft is also fault-tolerant when a majority of node is
           still alive, then failure can happen at some points. \\
 
-        \subsection{Fault injection}
+        \subsection{Fault injection} % TODO : Rewrite
 
           He wants to test the correctness of his code by making crash the leader essentialy, but also the others nodes.
           When the leader crash, the student expects that a other leader election will be trigger by a remain node,
-          and then a new leader will elect. For this purpose, he adds a recovery crash point where the heartbeat is trigger : 
-          
+          and then a new leader will elect. For this purpose, he adds a recovery crash point where the heartbeat is trigger :
+
           \begin{lstlisting}[style=MyLua]
 ...
 function heartbeat()
@@ -2016,8 +2020,8 @@ function heartbeat()
           \end{lstlisting}
 
           This crash point will be trigger only by the leader (heartbeat is only used by the leader) after 5 heartbeat (when the 6th is called).
-          When the crash append, the node will recovery after 0.5 seconds. 
-          Also, the student adds other crash point no depending of the state node, but triggering 
+          When the crash append, the node will recovery after 0.5 seconds.
+          Also, the student adds other crash point no depending of the state node, but triggering
           less often. By example, when a RCP vote request is receive :
           \begin{lstlisting}[style=MyLua]
 ...
@@ -2026,22 +2030,22 @@ function request_vote(term, candidate_id)
     print("RPC Request Vote FROM "..candidate_id.." Term : "..term)
 ...
           \end{lstlisting}
-          This one will be trigger by node when node received a vote request from a candidate with a probability of 0.05 (one chance on 20). 
+          This one will be trigger by node when node received a vote request from a candidate with a probability of 0.05 (one chance on 20).
           The student create other crash point in other key step of the algorithm (before save persistant state, when a vote is granted, ...),
           to see the behaviour of the raft election, when there is fault. \\
-            
+
           After some tests, he checks logs for the differents topologies setting and he sees that all happens as expected.
-          Indeed, when the leader crashes, a other node will trigger a new election and become candidate, if there is 
+          Indeed, when the leader crashes, a other node will trigger a new election and become candidate, if there is
           no conflict with a other candidate (election trigger in a other node in the same time), this candidate will become
-          the leader. Also, when other crash happens the all system is working, extected when more than two nodes is 
+          the leader. Also, when other crash happens the all system is working, extected when more than two nodes is
           currently crash, because no majority can be done and then no leader is elected.
 
         \subsection{Animation result}
 
-          % Animation with crashed 
+          % Animation with crashed
 
 
-      \section{Buggy code proof}
+      \section{Buggy code proof} % TODO : Rewrite
         Also, a friend send to him a "better" code, but he is not convinced, then with fault injection, he shows to
         his friend the mistake in this "better" code.
 
@@ -2219,7 +2223,7 @@ function request_vote(term, candidate_id)
             indeed found most of the controller bugs in this part.
           \end{itemize}
 
-      \subsection{Security aspect}
+      \subsection{Security Aspects }
 
         In the description of the legacy project, we saw that the user's job is
         supposed to be running in a restricted area and the project is secure in
