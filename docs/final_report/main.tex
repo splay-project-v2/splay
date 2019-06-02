@@ -108,48 +108,64 @@
     % Discuter de la problématique de tester des algorithmes distribues
     % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features
     % amener implicitement les features
-    \section{Issue of Distributed Algorithms Creation}
 
-      Distributed algorithms are a key aspect of a lot of different
-      applications in different domains such as cloud computing, networking
-      or artificial intelligence \cite{DistributedArtificialIntelligence}.\\
-      We can say that an algorithm is a distributed one when it is designed to
-      run on several processors or machines being linked together, achieving
-      a common task together or dividing the workload among them in order to
-      achieve it.\\
-      The main reasons making this need to distribute the work over multiple
-      nodes may be performance reasons, availability, scalability, replication
-      needs, etc..\\
-      As we start pursuing the development of distributed applications, having
-      the previous needs, we start encountering specific problems related to
-      distributed applications :
+    Distributed algorithms are a key aspect of a lot of different
+    applications in different domains such as cloud computing, networking
+    or artificial intelligence \cite{DistributedArtificialIntelligence}.\\
+    We can say that an algorithm is a distributed one when it is designed to
+    run on several processors or machines being linked together, achieving
+    a common task together or dividing the workload among them in order to
+    achieve it.\\
+    The main reasons making this need to distribute the work over multiple
+    nodes may be performance reasons, availability, scalability, replication
+    needs, etc..\\
+    As we start pursuing the development of distributed applications, having
+    the previous needs, we start encountering specific problems related to
+    distributed applications :
+    \begin{itemize}
+      \item In case we want our nodes to organize themselves automatically and
+      make them choose a leader to orchestrate their work, how to achieve
+      this leader election?
+      \item In case we want our nodes to agree on something, how to make
+      them decide and on which value proposed by one of the nodes should they
+      agree with?
+    \end{itemize}
+
+    A distributed application therefore needs specific distributed algorithms
+    designed to solve those new raised problems.
+
+    \section{Learning Distributed Algorithms}
+
+      However, the process of learning distributed algorithms
+      is usually undermined by the difficulty of being able for one to test
+      and apply what he learns.\\
+      Usually, students are learning the theoretical components of the
+      classic algorithms (consensus, leader election) and if ever they want
+      to start playing with a real implementation of it to deepend their
+      knowledge, that's where the problems are starting to appear:
+
       \begin{itemize}
-        \item In case we want our nodes to organize themselves automatically and
-        make them choose a leader to orchestrate their work, how to achieve
-        this leader election?
-        \item In case we want our nodes to agree on something, how to make
-        them decide and on which value proposed by one of the nodes should they
-        agree with?
+        \item The first issue comes from the nature of the algorithms: they are
+        distributed. This means a student will need to setup a testing
+        environment by deploying or simulating a collection of machines on
+        which he would run his algorithm implementation.
+        \item This collection of machines need to be set up, each machine has
+        to communicate with each other in order to achieve their common task.
+        \item The student will also need to get feedback on how his
+        algorithm performed among the machines.
+        \item From the previous two points, either the student will need to
+        bloat his simple translation of the algorithm's pseudo-code
+        with all the needed code to achieve logging and communication, either
+        he will spend a lot of time implementing a complex system to allow
+        this behind the scene, which may be a cause of errors unrelated to its
+        implementation and will drag him out of his main goal of learning
+        distributed algorithms either way.
+        \item Distributed algorithm are designed to have resilience
+        properties in cases of node crashes or other events, how the student
+        could experiment, from our leader election case, what should
+        happen when the leader dies? This will result in even more code
+        bloating or in an even more complex home-made system.
       \end{itemize}
-
-      A distributed application therefore needs specific distributed algorithms
-      designed to solve those new raised problems.\\
-
-      However, the creation of distributed algorithms is a time consuming,
-      complex and error prone activity. Moreover, testing these algorithms is
-      a mandatory step to avoid errors in specific configurations (from our
-      leader election case, what should happen when the leader dies?) and in
-      order to gain trust in the correctness of the whole system.\\
-      These tests are painful to do manually if you want to reproduce close
-      to reality situation by deploying or simulating a collection of machines,
-      creating the needed code to tie your nodes together before even being
-      able to work on the precise distributed algorithm you want to experiment
-      with, and also writing the needed code to gather statistics and result
-      from your experiments.\\
-      With all these steps, the prototyping of algorithms is time consuming,
-      produces thousands of lines of code not directly related to the work,
-      and thus also increasing the chance of creating bugs not related to the
-      distributed algorithm.\\
 
       Another issue with distributed algorithms is that the pseudo-code,
       from paper for examples, is usually far from what a true solution to the
@@ -158,9 +174,12 @@
       increasing the gap between the theoretical specifications and the real
       life.
 
-    \section{Existing Solutions}
+    \section{A Need for a Solution}
 
-      Some testbeds exist aiming to facilitate the testing of the
+      From the previous issues listed before exists a need for a solution
+      which would help any student with the distributed algorithm learning
+      process.\\
+      Some testbeds exist, aiming to facilitate the testing of the
       distributed algorithms such as emulab \cite{Emulab}, ModelNet
       \cite{ModelNet} or PlanetLab \cite{PlanetLab}. But these solutions have
       some serious drawbacks :
@@ -207,13 +226,54 @@
       restrict the usage of the network depending of that.
 
 
+    \section{Our Work on Splay}
+
+      Our thesis represents our work on the Splay project. We relaunched
+      the development of the system, starting from a supposely stable
+      version of the project and progressively updating it and adding new
+      features on it in order to reach the goal of making it a perfect
+      tool for the learning and experimentation of distributed algorithm,
+      focused around the algorithm itself and allowing to perform testing
+      under different conditions about the network or the nodes themselves.\\
+
+      Through all our work of this thesis on the Splay project, we performed
+      the following tasks:
+
+      \begin{itemize}
+        \item An extensive work of updates and bug fixes on the base project
+        during all along our work.
+        \item Changes in the software and services architecture of Splay,
+        even rewriting some services, to propose an easier to maintain, more
+        testable and more logical project.
+        \item Deep changes on the project management side, forking the
+        previous one and reorganizing the repositories and setting up tools
+        like automatic builds and continuous integration.
+        \item Ensuring code quality by writing a lot of test suites for the
+        different services composing Splay, testing services individually,
+        globally and using different techniques of testing.
+        \item Enhancing the project with a features designed to provide a
+        student with all the necessary environment for an easier and conveniant
+        way of learning distributed algorithms.
+      \end{itemize}
+
+      This document will present all this work in details. In the next chapter,
+      we will explicit why and what have been our work on Splay to address
+      the problem. Then, a chapter will explain in details all our
+      development, implementation and architecture changes on Splay. The
+      following chapter will present all our work to ensure code quality
+      in the project. We'll then explain the development of the new features
+      of Splay, present a real scenario of usage and then conclude this document.
+
   \chapter{Problem Statement - Splay}
 
-    % Aporter les solutions aux problèmes cités dans l'introduction
-    % parler des fonctionnalités actuelles du vieux splay
-    % ce qu'on doit changer et fonctionnalités à apporter
+    In this chapter, we will explicit the solution needed to help the
+    students learns distributed algorithms, then compare it with what Splay
+    offered when we first put our hands on it. Based on user scenarios
+    describing a user experience, we will then draw the roadmap of modifications
+    and enhancement we needed to perform on the old Splay to reach our
+    perfect solution.
 
-    \section{A Solution Definition} % TODO : TODO
+    \section{A Solution Definition}
 
       From the previous problems we identified before, we wanted to have an
       application that could allow students and professors to develop and
@@ -242,7 +302,7 @@
 
       What SPlay offered before in terms of services ...
 
-    \section{User Scenarios} % TODO : MODIFY
+    \section{User Scenarios}
 
       Before create a precise list of features to add to Splay, we first
       thought about scenarios. We imagined how someone would want to exercise
@@ -318,6 +378,10 @@
 
     \section{Roadmap}
 
+      This section presents our roadmap of the updates and new features
+      we wanted to perform on the Splay system. We will first go through
+      the changes and updates, and then will talk about the new features.
+
       \subsection{Changes}
 
         \subsubsection{Github Organization Recast}
@@ -381,8 +445,7 @@
 
           Fixing what was not working in Splay 2011?
 
-
-      \subsection{New Features} % TODO : Modify
+      \subsection{New Features}
 
         \subsubsection{Complete Lua editor on the website}
 
@@ -1740,8 +1803,8 @@
 <WHEN> => AFTER <int> | RANDOM <float>
           \end{lstlisting}
 
-          As you can see, we defined two types of crash and two ways to define
-          the moment of the crash.\\
+          As the reader can see, we defined two types of crash and two ways to
+          define the moment of the crash.\\
           A stop crash means that the node will die forever, conversely a
           recovery crash means that the node will crash and recover after a
           number of seconds specified by the user (float number).\\
@@ -1943,7 +2006,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           election subproblem, which is not trivial, but made really
           understandable through comments in the code:
 
-          \lstinputlisting[style=MySmallLua]{Raft_election.lua}
+          \lstinputlisting[style=MySmallLua]{raft_election.lua}
 
         \subsection{First Results}
 
@@ -2005,7 +2068,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         % TODO illustration no topo, no crash
 
-      \section{Robustness of solution}6
+      \section{Robustness of solution}
 
         The student is not totally sure his solution is correct, and he would
         like to try to break his Raft election by testing it with different
