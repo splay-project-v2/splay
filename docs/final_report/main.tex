@@ -2239,23 +2239,21 @@ function request_vote(term, candidate_id)
           there are the majority of node alive (3 here), if there only one or two nodes alive the election can't terminated until a third wakes up.
           The animation shows that when the leader crashed, one or multiple nodes 
           restart a new the leader election (a upgrade the current term). \\
-          Crashes can also happen on follower or candidate node without perturbate the raft process (when mojority is on, of course).
+          Crashes can also happen on follower or candidate node without perturbate the raft process (when majority is still on, of course).
 
-      \section{Buggy code proof}
+      % \section{Buggy code proof}
 
-        A friend of the student (Goerge) sent him a supposedly better code, but he is not
-        convinced. Indeed, Goerge assume that we the vote (voted\_for) don't need to be saved 
-        in the persistant state. For him, it is downgrade the performance and the 
-        code is still correct. A version of the code can be find here TODO
+        %A friend of the student (Goerge) sent him a supposedly better code, but he is not
+        %convinced. Indeed, Goerge assume that we the vote (voted\_for) don't need to be saved 
+        %in the persistant state. For him, it is downgrade the performance and the 
+        %code is still correct. A version of the code can be find here TODO
 
-        The student has, however some doubts about this "upgrade", and then he decides to find a specific case 
-        where the raft election fails to choose only one leader. \\
-        After some search, he finds a way to create a example where the  therefore executes this algorithm implementation
-        with fault injection to prove his friend that a mistake exists in his
-        algorithm.
+        %The student has, however some doubts about this "upgrade", and then he decides to find a specific case 
+        %where the raft election fails to choose only one leader. \\
+        %After some search, he finds a way to create a example where two leader running in same time with the 
+        %helped of crash point at certain points
 
         % Show buged piece + fault injection -> buggy log
-        {\color{red} TODO}
 
   \chapter{Conclusion}
 
