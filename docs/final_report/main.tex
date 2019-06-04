@@ -2076,7 +2076,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         \begin{figure}[H]
           \centering
-          \includegraphics[width=1.0\linewidth]{figures/user_case/anim_pres.png}
+          \includegraphics[width=0.7\linewidth]{figures/user_case/anim_pres.png}
           \caption{Timeline animation example}
         \end{figure}
 
@@ -2110,19 +2110,22 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           packets.
 
           \begin{figure}[H]
-            \begin{subfigure}{.33\textwidth}
+            \centering
+            \begin{subfigure}{0.6\textwidth}
               \centering
               \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
               \caption{First topology - Normal: Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
               \label{fig:topo1}
             \end{subfigure}
-            \begin{subfigure}{.33\textwidth}
+            \centering
+            \begin{subfigure}{0.6\textwidth}
               \centering
               \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
               \caption{Second topology - Two sites: Router-Router -> 150 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
               \label{fig:topo2}
             \end{subfigure}
-            \begin{subfigure}{.33\textwidth}
+            \centering
+            \begin{subfigure}{0.6\textwidth}
               \centering
               \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_3.png}
               \caption{Third topology - Extreme: Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
@@ -2185,26 +2188,69 @@ function request_vote(term, candidate_id)
           the leader crashes, another node will trigger a new leader
           election and become a candidate. If there is no conflict with another
           candidate (election triggered by two nodes at the same time), this
-          candidate will become leader.
+          candidate will become leader and only one leader in the same time. 
 
         \subsection{Animation results}
 
           Then, the student tried his raft election on different topologies and with some
           crash points to understand the fault tolerant capability. With the help of the animation
-          tool, he sees intersting results.
-
-          A complete raft election can be chopped in multiple step, see at next figure, a complete
-          election with a conflict between two candidates (two candidate asking almost in the same time
-          vote requests to the others). Only one with become the leader (get the majority of job),
-          and the other candidate will be a follower again.
+          tool, he sees intersting results. \\
+          A complete raft election can be chopped in multiple steps. The next figure shows a complete
+          election with a conflict between three candidates (candidates asking almost in the same time
+          vote requests to the others). In this case, nobody get the majority of vote, then a other election
+          will be trigger with a bigger term at some point. And with this new election, the candidate will received
+          enough vote and become the leader (no conflit this time). Note that, conflicts happen rarely with 
+          3 candidates because the leader timeout is well balanced randomizely and the topology used 
+          is not a extreme case (topology 2 \ref{fig:topo2}).
 
           % Show four step of election: all followers -> two candidate -> one leader -> leader + heartbeat
+          \begin{figure}[H]
+            \begin{subfigure}{.45\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/election_1.png}
+              \caption{When all nodes is awaken and they are all follower (begin state)}
+              \label{fig:ele1}
+            \end{subfigure}\hspace{0.1\textwidth}
+            \begin{subfigure}{.45\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/election_2.png}
+              \caption{Three candidate for the leader job -> conflict, none become the leader, the majority is sliped}
+              \label{fig:ele2}
+            \end{subfigure}
+            \begin{subfigure}{.45\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/election_3.png}
+              \caption{New leader election from job 4 with a bigger term -> became the leader when received the majority}
+              \label{fig:ele3}
+            \end{subfigure}\hspace{0.1\textwidth}
+            \begin{subfigure}{.45\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/election_4.png}
+              \caption{The leader (job 4) sending heartbeat to other nodes to avoid new leader election}
+              \label{fig:ele4}
+            \end{subfigure}
+          
+            \caption{Raft election animation from the parsing log of a job with the topology in figure \ref{fig:topo2} 
+            and crashes point for the leader}
+            \label{fig:election}
+          \end{figure}
 
+          In this case, not one node had crash, but we can show that even when crash happend, the raft is fault-tolerant as long as 
+          there are the majority of node alive (3 here), if there only one or two nodes alive the election can't terminated until a third wakes up.
+          The animation shows that when the leader crashed, one or multiple nodes 
+          restart a new the leader election (a upgrade the current term). \\
+          Crashes can also happen on follower or candidate node without perturbate the raft process (when mojority is on, of course).
 
       \section{Buggy code proof}
 
-        A friend of our student sent him a supposedly better code, but he is not
-        convinced. The student therefore executes this algorithm implementation
+        A friend of the student (Goerge) sent him a supposedly better code, but he is not
+        convinced. Indeed, Goerge assume that we the vote (voted\_for) don't need to be saved 
+        in the persistant state. For him, it is downgrade the performance and the 
+        code is still correct. A version of the code can be find here TODO
+
+        The student has, however some doubts about this "upgrade", and then he decides to find a specific case 
+        where the raft election fails to choose only one leader. \\
+        After some search, he finds a way to create a example where the  therefore executes this algorithm implementation
         with fault injection to prove his friend that a mistake exists in his
         algorithm.
 
