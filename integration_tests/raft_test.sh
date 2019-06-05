@@ -10,6 +10,7 @@ submit "app_test/raft_election.lua"
 
 #--
 get_logs 15
+kill_job
 
 #--
 step "Verify the logs (1)"
