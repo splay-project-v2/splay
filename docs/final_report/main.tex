@@ -374,7 +374,7 @@
       \end{itemize}
 
       At the end of those ten days of work, we had a healthy and updated
-      base to work with and ready to receive the real work of our thesis.\\
+      base to work with and ready to receive the real work of our thesis.
 
     \section{Roadmap}
 
@@ -606,7 +606,7 @@
         project, in order to combine the arrival of our new features and
         changes onto the core of Splay with better user experience.
 
-      \subsection{Implementation}
+      \subsection{Implementation} % TODO: TODO
 
         Describe a bit more precisely how the system works (daemon creation,
         jobs creation, logging)
@@ -1627,7 +1627,19 @@
 
     \chapter{New Features}
 
+      In the previous chapters, we went through the development of all
+      the changes we had to implement in the already existing features
+      and the software architecture of the project, and also explained
+      in details how we ensured quality insurance among the whole project,
+      we now explain the development of the new features we implemented in
+      Splay.
+
       \section{Web Application enhancement}
+
+        The new web application implemented in Vue, which we detailed in
+        the previous chapters, has received some of our important new features
+        of the project aiming to provide a better user experience: the
+        integrated algorithm editor and the topology creation tool.
 
         \subsection{The Lua editor}
 
@@ -1654,184 +1666,184 @@
 
       \subsection{Topology creation}
 
-          The second objective concerning the web application was to provide the
-          user with an easy way to create the topology details he would like
-          the job to be run in. The previous and only way to send a topology
-          to the server was to write a whole XML file following the ModelNet
-          topology representation, a somehow tedious and error-prone process.\\
+        The second objective concerning the web application was to provide the
+        user with an easy way to create the topology details he would like
+        the job to be run in. The previous and only way to send a topology
+        to the server was to write a whole XML file following the ModelNet
+        topology representation, a somehow tedious and error-prone process.\\
 
-          The first step in our solution was to create a user interface with
-          form fields for each of the components of the topology:
+        The first step in our solution was to create a user interface with
+        form fields for each of the components of the topology:
 
-          \begin{itemize}
-            \item \textbf{Nodes}: Vvirtual nodes or gateways.
-            \item \textbf{Specs}: Set of predefined settings such as the
-            bandwith and packet loss rate which would then be used by
-            a link.
-            \item \textbf{Links}: Linking two nodes, choosing a spec to
-            inherit its settings and maybe overriding one of the spec settings
-            with its own.
-          \end{itemize}
+        \begin{itemize}
+          \item \textbf{Nodes}: Vvirtual nodes or gateways.
+          \item \textbf{Specs}: Set of predefined settings such as the
+          bandwith and packet loss rate which would then be used by
+          a link.
+          \item \textbf{Links}: Linking two nodes, choosing a spec to
+          inherit its settings and maybe overriding one of the spec settings
+          with its own.
+        \end{itemize}
 
-          \begin{figure}[H]
-            \centering
-            \includegraphics[scale=0.6]{figures/editor_topology.png}
-            \caption{\label{editor_topology} UI Topology Editor}
-          \end{figure}
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale=0.6]{figures/editor_topology.png}
+          \caption{\label{editor_topology} UI Topology Editor}
+        \end{figure}
 
-          Following this way, we could set validations behind the scenes and
-          prevent the user from creating wrong settings such as a link having the
-          same node as source and destination and ensure the topology would
-          fit in the Splay system. To help the user manage the created
-          elements of his topology, a simple summary of his elements is
-          output on the page with the related information and a click on those
-          allows to delete the corresponding element from the topology.\\
-          Indeed, any deletion of a node would delete the link it's associated
-          to, or any deletion of a spec would delete the associated links.\\
+        Following this way, we could set validations behind the scenes and
+        prevent the user from creating wrong settings such as a link having the
+        same node as source and destination and ensure the topology would
+        fit in the Splay system. To help the user manage the created
+        elements of his topology, a simple summary of his elements is
+        output on the page with the related information and a click on those
+        allows to delete the corresponding element from the topology.\\
+        Indeed, any deletion of a node would delete the link it's associated
+        to, or any deletion of a spec would delete the associated links.\\
 
-          \begin{figure}[H]
-            \centering
-            \includegraphics[scale=0.6]{figures/recap_topology.png}
-            \caption{\label{recap_topology} Interactive Recap of the topology}
-          \end{figure}
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale=0.6]{figures/recap_topology.png}
+          \caption{\label{recap_topology} Interactive Recap of the topology}
+        \end{figure}
 
-          To help the user get a better visualization of his topology, we
-          decided to implement a network visualization solution using the
-          Cytoscape \textbf{cytoscape} library.\\
-          On any update from the form explained above, the change is reflected
-          inside our network visualization component adding the new links or
-          nodes created by the user so that he can keep track of his topology
-          evolution in a more pleasant way.\\
+        To help the user get a better visualization of his topology, we
+        decided to implement a network visualization solution using the
+        Cytoscape \textbf{cytoscape} library.\\
+        On any update from the form explained above, the change is reflected
+        inside our network visualization component adding the new links or
+        nodes created by the user so that he can keep track of his topology
+        evolution in a more pleasant way.\\
 
-          \begin{figure}[H]
-            \centering
-            \includegraphics[scale=0.6]{figures/visual_topology.png}
-            \caption{\label{visual_topology} visualization of the topology}
-          \end{figure}
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale=0.6]{figures/visual_topology.png}
+          \caption{\label{visual_topology} visualization of the topology}
+        \end{figure}
 
-          Once the user is done editing his topology, he doesn't have to
-          do anything more. We created the editor so that the saved entities
-          of it (being JSON elements) would be directly transformed into the
-          corresponding XML file and sent to the backend alongside his
-          job.\\
+        Once the user is done editing his topology, he doesn't have to
+        do anything more. We created the editor so that the saved entities
+        of it (being JSON elements) would be directly transformed into the
+        corresponding XML file and sent to the backend alongside his
+        job.\\
 
-          However, using a visual tool with buttons and inputs is not always
-          the fastest and most practical thing for someone more experienced. We
-          thought that some Splay users would probably not want to be obliged
-          to play with our topology editor and would keep their topology
-          settings in some file alongside with their code.\\
-          We therefore wanted to allow the user to play with XML directly
-          if he wanted to, offering the following service:
+        However, using a visual tool with buttons and inputs is not always
+        the fastest and most practical thing for someone more experienced. We
+        thought that some Splay users would probably not want to be obliged
+        to play with our topology editor and would keep their topology
+        settings in some file alongside with their code.\\
+        We therefore wanted to allow the user to play with XML directly
+        if he wanted to, offering the following service:
 
-          \begin{itemize}
-            \item A user creating the topology could also translate what's
-            displayed in the visual editor into the XML definition.
-            \item A user creating the topology could directly paste
-            his XML topology in some editor and also have the option of
-            translating it into our visualization solution.
-          \end{itemize}
+        \begin{itemize}
+          \item A user creating the topology could also translate what's
+          displayed in the visual editor into the XML definition.
+          \item A user creating the topology could directly paste
+          his XML topology in some editor and also have the option of
+          translating it into our visualization solution.
+        \end{itemize}
 
-          Addressing these two issues was an extremely easy task, the job of
-          converting the topology in XML was already available and done on
-          the job submission. We therefore reused the Brace package used
-          for the Lua code editor to create an XML Topology editor.\\
-          The user could then trigger an XML creation into the Brace editor
-          before sending the job, or paste its code into the Brace editor and
-          then ask for reflecting the XML topology into the visual editor. It
-          was just then the matter of parsing the XML and generating the
-          corresponding JSON entities, reusing the functions we already wrote
-          for the Vue components composing this global feature.
+        Addressing these two issues was an extremely easy task, the job of
+        converting the topology in XML was already available and done on
+        the job submission. We therefore reused the Brace package used
+        for the Lua code editor to create an XML Topology editor.\\
+        The user could then trigger an XML creation into the Brace editor
+        before sending the job, or paste its code into the Brace editor and
+        then ask for reflecting the XML topology into the visual editor. It
+        was just then the matter of parsing the XML and generating the
+        corresponding JSON entities, reusing the functions we already wrote
+        for the Vue components composing this global feature.
 
-          \begin{figure}[H]
-            \centering
-            \includegraphics[scale=0.5]{figures/xml_topology.png}
-            \caption{\label{xml_topology} XML Display and Editor}
-          \end{figure}
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale=0.5]{figures/xml_topology.png}
+          \caption{\label{xml_topology} XML Display and Editor}
+        \end{figure}
 
-      \section{Fault injection}
+    \section{Fault injection}
 
-        The fault injection feature (or crash point) is achieved on the daemon
-        side of the application. Indeed, we wanted to be able to trigger a crash
-        of the code in the middle of the execution tree, therefore only the
-        daemon was able to handle with precision the crash.\\
+      The fault injection feature (or crash point) is achieved on the daemon
+      side of the application. Indeed, we wanted to be able to trigger a crash
+      of the code in the middle of the execution tree, therefore only the
+      daemon was able to handle with precision the crash.\\
 
-        We therefore made the decision to use a domain specific language (DSL)
-        for the crash management so that a user could define the crash point
-        in the Lua code as a comment. During the job execution phase, just before
-        executing the user code, we parse the code and gather those crash
-        points to manage the crashes.
+      We therefore made the decision to use a domain specific language (DSL)
+      for the crash management so that a user could define the crash point
+      in the Lua code as a comment. During the job execution phase, just before
+      executing the user code, we parse the code and gather those crash
+      points to manage the crashes.
 
-        \subsection{Domain Specific Language (DSL)}
+      \subsection{Domain Specific Language (DSL)}
 
-          We defined our small domain specific language to be simple to use
-          for the user and flexible enough for the parsing phase. This DSL
-          needed to be integrated into the Lua code without forcing the user to
-          modify its algorithm code and trying to avoid totally crashing
-          the daemon in case of the crash points specified by the user were
-          not correct.\\
-          Also, the difference in terms of th number of lines of code between the
-          source code before and after the parsing needed to be the same in
-          order to keep the feedback error messages right (getting the same line
-          number when locating the error).\\
+        We defined our small domain specific language to be simple to use
+        for the user and flexible enough for the parsing phase. This DSL
+        needed to be integrated into the Lua code without forcing the user to
+        modify its algorithm code and trying to avoid totally crashing
+        the daemon in case of the crash points specified by the user were
+        not correct.\\
+        Also, the difference in terms of th number of lines of code between the
+        source code before and after the parsing needed to be the same in
+        order to keep the feedback error messages right (getting the same line
+        number when locating the error).\\
 
-          For these reasons, we designed the feature so that a crash point has
-          to be represented as \textbf{one line} of code and beginning by
-          two hyphens (--) which indicates a Lua comment.\\
-          To avoid interpreting any other comment, those crash points must
-          contain the keyword \textit{CRASH POINT}. Achieving this by comments
-          was probably the best option, so that the real code doesn't get any
-          interference with our crash point functionality. The crash then
-          happens exactly where the crash point is defined, it is therefore
-          possible to make the execution code crashing anywhere (thread, middle
-          of a function, etc...)\\
+        For these reasons, we designed the feature so that a crash point has
+        to be represented as \textbf{one line} of code and beginning by
+        two hyphens (--) which indicates a Lua comment.\\
+        To avoid interpreting any other comment, those crash points must
+        contain the keyword \textit{CRASH POINT}. Achieving this by comments
+        was probably the best option, so that the real code doesn't get any
+        interference with our crash point functionality. The crash then
+        happens exactly where the crash point is defined, it is therefore
+        possible to make the execution code crashing anywhere (thread, middle
+        of a function, etc...)\\
 
-          Secondly, a fault is defined by a type, the moment it should occur and
-          on which node it should occur. These characteristics also needed to
-          be specified within our DSL. Each characteristic follows the
-          \textit{CRASH POINT} keyword and are separated by a colon, and are
-          defined by their keyword and values if needed.
+        Secondly, a fault is defined by a type, the moment it should occur and
+        on which node it should occur. These characteristics also needed to
+        be specified within our DSL. Each characteristic follows the
+        \textit{CRASH POINT} keyword and are separated by a colon, and are
+        defined by their keyword and values if needed.
 
-          \begin{itemize}
-            \item First, the chosen nodes to be affected by the crash must be
-            specified. For this purpose, the user must add the ids of the
-            affected nodes separated by a space (ids begin at 1 -> number of
-            daemon used).
-            \item The type of crash can be specified by its name and optional
-            parameters
-            \item The moment where the crash occurs
-          \end{itemize}
+        \begin{itemize}
+          \item First, the chosen nodes to be affected by the crash must be
+          specified. For this purpose, the user must add the ids of the
+          affected nodes separated by a space (ids begin at 1 -> number of
+          daemon used).
+          \item The type of crash can be specified by its name and optional
+          parameters
+          \item The moment where the crash occurs
+        \end{itemize}
 
-          Our final DSL looks like this:
+        Our final DSL looks like this:
 
-          \begin{lstlisting}[style=MyBash]
+        \begin{lstlisting}[style=MyBash]
 -- CRASH POINT id_splayd [id_splayd [...]]: <TYPE>: <WHEN>
 <TYPE> => STOP | RECOVERY <float>
 <WHEN> => AFTER <int> | RANDOM <float>
-          \end{lstlisting}
+        \end{lstlisting}
 
-          As the reader can see, we defined two types of crash and two ways to
-          define the moment of the crash.\\
-          A stop crash means that the node will die forever. Cconversely, a
-          recovery crash means that the node will crash and recover after a
-          number of seconds specified by the user (float number).\\
-          Concerning the moment of the crash:
+        As the reader can see, we defined two types of crash and two ways to
+        define the moment of the crash.\\
+        A stop crash means that the node will die forever. Cconversely, a
+        recovery crash means that the node will crash and recover after a
+        number of seconds specified by the user (float number).\\
+        Concerning the moment of the crash:
 
-          \begin{itemize}
-            \item The \textbf{AFTER} keyword means that the user specifies the
-            number of loops to achieve before the crash occurs. For example,
-            the value 5 in a beginning of the loop means that this loop will
-            execute 5 times before triggering the crash, whereas 0 triggers
-            an immediate crash.
-            \item The \textbf{RANDOM} keyword means that the user specifies a
-            probability between 0 and 1 that the node crashes each time it
-            encounters the crash point through the code execution. For example,
-            if the user specified 1, the crash will occur at first execution
-            (similar to AFTER 0).
-          \end{itemize}
+        \begin{itemize}
+          \item The \textbf{AFTER} keyword means that the user specifies the
+          number of loops to achieve before the crash occurs. For example,
+          the value 5 in a beginning of the loop means that this loop will
+          execute 5 times before triggering the crash, whereas 0 triggers
+          an immediate crash.
+          \item The \textbf{RANDOM} keyword means that the user specifies a
+          probability between 0 and 1 that the node crashes each time it
+          encounters the crash point through the code execution. For example,
+          if the user specified 1, the crash will occur at first execution
+          (similar to AFTER 0).
+        \end{itemize}
 
-          Here are some positive examples of crash points using our DSL:
+        Here are some positive examples of crash points using our DSL:
 
-          \begin{lstlisting}[style=MyLua]
+        \begin{lstlisting}[style=MyLua]
 -- Crash forever the node 1 and 2 at the 4th passage
 -- in the code
 -- CRASH POINT 1 2: STOP: AFTER    3
@@ -1847,12 +1859,12 @@
 -- Have one chance on two to crash at each pass for
 -- the node 1, 2, 3, 4, 5. But recover immediately
 -- CRASH POINT 1 2 3 4 5:RECOVERY 0:RANDOM 0.5
-            \end{lstlisting}
+          \end{lstlisting}
 
-          We also added some negative examples (won't trigger any crash
-          and won't crash the daemon):
+        We also added some negative examples (won't trigger any crash
+        and won't crash the daemon):
 
-          \begin{lstlisting}[style=MyLua]
+        \begin{lstlisting}[style=MyLua]
 -- Won't work because Crash point not in uppercase
 --Crash Point 1 2: STOP: AFTER 3
 
@@ -1866,165 +1878,165 @@
 -- Won't work because TIME is not a valid type
 -- for now (but error expected).
 -- CRASH POINT 1 2:RECOVERY 1: TIME 3
-          \end{lstlisting}
+        \end{lstlisting}
 
-        \subsection{Parsing}
+      \subsection{Parsing}
 
-          The code parsing phase is achieved just before that the user code
-          is effectively launched on each node (daemon). The parsing will
-          create a table with information about each crash point found in the
-          user code and which nodes this crash should occur on.\\
-          This table is then saved in a library called \textit{"splay.crash"},
-          and is used by the nodes to get the crash information using an id
-          number which will retrieve the corresponding crash information.\\
+        The code parsing phase is achieved just before that the user code
+        is effectively launched on each node (daemon). The parsing will
+        create a table with information about each crash point found in the
+        user code and which nodes this crash should occur on.\\
+        This table is then saved in a library called \textit{"splay.crash"},
+        and is used by the nodes to get the crash information using an id
+        number which will retrieve the corresponding crash information.\\
 
-          The parsing phase actually assigns to the nodes a new code where the
-          crash points comments specified by the user are transformed and
-          replaced (if no error is found) by a function call containing the
-          crash id number. Therefore, when the code executes, the crash
-          function will access the library and will act depending on what
-          information is stored into the crash table (type of crash,
-          moment of trigger).
+        The parsing phase actually assigns to the nodes a new code where the
+        crash points comments specified by the user are transformed and
+        replaced (if no error is found) by a function call containing the
+        crash id number. Therefore, when the code executes, the crash
+        function will access the library and will act depending on what
+        information is stored into the crash table (type of crash,
+        moment of trigger).
 
-          The parsing handles any error the user could have done about the
-          syntax of the crash point.\\
-          Parsing is done line by line and if any error is found (also error
-          about the parsing code itself), the concerned line will be unchanged, and
-          a warning or error message will be written in the logs.\\
-          This feature is fully written in Lua using the basic regex matcher of Lua
-          \cite{RegexLua} (it isn't a complete Regex implementation).
+        The parsing handles any error the user could have done about the
+        syntax of the crash point.\\
+        Parsing is done line by line and if any error is found (also error
+        about the parsing code itself), the concerned line will be unchanged, and
+        a warning or error message will be written in the logs.\\
+        This feature is fully written in Lua using the basic regex matcher of Lua
+        \cite{RegexLua} (it isn't a complete Regex implementation).
 
-        \subsection{Execution}
+      \subsection{Execution}
 
-          We saw how exactly we defined our DSL and how we achieve the parsing,
-          we shall now see in detail how the crashes exactly happen, how they
-          are handled and how the nodes recover if they have to.\\
+        We saw how exactly we defined our DSL and how we achieve the parsing,
+        we shall now see in detail how the crashes exactly happen, how they
+        are handled and how the nodes recover if they have to.\\
 
-          The main problem with the Lua language is that the multithreading
-          is non-preemptive, this means that we cannot stop a thread from the
-          outside \cite{CoroutineLua}. The only way to stop directly the Lua
-          interpreter and kill any other thread is to exit the program using
-          an OS function (os.exit). We also have the possibility of sending an exit
-          status code to the process, which is very convenient for knowing
-          if we need to restart or stay down after a crash point was
-          triggered.\\
+        The main problem with the Lua language is that the multithreading
+        is non-preemptive, this means that we cannot stop a thread from the
+        outside \cite{CoroutineLua}. The only way to stop directly the Lua
+        interpreter and kill any other thread is to exit the program using
+        an OS function (os.exit). We also have the possibility of sending an exit
+        status code to the process, which is very convenient for knowing
+        if we need to restart or stay down after a crash point was
+        triggered.\\
 
-          With this way of exiting, we can create artificial crash points which
-          will immediately kill every coroutine (threads) of Lua and its
-          current execution. Moreover, we can pass special exit status codes
-          in order to send messages to the parent process.\\
-          In order to use these exit codes, we created a fork (available from
-          the C splay library) before parsing the crash point and executing
-          the user code.\\
-          Therefore, the child process will execute the parsing of the crash
-          point and proceed to the code execution, and the parent process will
-          wait to receive the exit status code of its child. We added a Lua
-          function (waitpid) for this purpose and used the original waitpid
-          of C \cite{waitpid}.\\
+        With this way of exiting, we can create artificial crash points which
+        will immediately kill every coroutine (threads) of Lua and its
+        current execution. Moreover, we can pass special exit status codes
+        in order to send messages to the parent process.\\
+        In order to use these exit codes, we created a fork (available from
+        the C splay library) before parsing the crash point and executing
+        the user code.\\
+        Therefore, the child process will execute the parsing of the crash
+        point and proceed to the code execution, and the parent process will
+        wait to receive the exit status code of its child. We added a Lua
+        function (waitpid) for this purpose and used the original waitpid
+        of C \cite{waitpid}.\\
 
-          When the child process terminates (either in a normal way or because
-          of a crash), the parent process checks the exit status code and act
-          accordingly. If the exit status code is 65 or 66, it means that a
-          crash has been triggered (or that the user wants to exit
-          with one of these values).
+        When the child process terminates (either in a normal way or because
+        of a crash), the parent process checks the exit status code and act
+        accordingly. If the exit status code is 65 or 66, it means that a
+        crash has been triggered (or that the user wants to exit
+        with one of these values).
 
-          \begin{itemize}
-            \item \textbf{65}: Means a STOP crash, no restart is needed
-            \item \textbf{66}: Means a RECOVERY crash
-          \end{itemize}
+        \begin{itemize}
+          \item \textbf{65}: Means a STOP crash, no restart is needed
+          \item \textbf{66}: Means a RECOVERY crash
+        \end{itemize}
 
-          The recovery crash is then achieved recursively, the parent process
-          creating another fork, and the crash table is reset when reparsing
-          the original code. Moreover, when it is a recovery crash, the user
-          can define the downtime. Our simple solution to achieve this is by
-          using the non-preemptive feature of Lua and forcing the process
-          to sleep x seconds without any yield coroutine (therefore other
-          coroutines can't execute any code) before crashing.
+        The recovery crash is then achieved recursively, the parent process
+        creating another fork, and the crash table is reset when reparsing
+        the original code. Moreover, when it is a recovery crash, the user
+        can define the downtime. Our simple solution to achieve this is by
+        using the non-preemptive feature of Lua and forcing the process
+        to sleep x seconds without any yield coroutine (therefore other
+        coroutines can't execute any code) before crashing.
 
-    \chapter{Use Case}
+  \chapter{Use Case}
 
-      We will take the example of a student following a course on distributed
-      applications and distributed systems who wants to prototype the Raft
-      leader election algorithm on five different nodes. He chose to use
-      Splay for his tests using his own laptop (or if available, a cluster
-      of mini-computers) and right now he has no available installation of the
-      Splay system. We are going to describe the different steps that our
-      student will go through by using the Splay application.\\
+    We will take the example of a student following a course on distributed
+    applications and distributed systems who wants to prototype the Raft
+    leader election algorithm on five different nodes. He chose to use
+    Splay for his tests using his own laptop (or if available, a cluster
+    of mini-computers) and right now he has no available installation of the
+    Splay system. We are going to describe the different steps that our
+    student will go through by using the Splay application.\\
 
-      First, he needs to install a Splay environment on his own computer. Then,
-      with the help of the Splay library, he will build a basic Raft leader
-      election implementation.\\
-      Following this, he would like to understand what's happening during the
-      execution of Raft by showing an animation of the evolution of the
-      endpoints states.\\
-      Moreover, he would like to test its algorithm implementation through
-      different network topologies and theRafter analyse its solution's
-      robustness by adding fault injection in key parts of the algorithm.\\
-      To conclude, one of his friends sent him a slightly different version
-      of the algorithm avoiding some writings on disk, and he would like to
-      prove by example that his friend's solution isn't valid.
+    First, he needs to install a Splay environment on his own computer. Then,
+    with the help of the Splay library, he will build a basic Raft leader
+    election implementation.\\
+    Following this, he would like to understand what's happening during the
+    execution of Raft by showing an animation of the evolution of the
+    endpoints states.\\
+    Moreover, he would like to test its algorithm implementation through
+    different network topologies and theRafter analyse its solution's
+    robustness by adding fault injection in key parts of the algorithm.\\
+    To conclude, one of his friends sent him a slightly different version
+    of the algorithm avoiding some writings on disk, and he would like to
+    prove by example that his friend's solution isn't valid.
 
-      \section{Installation of Splay}
+    \section{Installation of Splay}
 
-        The student only has his laptop to work on his distributed algorithms
-        courses, and hopefully, he found out on the Splay's main Github
-        repository \cite{SplayV2Git} that the installation doesn't depend on
-        any operating system or hardware. The README file of the Github project
-        precisely describes how to install Splay. Then, following the
-        instructions, he clones the main repository and installs docker and
-        docker-compose on his computer.\\
-        In order to run Splay on production mode, he runs the following
-        commands in his terminal emulator: \\
+      The student only has his laptop to work on his distributed algorithms
+      courses, and hopefully, he found out on the Splay's main Github
+      repository \cite{SplayV2Git} that the installation doesn't depend on
+      any operating system or hardware. The README file of the Github project
+      precisely describes how to install Splay. Then, following the
+      instructions, he clones the main repository and installs docker and
+      docker-compose on his computer.\\
+      In order to run Splay on production mode, he runs the following
+      commands in his terminal emulator: \\
 
-        \begin{lstlisting}[style=MyBash]
+      \begin{lstlisting}[style=MyBash]
 docker-compose -f docker-compose.prod.yml up -d web_app controller
 # 7 daemons because it is recommended to have more than needed
 docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
-        \end{lstlisting}
+      \end{lstlisting}
 
-        The images are downloaded from prebuilt images (from dockerhub) for
-        each service, some little wait time is requested for this download
-        phase and for each service to start.\\
-        Once this is done, the student has access to the web application of
-        the Splay system, using his favorite web browser with this url:
-        \url{http://localhost:8080/}.\\
-        He creates his own account by registering on the platform, opens a new
-        session (which will be kept open for the next time he wants to use
-        the system) and now he can easily prototype his own distributed job.
+      The images are downloaded from prebuilt images (from dockerhub) for
+      each service, some little wait time is requested for this download
+      phase and for each service to start.\\
+      Once this is done, the student has access to the web application of
+      the Splay system, using his favorite web browser with this url:
+      \url{http://localhost:8080/}.\\
+      He creates his own account by registering on the platform, opens a new
+      session (which will be kept open for the next time he wants to use
+      the system) and now he can easily prototype his own distributed job.
 
-      \section{Implementation of Raft in Lua}
+    \section{Implementation of Raft in Lua}
 
-        After the successful easy installation, the real work can start, our
-        student will create his own implementation of Raft using the Splay
-        library.\\
+      After the successful easy installation, the real work can start, our
+      student will create his own implementation of Raft using the Splay
+      library.\\
 
-        \textit{Raft is not a trivial algorithm, but still an easily understandable
-        one. The algorithm we will present in the next subsection is based on
-        some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide}
-        \cite{RaftSite}. We have done the Lua code of the Raft consensus leader
-        election part with the help of the Splay lib \cite{SplayLib}.
-        We will therefore present and focus only on the election subproblem of
-        Raft because the log replication heavily increases the complexity and
-        the readability.}
+      \textit{Raft is not a trivial algorithm, but still an easily understandable
+      one. The algorithm we will present in the next subsection is based on
+      some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide}
+      \cite{RaftSite}. We have done the Lua code of the Raft consensus leader
+      election part with the help of the Splay lib \cite{SplayLib}.
+      We will therefore present and focus only on the election subproblem of
+      Raft because the log replication heavily increases the complexity and
+      the readability.}
 
-        \subsection{Creation of the Algorithm}
+      \subsection{Creation of the Algorithm}
 
-          The student finally created the Lua version of the Raft leader
-          election subproblem, which is not trivial, but made really
-          understandable through comments in the code:
+        The student finally created the Lua version of the Raft leader
+        election subproblem, which is not trivial, but made really
+        understandable through comments in the code:
 
-          \lstinputlisting[style=MySmallLua]{Raft_election.lua}
+        \lstinputlisting[style=MySmallLua]{Raft_election.lua}
 
-        \subsection{First Results}
+      \subsection{First Results}
 
-          After having wrote the Raft's code, he wants to try it on five nodes
-          and without any network topology (that means all nodes are directly
-          paired to each other without any latency).\\
-          Once he sent the job, it can be observed in the logs that a node
-          effectively becomes the leader and it is sending heartbeats to avoid
-          an election process from the other nodes:
+        After having wrote the Raft's code, he wants to try it on five nodes
+        and without any network topology (that means all nodes are directly
+        paired to each other without any latency).\\
+        Once he sent the job, it can be observed in the logs that a node
+        effectively becomes the leader and it is sending heartbeats to avoid
+        an election process from the other nodes:
 
-          \begin{lstlisting}[style=MyBash]
+        \begin{lstlisting}[style=MyBash]
 2019-05-30 08:20:10.0501 (3)  2: Election Trigger -> term+1, become candidate
 2019-05-30 08:20:10.0504 (3)  2: Send vote request to node 1
 2019-05-30 08:20:10.0506 (3)  2: Send vote request to node 3
@@ -2051,219 +2063,219 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 2019-05-30 08:20:10.0611 (1)  4: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
 2019-05-30 08:20:10.0617 (7)  1: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
 2019-05-30 08:20:10.0622 (2)  3: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
-          \end{lstlisting}
+        \end{lstlisting}
 
-      \section{Timeline Animation}
+    \section{Timeline Animation}
 
-        Before testing the robustness of his solution, our student wants to
-        see how the network and the connection is evolving during his job's
-        execution.\\
-        For this purpose, Splay contains a small tool designed to parse the
-        logs and allow the user to see that evolution during the job's
-        execution. This tool is embedded in the web application with some
-        JavaScript and shows the node states (follower, candidate or leader),
-        shows if a packet is travelling between two nodes and shows time
-        indications following the animation. This tool uses the vis.js library
-        \cite{VisJS} (dynamic graph library) and the Raft code has been slightly
-        modified in order to print the appropriate logs (code can be found here
-        \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/Raft_election_anim.lua}}).\\
+      Before testing the robustness of his solution, our student wants to
+      see how the network and the connection is evolving during his job's
+      execution.\\
+      For this purpose, Splay contains a small tool designed to parse the
+      logs and allow the user to see that evolution during the job's
+      execution. This tool is embedded in the web application with some
+      JavaScript and shows the node states (follower, candidate or leader),
+      shows if a packet is travelling between two nodes and shows time
+      indications following the animation. This tool uses the vis.js library
+      \cite{VisJS} (dynamic graph library) and the Raft code has been slightly
+      modified in order to print the appropriate logs (code can be found here
+      \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/Raft_election_anim.lua}}).\\
 
-        This tool takes a text-based log, a speed factor and auto-connect
-        checkbox as inputs, and here, is used to illustrate our Raft election
-        process evolution over time. We reprensents, on the graph, the node (job) state
-        by different color : blue for follower, green for candidates and red for the leader.
-        Also, network packets currently travelling between nodes, change the color
-        of the directed edge into black and become larger (depending of number of packets).
+      This tool takes a text-based log, a speed factor and auto-connect
+      checkbox as inputs, and here, is used to illustrate our Raft election
+      process evolution over time. We reprensents, on the graph, the node (job) state
+      by different color : blue for follower, green for candidates and red for the leader.
+      Also, network packets currently travelling between nodes, change the color
+      of the directed edge into black and become larger (depending of number of packets).
+
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\linewidth]{figures/user_case/anim_pres.png}
+        \caption{Timeline animation example}
+      \end{figure}
+
+      If we observe the leader election from the first result (without
+      topology network and no crashes) with this tool, we won't see clearly
+      the evolution of the nodes states, because the leader election finishes
+      very quickly (< 8 ms) and it is hard to capture the visualisation of it
+      (or with an extreme small speed factor).\\
+      The main reason is the lack of latency between nodes. Indeed, without
+      topology the RPC messages travel instantaneously, and then a candidate
+      get its vote granted really fast (and thus becomes the leader directly,
+      with almost no chances of conflict with another node).
+
+    \section{Robustness of solution}
+
+      The student is not totally sure that his solution is correct, and he would
+      like to try to break his Raft election by testing it with different
+      network settings and by adding some fault injection in the critical
+      parts of the process.
+
+      \subsection{Topology settings}
+
+        After testing the algorithm in a perfect network environment
+        simulation, the student tries it with three different network
+        topology configurations created through the network topology tool on
+        the web application.\\
+        Here are representations of the topology, with specifications on
+        the edges between nodes-routers and routers-routers.\\
+        These specifications are focused on latency only, bandwidth constraints
+        are not really influencing Raft as it is producing small and few
+        packets.
 
         \begin{figure}[H]
           \centering
-          \includegraphics[width=0.7\linewidth]{figures/user_case/anim_pres.png}
-          \caption{Timeline animation example}
+          \begin{subfigure}{0.6\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_1.png}
+            \caption{First topology - Normal: Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
+            \label{fig:topo1}
+          \end{subfigure}
+          \centering
+          \begin{subfigure}{0.6\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_2.png}
+            \caption{Second topology - Two sites: Router-Router -> 150 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
+            \label{fig:topo2}
+          \end{subfigure}
+          \centering
+          \begin{subfigure}{0.6\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_3.png}
+            \caption{Third topology - Extreme: Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
+            \label{fig:topo3}
+          \end{subfigure}
+          \caption{plots of three topologies}
+          \label{fig:topologies}
         \end{figure}
 
-        If we observe the leader election from the first result (without
-        topology network and no crashes) with this tool, we won't see clearly
-        the evolution of the nodes states, because the leader election finishes
-        very quickly (< 8 ms) and it is hard to capture the visualisation of it
-        (or with an extreme small speed factor).\\
-        The main reason is the lack of latency between nodes. Indeed, without
-        topology the RPC messages travel instantaneously, and then a candidate
-        get its vote granted really fast (and thus becomes the leader directly,
-        with almost no chances of conflict with another node).
+        The student then tries his implementation of the three configurations,
+        the log results show that Daemons succeeded at achieving the leader
+        election and quickly stabilize (one becomes the leader, the other
+        become followers) in those different network configurations.\\
+        But as we know, Raft election is also fault-tolerant when a majority of
+        nodes are still actives, the user therefore would like to test this
+        fault-tolerance characteristic of the algorithm.
 
-      \section{Robustness of solution}
+      \subsection{Fault injection}
 
-        The student is not totally sure that his solution is correct, and he would
-        like to try to break his Raft election by testing it with different
-        network settings and by adding some fault injection in the critical
-        parts of the process.
+        The user now wants to test the correctness of his implementation
+        essentially by making the leader crash, but also the other nodes.\\
+        When the leader crashes, the student expect from the Raft specification
+        that an other leader election will be triggered by the remaining
+        nodes, and therefore a new leader will be elected.\\
+        To achieve this, the student adds a recovery crash point where the
+        heartbeat is triggered in the code:
 
-        \subsection{Topology settings}
-
-          After testing the algorithm in a perfect network environment
-          simulation, the student tries it with three different network
-          topology configurations created through the network topology tool on
-          the web application.\\
-          Here are representations of the topology, with specifications on
-          the edges between nodes-routers and routers-routers.\\
-          These specifications are focused on latency only, bandwidth constraints
-          are not really influencing Raft as it is producing small and few
-          packets.
-
-          \begin{figure}[H]
-            \centering
-            \begin{subfigure}{0.6\textwidth}
-              \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_1.png}
-              \caption{First topology - Normal: Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
-              \label{fig:topo1}
-            \end{subfigure}
-            \centering
-            \begin{subfigure}{0.6\textwidth}
-              \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_2.png}
-              \caption{Second topology - Two sites: Router-Router -> 150 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
-              \label{fig:topo2}
-            \end{subfigure}
-            \centering
-            \begin{subfigure}{0.6\textwidth}
-              \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_3.png}
-              \caption{Third topology - Extreme: Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
-              \label{fig:topo3}
-            \end{subfigure}
-            \caption{plots of three topologies}
-            \label{fig:topologies}
-          \end{figure}
-
-          The student then tries his implementation of the three configurations,
-          the log results show that Daemons succeeded at achieving the leader
-          election and quickly stabilize (one becomes the leader, the other
-          become followers) in those different network configurations.\\
-          But as we know, Raft election is also fault-tolerant when a majority of
-          nodes are still actives, the user therefore would like to test this
-          fault-tolerance characteristic of the algorithm.
-
-        \subsection{Fault injection}
-
-          The user now wants to test the correctness of his implementation
-          essentially by making the leader crash, but also the other nodes.\\
-          When the leader crashes, the student expect from the Raft specification
-          that an other leader election will be triggered by the remaining
-          nodes, and therefore a new leader will be elected.\\
-          To achieve this, the student adds a recovery crash point where the
-          heartbeat is triggered in the code:
-
-          \begin{lstlisting}[style=MyLua]
+        \begin{lstlisting}[style=MyLua]
 ...
 function heartbeat()
-  -- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: AFTER 5
-  for i, n in pairs(job.nodes) do
+-- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: AFTER 5
+for i, n in pairs(job.nodes) do
 ...
-          \end{lstlisting}
+        \end{lstlisting}
 
-          This crash point will only be triggered by the leader (as heartbeat
-          is only used by the currently elected leader) after five heartbeats
-          (when the 6th is called).\\
-          When the crash happens, the node will recover after 0.5 seconds.\\
-          Also, the student adds other crash points not depending on the
-          node's state but triggering less often. For example, when a RCP vote
-          request is received:
+        This crash point will only be triggered by the leader (as heartbeat
+        is only used by the currently elected leader) after five heartbeats
+        (when the 6th is called).\\
+        When the crash happens, the node will recover after 0.5 seconds.\\
+        Also, the student adds other crash points not depending on the
+        node's state but triggering less often. For example, when a RCP vote
+        request is received:
 
-          \begin{lstlisting}[style=MyLua]
+        \begin{lstlisting}[style=MyLua]
 ...
 function request_vote(term, candidate_id)
-    -- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: RANDOM 0.05
-    print("RPC Request Vote FROM "..candidate_id.." Term: "..term)
+  -- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: RANDOM 0.05
+  print("RPC Request Vote FROM "..candidate_id.." Term: "..term)
 ...
-          \end{lstlisting}
+        \end{lstlisting}
 
-          This one will be triggered by a node when it receives a vote request
-          from a candidate with a probability of 0.05 (one chance on 20).\\
-          The student creates other crash points in another key step of
-          the algorithm (when a vote is granted) to observe the behavior of
-          the Raft election when there is a fault.\\
+        This one will be triggered by a node when it receives a vote request
+        from a candidate with a probability of 0.05 (one chance on 20).\\
+        The student creates other crash points in another key step of
+        the algorithm (when a vote is granted) to observe the behavior of
+        the Raft election when there is a fault.\\
 
-          After some test, he checks the logs for the different topology
-          settings, and he sees that everything went as expected. Indeed, when
-          the leader crashes, another node will trigger a new leader
-          election and become a candidate. If there is no conflict with another
-          candidate (election triggered by two nodes at the same time), this
-          candidate will become leader and only one node can be the leader
-          at the same time.
+        After some test, he checks the logs for the different topology
+        settings, and he sees that everything went as expected. Indeed, when
+        the leader crashes, another node will trigger a new leader
+        election and become a candidate. If there is no conflict with another
+        candidate (election triggered by two nodes at the same time), this
+        candidate will become leader and only one node can be the leader
+        at the same time.
 
-        \subsection{Animation results}
+      \subsection{Animation results}
 
-          Now the student have tried his Raft election implementation on
-          different topologies and with some crash points, he can observe some
-          interesting results thanks to the animation tool.\\
-          A complete Raft election can be divied in multiple steps. The next
-          figure shows a complete election process with a conflict between
-          three candidates (candidates asking almost at the same time vote
-          requests to the others).\\
-          In this case, nobody gets the majority of vote, therefore another
-          election will be triggered with a bigger term at some point.
-          And with this new election, the candidate who received enough votes
-          will become the leader (no conflit this time).\\
-          Note that conflicts happen rarely with 3 candidates, because the
-          leader timeout is well balanced thanks to randomization and the
-          topology used is not an extreme case (topology 2 \ref{fig:topo2}).
+        Now the student have tried his Raft election implementation on
+        different topologies and with some crash points, he can observe some
+        interesting results thanks to the animation tool.\\
+        A complete Raft election can be divied in multiple steps. The next
+        figure shows a complete election process with a conflict between
+        three candidates (candidates asking almost at the same time vote
+        requests to the others).\\
+        In this case, nobody gets the majority of vote, therefore another
+        election will be triggered with a bigger term at some point.
+        And with this new election, the candidate who received enough votes
+        will become the leader (no conflit this time).\\
+        Note that conflicts happen rarely with 3 candidates, because the
+        leader timeout is well balanced thanks to randomization and the
+        topology used is not an extreme case (topology 2 \ref{fig:topo2}).
 
-          % Show four step of election: all followers -> two candidate -> one leader -> leader + heartbeat
-          \begin{figure}[H]
-            \begin{subfigure}{.45\textwidth}
-              \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/election_1.png}
-              \caption{When all nodes are awaken and they are all followers (begin state)}
-              \label{fig:ele1}
-            \end{subfigure}\hspace{0.1\textwidth}
-            \begin{subfigure}{.45\textwidth}
-              \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/election_2.png}
-              \caption{Three candidates for the leader job -> conflict, none become the leader, the majority is sliped}
-              \label{fig:ele2}
-            \end{subfigure}
-            \begin{subfigure}{.45\textwidth}
-              \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/election_3.png}
-              \caption{New leader election from job 4 with a bigger term -> becomes the leader when receives the majority}
-              \label{fig:ele3}
-            \end{subfigure}\hspace{0.1\textwidth}
-            \begin{subfigure}{.45\textwidth}
-              \centering
-              \includegraphics[width=1.0\linewidth]{figures/user_case/election_4.png}
-              \caption{The leader (job 4) sending heartbeat to other nodes to avoid a new leader election}
-              \label{fig:ele4}
-            \end{subfigure}
+        % Show four step of election: all followers -> two candidate -> one leader -> leader + heartbeat
+        \begin{figure}[H]
+          \begin{subfigure}{.45\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/election_1.png}
+            \caption{When all nodes are awaken and they are all followers (begin state)}
+            \label{fig:ele1}
+          \end{subfigure}\hspace{0.1\textwidth}
+          \begin{subfigure}{.45\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/election_2.png}
+            \caption{Three candidates for the leader job -> conflict, none become the leader, the majority is sliped}
+            \label{fig:ele2}
+          \end{subfigure}
+          \begin{subfigure}{.45\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/election_3.png}
+            \caption{New leader election from job 4 with a bigger term -> becomes the leader when receives the majority}
+            \label{fig:ele3}
+          \end{subfigure}\hspace{0.1\textwidth}
+          \begin{subfigure}{.45\textwidth}
+            \centering
+            \includegraphics[width=1.0\linewidth]{figures/user_case/election_4.png}
+            \caption{The leader (job 4) sending heartbeat to other nodes to avoid a new leader election}
+            \label{fig:ele4}
+          \end{subfigure}
 
-            \caption{Raft election animation from the parsing of a job's log, with the topology in figure \ref{fig:topo2}
-            and crash points for the leader}
-            \label{fig:election}
-          \end{figure}
+          \caption{Raft election animation from the parsing of a job's log, with the topology in figure \ref{fig:topo2}
+          and crash points for the leader}
+          \label{fig:election}
+        \end{figure}
 
-          In this case no node crashes but we can show that even when a crash
-          happens, Raft is fault-tolerant as long as there is a majority of
-          nodes alive (3 in this case). If there is only one or two nodes alive,
-          the election can't be achieved until a third node wakes up.\\
-          The animation shows that, when the leader crashed, one or multiple
-          nodes triggered a new leader election process.\\
-          Crashes can also happen on a follower or candidate node, which won't
-          disturb the raft process as long as there is a majority of nodes
-          running.
+        In this case no node crashes but we can show that even when a crash
+        happens, Raft is fault-tolerant as long as there is a majority of
+        nodes alive (3 in this case). If there is only one or two nodes alive,
+        the election can't be achieved until a third node wakes up.\\
+        The animation shows that, when the leader crashed, one or multiple
+        nodes triggered a new leader election process.\\
+        Crashes can also happen on a follower or candidate node, which won't
+        disturb the raft process as long as there is a majority of nodes
+        running.
 
-      % \section{Buggy code proof}
+    % \section{Buggy code proof}
 
-        %A friend of the student (Goerge) sent him a supposedly better code, but he is not
-        %convinced. Indeed, Goerge assume that we the vote (voted\_for) don't need to be saved
-        %in the persistant state. For him, it is downgrade the performance and the
-        %code is still correct. A version of the code can be find here TODO
+      %A friend of the student (Goerge) sent him a supposedly better code, but he is not
+      %convinced. Indeed, Goerge assume that we the vote (voted\_for) don't need to be saved
+      %in the persistant state. For him, it is downgrade the performance and the
+      %code is still correct. A version of the code can be find here TODO
 
-        %The student has, however some doubts about this "upgrade", and then he decides to find a specific case
-        %where the Raft election fails to choose only one leader. \\
-        %After some search, he finds a way to create a example where two leader running in same time with the
-        %helped of crash point at certain points
+      %The student has, however some doubts about this "upgrade", and then he decides to find a specific case
+      %where the Raft election fails to choose only one leader. \\
+      %After some search, he finds a way to create a example where two leader running in same time with the
+      %helped of crash point at certain points
 
-        % Show buged piece + fault injection -> buggy log
+      % Show buged piece + fault injection -> buggy log
 
   \chapter{Conclusion}
 
@@ -2436,7 +2448,7 @@ function request_vote(term, candidate_id)
             indeed found most of the controller bugs in this part.
           \end{itemize}
 
-      \subsection{Security Aspects }
+      \subsection{Security Aspects}
 
         In the description of the legacy project, we saw that the user's job is
         supposed to be running in a restricted area and the project is secure in
