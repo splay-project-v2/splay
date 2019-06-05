@@ -2025,7 +2025,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         election subproblem, which is not trivial, but made really
         understandable through comments in the code:
 
-        \lstinputlisting[style=MySmallLua]{Raft_election.lua}
+        \lstinputlisting[style=MySmallLua]{raft_election.lua}
 
       \subsection{First Results}
 
@@ -2078,7 +2078,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       indications following the animation. This tool uses the vis.js library
       \cite{VisJS} (dynamic graph library) and the Raft code has been slightly
       modified in order to print the appropriate logs (code can be found here
-      \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/Raft_election_anim.lua}}).\\
+      \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).\\
 
       This tool takes a text-based log, a speed factor and auto-connect
       checkbox as inputs, and here, is used to illustrate our Raft election
@@ -2126,21 +2126,21 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           \centering
           \begin{subfigure}{0.6\textwidth}
             \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_1.png}
+            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
             \caption{First topology - Normal: Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
             \label{fig:topo1}
           \end{subfigure}
           \centering
           \begin{subfigure}{0.6\textwidth}
             \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_2.png}
+            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
             \caption{Second topology - Two sites: Router-Router -> 150 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
             \label{fig:topo2}
           \end{subfigure}
           \centering
           \begin{subfigure}{0.6\textwidth}
             \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/Raft_topo_3.png}
+            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_3.png}
             \caption{Third topology - Extreme: Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
             \label{fig:topo3}
           \end{subfigure}
