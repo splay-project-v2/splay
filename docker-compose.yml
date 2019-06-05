@@ -11,8 +11,9 @@ services:
       MYSQL_PASSWORD: "splay"
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 2s
+      timeout: 1s
       retries: 100
+    ports: ["3306:3306"]
     expose:
       - "3306"
 
