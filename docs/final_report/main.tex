@@ -2296,7 +2296,7 @@ function request_vote(term, candidate_id)
 
     We'll first conclude this report by going through a list of improvements
     idea over the project, and then summarize our global achievements on the
-    project comparing our initial objectives with the work we achieved.
+    project compared to our initial objectives.
 
     \section{Improvements}
 
@@ -2346,13 +2346,17 @@ function request_vote(term, candidate_id)
           The crash point feature now handles two types of crashes and two
           behavior to adopt in case of a crash. This feature is very useful
           to simulate a hard stop of a machine (power loss, for example).\\
+
           However, we could improve this by adding new types of crashes like a
           network crash or network compartmentalization meaning that the
           nodes would still be running but could not communicate anymore
           with other nodes during the downtime.\\
           For this purpose, we could modify the socket wrapping done to achieve
-          topology (or creating a new one) where our crash library could ask
+          topology emulation (or creating a new one) where our crash library could ask
           for restrictions over the network simulation.\\
+          Moreover, this idea can go futher, to be able to create network partition between 
+          several nodes, creating two or more splited network where nodes can 
+          only communicate with others located in the same partition.\\ 
 
           Moreover, we can imagine providing the user with more control options
           to configure more precisely what should happen in case of crash or
@@ -2374,14 +2378,14 @@ function request_vote(term, candidate_id)
             idea.
             \item \textbf{Edge in both directions}: Right now, the user can only
             add directed edges between nodes, adding an option to directly
-            created edges in both directions would be a good idea and
+            create edges in both directions would be a good idea and
             avoid double work with the directed edges through the form.
           \end{itemize}
 
       \subsection{Refactor of old services}
 
         We have rebuilt some parts of Splay using modern technologies as
-        explained in the related section, but we haven't made a complete
+        explained in the related section, but we have not made a complete
         refactor of the daemon and the controller. We think that those two
         services would need, in the future, a complete refactor or even be
         rewrote maybe using newer technologies. A database schema cleaning
@@ -2405,7 +2409,7 @@ function request_vote(term, candidate_id)
           suite.\\
 
           Moreover, we saw by the end of the project that the socket
-          topology restriction wasn't actually taking into account
+          topology restriction was not actually taking into account
           the packet loss rate and the queue length (maybe this feature was
           a work in progress in the latest version of the legacy codebase).\\
           Therefore, the topology settings that can be tweaked are limited to
@@ -2422,7 +2426,7 @@ function request_vote(term, candidate_id)
           The best alternative for the language would be Python, Python being a
           very popular language with a supportive community and constantly
           updated, having rich libraries offering complete sets of tools.\\
-          However, the main problem of this solution would be the performance
+          However, the main drawback of this solution would be the performance
           offered by vanilla Python compared to the very small core of Lua and
           its C integration. But the main drawback of Lua is evolution, Lua has
           not received major updates since 2014 and the libraries used in this
@@ -2432,7 +2436,7 @@ function request_vote(term, candidate_id)
           This results in a greater number of lines of codes for the Splay lib,
           which thus includes more chances of bugs.\\
           Going back to the performance question, using a just-in-time compiler
-          such as PyPy \cite{PyPy} to significantly boost the performance and
+          such as PyPy~\cite{PyPy} to significantly boost the performance and
           using some distributed libraries to quickly create a new Splay library
           may be a solution.
 
@@ -2449,10 +2453,10 @@ function request_vote(term, candidate_id)
           development phases:
 
           \begin{itemize}
-            \item Using full object-oriented with sequel \cite{Sequel} model
+            \item Using full object-oriented with sequel~\cite{Sequel} model
             object for each table of the database. The SQL queries are now
             raw ones which can be insecure (in case one forgets to manually
-            check against injections) and which is hard to read.\\
+            check against injections) and which are hard to read.\\
             A sequel model object allows every operation on a SQL database
             through function calls in a nice a concise Ruby way, avoiding
             SQL error syntax and most importantly it is independent of the
@@ -2468,7 +2472,7 @@ function request_vote(term, candidate_id)
         In the description of the legacy project, we saw that the user's job is
         supposed to be running in a restricted area and the project is secure in
         general.\\
-        But with further analysis, we found out that the project wasn't secure
+        But with further analysis, we found out that the project was not secure
         in various ways:\\
         \begin{itemize}
           \item The restriction on the socket can actually be completely
@@ -2481,7 +2485,7 @@ function request_vote(term, candidate_id)
           \item SQL calls in the controller are using string interpolation,
           in most of the cases, the call is secure manually adding escape
           characters in the string. Indeed, there is no security issue if
-          each call is protected with escaping, but the fact this is done
+          each call is protected with escaping, but the fact that it is done
           manually is a bad practice and will create a security issue if
           any verification is mistakenly skipped by a developer.
         \end{itemize}
