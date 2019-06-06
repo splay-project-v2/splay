@@ -2175,8 +2175,8 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         The user now wants to test the correctness of his implementation
         essentially by making the leader crash, but also the other nodes.\\
-        When the leader crashes, the student expect from the Raft specification
-        that an other leader election will be triggered by the remaining
+        When the leader crashes, the student expects from the Raft specification
+        that another leader election will be triggered by the remaining
         nodes, and therefore a new leader will be elected.\\
         To achieve this, the student adds a recovery crash point where the
         heartbeat is triggered in the code:
@@ -2189,12 +2189,12 @@ for i, n in pairs(job.nodes) do
 ...
         \end{lstlisting}
 
-        This crash point will only be triggered by the leader (as heartbeat
+        This crash point will only be triggered by the leader (as the heartbeat
         is only used by the currently elected leader) after five heartbeats
         (when the 6th is called).\\
         When the crash happens, the node will recover after 0.5 seconds.\\
         Also, the student adds other crash points not depending on the
-        node's state but triggering less often. For example, when a RCP vote
+        node's state but triggering less often. For example, when a RPC vote
         request is received:
 
         \begin{lstlisting}[style=MyLua]
@@ -2211,29 +2211,29 @@ function request_vote(term, candidate_id)
         the algorithm (when a vote is granted) to observe the behavior of
         the Raft election when there is a fault.\\
 
-        After some test, he checks the logs for the different topology
+        After some tests, he checks the logs for the different topology
         settings, and he sees that everything went as expected. Indeed, when
         the leader crashes, another node will trigger a new leader
         election and become a candidate. If there is no conflict with another
         candidate (election triggered by two nodes at the same time), this
-        candidate will become leader and only one node can be the leader
+        candidate will become the leader and only one node can be a leader
         at the same time.
 
       \subsection{Animation results}
 
-        Now the student have tried his Raft election implementation on
+        Now the student has tried his Raft election implementation on
         different topologies and with some crash points, he can observe some
         interesting results thanks to the animation tool.\\
-        A complete Raft election can be divied in multiple steps. The next
+        A complete Raft election can be divided in multiple steps. The next
         figure shows a complete election process with a conflict between
         three candidates (candidates asking almost at the same time vote
         requests to the others).\\
-        In this case, nobody gets the majority of vote, therefore another
+        In this case, nobody gets the majority of votes, therefore another
         election will be triggered with a bigger term at some point.
         And with this new election, the candidate who received enough votes
-        will become the leader (no conflit this time).\\
-        Note that conflicts happen rarely with 3 candidates, because the
-        leader timeout is well balanced thanks to randomization and the
+        will become the leader (no conflict this time).\\
+        Note that conflicts happen rarely with 3 candidates because the
+        leader timeout is well-balanced thanks to randomization and the
         topology used is not an extreme case (topology 2 \ref{fig:topo2}).
 
         % Show four step of election: all followers -> two candidate -> one leader -> leader + heartbeat
@@ -2268,14 +2268,14 @@ function request_vote(term, candidate_id)
           \label{fig:election}
         \end{figure}
 
-        In this case no node crashes but we can show that even when a crash
+        In this case, no node crashes but we can show that even when a crash
         happens, Raft is fault-tolerant as long as there is a majority of
-        nodes alive (3 in this case). If there is only one or two nodes alive,
+        nodes alive (3 in this case). If there are only one or two nodes alive,
         the election can't be achieved until a third node wakes up.\\
         The animation shows that, when the leader crashed, one or multiple
         nodes triggered a new leader election process.\\
         Crashes can also happen on a follower or candidate node, which won't
-        disturb the raft process as long as there is a majority of nodes
+        disturb the Raft process as long as there is a majority of nodes
         running.
 
     % \section{Buggy code proof}
@@ -2389,7 +2389,7 @@ function request_vote(term, candidate_id)
         refactor of the daemon and the controller. We think that those two
         services would need, in the future, a complete refactor or even be
         rewrote maybe using newer technologies. A database schema cleaning
-        would also follow, as some fields of the various entities may no be
+        would also follow, as some fields of the various entities may not be
         useful anymore.
 
         \subsubsection{Daemon}
@@ -2400,7 +2400,7 @@ function request_vote(term, candidate_id)
           a lot of unused code lines, small bugs and code repetition in the
           Daemon codebase and we therefore carefully fixed those issues when
           encountered.\\
-          We therefore reduced the usage of the Splay library by the Daemon
+          Therefore, we reduced the usage of the Splay library by the Daemon
           and ended up with a lot of unused and undocumented code in this
           library. For these reasons, we think that a complete check of the
           Splay Lua library should be performed (with the help of a previous
@@ -2416,14 +2416,14 @@ function request_vote(term, candidate_id)
           the bandwidth and latency.\\
           Furthermore, we saw that the topology restriction is based on the
           \textbf{IP} combined to a single port number, this causes unknown
-          client sockets (because the port is different than the server port)
+          client sockets (because the port is different from the server port)
           and useless restrictions. For all these reasons, the socket topology
           (coming with the SplayNet module) needs to be improved.\\
 
           A radical solution to clean this service and offer a new alternative
           to users would be to completely rewrite the Daemon service using
           another technology.\\
-          The best alternative for the language would be Python, Python being a
+          The best alternative for the language would be Python, Python is a
           very popular language with a supportive community and constantly
           updated, having rich libraries offering complete sets of tools.\\
           However, the main drawback of this solution would be the performance
@@ -2448,7 +2448,7 @@ function request_vote(term, candidate_id)
           Despite being such a central piece of the project, the code is still
           badly documented and still needs an advanced cleanup in its
           different parts, and it is also poorly tested even after we worked
-          on it. We may therefore propose two different ways to increase
+          on it. We may, accordingly, propose two different ways to increase
           the quality and maintainability of the controller for future
           development phases:
 
@@ -2490,7 +2490,7 @@ function request_vote(term, candidate_id)
           any verification is mistakenly skipped by a developer.
         \end{itemize}
 
-        We therefore concluded that an installation of Splay needs to be only
+        We concluded that the installation of Splay needs to be only
         used by trusted people in a trusted environment. It is therefore
         extremely important for the project to have future work about the
         securitization of the platform so that it could be used everywhere.
