@@ -1269,19 +1269,19 @@
   \chapter{Quality Assurance}
 
     In this chapter, we will talk about the techniques we used to ensure the
-    quality of the project. We put effort in ensuring quality into two
+    quality of the code. We put the effort into ensuring quality into two
     parts, one being the way we organized ourselves to work together on Splay,
     the other being testing and validation on the codebase.
 
     \section{Development Methodology}
 
-      Indeed, the fact of being two students on this development project necessarily
-      implied a way of organizing ourselves a bit more serious than a
-      development project alone.\\
+      Being two students on this development project necessarily required a 
+      method of organizing ourselves more effective than for a development 
+      project alone.\\
 
       Thanks to the courses about AGILE methodologies we followed during our
-      scholarship, and the both of us having had the occasion of acquiring
-      experience in a professional way through internships and part-time jobs,
+      studies, and both of us have had the occasion of acquiring
+      experience in a professional environment through internships and part-time jobs,
       we wanted to put to work this knowledge and good practices acquired in
       the project management domain.
 
@@ -1292,7 +1292,7 @@
           Trello \cite{trello}. The kanban allowed us to: \\
 
           \begin{itemize}
-            \item Have a clear and precise view about the remaining tasks we had
+            \item Have a clear and precise view of the remaining tasks we had
             to achieve in the backlog, and also about the development state of
             all the other tasks.
             \item Encourage and even oblige ourselves to translate the features
@@ -1308,12 +1308,11 @@
 
         \subsection{Testing and Validation}
 
-          The details of our testing and validation suites will be detailed
-          in the following section, but we wanted to integrate testing and
+          We wanted to integrate testing and
           validation processes as part of our development methodology and
           therefore followed a test-driven development approach.\\
           The tests and quality were thus not only a validation technique to
-          apply on our work afterward, but a complete part of the development
+          apply on to work afterward, but a complete part of the development
           and helping us to reach our goals.
 
         \subsection{Github and Gitflow}
@@ -1321,16 +1320,16 @@
           The project and all the services composing it are versioned using the
           \textit{Git} versioning system and are hosted on the online service
           \textit{Github}.\\
-          We therefore organized our work on the Gitflow model. Each feature or
+          We, therefore, organized our work on the Gitflow model. Each feature or
           task we created on the kanban was meant to receive its very own
           branch, starting from the main branch.
           Once the feature finished and tested, a pull request was made asking
-          to merge the feature branch with the main branch.\\
+          to merge the feature branch to the main branch.\\
           The first benefit of this was obviously to keep the main branch in
           a working state with healthy and finished features. Indeed, as
           we will explain in the following section, we set up a series of tools
           to allow ensuring a branch was passing the tests before allowing any
-          merge on master.\\
+          merge on the master branch.\\
 
           \begin{figure}[H]
             \centering
@@ -1338,28 +1337,29 @@
             \caption{\label{prev_arch} Gitflow Workflow}
           \end{figure}
 
-          The second benefit of this way of working on the project was to
-          permit, once again towards the goal of ensuring quality, code
-          reviews. Each time one of us was done with the development of a
+          The second benefit of this methodology was to
+          permit code reviews, once again towards the goal of ensuring quality.
+          Each time one of us was done with the development of a
           task and was issuing a pull request, the other was assigned as code
           reviewer and was in charge of making this code review, accepting the
           pull request and doing the merge, or to detect errors or bugs as the
           outcome of the code review and therefore to ask for changes to the
           pull request issuer.\\
+
           Besides the main code review's benefit of reducing the number of
-          errors or bugs, this process also allowed each of us to keep itself
-          aware and keep itself up to date with all the different changes
+          errors or bugs, this process also allowed each of us to keep ourselves
+          aware and keep ourselves up to date with all the different changes
           happening on the different services. Indeed, it was impossible for
-          us to work together in the meantime on each single service, because
+          us to work together on every single service, because
           of the number of services and inter-dependant features we had to
           develop.
 
     \section{Testing and Validation}
 
-      In this section, we will talk more deeply about the way we wanted to ensure
+      In this section, we talk more deeply about the way we wanted to ensure
       the testing and the validation part in the Splay project, whether it be
-      at the global system level or at the user functionalities level, each
-      section will go through the different services and how we tested it, and
+      at the global system level or at the user functionalities level. Each
+      section will go through the different services and how we tested then, and
       also how we tested the application globally.\\
 
       The fact that Splay had no tests at all in the state we receive it
@@ -1384,19 +1384,19 @@
         \subsubsection{Jest}
 
           In order to test the components composing the application, we
-          went for the Jest \cite{jest} testing framework, which was advised
+          went for the \texttt{Jest}~\cite{jest} testing framework, which was advised
           as unit testing framework during the project creation.\\
 
           Testing JavaScript is not always the simplest thing to achieve, the
           ecosystem being in constant evolution with diverse solutions emerging
           trying to fit with the evolution and the apparition of a lot of
           other JavaScript frameworks.\\
-          But Jest was a really good pick as testing framework, as it was
+          But Jest was a really good pick as the testing framework, as it was
           developed by Facebook and designed to fit with the majority of the
           most used front-end framework and this with almost no configuration and
           providing us with a really simple API.\\
 
-          In order to test the application using Jest, we created a directories
+          In order to test the application using \texttt{Jest}, we created a directories
           hierarchy reflecting the Vue components hierarchy we created, thus
           a test file corresponding to a component file. In each of these
           test specifications, we decided to target the core part of each
@@ -1405,26 +1405,26 @@
           triggers the associated action as this is part of the Vue system. What
           we wanted to test was the triggered action we wrote ourselves and
           were simply functions.\\
-          Each file therefore tests that the related components can be
-          successfully instantiated among the application, then run a series
-          of \textbf{unit tests} validating the methods expected behavior.
+          Each file, therefore, tests that the related components can be
+          successfully instantiated within the application, then runs a series
+          of \textbf{unit tests} validating the expected behavior of methods.
 
         \subsubsection{ESLint}
 
-          Provided almost by default when creating a new Vue project, ESLint
+          Provided by default when creating a new Vue project, ESLint
           \cite{eslint} is a JavaScript linter that allows the developer to
-          make sure he's not writing code inducing problematic patterns or not
+          make sure he is not writing code inducing problematic patterns or not
           respecting code guidelines.\\
-          This helps to keep a consistent codestyle as we were two people working
+          This helps to keep a consistent code style as we were two developers working
           on this project and increase the overall code quality and
           maintainability. We chose not to change any preset of the shipped-in
-          ESLint confguration to ensure following common guidelines among the Vue
+          ESLint configuration to ensure following common guidelines among the Vue
           community and make sure any developer joining the Splay project will
           be able to work on the web application seamlessly.
 
       \subsection{Testing in Backend}
 
-        As a reminder, the Backend such as we conceived it has the following
+        As a reminder, the Backend has the following
         roles:
 
         \begin{itemize}
@@ -1434,7 +1434,7 @@
           with the system.
         \end{itemize}
 
-        The backend being written in Rails, we therefore have access to the
+        The backend is written in Rails, therefore, we have access to the
         ActiveRecord ORM which allows manipulating the database by associating
         tables to models. These models are thus granted with attributes,
         constraints to comply with on these attributes following the constraints
@@ -1445,16 +1445,16 @@
         services through an authentication system using JSON Web tokens, a
         request testing suite should be implemented to validate our set of
         endpoints and the mechanism of authentication.
-        The data responses being sent to the calling applications under the form
+        The data responses being sent to the calling applications in the form
         of JSON responses, we had to serialize our models and therefore this
         part was also subject to testing.
 
         \subsubsection{RSpec}
 
-          RSpec \cite{rspec} is a library aiming to ease behavior Driven
+          \texttt{RSpec}~\cite{rspec} is a library aiming to ease behavior Driven
           Development on Ruby projects. BDD and TDD (Test-Driven Development) are
           practices we wanted to follow for our work on the Splay development,
-          this would allow us to adopt a green-red-refactor work cycles but also
+          this would allow us to adopt a green-red-refactor work cycle but also
           to focus on writing natural language scenarios and then translating
           them into test scenarios.
 
@@ -1467,27 +1467,27 @@
           additional validations (such as validations on attributes
           combinations, or more complex constraints between the models).\\
 
-          This additional abstraction therefore needs to be covered with a
+          Hence, this additional abstraction needs to be covered with a
           sufficient validation set, which we did by applying
-          \textbf{Model Testing}, challenging that overlay applied to the
-          models but also the basic constraints explicited in the database's
+          \textbf{Model Testing}. This overlay applied to the
+          models but also the basic constraints specified in the database's
           schema.\\
 
-          This testing set is therefore offering a double validation on the
+          Therefore, this testing set is offering a double validation on the
           database field constraints, but also validations on the business
           logic we added in the application.
 
         \subsubsection{Request Testing}
 
           The request tests inside the Backend service are the most important
-          tests we wrote, in terms of code coverage but also in terms of
-          testing the implemented features inside of this Splay service.\\
+          tests we wrote, in terms of code coverage, but also, it covers almost 
+          every implemented features inside of this Splay service.\\
 
           The request specs among the RSpec tool are made to simulate
           the behavior of a third-party application sending a request to
-          our service and therefore making the whole Rails stack running
+          our service and therefore making the whole Rails stack runs
           to provide an answer to this request.\\
-          Each request is therefore going through those elements:\\
+          Each request is going through the following elements:\\
 
           \begin{figure}[H]
             \centering
@@ -1498,21 +1498,21 @@
           Each route of the application is tested, exploring different possible
           scenarios for the incoming request (the identification token provided
           is invalid, the token is valid but the requested action is not
-          authorized for the associated user). We therefore have a testing set
-          that uses the whole application, simply by sending a request and
+          authorized for the associated user). At the end, we have a testing set
+          that exercises the entire application, simply by sending a request and
           making expectations about the awaited response from the application.
 
         \subsubsection{Code Coverage - Simple Cov}
 
-          We chose to use Simple Cov in combination of the testing applied to
-          the Backend. This tool allows to measure the code coverage of Ruby
+          We chose to use Simple Cov in succession of the testing applied to
+          the Backend. This tool allows us to measure the code coverage of Ruby
           application and to provide the developer with useful information
           thanks to its test execution analysis.\\
 
           Our ambition on the user part of the Splay project was a total recast of
           the services in more simple and maintainable ones, it was therefore
           obvious and simple for us to reach a total coverage of that new codebase
-          with a test suite, and thus chose to use that tool.\\
+          with a test suite and thus chose to use that tool.\\
 
           The benefits we found in using a code coverage tool were the
           following:
@@ -1544,7 +1544,7 @@
         The Daemon is a critical part of the project as it has to communicate
         with the controller to receive the jobs, run the jobs and return
         information to the controller about the job state. But the Daemon also
-        provides the user with a rich Splay library written in Lua.\\
+        provides a rich distributed library (Splay lib) written in Lua to the user.\\
         In the legacy project, only a few tests were present and their
         task was to check the installation and to test some very basic features
         (small functionalities) of the Lua Splay library. Some of those tests
@@ -1556,16 +1556,16 @@
         still under active development and fully integrated with Lua 5.3.\\
         Then we successfully transformed the old existing tests into busted
         tests. With only this single change, we were able to detect some
-        anomalies in the lib code and to fix these. We added some test steps
+        anomalies in the lib code and fix these. We added some test steps
         in the docker image creation to avoid creating malformed images.\\
 
         Moreover, we added a lot of tests about each modification we made
-        (openssl updated, new misc functions, small changes in existing
+        (openssl package updated, new misc functions, small changes in existing
         functions, ...) and also about the new features.\\
         Sadly the whole Splay lib of the Daemon isn't entirely tested,
         the huge amount of code (some being documented and some not) made it
         really hard for us to make it ourselves during the period of this
-        thesis, but still ensuring our work on the Daemon is maintainable
+        thesis. But our work on the Daemon is still improving the maintainability
         for future improvement or refactoring.
 
       \subsection{Integration Testing}
@@ -1573,7 +1573,7 @@
         In order to automatically test the project as a whole, we also wanted to
         develop a functional test suite. This test suite would be relatively
         simple but complete enough to make sure that we could test the developed
-        features in a global way among the system, and to achieve this goal we
+        features in a global way among the system and to achieve this goal we
         just had to translate our user scenarios into test scenarios.\\
 
         For these functional tests, we didn't use complex technology and
@@ -1582,7 +1582,7 @@
         behavior using Splay through the web application, but as this
         application is using the exact same API offered by the Backend than the
         CLI application, we could simulate user behavior through that CLI (and
-        that's partially the reason why we decided to keep a CLI application
+        that is one of the reasons why we decided to keep a CLI application
         within the project).\\
 
         The integration tests were placed in a dedicated directory at the Splay
@@ -1611,7 +1611,7 @@
       \subsection{Continuous Integration}
 
         Once again in a way to ensure quality, the different services were placed
-        on the Travis CI \cite{travis} continuous integration platform. Travis
+        on the Travis CI~\cite{travis} continuous integration platform. Travis
         can be coupled with Github to detect any change on the branches and
         automatically run a test procedure listed in a script and then offer
         feedback on how the test suite went.\\
@@ -1619,15 +1619,16 @@
         Splay being an open source project, that we hope to see growing in the
         future, its collaborative development will inevitably happen through
         the Github organization in which the different repositories are located.\\
-        The coupling of Travis with Github allow, in the case of a pull request,
-        gather the review about the test execution on the branch asking to be
+        The coupling of Travis with Github allows, in the case of a pull request,
+        to gather the review about the test execution on the branch asking to be
         merged with the main branch, and therefore to make sure the build is
         clean and the tests are passing before merging the new code, as
         explained before in the Gitflow section.
 
       \subsection{Overall Testing Suite}
+        % TODO begin the chapter with that
 
-        Here is a figure detailing the whole Splay project with the different
+        The figure~\ref{global_testing} details the whole Splay project with the different
         test suites and procedures that have been described in the previous
         sections so that the reader can get the grasp on the overall
         organization of this.
