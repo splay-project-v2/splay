@@ -147,15 +147,9 @@
         to communicate with each other in order to achieve their common task.
         \item The student will also need to get feedback on how his
         algorithm performed.
-        \item From the previous two points, either the student will need to
-        bloat his simple translation of the algorithm's pseudo-code
-        with all the needed code to achieve logging and communication, either
-        he will spend a lot of time implementing a complex system to allow
-        this behind the scene, which may be a cause of errors unrelated to its
-        implementation and will drag him out of his main goal of learning
-        distributed algorithms either way.
-        \item The student will implement the algorithm from pseudo-code (informal
-        and simplified programming language) and will be confronted to one of the
+        \item The student will implement the algorithm from pseudo-code 
+        (informal and simplified programming language)  % TODO : Footer ?
+        and will be confronted to one of the
         following problems when setting communication and feedback on the machines:
           \begin{itemize}
             \item He will bloat his implementation with all the needed
@@ -173,8 +167,8 @@
         in even more code bloating or in an even more complex home-made system.
       \end{itemize}
 
-      Another issue with distributed algorithms is that the pseudo-code (
-      from papers for example) is usually far from what a true solution to the
+      Another issue with distributed algorithms is that the pseudo-code 
+      (from papers for example) is usually far from what a true solution to the % TODO : by example ?
       related problem would be. There is in general a lot of time management
       and asynchronous calls and responses from the nodes among the system,
       increasing the gap between the theoretical specifications and practical
@@ -183,7 +177,7 @@
     \section{Learning Solutions}
 
       There is a need for solutions to help students in the distributed
-      algorithm learning process.\\
+      algorithm learning process.\\ % TODO : process creation ?
 
       Some testbeds facilitate the testing of distributed algorithms, such as
       emulab~\cite{Emulab}, ModelNet~\cite{ModelNet} or
@@ -220,14 +214,14 @@
       This is where the Splay project takes its origins.
 
     \section{Splay}
-
+      % TODO : uniformize SPLAY name with \textsc{Splay} everywhere
       The SPLAY project was initiated to solve the difficulty to test and
       develop distributed algorithm in a large scale. SPLAY is not a recent
       project (started around 2006), and lot of features have been added since
-      it's creation. The first version of SPLAY was designed to "cover all
+      it's creation. The first version of SPLAY was designed to "cover all % TODO : can i do that "citation" ?
       aspects of the development and evaluation chain" of distributed
-      applicatio~ \cite{SPLAY}. \\
-
+      application~\cite{SPLAY}. \\ 
+      % TODO : SplayNet -> \textsc{SplayNet}
       After some years a module has been developed to emulate network
       topologies, SplayNet~\cite{SplayNet}. This middleware implements an easy
       way to set the topology network between the endpoints (machines) and
@@ -238,11 +232,11 @@
 
       Our thesis details our work on the Splay project. Splay was initially
       designed to be used by researchers in distributed systems, our goal
-      was to enhance the initial project to turn it into a framwork
+      was to enhance the initial project to turn it into a framework
       better suited for teaching and learning.\\
       This work follows the idea of providing students with tools
       allowing them to practically assess what they learn during the
-      theoretical lessons, as the Inginous~\cite{inginious} platform allows.\\
+      theoretical lessons, as the Inginous~\cite{inginious} platform allows.\\ % TODO: maybe a sentence more to discribed Inginous
 
       We relaunched the development of Splay, starting from a stable
       version and progressively updating it and adding new
@@ -285,14 +279,14 @@
       in chapter~\cite{chap:usercase} and then conclude this document.
 
   \chapter{Splay for Learning and Teaching}
-  \label{chap:splayteaching}
+    \label{chap:splayteaching}
 
     In this chapter, we will explicit the solution needed to help the
     students learns distributed algorithms, then compare it with what Splay
     offered when we first put our hands on it. Based on user scenarios
     describing a user experience, we will then draw the roadmap of modifications
     and enhancement we needed to perform on the old Splay to reach our
-    perfect solution.
+    perfect solution. % TODO : perfect to alternative solution 
 
     \section{A Solution Definition}
 
@@ -382,7 +376,7 @@
       Before starting this thesis, we had the opportunity to get a part-time
       job with the objective of updating the languages and frameworks versions
       used within the project and to get familiar with it. The project being
-      paused since 2016 on an unstable version, Raziel made us start on a
+      paused since 2016 on an unstable version, Raziel made us start on a % TODO : Changement to do here
       commit from September 2011 which was stable enough, losing the
       accomplished work between 2011 and 2016 but with no other choice.\\
 
@@ -474,7 +468,8 @@
           script and running script should be made available for the user.
 
         \subsubsection{Features Fixing} % TODO: TODO
-
+          % Talk about bugs in general and a goal to solve existing bug,
+          % And try to not adding new ones -> focus on stability of the project
           Fixing what was not working in Splay 2011?
 
       \subsection{New Features}
@@ -781,7 +776,7 @@
         applications, API only applications that doesn't contain all the stuff
         and complexity needed for presenting HTML views to the user and thus
         having a lighter and more concise codebases.\\
-        The ActiveRecord \cite{activerecord} ORM shipped with the Rails
+        The ActiveRecord~\cite{activerecord} ORM shipped with the Rails
         applications is also a major advantage for this technology, allowing us
         to easily and efficiently manage the system's jobs and daemons.\\
         Finally, the availability of some libraries such as RSpec made for the
@@ -853,7 +848,7 @@
         \subsubsection{User Registration}
 
           To achieve the registration of users, we simply used the
-          well-known Devise \cite{devise} gem (gems are how ruby libraries are
+          well-known Devise~\cite{devise} gem (gems are how ruby libraries are
           called) which provide out-of-the box an efficient and flexible
           authentication solution for Rails application.\\
           As we were to allow the authentication through a future JSON API,
@@ -874,7 +869,7 @@
 
           As we mentioned it before, one of the best ways to handle user
           authentication in JSON API applications is by using the JSON Web
-          Tokens (JWT), following the industry standard from RFC7519.\\
+          Tokens (JWT), following the industry standard from RFC7519~\cite{rfc7519}.\\
 
           Upon successful registration or login on the Rails application, a
           JWT is returned to the calling application to provide it with a way
@@ -886,7 +881,7 @@
 
           To make this works, we had to begin the work on the API endpoints.
           Before starting to work on those endpoints, we agree that we would
-          follow the principles of REST \cite{rest} for the API. Endpoints would
+          follow the principles of REST~\cite{rest} for the API. Endpoints would
           represent entities with classic HTTP verbs to interact with them.\\
 
           Each endpoint inside our system is managed by the following stack:
@@ -1308,7 +1303,7 @@
 
           The first tool we put in place, and this from the very beginning of
           the update period of Splay, was a Kanban using the online website
-          Trello \cite{trello}. The kanban allowed us to: \\
+          Trello~\cite{trello}. The kanban allowed us to: \\
 
           \begin{itemize}
             \item Have a clear and precise view of the remaining tasks we had
@@ -1430,8 +1425,8 @@
 
         \subsubsection{ESLint}
 
-          Provided by default when creating a new Vue project, ESLint
-          \cite{eslint} is a JavaScript linter that allows the developer to
+          Provided by default when creating a new Vue project, ESLint~\cite{eslint}
+          is a JavaScript linter that allows the developer to
           make sure he is not writing code inducing problematic patterns or not
           respecting code guidelines.\\
           This helps to keep a consistent code style as we were two developers working
@@ -1571,7 +1566,7 @@
         library was used.\\
 
         We wanted to change this, so we started by adding a testing library
-        called Busted \cite{busted}. This library allowed elegant unit testing,
+        called Busted~\cite{busted}. This library allowed elegant unit testing,
         still under active development and fully integrated with Lua 5.3.\\
         Then we successfully transformed the old existing tests into busted
         tests. With only this single change, we were able to detect some
