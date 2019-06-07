@@ -14,6 +14,8 @@
   language         = [5.3]Lua,
   basicstyle       = \small\ttfamily,
   keywordstyle=\color{magenta},
+  showspaces=false,
+  showstringspaces=false,
   stringstyle=\color{blue},
   commentstyle=\color{black!50}
 }
@@ -28,17 +30,30 @@
   tabsize=2,
   showspaces=false,
   showstringspaces=false,
-  numbers=left,
   literate={\ \ }{{\ }}1
 }
 
 \lstdefinestyle{MyBash}{
   language = bash,
-  basicstyle=\small\ttfamily,
+  basicstyle=\scriptsize\ttfamily,
   showstringspaces=false,
   commentstyle=\color{red},
-  keywordstyle=\color{blue}
+  keywordstyle=\color{blue},
+  showspaces=false,
+  showstringspaces=false
 }
+
+\lstdefinelanguage{Log}{
+  keywords={}
+}
+
+\lstdefinestyle{MyLog}{
+  language = Log,
+  basicstyle=\scriptsize\ttfamily,
+  numbers=left,
+  frame=single
+}
+
 
 % Please fill in the following boxes
 % Title of the thesis
@@ -1376,7 +1391,7 @@
       section will go through the different services and how we tested then, and
       also how we tested the application globally.\\
 
-      The fact that Splay had no tests at all in the state we receive it
+      The fact that Splay had only few tests (not directly integrated) in the state we receive it
       motivated us into developing a solid test suite for the system.
       Indeed, that fact made our task much harder because we were progressing
       in the dark, each minor change was prone to create dysfunctions that we
@@ -1386,7 +1401,16 @@
       Splay as part of our development methodology,
       to make sure that we were ensuring the new code's maintainability, but
       also to progressively give Splay's core new tests to have a healthy
-      and maintainable final product.
+      and maintainable final product.\\
+
+      The figure~\ref{global_testing} details the whole Splay project with the different
+      test suites and procedures. Each of them will be detail on this chapter.
+
+      \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.55]{figures/global_testing.png}
+        \caption{\label{global_testing} Global Testing in Splay}
+      \end{figure}
 
       \subsection{Testing in Web App}
 
@@ -1638,20 +1662,6 @@
         merged with the main branch, and therefore to make sure the build is
         clean and the tests are passing before merging the new code, as
         explained before in the Gitflow section.
-
-      \subsection{Overall Testing Suite}
-        % TODO begin the chapter with that
-
-        The figure~\ref{global_testing} details the whole Splay project with the different
-        test suites and procedures that have been described in the previous
-        sections so that the reader can get the grasp on the overall
-        organization of this.
-
-        \begin{figure}[H]
-          \centering
-          \includegraphics[scale=0.55]{figures/global_testing.png}
-          \caption{\label{global_testing} Global Testing in Splay}
-        \end{figure}
 
     \chapter{New Features}
 
@@ -2008,7 +2018,7 @@
 
       The student only has his laptop to work on his distributed algorithms
       courses, and hopefully, he found out on the Splay's main Github
-      repository \cite{SplayV2Git} that the installation doesn't depend on
+      repository~\cite{SplayV2Git} that the installation doesn't depend on
       any operating system or hardware. The README file of the Github project
       precisely describes how to install Splay. Then, following the
       instructions, he clones the main repository and installs docker and
@@ -2038,32 +2048,306 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       student will create his own implementation of Raft using the Splay
       library.\\
 
-      Raft is not a trivial algorithm, but still an easily understandable
-      one. The algorithm we will present in the next subsection is based on
-      some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide}
-      \cite{RaftSite}. We have done the Lua code of the Raft consensus leader
-      election part with the help of the Splay lib \cite{SplayLib}.
-      We will present and focus only on the election subproblem of
-      Raft because the log replication heavily increases the complexity and
-      the readability (even with Lua).
+      \subsection{Raft election}
+
+        Raft is a consensus algorithm, often used as a alternative as Paxos because 
+        it seems more understandable. The problem of consensus is fundamental 
+        in fault-tolerant distributed system, it involves the agreements of 
+        a value by multiple instances. When a desicion is validated by the system,
+        it is final. Typically a consensus algorithm make progress only if there are 
+        the majority of node alive and with a connection between then, it is
+        also the case of Raft. \\
+
+        Raft works in two phase, a leader election where a leader is 
+        voted (only one) and after a phase of value replication done by the leader 
+        to the others machines. To remain leader, the related node sends heartbeat
+        to avoid that others relaunch a election. The election can be trigger by 
+        any nodes if this one does not received news from the leader during a period of time (election timeout).
+        This election timeout is randomly choose between two values to avoid as much as conflict 
+        of election. When a node trigger a election, it becomes a candidate and request 
+        vote to others nodes, if it obtains a mojority of vote, it becomes the leader.
+        Also, at each election a term (number increasing monotonically)
+        is used to progress the election. \\
+        We will present and focus only on this election subproblem of
+        Raft because the state machine replication heavily increases the complexity and
+        the readability (even with Lua). \\
+
+        The Raft implementation that we will present in the next subsection is based on
+        some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}. 
+        We have done the Lua code of the Raft consensus leader
+        election part with the help of the Splay lib~\cite{SplayLib}. 
+        Splay lib supplies a great number of tool to communicate 
+        between nodes, we have choose to use Remote Procedure Call (RPC) over UDP.\\ 
 
       \subsection{Creation of the Algorithm}
 
         The student finally created the Lua version of the Raft leader
-        election subproblem, which is not trivial, but made really
-        understandable through comments in the code:
+        election subproblem, which is not trivial, but made
+        understandable. We cut the commented code in multiple parts to improved the readability,
+        the whole code can be found on the github repository
+        \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election.lua}}.
 
-        \lstinputlisting[style=MySmallLua]{raft_election.lua}
+        \begin{minipage}{\linewidth}
+        \begin{lstlisting}[style=MySmallLua,caption={Initialisation}]
+require("splay.base")
+local json = require("json")
+local urpc = require("splay.urpc")
+
+-- Overwrite the print to show the job position (node index)
+do
+	local p = print
+	print = function(...)
+		p(job.position.." : "..(...)) 
+	end
+end
+
+majority_threshold = #job.nodes / 2
+thread_heartbeat = nil
+
+volatile_state = {
+    state = "follower", -- follower, candidate or leader
+}
+
+-- Save in stable storage (here just a file)
+persistent_state = { 
+    current_term = 0,
+    voted_for = nil,
+}
+
+-- Timeout for each purpose in second
+election_timeout = 1.5 -- random: [election_timeout, 2 * election_timeout]
+rpc_timeout = 0.5
+heartbeat_timeout = 0.6
+
+-- Timeout variable (to check if timeout has been canceled)
+election_time = nil
+
+-- File to save the persistent state
+filename_persistent = "pers"..job.ref..".json"
+local pers_file = io.open(filename_persistent, "r")
+if pers_file ~= nil then
+    persistent_state = json.decode(pers_file:read("*a"))
+    pers_file:close()
+end
+        \end{lstlisting}
+        \end{minipage}
+
+        \begin{minipage}{\linewidth}
+        \begin{lstlisting}[style=MySmallLua,caption={Utils functions - for all nodes}]
+function save_persistent_state()
+    pers_file = io.open(filename_persistent, "w+")
+    pers_file:write(json.encode(persistent_state))
+    pers_file:close()
+end
+
+-- If someone have a bigger term -> stepdown (request or response)
+function stepdown(term)
+    print("Stepdown : "..term.." > "..persistent_state.current_term)
+    persistent_state.current_term = tonumber(term)
+    persistent_state.voted_for = nil
+    save_persistent_state()
+    volatile_state.state = "follower"
+    set_election_timeout()
+
+    -- If I was leader but obviously not anymore - remove pediodic heartbeat
+    if thread_heartbeat ~= nil then 
+        events.kill(thread_heartbeat)
+    end
+end
+
+local inc = 0
+function uprc_call_timeout(node, data, timeout) 
+    inc = inc + 1 -- Unique name for each rpc
+    local name = "urpc.call:"..inc
+    local ok = false
+    local term, res = nil, false
+    local function call()
+        term, res = urpc.call(node, data, timeout*10)
+        ok = true
+        events.fire(name)
+    end
+    local function timeout_rec()
+        events.thread(function()
+            events.sleep(timeout)
+            if (ok == false) then 
+                call()
+                timeout_rec()
+            end
+        end)
+    end
+    call()
+    timeout_rec()
+    events.wait(name, timeout*10) -- After 9 retry stop anyway -> return nil, false
+    return term, res
+end
+
+function send_vote_request(node, node_index)
+    print("Send vote request to node "..json.encode(node_index))
+
+    local term, vote_granted = uprc_call_timeout(node, {
+        "request_vote", persistent_state.current_term, job.position
+    }, rpc_timeout)
+    return term, vote_granted
+end
+
+function send_append_entry(node_index, node, entry)
+    print("Send append entry ("..json.encode(entry)..") to node "..node_index)
+
+    local term, success = uprc_call_timeout(node, {
+        "append_entry", persistent_state.current_term, job.position, entry
+    }, rpc_timeout)
+    return term, success
+end
+        \end{lstlisting}
+        \end{minipage}
+
+
+        \begin{minipage}{\linewidth}
+        \begin{lstlisting}[style=MySmallLua,caption={Utils functions for the leader only}]
+function heartbeat()
+    for i, n in pairs(job.nodes) do
+        if i ~= job.position then
+            events.thread(function ()
+                term, success = send_append_entry(i, n, nil) 
+                if term ~= nil and term > persistent_state.current_term then
+                    stepdown(term)
+                end
+            end)
+        end
+    end
+end
+
+function become_leader()
+    print("I Become the LEADER !")
+    volatile_state.state = "leader"
+    -- cancelled timout election
+    election_time = misc.time()
+    -- trigger the heartbeart directly and periodically
+    heartbeat()
+    thread_heartbeat = events.periodic(heartbeat_timeout, function() heartbeat() end)
+    -- No client simulation for now (because no replication log)
+end
+        \end{lstlisting}
+        \end{minipage}
+
+        \begin{minipage}{\linewidth}
+        \begin{lstlisting}[style=MySmallLua,caption={RPC functions}]
+-- Append Entry RPC function used by leader for the heartbeat 
+-- (avoiding new election) - entry == nil means heartbeat
+-- Also normally used for log replication (not present here)
+function append_entry(term, leader_id, entry)
+    print("RPC Append entry FROM "..leader_id.." Term : "..term.." Entry : "..json.encode(entry))
+    if term > persistent_state.current_term then
+        stepdown(term)
+    end
+    set_election_timeout() -- reset the election timeout
+    volatile_state.state = "follower" -- if candidate, return in follower state
+    
+    if entry == nil then
+        -- HEARTBEAT
+        return persistent_state.current_term, true
+    else
+        -- NORMAL Entry (Log replication feature - not present here) 
+        return persistent_state.current_term, false
+    end
+end
+
+-- Vote Request RPC function, called by candidate to get votes
+function request_vote(term, candidate_id)
+    print("RPC Request Vote FROM "..candidate_id.." Term : "..term)
+
+    -- It the candidate is late - don't grant the vote
+    if term < persistent_state.current_term then
+        return persistent_state.current_term, false
+    elseif term > persistent_state.current_term then
+        stepdown(term)
+    end
+
+    local vote_granted = false
+
+    -- Condition to grant the vote :
+    --  (If the node doesn't already grant the vote to and other)
+    if (persistent_state.voted_for == nil or persistent_state.voted_for == candidate_id) then
+        -- Save the candidate vote
+        persistent_state.voted_for = candidate_id
+        save_persistent_state()
+        vote_granted = true
+        set_election_timeout() -- reset the election timeout
+    end
+    return persistent_state.current_term, vote_granted
+end  
+        \end{lstlisting}
+        \end{minipage}
+
+        \begin{minipage}{\linewidth}
+        \begin{lstlisting}[style=MySmallLua,caption={Timeout/Trigger functions}]
+function set_election_timeout()
+    election_time = misc.time()
+    local time = election_time
+    events.thread(function ()
+        -- Randomize the sleeping time = [election_timeout, 2 * election_timeout] 
+        events.sleep(((math.random() + 1.0) * election_timeout))
+        -- if the timeout is not cancelled -> trigger election
+        if (time == election_time) then trigger_election_timeout() end
+    end)
+end
+
+function trigger_election_timeout()
+    print("Election Trigger -> term+1, become candidate")
+    volatile_state.state = "candidate"
+    persistent_state.current_term = persistent_state.current_term + 1
+    persistent_state.voted_for = job.position
+    save_persistent_state()
+    -- If conflict in this election, and new election can be trigger
+    set_election_timeout()
+    local nb_vote = 1
+    for i, n in pairs(job.nodes) do
+        if i ~= job.position then
+            events.thread(function ()
+                local term, vote_granted = send_vote_request(n, i)
+                print("Vote Request result "..json.encode(term)..", "..json.encode(vote_granted).." from "..i)
+                if vote_granted == true then
+                    nb_vote = nb_vote + 1
+                    -- If the majority grant the vote -> become the leader
+                    if nb_vote > majority_threshold and volatile_state.state == "candidate" then 
+                        become_leader()
+                    end
+                end
+                if term ~= nil and term > persistent_state.current_term then
+                    stepdown(term)
+                end
+            end)
+        end
+    end
+end
+        \end{lstlisting}
+        \end{minipage}
+
+        \begin{minipage}{\linewidth}
+        \begin{lstlisting}[style=MySmallLua,caption={Main}]
+-- Init the UDP RPC server
+urpc.server(job.me)
+
+events.run(function()
+    
+    set_election_timeout() -- set the election timeout
+
+    -- After 50 second the node will exit no matter what
+    events.sleep(50)
+    events.exit()
+end)
+        \end{lstlisting}
+        \end{minipage}
 
       \subsection{First Results}
 
         After writing the Raft code, he wants to try it on five nodes
-        and without any network topology (all nodes comminucate with the native latency).\\
+        and without any network topology (all nodes communicate with the native network settings).\\
         Once he sent the job, it can be observed in the logs that a node
         effectively becomes the leader and it is sending heartbeats to avoid
         an election process from the other nodes:
 
-        \begin{lstlisting}[style=MyBash]
+        \begin{lstlisting}[style=MyLog]
 2019-05-30 08:20:10.0501 (3)  2: Election Trigger -> term+1, become candidate
 2019-05-30 08:20:10.0504 (3)  2: Send vote request to node 1
 2019-05-30 08:20:10.0506 (3)  2: Send vote request to node 3
@@ -2091,6 +2375,9 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 2019-05-30 08:20:10.0617 (7)  1: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
 2019-05-30 08:20:10.0622 (2)  3: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
         \end{lstlisting}
+
+        % TODO : explain a little bit the result, key points :
+        % Election trigger -> vote request send + received + response -> Leader -> Heartbeat
 
     \section{Timeline Animation}
 
