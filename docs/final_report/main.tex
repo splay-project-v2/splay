@@ -109,41 +109,34 @@
     % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features
     % amener implicitement les features
 
-    Distributed algorithms are a key aspect of a lot of different
-    applications in different domains such as cloud computing, networking
-    or artificial intelligence \cite{DistributedArtificialIntelligence}.\\
-    We can say that an algorithm is a distributed one when it is designed to
-    run on several processors or machines being linked together, achieving
-    a common task together or dividing the workload among them in order to
-    achieve it.\\
-    The main reasons making this need to distribute the work over multiple
-    nodes may be performance reasons, availability, scalability, replication
-    needs, etc...\\
-    As we start pursuing the development of distributed applications, having
-    the previous needs, we start encountering specific problems related to
-    distributed applications:
-    \begin{itemize}
-      \item In case we want our nodes to organize themselves automatically and
-      make them choose a leader to orchestrate their work, how to achieve
-      this leader election?
-      \item In case we want our nodes to agree on something, how to make
-      them decide and on which value proposed by one of the nodes should they
-      agree with?
-    \end{itemize}
+    Distributed algorithms are at the core of applications in domains as
+    various as cloud computing, networking or artificial
+    intelligence~\cite{DistributedArtificialIntelligence}.\\
+    An algorithm is distributed when it is designed to run on several
+    processors or machines linked by a network, achieving a common task
+    or dividing a workload processing.\\
 
-    A distributed application therefore needs specific distributed algorithms
-    designed to solve those new raised problems.
+    As we start pursuing the development of distributed applications,
+    we start encountering specific problems:
+    \begin{itemize}
+      \item How should the application handle network issues such as
+      a network partition due to a failing link, or how should the application
+      behave in extreme conditions with low quality connections between
+      the nodes?
+      \item How should the application handle nodes failures among the
+      collection of nodes achieving the common task? How it should handle
+      nodes crashing then restarting?
+    \end{itemize}
 
     \section{Learning Distributed Algorithms}
 
-      However, the process of learning distributed algorithms
-      is usually undermined by the difficulty of being able for one to test
-      and apply what he learns.\\
+      The process of learning distributed algorithms is usually by the
+      difficulty of being able to test and apply what one learns.\\
       Usually, students are learning the theoretical components of the
-      classic algorithms (consensus, leader election, resource allocation, ...)
-      and if ever they want to start playing with a real implementation of it
-      to deepen their knowledge, that's where the problems are starting to
-      appear:
+      algorithms (consensus, leader election, resource allocation, ...)
+      and if ever they want to start practically learning with a real
+      implementation to deepen their knowledge, some practical problems
+      start to appear:
 
       \begin{itemize}
         \item The first issue comes from the nature of the algorithms: they are
@@ -153,7 +146,7 @@
         \item This collection of machines needs to be set up, each machine has
         to communicate with each other in order to achieve their common task.
         \item The student will also need to get feedback on how his
-        algorithm performed among the machines.
+        algorithm performed.
         \item From the previous two points, either the student will need to
         bloat his simple translation of the algorithm's pseudo-code
         with all the needed code to achieve logging and communication, either
@@ -161,44 +154,56 @@
         this behind the scene, which may be a cause of errors unrelated to its
         implementation and will drag him out of his main goal of learning
         distributed algorithms either way.
+        \item The student will implement the algorithm from pseudo-code (informal
+        and simplified programming language) and will be confronted to one of the
+        following problems when setting communication and feedback on the machines:
+          \begin{itemize}
+            \item He will bloat his implementation with all the needed
+            code for communication and feedback.
+            \item He will spend a lot of time implementing a complex
+            system to achieve communication and feedback behind the scenes if
+            trying to avoid the previous problem.
+          \end{itemize}
+        Either way, it will be a cause of errors unrelated to its
+        implementation and will drag him out of his main goal of learning
+        distributed algorithms.
         \item Distributed algorithms are designed to have resilience
-        properties in cases of node crashes or other events, how the student
-        could experiment, from our leader election case, what should
-        happen when the leader dies? This will result in even more code
-        bloating or in an even more complex home-made system.
+        properties in cases of node crashes or other events. How the student
+        could experiment what should happen when a node dies? This will result
+        in even more code bloating or in an even more complex home-made system.
       \end{itemize}
 
-      Another issue with distributed algorithms is that the pseudo-code,
-      from paper for examples, is usually far from what a true solution to the
+      Another issue with distributed algorithms is that the pseudo-code (
+      from papers for example) is usually far from what a true solution to the
       related problem would be. There is in general a lot of time management
       and asynchronous calls and responses from the nodes among the system,
-      increasing the gap between the theoretical specifications and the real
-      life.
+      increasing the gap between the theoretical specifications and practical
+      cases.
 
-    \section{A Need for a Solution}
+    \section{Learning Solutions}
 
-      From the previous issues listed before exists a need for a solution
-      which would help any student with the distributed algorithm learning
-      process.\\
-      Some testbeds exist, aiming to facilitate the testing of the
-      distributed algorithms such as emulab \cite{Emulab}, ModelNet
-      \cite{ModelNet} or PlanetLab \cite{PlanetLab}. But these solutions have
-      some serious drawbacks:
+      There is a need for solutions to help students in the distributed
+      algorithm learning process.\\
+
+      Some testbeds facilitate the testing of distributed algorithms, such as
+      emulab~\cite{Emulab}, ModelNet~\cite{ModelNet} or
+      PlanetLab~\cite{PlanetLab}. But these solutions have some serious
+      drawbacks:
 
       \begin{itemize}
         \item They are quite complicated to use and hard to learn
-        \item Difficult to install or deploy
-        \item Performance cost due to heavy solution
-        \item Offering partial solutions to the issues we listed before
+        \item They are difficult to install or deploy
+        \item They mostly only address the problem of setting up a collection
+        of nodes
       \end{itemize}
 
       Concerning the code itself, supplying a high level library helping the
-      creation of distributed algorithms is indeed a solution and those
+      creation of distributed algorithms is a possible solution. Some
       exists for that precise purpose in different languages, such as:
 
       \begin{itemize}
-        \item Mace \cite{Mace} in C++
-        \item Pymote \cite{Pymote} in (Python)
+        \item Mace~\cite{Mace} in C++
+        \item Pymote~\cite{Pymote} in Python
       \end{itemize}
 
       These solutions were not integrated together or not suiting the real needs
@@ -206,10 +211,10 @@
       thus offering a place for a better solution that would be:
 
       \begin{itemize}
-        \item Focused around the development of the algorithm
-        \item Allowing simulation of real-life conditions
-        \item Easy to use and install for any user
-        \item Light enough for low hardware
+        \item Focused around the development of the algorithm;
+        \item Allowing simulation of real-life conditions;
+        \item Easy to use and install for any user;
+        \item Light enough for low costhardware.
       \end{itemize}
 
       This is where the Splay project takes its origins.
@@ -218,55 +223,69 @@
 
       The SPLAY project was initiated to solve the difficulty to test and
       develop distributed algorithm in a large scale. SPLAY is not a recent
-      project (begin around 2006), and lot of features have been added since.
-      The first version of SPLAY was designed to "covers all aspects of the
-      development and evaluation chain" of distributed application
-      \cite{SPLAY}. \\
+      project (started around 2006), and lot of features have been added since
+      it's creation. The first version of SPLAY was designed to "cover all
+      aspects of the development and evaluation chain" of distributed
+      applicatio~ \cite{SPLAY}. \\
 
-      After some years, a module has been developed be to manage network
-      topology, SplayNet \cite{SplayNet}. This middleware implements an easy
+      After some years a module has been developed to emulate network
+      topologies, SplayNet~\cite{SplayNet}. This middleware implements an easy
       way to set the topology network between the endpoints (machines) and
-      restrict the usage of the network depending on that.
+      emulate the behaviour in latency, throughput and congestion according
+      to that topology.
 
     \section{Our Work on Splay}
 
-      Our thesis represents our work on the Splay project. We relaunched
-      the development of the system, starting from a supposedly stable
-      version of the project and progressively updating it and adding new
-      features on it in order to reach the goal of making it a perfect
-      tool for the learning and experimentation of distributed algorithm,
-      focused around the algorithm itself and allowing to perform testing
-      under different conditions about the network or the nodes themselves.\\
+      Our thesis details our work on the Splay project. Splay was initially
+      designed to be used by researchers in distributed systems, our goal
+      was to enhance the initial project to turn it into a framwork
+      better suited for teaching and learning.\\
+      This work follows the idea of providing students with tools
+      allowing them to practically assess what they learn during the
+      theoretical lessons, as the Inginous~\cite{inginious} platform allows.\\
 
-      Through all our work of this thesis on the Splay project, we performed
-      the following tasks:
+      We relaunched the development of Splay, starting from a stable
+      version and progressively updating it and adding new
+      features in order to make it a good tool for the learning and
+      experimentation of distributed algorithms.\\
+      This tool would be focused around the algorithm itself and allowing to
+      perform testing under different conditions about the network or
+      the nodes themselves.\\
+
+      We made the following contributions:
 
       \begin{itemize}
-        \item An extensive work of updates and bug fixes on the base project
-        during all our work.
+        \item An extensive work of updates and bug fixes on the base project.
         \item Changes in the software and services architecture of Splay,
-        even rewriting some services, to propose an easier to maintain, more
-        testable and more logical project.
-        \item Deep changes on the project management side, forking the
-        previous one and reorganizing the repositories and setting up tools
-        like automatic builds and continuous integration.
+        including rewriting some services, to propose an easier to maintain and
+        more testable project.
+        \item Deep changes on the software engineering side, forking the
+        previous project, reorganizing it and setting up quality-enforcement
+        best practices like automatic builds and continuous integration.
         \item Ensuring code quality by writing a lot of test suites for the
         different services composing Splay, testing services individually,
-        globally and using different techniques of testing.
-        \item Enhancing the project with features designed to provide a
+        globally and using different techniques of testing (unit testing,
+        integration testing, ...).
+        \item Enhancing the project with new features designed to provide a
         student with all the necessary environment for an easier and convenient
         way of learning distributed algorithms.
       \end{itemize}
 
-      This document will present all this work in details. In the next chapter,
-      we will explicit why and what have been our work on Splay to address
-      the problem. Then, a chapter will explain in detail all our
-      development, implementation and architecture changes on Splay. The
-      following chapter will present all our work to ensure code quality
-      in the project. We'll then explain the development of the new features
-      of Splay, present a real scenario of usage and then conclude this document.
+      This document will detail how we turned Splay into an integrated platform
+      designed to help students learning and practicing distributed systems\\.
+      In the next chapter, we will explicit how we designed the changes made on
+      Splay to address the problem of making it a learning and teaching
+      platform.\\
+      Chapter~\cite{chap:dev} will explain in detail all our development,
+      implementation and architectural changes on Splay.\\
+      Chapter~\cite{chap:qual} will present all our work to ensure code quality
+      in the project.\\
+      We will then explain the development of the new features
+      of Splay in chapter~\cite{chap:newfeat}, present a real scenario of usage
+      in chapter~\cite{chap:usercase} and then conclude this document.
 
-  \chapter{Problem Statement - Splay}
+  \chapter{Splay for Learning and Teaching}
+  \label{chap:splayteaching}
 
     In this chapter, we will explicit the solution needed to help the
     students learns distributed algorithms, then compare it with what Splay
