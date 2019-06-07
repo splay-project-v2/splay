@@ -1288,19 +1288,19 @@
   \chapter{Quality Assurance}
 
     In this chapter, we will talk about the techniques we used to ensure the
-    quality of the project. We put effort in ensuring quality into two
+    quality of the code. We put the effort into ensuring quality into two
     parts, one being the way we organized ourselves to work together on Splay,
     the other being testing and validation on the codebase.
 
     \section{Development Methodology}
 
-      Indeed, the fact of being two students on this development project necessarily
-      implied a way of organizing ourselves a bit more serious than a
-      development project alone.\\
+      Being two students on this development project necessarily required a 
+      method of organizing ourselves more effective than for a development 
+      project alone.\\
 
       Thanks to the courses about AGILE methodologies we followed during our
-      scholarship, and the both of us having had the occasion of acquiring
-      experience in a professional way through internships and part-time jobs,
+      studies, and both of us have had the occasion of acquiring
+      experience in a professional environment through internships and part-time jobs,
       we wanted to put to work this knowledge and good practices acquired in
       the project management domain.
 
@@ -1311,7 +1311,7 @@
           Trello \cite{trello}. The kanban allowed us to: \\
 
           \begin{itemize}
-            \item Have a clear and precise view about the remaining tasks we had
+            \item Have a clear and precise view of the remaining tasks we had
             to achieve in the backlog, and also about the development state of
             all the other tasks.
             \item Encourage and even oblige ourselves to translate the features
@@ -1327,12 +1327,11 @@
 
         \subsection{Testing and Validation}
 
-          The details of our testing and validation suites will be detailed
-          in the following section, but we wanted to integrate testing and
+          We wanted to integrate testing and
           validation processes as part of our development methodology and
           therefore followed a test-driven development approach.\\
           The tests and quality were thus not only a validation technique to
-          apply on our work afterward, but a complete part of the development
+          apply on to work afterward, but a complete part of the development
           and helping us to reach our goals.
 
         \subsection{Github and Gitflow}
@@ -1340,16 +1339,16 @@
           The project and all the services composing it are versioned using the
           \textit{Git} versioning system and are hosted on the online service
           \textit{Github}.\\
-          We therefore organized our work on the Gitflow model. Each feature or
+          We, therefore, organized our work on the Gitflow model. Each feature or
           task we created on the kanban was meant to receive its very own
           branch, starting from the main branch.
           Once the feature finished and tested, a pull request was made asking
-          to merge the feature branch with the main branch.\\
+          to merge the feature branch to the main branch.\\
           The first benefit of this was obviously to keep the main branch in
           a working state with healthy and finished features. Indeed, as
           we will explain in the following section, we set up a series of tools
           to allow ensuring a branch was passing the tests before allowing any
-          merge on master.\\
+          merge on the master branch.\\
 
           \begin{figure}[H]
             \centering
@@ -1357,28 +1356,29 @@
             \caption{\label{prev_arch} Gitflow Workflow}
           \end{figure}
 
-          The second benefit of this way of working on the project was to
-          permit, once again towards the goal of ensuring quality, code
-          reviews. Each time one of us was done with the development of a
+          The second benefit of this methodology was to
+          permit code reviews, once again towards the goal of ensuring quality.
+          Each time one of us was done with the development of a
           task and was issuing a pull request, the other was assigned as code
           reviewer and was in charge of making this code review, accepting the
           pull request and doing the merge, or to detect errors or bugs as the
           outcome of the code review and therefore to ask for changes to the
           pull request issuer.\\
+
           Besides the main code review's benefit of reducing the number of
-          errors or bugs, this process also allowed each of us to keep itself
-          aware and keep itself up to date with all the different changes
+          errors or bugs, this process also allowed each of us to keep ourselves
+          aware and keep ourselves up to date with all the different changes
           happening on the different services. Indeed, it was impossible for
-          us to work together in the meantime on each single service, because
+          us to work together on every single service, because
           of the number of services and inter-dependant features we had to
           develop.
 
     \section{Testing and Validation}
 
-      In this section, we will talk more deeply about the way we wanted to ensure
+      In this section, we talk more deeply about the way we wanted to ensure
       the testing and the validation part in the Splay project, whether it be
-      at the global system level or at the user functionalities level, each
-      section will go through the different services and how we tested it, and
+      at the global system level or at the user functionalities level. Each
+      section will go through the different services and how we tested then, and
       also how we tested the application globally.\\
 
       The fact that Splay had no tests at all in the state we receive it
@@ -1403,19 +1403,19 @@
         \subsubsection{Jest}
 
           In order to test the components composing the application, we
-          went for the Jest \cite{jest} testing framework, which was advised
+          went for the \texttt{Jest}~\cite{jest} testing framework, which was advised
           as unit testing framework during the project creation.\\
 
           Testing JavaScript is not always the simplest thing to achieve, the
           ecosystem being in constant evolution with diverse solutions emerging
           trying to fit with the evolution and the apparition of a lot of
           other JavaScript frameworks.\\
-          But Jest was a really good pick as testing framework, as it was
+          But Jest was a really good pick as the testing framework, as it was
           developed by Facebook and designed to fit with the majority of the
           most used front-end framework and this with almost no configuration and
           providing us with a really simple API.\\
 
-          In order to test the application using Jest, we created a directories
+          In order to test the application using \texttt{Jest}, we created a directories
           hierarchy reflecting the Vue components hierarchy we created, thus
           a test file corresponding to a component file. In each of these
           test specifications, we decided to target the core part of each
@@ -1424,26 +1424,26 @@
           triggers the associated action as this is part of the Vue system. What
           we wanted to test was the triggered action we wrote ourselves and
           were simply functions.\\
-          Each file therefore tests that the related components can be
-          successfully instantiated among the application, then run a series
-          of \textbf{unit tests} validating the methods expected behavior.
+          Each file, therefore, tests that the related components can be
+          successfully instantiated within the application, then runs a series
+          of \textbf{unit tests} validating the expected behavior of methods.
 
         \subsubsection{ESLint}
 
-          Provided almost by default when creating a new Vue project, ESLint
+          Provided by default when creating a new Vue project, ESLint
           \cite{eslint} is a JavaScript linter that allows the developer to
-          make sure he's not writing code inducing problematic patterns or not
+          make sure he is not writing code inducing problematic patterns or not
           respecting code guidelines.\\
-          This helps to keep a consistent codestyle as we were two people working
+          This helps to keep a consistent code style as we were two developers working
           on this project and increase the overall code quality and
           maintainability. We chose not to change any preset of the shipped-in
-          ESLint confguration to ensure following common guidelines among the Vue
+          ESLint configuration to ensure following common guidelines among the Vue
           community and make sure any developer joining the Splay project will
           be able to work on the web application seamlessly.
 
       \subsection{Testing in Backend}
 
-        As a reminder, the Backend such as we conceived it has the following
+        As a reminder, the Backend has the following
         roles:
 
         \begin{itemize}
@@ -1453,7 +1453,7 @@
           with the system.
         \end{itemize}
 
-        The backend being written in Rails, we therefore have access to the
+        The backend is written in Rails, therefore, we have access to the
         ActiveRecord ORM which allows manipulating the database by associating
         tables to models. These models are thus granted with attributes,
         constraints to comply with on these attributes following the constraints
@@ -1464,16 +1464,16 @@
         services through an authentication system using JSON Web tokens, a
         request testing suite should be implemented to validate our set of
         endpoints and the mechanism of authentication.
-        The data responses being sent to the calling applications under the form
+        The data responses being sent to the calling applications in the form
         of JSON responses, we had to serialize our models and therefore this
         part was also subject to testing.
 
         \subsubsection{RSpec}
 
-          RSpec \cite{rspec} is a library aiming to ease behavior Driven
+          \texttt{RSpec}~\cite{rspec} is a library aiming to ease behavior Driven
           Development on Ruby projects. BDD and TDD (Test-Driven Development) are
           practices we wanted to follow for our work on the Splay development,
-          this would allow us to adopt a green-red-refactor work cycles but also
+          this would allow us to adopt a green-red-refactor work cycle but also
           to focus on writing natural language scenarios and then translating
           them into test scenarios.
 
@@ -1486,27 +1486,27 @@
           additional validations (such as validations on attributes
           combinations, or more complex constraints between the models).\\
 
-          This additional abstraction therefore needs to be covered with a
+          Hence, this additional abstraction needs to be covered with a
           sufficient validation set, which we did by applying
-          \textbf{Model Testing}, challenging that overlay applied to the
-          models but also the basic constraints explicited in the database's
+          \textbf{Model Testing}. This overlay applied to the
+          models but also the basic constraints specified in the database's
           schema.\\
 
-          This testing set is therefore offering a double validation on the
+          Therefore, this testing set is offering a double validation on the
           database field constraints, but also validations on the business
           logic we added in the application.
 
         \subsubsection{Request Testing}
 
           The request tests inside the Backend service are the most important
-          tests we wrote, in terms of code coverage but also in terms of
-          testing the implemented features inside of this Splay service.\\
+          tests we wrote, in terms of code coverage, but also, it covers almost 
+          every implemented features inside of this Splay service.\\
 
           The request specs among the RSpec tool are made to simulate
           the behavior of a third-party application sending a request to
-          our service and therefore making the whole Rails stack running
+          our service and therefore making the whole Rails stack runs
           to provide an answer to this request.\\
-          Each request is therefore going through those elements:\\
+          Each request is going through the following elements:\\
 
           \begin{figure}[H]
             \centering
@@ -1517,21 +1517,21 @@
           Each route of the application is tested, exploring different possible
           scenarios for the incoming request (the identification token provided
           is invalid, the token is valid but the requested action is not
-          authorized for the associated user). We therefore have a testing set
-          that uses the whole application, simply by sending a request and
+          authorized for the associated user). At the end, we have a testing set
+          that exercises the entire application, simply by sending a request and
           making expectations about the awaited response from the application.
 
         \subsubsection{Code Coverage - Simple Cov}
 
-          We chose to use Simple Cov in combination of the testing applied to
-          the Backend. This tool allows to measure the code coverage of Ruby
+          We chose to use Simple Cov in succession of the testing applied to
+          the Backend. This tool allows us to measure the code coverage of Ruby
           application and to provide the developer with useful information
           thanks to its test execution analysis.\\
 
           Our ambition on the user part of the Splay project was a total recast of
           the services in more simple and maintainable ones, it was therefore
           obvious and simple for us to reach a total coverage of that new codebase
-          with a test suite, and thus chose to use that tool.\\
+          with a test suite and thus chose to use that tool.\\
 
           The benefits we found in using a code coverage tool were the
           following:
@@ -1563,7 +1563,7 @@
         The Daemon is a critical part of the project as it has to communicate
         with the controller to receive the jobs, run the jobs and return
         information to the controller about the job state. But the Daemon also
-        provides the user with a rich Splay library written in Lua.\\
+        provides a rich distributed library (Splay lib) written in Lua to the user.\\
         In the legacy project, only a few tests were present and their
         task was to check the installation and to test some very basic features
         (small functionalities) of the Lua Splay library. Some of those tests
@@ -1575,16 +1575,16 @@
         still under active development and fully integrated with Lua 5.3.\\
         Then we successfully transformed the old existing tests into busted
         tests. With only this single change, we were able to detect some
-        anomalies in the lib code and to fix these. We added some test steps
+        anomalies in the lib code and fix these. We added some test steps
         in the docker image creation to avoid creating malformed images.\\
 
         Moreover, we added a lot of tests about each modification we made
-        (openssl updated, new misc functions, small changes in existing
+        (openssl package updated, new misc functions, small changes in existing
         functions, ...) and also about the new features.\\
         Sadly the whole Splay lib of the Daemon isn't entirely tested,
         the huge amount of code (some being documented and some not) made it
         really hard for us to make it ourselves during the period of this
-        thesis, but still ensuring our work on the Daemon is maintainable
+        thesis. But our work on the Daemon is still improving the maintainability
         for future improvement or refactoring.
 
       \subsection{Integration Testing}
@@ -1592,7 +1592,7 @@
         In order to automatically test the project as a whole, we also wanted to
         develop a functional test suite. This test suite would be relatively
         simple but complete enough to make sure that we could test the developed
-        features in a global way among the system, and to achieve this goal we
+        features in a global way among the system and to achieve this goal we
         just had to translate our user scenarios into test scenarios.\\
 
         For these functional tests, we didn't use complex technology and
@@ -1601,7 +1601,7 @@
         behavior using Splay through the web application, but as this
         application is using the exact same API offered by the Backend than the
         CLI application, we could simulate user behavior through that CLI (and
-        that's partially the reason why we decided to keep a CLI application
+        that is one of the reasons why we decided to keep a CLI application
         within the project).\\
 
         The integration tests were placed in a dedicated directory at the Splay
@@ -1630,7 +1630,7 @@
       \subsection{Continuous Integration}
 
         Once again in a way to ensure quality, the different services were placed
-        on the Travis CI \cite{travis} continuous integration platform. Travis
+        on the Travis CI~\cite{travis} continuous integration platform. Travis
         can be coupled with Github to detect any change on the branches and
         automatically run a test procedure listed in a script and then offer
         feedback on how the test suite went.\\
@@ -1638,15 +1638,16 @@
         Splay being an open source project, that we hope to see growing in the
         future, its collaborative development will inevitably happen through
         the Github organization in which the different repositories are located.\\
-        The coupling of Travis with Github allow, in the case of a pull request,
-        gather the review about the test execution on the branch asking to be
+        The coupling of Travis with Github allows, in the case of a pull request,
+        to gather the review about the test execution on the branch asking to be
         merged with the main branch, and therefore to make sure the build is
         clean and the tests are passing before merging the new code, as
         explained before in the Gitflow section.
 
       \subsection{Overall Testing Suite}
+        % TODO begin the chapter with that
 
-        Here is a figure detailing the whole Splay project with the different
+        The figure~\ref{global_testing} details the whole Splay project with the different
         test suites and procedures that have been described in the previous
         sections so that the reader can get the grasp on the overall
         organization of this.
@@ -1679,16 +1680,16 @@
           with a fully integrated Lua editor within the application and
           available during the job creation process.\\
           The idea of entirely building ourselves this editor was quickly
-          moved aside, as it would take too much time to achieve and wouldn't
+          moved aside, as it would take too much time to achieve and would not
           be a solution allowing easy evolution through time.\\
-          We then found a great package named \textbf{Brace}, a browserified
-          version of the Ace editor \cite{Ace}. Ace can handle hundreds types
-          of different programming languages concerning syntax coloration,
+          We then found a great package named \texttt{Brace}, a browserified
+          version of the Ace editor~\cite{Ace}. Ace can handle hundreds of 
+          different programming languages concerning syntax coloration,
           error handling, line number displaying.\\
 
           The integration of Ace in the project was really easy and light thanks
-          to the available npm package, and the editor now displays Lua code
-          perfectly colorized and errors are shown in case of syntax errors.\\
+          to the available npm package. The editor now displays Lua code
+          perfectly colorized and hislights syntax errors.\\
 
           Sadly, no built-in auto-completion module was available from the
           Brace package. It would have been possible for us to add our own
@@ -1698,9 +1699,9 @@
 
       \subsection{Topology creation}
 
-        The second objective concerning the web application was to provide the
-        user with an easy way to create the topology details he would like
-        the job to be run in. The previous and only way to send a topology
+        The second objective concerning the web application was to provide to the
+        user an easy way to enter the topology details, where the distributed algorithm
+        will run into. The previous and only way to send a topology
         to the server was to write a whole XML file following the ModelNet
         topology representation, a somehow tedious and error-prone process.\\
 
@@ -1708,9 +1709,9 @@
         form fields for each of the components of the topology:
 
         \begin{itemize}
-          \item \textbf{Nodes}: Vvirtual nodes or gateways.
+          \item \textbf{Nodes}: Virtual nodes or gateways.
           \item \textbf{Specs}: Set of predefined settings such as the
-          bandwith and packet loss rate which would then be used by
+          bandwidth and packet loss rate which would then be used by
           a link.
           \item \textbf{Links}: Linking two nodes, choosing a spec to
           inherit its settings and maybe overriding one of the spec settings
@@ -1723,14 +1724,14 @@
           \caption{\label{editor_topology} UI Topology Editor}
         \end{figure}
 
-        Following this way, we could set validations behind the scenes and
+        We have set validations behind the scenes and
         prevent the user from creating wrong settings such as a link having the
         same node as source and destination and ensure the topology would
-        fit in the Splay system. To help the user manage the created
-        elements of his topology, a simple summary of his elements is
-        output on the page with the related information and a click on those
+        fit in the Splay system. To help a user manage the created
+        elements of a topology, a simple summary of these elements are
+        output on the page with the related information. A simple click on those
         allows to delete the corresponding element from the topology.\\
-        Indeed, any deletion of a node would delete the link it's associated
+        Indeed, any deletion of a node would delete the link it is associated
         to, or any deletion of a spec would delete the associated links.\\
 
         \begin{figure}[H]
@@ -1741,7 +1742,7 @@
 
         To help the user get a better visualization of his topology, we
         decided to implement a network visualization solution using the
-        Cytoscape \textbf{cytoscape} library.\\
+        Cytoscape \texttt{cytoscape} library.\\
         On any update from the form explained above, the change is reflected
         inside our network visualization component adding the new links or
         nodes created by the user so that he can keep track of his topology
@@ -1753,10 +1754,10 @@
           \caption{\label{visual_topology} visualization of the topology}
         \end{figure}
 
-        Once the user is done editing his topology, he doesn't have to
+        Once the user is done editing his topology, he does not have to
         do anything more. We created the editor so that the saved entities
         of it (being JSON elements) would be directly transformed into the
-        corresponding XML file and sent to the backend alongside his
+        corresponding XML file and sent to the backend alongside the
         job.\\
 
         However, using a visual tool with buttons and inputs is not always
@@ -1764,7 +1765,7 @@
         thought that some Splay users would probably not want to be obliged
         to play with our topology editor and would keep their topology
         settings in some file alongside with their code.\\
-        We therefore wanted to allow the user to play with XML directly
+        Therefore, We wanted to allow the user to play with XML directly
         if he wanted to, offering the following service:
 
         \begin{itemize}
@@ -1772,15 +1773,15 @@
           displayed in the visual editor into the XML definition.
           \item A user creating the topology could directly paste
           his XML topology in some editor and also have the option of
-          translating it into our visualization solution.
+          translating it into a visualization.
         \end{itemize}
 
         Addressing these two issues was an extremely easy task, the job of
         converting the topology in XML was already available and done on
-        the job submission. We therefore reused the Brace package used
+        the job submission. We reused the Brace package used
         for the Lua code editor to create an XML Topology editor.\\
         The user could then trigger an XML creation into the Brace editor
-        before sending the job, or paste its code into the Brace editor and
+        before sending the job or paste its code into the Brace editor, and
         then ask for reflecting the XML topology into the visual editor. It
         was just then the matter of parsing the XML and generating the
         corresponding JSON entities, reusing the functions we already wrote
@@ -1803,7 +1804,7 @@
       for the crash management so that a user could define the crash point
       in the Lua code as a comment. During the job execution phase, just before
       executing the user code, we parse the code and gather those crash
-      points to manage the crashes.
+      points generate crashes.
 
       \subsection{Domain Specific Language (DSL)}
 
@@ -1822,24 +1823,24 @@
         to be represented as \textbf{one line} of code and beginning by
         two hyphens (--) which indicates a Lua comment.\\
         To avoid interpreting any other comment, those crash points must
-        contain the keyword \textit{CRASH POINT}. Achieving this by comments
-        was probably the best option, so that the real code doesn't get any
+        contain the keyword \textsc{CRASH POINT}. Achieving this by comments
+        was probably the best option so that the real code doesn't get any
         interference with our crash point functionality. The crash then
-        happens exactly where the crash point is defined, it is therefore
+        happens exactly where the crash point is defined, it is, therefore,
         possible to make the execution code crashing anywhere (thread, middle
         of a function, etc...)\\
 
         Secondly, a fault is defined by a type, the moment it should occur and
         on which node it should occur. These characteristics also needed to
         be specified within our DSL. Each characteristic follows the
-        \textit{CRASH POINT} keyword and are separated by a colon, and are
+        \textsc{CRASH POINT} keyword and are separated by a colon, their are
         defined by their keyword and values if needed.
 
         \begin{itemize}
           \item First, the chosen nodes to be affected by the crash must be
           specified. For this purpose, the user must add the ids of the
           affected nodes separated by a space (ids begin at 1 -> number of
-          daemon used).
+          daemons used).
           \item The type of crash can be specified by its name and optional
           parameters
           \item The moment where the crash occurs
@@ -1853,17 +1854,17 @@
 <WHEN> => AFTER <int> | RANDOM <float>
         \end{lstlisting}
 
-        As the reader can see, we defined two types of crash and two ways to
+        We defined two types of crash and two ways to
         define the moment of the crash.\\
-        A stop crash means that the node will die forever. Cconversely, a
-        recovery crash means that the node will crash and recover after a
+        A stop crash means that the node will die forever. Conversely, a
+        recovery crash means that the node will crash and recover after the
         number of seconds specified by the user (float number).\\
-        Concerning the moment of the crash:
+        Concerning the moment of the crash, there are two possible specification:
 
         \begin{itemize}
           \item The \textbf{AFTER} keyword means that the user specifies the
           number of loops to achieve before the crash occurs. For example,
-          the value 5 in a beginning of the loop means that this loop will
+          the value 5 at the beginning of the loop means that this loop will
           execute 5 times before triggering the crash, whereas 0 triggers
           an immediate crash.
           \item The \textbf{RANDOM} keyword means that the user specifies a
@@ -1873,7 +1874,7 @@
           (similar to AFTER 0).
         \end{itemize}
 
-        Here are some positive examples of crash points using our DSL:
+        To summarize the DSL, we created some positive examples (crash definition valid) :
 
         \begin{lstlisting}[style=MyLua]
 -- Crash forever the node 1 and 2 at the 4th passage
@@ -1888,7 +1889,7 @@
 -- the node 1, but this node will recover after 2 sec
 -- CRASH POINT 1: RECOVERY 2: AFTER 0
 
--- Have one chance on two to crash at each pass for
+-- Have 50 % probability to crash at each pass for
 -- the node 1, 2, 3, 4, 5. But recover immediately
 -- CRASH POINT 1 2 3 4 5:RECOVERY 0:RANDOM 0.5
           \end{lstlisting}
@@ -1923,12 +1924,12 @@
         number which will retrieve the corresponding crash information.\\
 
         The parsing phase actually assigns to the nodes a new code where the
-        crash points comments specified by the user are transformed and
+        crash point comments specified by the user are transformed and
         replaced (if no error is found) by a function call containing the
         crash id number. Therefore, when the code executes, the crash
         function will access the library and will act depending on what
-        information is stored into the crash table (type of crash,
-        moment of trigger).
+        information is stored into the crash table (the type of crash and 
+        the triggering moment).
 
         The parsing handles any error the user could have done about the
         syntax of the crash point.\\
@@ -1936,7 +1937,7 @@
         about the parsing code itself), the concerned line will be unchanged, and
         a warning or error message will be written in the logs.\\
         This feature is fully written in Lua using the basic regex matcher of Lua
-        \cite{RegexLua} (it isn't a complete Regex implementation).
+        \cite{RegexLua} (it is not a complete Regex implementation).
 
       \subsection{Execution}
 
@@ -1944,14 +1945,15 @@
         we shall now see in detail how the crashes exactly happen, how they
         are handled and how the nodes recover if they have to.\\
 
-        The main problem with the Lua language is that the multithreading
-        is non-preemptive, this means that we cannot stop a thread from the
-        outside \cite{CoroutineLua}. The only way to stop directly the Lua
-        interpreter and kill any other thread is to exit the program using
-        an OS function (os.exit). We also have the possibility of sending an exit
-        status code to the process, which is very convenient for knowing
-        if we need to restart or stay down after a crash point was
-        triggered.\\
+        The Lua multithreading is non-preemptive, this means that we cannot stop a thread from the
+        outside~\cite{CoroutineLua}. This particularity helps to simplify distributed algorithms,
+        but for the fault injection, it limits the field of possibility 
+        (we cannot kill thread without killing the process).
+        Then, a solution is to exit the process it-self by using an OS function (os.exit),
+        then kill all threads. We also have the possibility of sending an exit
+        status code to the process (as parameters of the function),
+        which is very convenient for knowing if we need to restart or stay 
+        down after a crash point was triggered.\\
 
         With this way of exiting, we can create artificial crash points which
         will immediately kill every coroutine (threads) of Lua and its
@@ -1970,7 +1972,9 @@
         of a crash), the parent process checks the exit status code and act
         accordingly. If the exit status code is 65 or 66, it means that a
         crash has been triggered (or that the user wants to exit
-        with one of these values).
+        with one of these values). We choosed to use 65 and 66 because 
+        according to this article~\cite{StatusCode}, the range is 64-113 
+        is proposed to be user-defined status code.
 
         \begin{itemize}
           \item \textbf{65}: Means a STOP crash, no restart is needed
@@ -1989,7 +1993,7 @@
 
     We will take the example of a student following a course on distributed
     applications and distributed systems who wants to prototype the Raft
-    leader election algorithm on five different nodes. He chose to use
+    leader election algorithm on five different nodes. He choses to use
     Splay for his tests using his own laptop (or if available, a cluster
     of mini-computers) and right now he has no available installation of the
     Splay system. We are going to describe the different steps that our
@@ -1998,15 +2002,12 @@
     First, he needs to install a Splay environment on his own computer. Then,
     with the help of the Splay library, he will build a basic Raft leader
     election implementation.\\
-    Following this, he would like to understand what's happening during the
+    Following this, he would like to understand what is happening during the
     execution of Raft by showing an animation of the evolution of the
     endpoints states.\\
     Moreover, he would like to test its algorithm implementation through
-    different network topologies and theRafter analyse its solution's
-    robustness by adding fault injection in key parts of the algorithm.\\
-    To conclude, one of his friends sent him a slightly different version
-    of the algorithm avoiding some writings on disk, and he would like to
-    prove by example that his friend's solution isn't valid.
+    different network topologies and analyse the solution
+    robustness by injecting faults at key parts of the algorithm.
 
     \section{Installation of Splay}
 
@@ -2018,7 +2019,7 @@
       instructions, he clones the main repository and installs docker and
       docker-compose on his computer.\\
       In order to run Splay on production mode, he runs the following
-      commands in his terminal emulator: \\
+      commands: \\
 
       \begin{lstlisting}[style=MyBash]
 docker-compose -f docker-compose.prod.yml up -d web_app controller
@@ -2034,7 +2035,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       \url{http://localhost:8080/}.\\
       He creates his own account by registering on the platform, opens a new
       session (which will be kept open for the next time he wants to use
-      the system) and now he can easily prototype his own distributed job.
+      the system). He can now easily prototype his first distributed job.
 
     \section{Implementation of Raft in Lua}
 
@@ -2042,14 +2043,14 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       student will create his own implementation of Raft using the Splay
       library.\\
 
-      \textit{Raft is not a trivial algorithm, but still an easily understandable
+      Raft is not a trivial algorithm, but still an easily understandable
       one. The algorithm we will present in the next subsection is based on
       some papers \cite{RaftPaper} and articles/courses \cite{RaftSlide}
       \cite{RaftSite}. We have done the Lua code of the Raft consensus leader
       election part with the help of the Splay lib \cite{SplayLib}.
-      We will therefore present and focus only on the election subproblem of
+      We will present and focus only on the election subproblem of
       Raft because the log replication heavily increases the complexity and
-      the readability.}
+      the readability (even with Lua).
 
       \subsection{Creation of the Algorithm}
 
@@ -2061,9 +2062,8 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
       \subsection{First Results}
 
-        After having wrote the Raft's code, he wants to try it on five nodes
-        and without any network topology (that means all nodes are directly
-        paired to each other without any latency).\\
+        After writing the Raft code, he wants to try it on five nodes
+        and without any network topology (all nodes comminucate with the native latency).\\
         Once he sent the job, it can be observed in the logs that a node
         effectively becomes the leader and it is sending heartbeats to avoid
         an election process from the other nodes:
@@ -2100,39 +2100,41 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
     \section{Timeline Animation}
 
       Before testing the robustness of his solution, our student wants to
-      see how the network and the connection is evolving during his job's
+      see how the network and the connection are evolving during his job's
       execution.\\
-      For this purpose, Splay contains a small tool designed to parse the
+      For this purpose, we created a small tool designed to parse the
       logs and allow the user to see that evolution during the job's
-      execution. This tool is embedded in the web application with some
-      JavaScript and shows the node states (follower, candidate or leader),
-      shows if a packet is travelling between two nodes and shows time
-      indications following the animation. This tool uses the vis.js library
-      \cite{VisJS} (dynamic graph library) and the Raft code has been slightly
+      execution (adding to Splay tools directory). 
+      This tool is embedded in the web application with some
+      JavaScript. It shows the node states (follower, candidate or leader),
+      if a packet is traveling between two nodes and time
+      indications following the animation. We used the vis.js library
+      \cite{VisJS} (dynamic graph library). The Raft code has been slightly
       modified in order to print the appropriate logs (code can be found here
       \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).\\
 
       This tool takes a text-based log, a speed factor and auto-connect
-      checkbox as inputs, and here, is used to illustrate our Raft election
-      process evolution over time. We reprensents, on the graph, the node (job) state
-      by different color : blue for follower, green for candidates and red for the leader.
+      checkbox as inputs, and here, it is used to illustrate our Raft election
+      process evolution over time. We reprensent, on the graph, the node (job) state
+      by different colors : blue for the follower state, green for the candidate state and red for the leader state.
       Also, network packets currently travelling between nodes, change the color
-      of the directed edge into black and become larger (depending of number of packets).
+      of the directed edge into black and become larger (depending on the number of packets).\\
 
       \begin{figure}[H]
         \centering
-        \includegraphics[width=0.7\linewidth]{figures/user_case/anim_pres.png}
+        \includegraphics[width=0.4\linewidth]{figures/user_case/anim_pres.png}
         \caption{Timeline animation example}
       \end{figure}
 
       If we observe the leader election from the first result (without
-      topology network and no crashes) with this tool, we won't see clearly
+      topology emulation and no crashes) with this tool, we won't see clearly
       the evolution of the nodes states, because the leader election finishes
       very quickly (< 8 ms) and it is hard to capture the visualisation of it
-      (or with an extreme small speed factor).\\
+      (or with an very small speed factor).\\
       The main reason is the lack of latency between nodes. Indeed, without
-      topology the RPC messages travel instantaneously, and then a candidate
-      get its vote granted really fast (and thus becomes the leader directly,
+      topology emulation, the RPC messages travel with the native latency (in case of 
+      the student installation, only docker network latency is expected), and then a candidate
+      gets its vote granted really fast (and thus becomes the leader directly,
       with almost no chances of conflict with another node).
 
     \section{Robustness of solution}
@@ -2144,14 +2146,14 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
       \subsection{Topology settings}
 
-        After testing the algorithm in a perfect network environment
-        simulation, the student tries it with three different network
-        topology configurations created through the network topology tool on
+        After testing the algorithm in a native network environment,
+        the student tries it with three different network
+        topology configurations created through the emulated network topology tool on
         the web application.\\
-        Here are representations of the topology, with specifications on
+        Here are representations of the topologies~\ref{fig:topologies}, with specifications on
         the edges between nodes-routers and routers-routers.\\
         These specifications are focused on latency only, bandwidth constraints
-        are not really influencing Raft as it is producing small and few
+        are not really influencing Raft election as it is producing small and few
         packets.
 
         \begin{figure}[H]
@@ -2180,20 +2182,20 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
           \label{fig:topologies}
         \end{figure}
 
-        The student then tries his implementation of the three configurations,
-        the log results show that Daemons succeeded at achieving the leader
+        The student then tries his implementation of the three configurations.
+        The log results show that Daemons succeeded at achieving the leader
         election and quickly stabilize (one becomes the leader, the other
         become followers) in those different network configurations.\\
         But as we know, Raft election is also fault-tolerant when a majority of
-        nodes are still actives, the user therefore would like to test this
-        fault-tolerance characteristic of the algorithm.
+        nodes are still active, the user therefore would like to test the
+        fault tolerance of the algorithm.
 
       \subsection{Fault injection}
 
         The user now wants to test the correctness of his implementation
         essentially by making the leader crash, but also the other nodes.\\
-        When the leader crashes, the student expect from the Raft specification
-        that an other leader election will be triggered by the remaining
+        When the leader crashes, the student expects from the Raft specification
+        that another leader election will be triggered by the remaining
         nodes, and therefore a new leader will be elected.\\
         To achieve this, the student adds a recovery crash point where the
         heartbeat is triggered in the code:
@@ -2206,12 +2208,12 @@ for i, n in pairs(job.nodes) do
 ...
         \end{lstlisting}
 
-        This crash point will only be triggered by the leader (as heartbeat
+        This crash point will only be triggered by the leader (as the heartbeat
         is only used by the currently elected leader) after five heartbeats
         (when the 6th is called).\\
         When the crash happens, the node will recover after 0.5 seconds.\\
         Also, the student adds other crash points not depending on the
-        node's state but triggering less often. For example, when a RCP vote
+        node's state but triggering less often. For example, when a RPC vote
         request is received:
 
         \begin{lstlisting}[style=MyLua]
@@ -2223,34 +2225,34 @@ function request_vote(term, candidate_id)
         \end{lstlisting}
 
         This one will be triggered by a node when it receives a vote request
-        from a candidate with a probability of 0.05 (one chance on 20).\\
+        from a candidate with a probability of 0.05 .\\
         The student creates other crash points in another key step of
         the algorithm (when a vote is granted) to observe the behavior of
         the Raft election when there is a fault.\\
 
-        After some test, he checks the logs for the different topology
+        After some tests, he checks the logs for the different topology
         settings, and he sees that everything went as expected. Indeed, when
         the leader crashes, another node will trigger a new leader
         election and become a candidate. If there is no conflict with another
         candidate (election triggered by two nodes at the same time), this
-        candidate will become leader and only one node can be the leader
+        candidate will become the leader and only one node can be a leader
         at the same time.
 
       \subsection{Animation results}
 
-        Now the student have tried his Raft election implementation on
+        Now the student has tried his Raft election implementation on
         different topologies and with some crash points, he can observe some
         interesting results thanks to the animation tool.\\
-        A complete Raft election can be divied in multiple steps. The next
+        A complete Raft election can be divided in multiple steps. The next
         figure shows a complete election process with a conflict between
         three candidates (candidates asking almost at the same time vote
         requests to the others).\\
-        In this case, nobody gets the majority of vote, therefore another
+        In this case, nobody gets the majority of votes, therefore another
         election will be triggered with a bigger term at some point.
         And with this new election, the candidate who received enough votes
-        will become the leader (no conflit this time).\\
-        Note that conflicts happen rarely with 3 candidates, because the
-        leader timeout is well balanced thanks to randomization and the
+        will become the leader (no conflict this time).\\
+        Note that conflicts happen rarely with 3 candidates because the
+        leader timeout is well-balanced thanks to randomization and the
         topology used is not an extreme case (topology 2 \ref{fig:topo2}).
 
         % Show four step of election: all followers -> two candidate -> one leader -> leader + heartbeat
@@ -2285,14 +2287,14 @@ function request_vote(term, candidate_id)
           \label{fig:election}
         \end{figure}
 
-        In this case no node crashes but we can show that even when a crash
+        In this case, no node crashes but we can show that even when a crash
         happens, Raft is fault-tolerant as long as there is a majority of
-        nodes alive (3 in this case). If there is only one or two nodes alive,
+        nodes alive (3 in this case). If there are only one or two nodes alive,
         the election can't be achieved until a third node wakes up.\\
         The animation shows that, when the leader crashed, one or multiple
         nodes triggered a new leader election process.\\
         Crashes can also happen on a follower or candidate node, which won't
-        disturb the raft process as long as there is a majority of nodes
+        disturb the Raft process as long as there is a majority of nodes
         running.
 
     % \section{Buggy code proof}
@@ -2313,7 +2315,7 @@ function request_vote(term, candidate_id)
 
     We'll first conclude this report by going through a list of improvements
     idea over the project, and then summarize our global achievements on the
-    project comparing our initial objectives with the work we achieved.
+    project compared to our initial objectives.
 
     \section{Improvements}
 
@@ -2363,13 +2365,17 @@ function request_vote(term, candidate_id)
           The crash point feature now handles two types of crashes and two
           behavior to adopt in case of a crash. This feature is very useful
           to simulate a hard stop of a machine (power loss, for example).\\
+
           However, we could improve this by adding new types of crashes like a
           network crash or network compartmentalization meaning that the
           nodes would still be running but could not communicate anymore
           with other nodes during the downtime.\\
           For this purpose, we could modify the socket wrapping done to achieve
-          topology (or creating a new one) where our crash library could ask
+          topology emulation (or creating a new one) where our crash library could ask
           for restrictions over the network simulation.\\
+          Moreover, this idea can go futher, to be able to create network partition between 
+          several nodes, creating two or more splited network where nodes can 
+          only communicate with others located in the same partition.\\ 
 
           Moreover, we can imagine providing the user with more control options
           to configure more precisely what should happen in case of crash or
@@ -2391,18 +2397,18 @@ function request_vote(term, candidate_id)
             idea.
             \item \textbf{Edge in both directions}: Right now, the user can only
             add directed edges between nodes, adding an option to directly
-            created edges in both directions would be a good idea and
+            create edges in both directions would be a good idea and
             avoid double work with the directed edges through the form.
           \end{itemize}
 
       \subsection{Refactor of old services}
 
         We have rebuilt some parts of Splay using modern technologies as
-        explained in the related section, but we haven't made a complete
+        explained in the related section, but we have not made a complete
         refactor of the daemon and the controller. We think that those two
         services would need, in the future, a complete refactor or even be
         rewrote maybe using newer technologies. A database schema cleaning
-        would also follow, as some fields of the various entities may no be
+        would also follow, as some fields of the various entities may not be
         useful anymore.
 
         \subsubsection{Daemon}
@@ -2413,7 +2419,7 @@ function request_vote(term, candidate_id)
           a lot of unused code lines, small bugs and code repetition in the
           Daemon codebase and we therefore carefully fixed those issues when
           encountered.\\
-          We therefore reduced the usage of the Splay library by the Daemon
+          Therefore, we reduced the usage of the Splay library by the Daemon
           and ended up with a lot of unused and undocumented code in this
           library. For these reasons, we think that a complete check of the
           Splay Lua library should be performed (with the help of a previous
@@ -2422,24 +2428,24 @@ function request_vote(term, candidate_id)
           suite.\\
 
           Moreover, we saw by the end of the project that the socket
-          topology restriction wasn't actually taking into account
+          topology restriction was not actually taking into account
           the packet loss rate and the queue length (maybe this feature was
           a work in progress in the latest version of the legacy codebase).\\
           Therefore, the topology settings that can be tweaked are limited to
           the bandwidth and latency.\\
           Furthermore, we saw that the topology restriction is based on the
           \textbf{IP} combined to a single port number, this causes unknown
-          client sockets (because the port is different than the server port)
+          client sockets (because the port is different from the server port)
           and useless restrictions. For all these reasons, the socket topology
           (coming with the SplayNet module) needs to be improved.\\
 
           A radical solution to clean this service and offer a new alternative
           to users would be to completely rewrite the Daemon service using
           another technology.\\
-          The best alternative for the language would be Python, Python being a
+          The best alternative for the language would be Python, Python is a
           very popular language with a supportive community and constantly
           updated, having rich libraries offering complete sets of tools.\\
-          However, the main problem of this solution would be the performance
+          However, the main drawback of this solution would be the performance
           offered by vanilla Python compared to the very small core of Lua and
           its C integration. But the main drawback of Lua is evolution, Lua has
           not received major updates since 2014 and the libraries used in this
@@ -2449,7 +2455,7 @@ function request_vote(term, candidate_id)
           This results in a greater number of lines of codes for the Splay lib,
           which thus includes more chances of bugs.\\
           Going back to the performance question, using a just-in-time compiler
-          such as PyPy \cite{PyPy} to significantly boost the performance and
+          such as PyPy~\cite{PyPy} to significantly boost the performance and
           using some distributed libraries to quickly create a new Splay library
           may be a solution.
 
@@ -2461,15 +2467,15 @@ function request_vote(term, candidate_id)
           Despite being such a central piece of the project, the code is still
           badly documented and still needs an advanced cleanup in its
           different parts, and it is also poorly tested even after we worked
-          on it. We may therefore propose two different ways to increase
+          on it. We may, accordingly, propose two different ways to increase
           the quality and maintainability of the controller for future
           development phases:
 
           \begin{itemize}
-            \item Using full object-oriented with sequel \cite{Sequel} model
+            \item Using full object-oriented with sequel~\cite{Sequel} model
             object for each table of the database. The SQL queries are now
             raw ones which can be insecure (in case one forgets to manually
-            check against injections) and which is hard to read.\\
+            check against injections) and which are hard to read.\\
             A sequel model object allows every operation on a SQL database
             through function calls in a nice a concise Ruby way, avoiding
             SQL error syntax and most importantly it is independent of the
@@ -2485,7 +2491,7 @@ function request_vote(term, candidate_id)
         In the description of the legacy project, we saw that the user's job is
         supposed to be running in a restricted area and the project is secure in
         general.\\
-        But with further analysis, we found out that the project wasn't secure
+        But with further analysis, we found out that the project was not secure
         in various ways:\\
         \begin{itemize}
           \item The restriction on the socket can actually be completely
@@ -2498,12 +2504,12 @@ function request_vote(term, candidate_id)
           \item SQL calls in the controller are using string interpolation,
           in most of the cases, the call is secure manually adding escape
           characters in the string. Indeed, there is no security issue if
-          each call is protected with escaping, but the fact this is done
+          each call is protected with escaping, but the fact that it is done
           manually is a bad practice and will create a security issue if
           any verification is mistakenly skipped by a developer.
         \end{itemize}
 
-        We therefore concluded that an installation of Splay needs to be only
+        We concluded that the installation of Splay needs to be only
         used by trusted people in a trusted environment. It is therefore
         extremely important for the project to have future work about the
         securitization of the platform so that it could be used everywhere.
