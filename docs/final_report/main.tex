@@ -120,14 +120,6 @@
 
   \chapter{Introduction}
 
-    % # Intro
-    % vue générale de ce qu'est le contexte; quel est le problème; les
-    % contributions (déjà parler de ce qu'on a fait dans les grandes lignes)
-
-    % Discuter de la problématique de tester des algorithmes distribues
-    % expliquer pourquoi le projet existe, paler d'abord sans splay, ensuite avec et au final avec plus nouvelle features
-    % amener implicitement les features
-
     Distributed algorithms are at the core of applications in domains as
     various as cloud computing, networking or artificial
     intelligence~\cite{DistributedArtificialIntelligence}.\\
@@ -355,7 +347,7 @@
         services, a command line interface and a full-stack web application.\\
         In order to test a distributed algorithm the user has to send, through
         one of these services, what we call a \textbf{\texttt{job}}. A
-        \textbf{\texttt{job}} encapsulates everything needed by the application
+        \texttt{job}} encapsulates everything needed by the application
         to run the distributed algorithm and is composed of the following
         elements:
 
@@ -365,7 +357,7 @@
           \item Various fields like a name and a description defining the job.
           \item A \textbf{\texttt{topology}}. As explained in
           \textsc{SplayNet}~\cite{SplayNet}, the user can design a network
-          \textbf{\texttt{topology}} which will be used by the application
+          \texttt{topology}} which will be used by the application
           to run the algorithm in the specified topology through emulation.
           This topology (optional) must be passed in the job and defined
           using XML.
@@ -374,15 +366,15 @@
         Then the user receives an id number corresponding to his job, and
         is able to retreive \textbf{\texttt{logs}} (through the web application
         or the command-line interface).\\
-        These \textbf{\texttt{logs}}, and this
+        These \texttt{logs}}, and this
         definition will hold for the rest of this document when we talk about
-        \textbf{\texttt{logs}}, contain the informations about one job's
+        \texttt{logs}}, contain the informations about one job's
         execution on the application.\\
         Each node produces logging informations about its processing of the
         algorithm, containing its identification number and timestamps.\\
         The application then merge each of these individual informations
         to produce a single and ordered log file about one job, which we
-        call the \textbf{\texttt{logs}}.
+        call the \texttt{logs}}.
 
       \subsection{Software Architecture}
 
@@ -399,8 +391,8 @@
 
           Each of these two services were designed to allow interaction
           with the application. These interactions consist of managing the users
-          (connection, registration), sending new \textbf{\texttt{jobs}},
-          requesting \textbf{\texttt{logs}} and getting informations
+          (connection, registration), sending new \texttt{jobs}},
+          requesting \texttt{logs}} and getting informations
           about the application state (number of available nodes, for example).\\
 
           The CLI service is in fact composed of two sub-services, a server
@@ -436,24 +428,24 @@
 
         \subsubsection{Controller}
 
-          The \textbf{\texttt{controller}}, written in \texttt{Ruby}, is the service
+          The \texttt{controller}}, written in \texttt{Ruby}, is the service
           which will orchestrate the job execution sent by the user.\\
           From the job written in the database through the user applications,
           the controller will choose the requested nodes, dispatch the
           algorithm on these nodes, parse the topology if present to make
           use of \textsc{SplayNet} and emulate the network conditions.\\
-          This service is also responsible for the \textbf{\texttt{logs}}
+          This service is also responsible for the \texttt{logs}}
           creation.
 
         \subsubsection{Daemons}
 
           The \textbf{\texttt{daemons}} are the last piece of the system.
           Written in \texttt{Lua}, they are not Linux daemons, but services designed
-          to take the role of nodes on which the \textbf{\texttt{jobs}} will
+          to take the role of nodes on which the \texttt{jobs}} will
           run. They are also called \textbf{\texttt{Splayds}} in the
           database.\\
-          The \textbf{\texttt{daemons}} register on the
-          \textbf{\texttt{controller}} through TCP connections so that they
+          The \texttt{daemons}} register on the
+          \texttt{controller}} through TCP connections so that they
           can communicate.\\
 
           The creators of \texttt{Splay} made the choice of \texttt{Lua} because it is a very
@@ -2475,14 +2467,14 @@ end)
 
         The log can be cut in small parts to detail to process of election:
         \begin{itemize}
-          \item Line 1 : the leader timeout is finish on the node 2, then a leader election is trigger.
-          \item Lines 2-5 : the candidate (node 2) send vote request to other nodes
-          \item Lines 6-13 : others nodes received the vote request from node 2 and return the result.
-          \item Lines 14-16 : node 2 received the two result of its vote requests and obtain the majority of vote.
-          Then the node becomes the leader.
-          \item Lines 17-22 : Leader (node 2) send heartbeat directly to other nodes to specify that it is the leader now
-          (also he receives the rest of vote request response).
-          \item Lines 23-26 : Others nodes gets heartbeat from the leader and reset their election timeout.
+          \item Line 1 : The leader timeout is finished on the node 2, then a leader election is triggered.
+          \item Lines 2-5 : The candidate (node 2) sends a vote request to the other nodes
+          \item Lines 6-13 : Theothers nodes received the vote request from node 2 and return the result.
+          \item Lines 14-16 : Node 2 received the two results of its vote request and obtain the majority of votes.
+          Thereforeit becomes the leader.
+          \item Lines 17-22 : Leader (node 2) sends heartbeat directly to the other nodes to specify that it is now the leader
+          (also he receives the rest of the vote request response).
+          \item Lines 23-26 : Other nodes gets heartbeat from the leader and reset their election timeout.
         \end{itemize}
 
     \section{Timeline Animation}
@@ -2503,10 +2495,12 @@ end)
 
       This tool takes a text-based log, a speed factor and auto-connect
       checkbox as inputs, and here, it is used to illustrate our Raft election
-      process evolution over time. We reprensent, on the graph, the node (job) state
-      by different colors : blue for the follower state, green for the candidate state and red for the leader state.
-      Also, network packets currently travelling between nodes, change the color
-      of the directed edge into black and become larger (depending on the number of packets).\\
+      process evolution over time. We represent on the graph the node (job)
+      state by different colors : blue for the follower state,
+      green for the candidate state and red for the leader state.\\
+      Also, network packets currently travelling between nodes change the color
+      of the directed edge into black and become larger (depending on the
+      number of packets).\\
 
       \begin{figure}[H]
         \centering
@@ -2520,35 +2514,38 @@ end)
       very quickly (< 8 ms) and it is hard to capture the visualisation of it
       (or with an very small speed factor).\\
       The main reason is the lack of latency between nodes. Indeed, without
-      topology emulation, the RPC messages travel with the native latency (in case of
-      the student installation, only docker network latency is expected), and then a candidate
-      gets its vote granted really fast (and thus becomes the leader directly,
-      with almost no chances of conflict with another node).
+      topology emulation, the RPC messages travel with the native latency
+      (in case of the student installation, only docker network latency is
+      expected), and then a candidate gets its vote granted really fast (and
+      thus becomes the leader directly, with almost no chances of conflict
+      with another node).
 
     \section{Robustness of solution}
 
       The student is not totally sure that his solution is correct, and he would
       like to try to break his Raft election by testing it with different
       network settings and by adding some fault injection in the critical
-      parts of the process. Moreover, he wants to see the difference of chance to become leader
-      depending of the network topology.
+      parts of the process. Moreover, he wants to observe the difference of
+      chances for a node to become leader depending on the network topology.
 
       \subsection{Network Topology Emulation}
 
-        The student wants to tests it implementation on different network topology
-        and see the difference on the chance for each node to become leader.
+        The student wants to test his implementation on different network
+        topologies and see the difference of the chances for each node to
+        become leader.
 
         \subsubsection{Topology settings}
 
           After testing the algorithm in a native network environment,
           the student tries it with three different network
-          topology configurations created through the emulated network topology tool on
+          topology configurations, created wit the network topology tool on
           the web application.\\
-          Here are representations of the topologies~\ref{fig:topologies}, with specifications on
-          the edges between nodes-routers and routers-routers.\\
-          These specifications are focused on latency only, bandwidth constraints
-          are not really influencing Raft election as it is producing small and few
-          packets.
+          Here are representations of the topologies~\ref{fig:topologies},
+          with specifications on the edges between nodes-routers and
+          routers-routers.\\
+          These specifications are focused on latency only,
+          bandwidth constraints are not really influencing Raft election as
+          it is using small and few packets.
 
           \begin{figure}[H]
             \centering
@@ -2576,28 +2573,40 @@ end)
             \label{fig:topologies}
           \end{figure}
 
-        \subsubsection{Network topology impact}
+        \subsubsection{Network Topology Impact}
 
-          The student then tries his implementation with three network configurations~\ref{fig:topologies}.
-          The log results show that Daemons succeeded at achieving the leader
-          election and quickly stabilize (one becomes the leader, the other
+          The student then tries his implementation with three network
+          configurations~\ref{fig:topologies}.\\
+          The log results shows that Daemons succeeded at achieving the leader
+          election and quickly stabilize (one becomes the leader, the others
           become followers) in those different network configurations.\\
-          But the network topology can affect
-          the leader selection (some nodes have more chance to other becoming the leader), he expects
-          to obtain different results for each topology :
+          But the network topology can affect the leader selection (some nodes
+          have more chances than others of becoming the leader). He expects to
+          obtain different results for each topology :
+
           \begin{itemize}
-            \item First topology \ref{fig:topo1} : he expects that each node have almost the same chance to be the leader because
-            the latencies between endpoints is small compared to the timeout election range (1.5 seconds).
-            \item Second topology \ref{fig:topo2} : he expects than daemon 3-4-5 have slightly more chance
-            to become the leader (a kind of partition is done with a majority and two other node) than daemon 1-2 because
-            there is a kind of partition between the first two nodes and the rest with a big latency (250 ms).
-            \item Thrid topology \ref{fig:topo3} : he expects that the daemon 5 has very small chance to become the leader compared to the others.
-            Also we can see that the communication with daemon 5 create always
-            a RPC timeout, and then other node need to resend each time a supplement packet to daemon 5.
+            \item First topology \ref{fig:topo1} : he expects that each node
+            have almost the same chances to become the leader because the
+            latencies between endpoints is small compared to the timeout
+            election range (1.5 seconds).
+            \item Second topology \ref{fig:topo2} : he expects that daemons
+            3-4-5 have slightly more chances to become the leader
+            (a kind of partition is done with a majority and two other nodes)
+            than daemons 1-2 because there is a kind of partition between the
+            first two nodes and the rest with a big latency (250 ms).
+            \item Thrid topology \ref{fig:topo3} : he expects that the daemon
+            5 has very small chances to become the leader compared to the
+            others. We can also see that the communication with daemon 5 always
+            creates a RPC timeout, and then other nodes need to resend each
+            time another packet to daemon 5.
           \end{itemize}
-          To support these expectations and to test the fault tolerance of the algorithm,
-          the student makes experiments with single fault injection. he adds
-          a crash point in the heartbeat function to crash the leader before the second heartbeat and trigger a new election :
+
+          To support these expectations and to test the fault tolerance of
+          the algorithm, the student makes experiments with single fault
+          injection. He adds a crash point in the heartbeat function to
+          make the leader crash before the second heartbeat and
+          thus trigger a new election :
+
           \begin{lstlisting}[style=MyLua]
 ...
 function heartbeat()
@@ -2606,16 +2615,18 @@ function heartbeat()
 ...
           \end{lstlisting}
 
-          The student launch the code turn during approximately 13 minutes and parse the log to get
-          the number of time each node is became leader. First, he concludes that crashing the leader
-          does not crash the Raft election process but only restart a election as expected. \\
-          Then, the result~\ref{tab:leader} after the long run supports
-          his expectations concerning the chance of each node to become the leader.\\
-          Here, the purpose is \textbf{not} making statistical evidence/model but
-          only showing the importance of the topology emulation on a distributed algorithm
-          and specifically on the chance of each node to become the leader during a Raft election process.
-          But we can imagine a advanced study to clearfy the impact of the network to the leader
-          election (or other process) with the help of Splay.
+          The student launches the code turn during approximately 13 minutes,
+          and parses the logs to get the number of times each node becomes the
+          leader.\\
+          First, he concludes that crashing the leader does not crashes the
+          Raft election process but only restarts an election, as expected.\\
+          The purpose is \textbf{not} to make statistical evidence/model but
+          only to show the importance of the topology emulation on a
+          distributed algorithm and specifically of the chance of each node
+          to become the leader during a Raft election process.\\
+          But we can imagine scenarios of advanced studies to demonstrates
+          the impact of certain network configurations on the leader election
+          process thanks to Splay.\\
 
           \begin{table}[]
             \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -2632,14 +2643,16 @@ function heartbeat()
 
       \subsection{Advanced fault injection}
 
-        The user have already test the triggering of election in the previous section
-        by crashing the leader but he wants to increase the confidence of is implementation.
-        Then, he add other fault injection at different key point of his algorithm to
-        see how his implementation will manage different faults.
+        The user already tested what happens in case of leader crashes, he now
+        wants to increase his confidence in his implementation.\\
+        Therefore, he injects other faults at different key points of the
+        algorithm to see how his implementation will manage these faults.\\
 
         To achieve this, the student puts four crash points in his code.
-        First ad before, he adds a crash point in the heartbeart function but with other parameters
-        (when the 6th heartbeart is called and recover after 0.5 second) :
+        Ad before, he adds a crash point in the heartbeart function, but with
+        other parameters (when the 6th heartbeart is called and recovers
+        after 0.5 second) :
+
         \begin{lstlisting}[style=MyLua]
 ...
 function heartbeat()
@@ -2647,10 +2660,12 @@ function heartbeat()
   for i, n in pairs(job.nodes) do
 ...
         \end{lstlisting}
-        Secondly, he adds crash points not depending on the
-        node's state but triggering less often. Firstly, when a RPC vote
-        request is received, this one will be triggered by a node when it receives a vote request
-        from a candidate with a probability of 0.05 :
+
+        Secondly, he adds acrash point not depending on the
+        node state but triggering less often. It will be triggered by a node
+        when it receives a vote request from a candidate with a probability
+        of 0.05 :
+
         \begin{lstlisting}[style=MyLua]
 ...
 function request_vote(term, candidate_id)
@@ -2659,7 +2674,9 @@ function request_vote(term, candidate_id)
 ...
         \end{lstlisting}
 
-        Secondly, he adds a crash point when a vote is granted by a node :
+        As the third fault, he adds a crash point triggered when a vote is
+        granted by a node :
+
         \begin{lstlisting}[style=MyLua]
 ...
 if vote_granted == true then
@@ -2668,7 +2685,9 @@ if vote_granted == true then
 ...
         \end{lstlisting}
 
-        And last, he creates a fault injection just \textbf{after} than a node reply to a vote request RPC.
+        And last, he places a crash point just \textbf{after} that a
+        node replies to a vote request RPC.
+
         \begin{lstlisting}[style=MyLua]
 ...
         set_election_timeout() -- reset the election timeout
@@ -2680,19 +2699,21 @@ if vote_granted == true then
 end
 ...
         \end{lstlisting}
-        We add a new thread and adding the crash in it, it is a trick for that the crash append after the return
-        and the RPC reply on the network. It is working because the Non-preemptive of Lua will first finish the current
-        code before passing to a other coroutine (behind the scene of the thread). \\
 
-        After letting running the code on 5 daemon during 10 minutes,
-        he checks the logs for the different topology
-        settings, and he sees that everything went as expected. Indeed,
-        leader elections happen without any problem (if majority on) and there is no more than one leader
-        in the same time. Moreover, when there are not enough nodes alive (less than 3),
-        the leader election will not progress until the majority of nodes is on. \\
-        He does not conclude the correctness of his code, because it is impossible to test every
-        situation, but he is more confident about the Raft election process and
-        his pratical code of it.
+        We create a new thread which will be executed after the RPC function
+        returns, therefore after the node received a response. Indeed this is
+        working because of the non-preemptive nature of \texttt{Lua}, the thread
+        will execute after, and the crash will happen after the RCP response is
+        sent.\\
+
+        After letting the code run on 5 daemons for 10 minutes, the student
+        checks the logs for the different topology settings.\\
+        He sees that everything went as expected. Indeed, the leader
+        election process is performed without any problem and there is never
+        more than on leader at the same time.\\
+        Moreover, when there less than a majority of nodes is alive, the leader
+        election process will not progress until there is a majority again.\\
+        The student is now more confident about his implementation of Raft.
 
       \subsection{Animation results}
 
@@ -2743,10 +2764,11 @@ end
           \label{fig:election}
         \end{figure}
 
-        In case of figure~\ref{fig:election}, no node crashes but we can show that even when a crash
-        happens, Raft is fault-tolerant as long as there is a majority of
-        nodes alive (3 in this case). If there are only one or two nodes alive,
-        the election can't be achieved until a third node wakes up.\\
+        In case of figure~\ref{fig:election}, no node crashes but we can show
+        that even when a crash happens, Raft is fault-tolerant as long as there
+        is a majority of nodes alive (3 in this case). If there are only one or
+        two nodes alive, the election can't be achieved until a third node
+        wakes up.\\
         The animation shows that, when the leader crashed, one or multiple
         nodes triggered a new leader election process.\\
         Crashes can also happen on a follower or candidate node, which won't
@@ -2956,9 +2978,9 @@ end
         extremely important for the project to have future work about the
         securitization of the platform so that it could be used everywhere.
 
-    \section{Objectives achievement} % TODO: resume of the project
+    \section{Objectives achievement} % TODO: Rewrote
 
-      First, we have explain the importance distributed
+      We have explain the importance distributed
       algorithm but also the difficulty to prototype existing solution and also new ideas
       from papers. Then we explain that Splay is a very good solution of that problem,
       it allows to any student or professor to quickly implement a
