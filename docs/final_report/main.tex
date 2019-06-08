@@ -15,10 +15,13 @@
   language         = [5.3]Lua,
   basicstyle       = \small\ttfamily,
   keywordstyle=\color{magenta},
+  stringstyle=\color{blue},
+  commentstyle=\color{black!50},
+  frame=single,
+  tabsize=2,
   showspaces=false,
   showstringspaces=false,
-  stringstyle=\color{blue},
-  commentstyle=\color{black!50}
+  literate={\ \ }{{\ }}1
 }
 
 \lstdefinestyle{MySmallLua}{
@@ -294,13 +297,13 @@
       In the next chapter, we will explicit how we designed the changes made on
       \texttt{Splay} to address the problem of making it a learning and teaching
       platform.\\
-      Chapter~\cite{chap:dev} will explain in detail all our development,
+      Chapter~\ref{chap:dev} will explain in detail all our development,
       implementation and architectural changes on \texttt{Splay}.\\
-      Chapter~\cite{chap:qual} will present all our work to ensure code quality
+      Chapter~\ref{chap:qual} will present all our work to ensure code quality
       in the project.\\
       We will then explain the development of the new features
-      of \texttt{Splay} in chapter~\cite{chap:newfeat}, present a real scenario
-      of usage in chapter~\cite{chap:usercase} and then conclude this document.
+      of \texttt{Splay} in chapter~\ref{chap:newfeat}, present a real scenario
+      of usage in chapter~\ref{chap:usercase} and then conclude this document.
 
   \chapter{Splay for Learning and Teaching}
   \label{chap:splayteaching}
@@ -471,7 +474,7 @@
       work as we would progressively making these a reality, but also useful
       to use them to create tests and ensure these features would be covered.
 
-      \subsubsection{A student trains on Splay}
+      \subsection{A student trains on Splay}
 
         As a student, I would like to be able to put in practice what I learned
         during my courses about distributed systems and applications.\\
@@ -487,7 +490,7 @@
         performed in the system. I can also choose to kill my job in case
         I did something wrong and the job is not finishing at all.
 
-      \subsubsection{A professor trains on Splay}
+      \subsection{A professor trains on Splay}
 
         As a professor, I would like to be able to experiment with a new
         approach of solving the leader election problem among a set of
@@ -2616,7 +2619,7 @@ end)
 
         \subsubsection{Network topology impact}
 
-          The student then tries his implementation of with three network configurations~\ref{fig:topo1}~\ref{fig:topo2}~\ref{fig:topo3}.
+          The student then tries his implementation of with three network configurations~\ref{fig:topologies}.
           The log results show that Daemons succeeded at achieving the leader
           election and quickly stabilize (one becomes the leader, the other
           become followers) in those different network configurations.\\
@@ -2656,14 +2659,13 @@ function heartbeat()
           election (or other process) with the help of Splay. 
 
           \begin{table}[]
-            \centering
             \begin{tabular}{|c|c|c|c|c|c|c|}
             \hline
-            Topologies             & \multicolumn{6}{c|}{\% Leader (number time become leader)}                                                                      \\ \hline
-            \multicolumn{1}{|l|}{} & Node 1                 & Node 2                & Node 3         & Node 4        & Node 5                & Total leader election \\ \hline
-            Topology 1, \ref{fig:topo1}           & 20.36 \% (90)          & 21.27 \% (94)         & 19.91 \% (88)  & 18.78 \% (83) & 19.68 \% (87)         & 100 \% (442)          \\ \hline
-            Topology 2, \ref{fig:topo2}           & \textbf{10.50 \% (38)} & \textbf{9.67 \% (35)} & 28.17\% (102)  & 25.69 \% (93) & 25.97 \% (94)         & 100 \% (362)          \\ \hline
-            Topology 3, \ref{fig:topo3}            & 22.61 \% (90)          & 25.63 \% (102)        & 25.63 \% (102) & 23.62 \% (94) & \textbf{2.51 \% (10)} & 100 \% (398)          \\ \hline
+            Topologies             & \multicolumn{6}{c|}{\% Leader (number time become leader)}                                                                                                                                                                                                                                                                                                                         \\ \hline
+            \multicolumn{1}{|l|}{} & Node 1                                                           & Node 2                                                          & Node 3                                                   & Node 4                                                  & Node 5                                                          & Total                                 \\ \hline
+            Topology 1~\ref{fig:topo1}            & \begin{tabular}[c]{@{}c@{}}20.36 \%\\ (90)\end{tabular}          & \begin{tabular}[c]{@{}c@{}}21.27 \%\\ (94)\end{tabular}         & \begin{tabular}[c]{@{}c@{}}19.91 \%\\ (88)\end{tabular}  & \begin{tabular}[c]{@{}c@{}}18.78 \%\\ (83)\end{tabular} & \begin{tabular}[c]{@{}c@{}}19.68 \%\\ (87)\end{tabular}         & \begin{tabular}[c]{@{}c@{}}100 \%\\ (442)\end{tabular} \\ \hline
+            Topology 2~\ref{fig:topo2}           & \textbf{\begin{tabular}[c]{@{}c@{}}10.50 \%\\ (38)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}9.67 \%\\ (35)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}28.17\%\\ (102)\end{tabular}  & \begin{tabular}[c]{@{}c@{}}25.69 \%\\ (93)\end{tabular} & \begin{tabular}[c]{@{}c@{}}25.97 \%\\ (94)\end{tabular}         & \begin{tabular}[c]{@{}c@{}}100 \%\\ (362)\end{tabular} \\ \hline
+            Topology 3~\ref{fig:topo3} & \begin{tabular}[c]{@{}c@{}}22.61 \%\\ (90)\end{tabular}          & \begin{tabular}[c]{@{}c@{}}25.63 \%\\ (102)\end{tabular}        & \begin{tabular}[c]{@{}c@{}}25.63 \%\\ (102)\end{tabular} & \begin{tabular}[c]{@{}c@{}}23.62 \%\\ (94)\end{tabular} & \textbf{\begin{tabular}[c]{@{}c@{}}2.51 \%\\ (10)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}100 \%\\ (398)\end{tabular} \\ \hline
             \end{tabular}
             \caption{Result of Raft leader election after long run and by crashing the leader before the second heartbeart} 
             \label{tab:leader}
@@ -2701,9 +2703,9 @@ function request_vote(term, candidate_id)
         Secondly, he adds a crash point when a vote is granted by a node :
         \begin{lstlisting}[style=MyLua]
 ...
-        if vote_granted == true then
-          nb_vote = nb_vote + 1
-          -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : RANDOM 0.06
+if vote_granted == true then
+  nb_vote = nb_vote + 1
+  -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : RANDOM 0.06
 ...
         \end{lstlisting}   
 
