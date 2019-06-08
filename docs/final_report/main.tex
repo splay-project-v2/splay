@@ -2332,8 +2332,8 @@ events.run(function()
     
     set_election_timeout() -- set the election timeout
 
-    -- After 50 second the node will exit no matter what
-    events.sleep(50)
+    -- After 1800 second the node will exit
+    events.sleep(1800)
     events.exit()
 end)
         \end{lstlisting}
@@ -2376,8 +2376,17 @@ end)
 2019-05-30 08:20:10.0622 (2)  3: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
         \end{lstlisting}
 
-        % TODO : explain a little bit the result, key points :
-        % Election trigger -> vote request send + received + response -> Leader -> Heartbeat
+        The log can be cut in small parts to detail to process of election: 
+        \begin{itemize}
+          \item Line 1 : the leader timeout is finish on the node 2, then a leader election is trigger.
+          \item Lines 2-5 : the candidate (node 2) send vote request to other nodes
+          \item Lines 6-13 : others nodes received the vote request from node 2 and return the result.
+          \item Lines 14-16 : node 2 received the two result of its vote requests and obtain the majority of vote.
+          Then the node becomes the leader.
+          \item Lines 17-22 : Leader (node 2) send heartbeat directly to other nodes to specify that it is the leader now
+          (also he receives the rest of vote request response).
+          \item Lines 23-26 : Others nodes gets heartbeat from the leader and reset their election timeout. 
+        \end{itemize}
 
     \section{Timeline Animation}
 
@@ -2424,143 +2433,170 @@ end)
       The student is not totally sure that his solution is correct, and he would
       like to try to break his Raft election by testing it with different
       network settings and by adding some fault injection in the critical
-      parts of the process.
+      parts of the process. Moreover, he wants to see the difference of chance to become leader
+      depending of the network topology.
 
-      \subsection{Topology settings}
+      \subsection{Network Topology Emulation}
 
-        After testing the algorithm in a native network environment,
-        the student tries it with three different network
-        topology configurations created through the emulated network topology tool on
-        the web application.\\
-        Here are representations of the topologies~\ref{fig:topologies}, with specifications on
-        the edges between nodes-routers and routers-routers.\\
-        These specifications are focused on latency only, bandwidth constraints
-        are not really influencing Raft election as it is producing small and few
-        packets.
+        The student wants to tests it implementation on different network topology
+        and see the difference on the chance for each node to become leader.
 
-        \begin{figure}[H]
-          \centering
-          \begin{subfigure}{0.6\textwidth}
+        \subsubsection{Topology settings}
+
+          After testing the algorithm in a native network environment,
+          the student tries it with three different network
+          topology configurations created through the emulated network topology tool on
+          the web application.\\
+          Here are representations of the topologies~\ref{fig:topologies}, with specifications on
+          the edges between nodes-routers and routers-routers.\\
+          These specifications are focused on latency only, bandwidth constraints
+          are not really influencing Raft election as it is producing small and few
+          packets.
+
+          \begin{figure}[H]
             \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
-            \caption{First topology - Normal: Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
-            \label{fig:topo1}
-          \end{subfigure}
-          \centering
-          \begin{subfigure}{0.6\textwidth}
+            \begin{subfigure}{0.6\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_1.png}
+              \caption{First topology - Normal: Router-Router -> 5 ms of delay and 10000kbps, Daemon-Router -> 15 ms od delay and 1500kbps}
+              \label{fig:topo1}
+            \end{subfigure}
             \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
-            \caption{Second topology - Two sites: Router-Router -> 250 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
-            \label{fig:topo2}
-          \end{subfigure}
-          \centering
-          \begin{subfigure}{0.6\textwidth}
+            \begin{subfigure}{0.6\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_2.png}
+              \caption{Second topology - Two sites: Router-Router -> 250 ms of delay and 15000kbps, Daemon-Router -> 10 ms od delay and 15000kbps}
+              \label{fig:topo2}
+            \end{subfigure}
             \centering
-            \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_3.png}
-            \caption{Third topology - Extreme: Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
-            \label{fig:topo3}
-          \end{subfigure}
-          \caption{plots of three topologies}
-          \label{fig:topologies}
-        \end{figure}
+            \begin{subfigure}{0.6\textwidth}
+              \centering
+              \includegraphics[width=1.0\linewidth]{figures/user_case/raft_topo_3.png}
+              \caption{Third topology - Extreme: Router-Router -> 200 ms of delay and 15000kbps, Daemon-Router -> 15 ms od delay and 1000kbps}
+              \label{fig:topo3}
+            \end{subfigure}
+            \caption{plots of three topologies}
+            \label{fig:topologies}
+          \end{figure}
 
-        The student then tries his implementation of the three configurations.
-        The log results show that Daemons succeeded at achieving the leader
-        election and quickly stabilize (one becomes the leader, the other
-        become followers) in those different network configurations. But the network topology can affect 
-        the leader selection (some nodes have more chance to other becoming the leader), we expect 
-        to see different result for each topology :
-        \begin{itemize}
-          \item In first topology emulation, each node have almost the same chance to be the leader,
-          no issue is expected and the leader election will be quickly solve.
-          \item In the second topology emulation, we can expected than daemon 3-4-5 have slightly more chance 
-          to become the leader (a kind of partition is done with a majority and two other node),
-          no issues is expected and the leader election will be quickly solve.
-          \item In the last topology, we expected that the daemon 5 has no chance to be the leader and other has 
-          the same chance. Also we can see that the communication with daemon 5 create always 
-          a RPC timeout, and then other node need to resend each time a supplement packet to daemon 5.          
-        \end{itemize}
-        To support these expectations and to test the fault tolerance of the algorithm,
-        the student makes experiments with fault injection.
+        \subsubsection{Network topology impact}
 
-      \subsection{Fault injection}
-
-        First, the student wants to know if his expectation about leader probability 
-        is valid and secondly, he wants to tests the global fault tolerance of 
-        algorithm.
-        
-        \subsubsection{Leader crashs}
-
-          To get a approximation of leader selection probability 
-          for each node to be the leader, the student will 
-          add a crash point only for the leader.
-          \begin{lstlisting}[style=MyLua]
-            ...
-            function heartbeat()
-            -- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: AFTER 1
-            for i, n in pairs(job.nodes) do
-            ...
-          \end{lstlisting}
-
-          % result for the second node : 5 - 54, 1 - 21, 2 -2, 3 - 67, 3 - 65
-          % RESULT 
-          \begin{table}[]
-            \begin{tabular}{|l|l|l|l|l|l|l|}
-            \hline
-            Topologies & \multicolumn{6}{l|}{Leader Selection}              \\ \hline
-                       & Node 1 & Node 2 & Node 3 & Node 4 & Node 5 & Total \\ \hline
-            Topology 1 & 90     & 94     & 88     & 83     & 87     & 442   \\ \hline
-            Topology 2 & 38     & 35     & 102    & 93     & 94     & 362   \\ \hline
-            Topology 3 & 90     & 102    & 102    & 94     & 10     & 398   \\ \hline            
-            \end{tabular}
-          \end{table}
-        \subsubsection{Advanced fault injection}
-
-          The user now wants to test the correctness of his implementation
-          essentially by making the leader crash as before, but also the other nodes.\\
-          When the leader crashes, the student expects from the Raft specification
-          that another leader election will be triggered by the remaining
-          nodes, and therefore a new leader will be elected.\\
-          To achieve this, the student adds a recovery crash point where the
-          heartbeat is triggered in the code:
-
+          The student then tries his implementation of with three network configurations~\ref{fig:topo1}~\ref{fig:topo2}~\ref{fig:topo3}.
+          The log results show that Daemons succeeded at achieving the leader
+          election and quickly stabilize (one becomes the leader, the other
+          become followers) in those different network configurations.\\
+          But the network topology can affect 
+          the leader selection (some nodes have more chance to other becoming the leader), he expects
+          to obtain different results for each topology :
+          \begin{itemize}
+            \item First topology \ref{fig:topo1} : he expects that each node have almost the same chance to be the leader because 
+            the latencies between endpoints is small compared to the timeout election range (1.5 seconds).
+            \item Second topology \ref{fig:topo2} : he expects than daemon 3-4-5 have slightly more chance 
+            to become the leader (a kind of partition is done with a majority and two other node) than daemon 1-2 because 
+            there is a kind of partition between the first two nodes and the rest with a big latency (250 ms).
+            \item Thrid topology \ref{fig:topo3} : he expects that the daemon 5 has very small chance to become the leader compared to the others.
+            Also we can see that the communication with daemon 5 create always 
+            a RPC timeout, and then other node need to resend each time a supplement packet to daemon 5.          
+          \end{itemize}
+          To support these expectations and to test the fault tolerance of the algorithm,
+          the student makes experiments with single fault injection. he adds 
+          a crash point in the heartbeat function to crash the leader before the second heartbeat and trigger a new election : 
           \begin{lstlisting}[style=MyLua]
 ...
 function heartbeat()
--- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: AFTER 5
-for i, n in pairs(job.nodes) do
+  -- CRASH POINT 1 2 3 4 5: RECOVERY 0 : AFTER 1
+  for i, n in pairs(job.nodes) do
 ...
           \end{lstlisting}
 
-          This crash point will only be triggered by the leader (as the heartbeat
-          is only used by the currently elected leader) after five heartbeats
-          (when the 6th is called).\\
-          When the crash happens, the node will recover after 0.5 seconds.\\
-          Also, the student adds other crash points not depending on the
-          node's state but triggering less often. For example, when a RPC vote
-          request is received:
+          The student launch the code turn during approximately 13 minutes and parse the log to get 
+          the number of time each node is became leader. First, he concludes that crashing the leader
+          does not crash the Raft election process but only restart a election as expected. \\
+          Then, the result~\ref{tab:leader} after the long run supports 
+          his expectations concerning the chance of each node to become the leader.\\
+          Here, the purpose is \textbf{not} making statistical evidence/model but 
+          only showing the importance of the topology emulation on a distributed algorithm
+          and specifically on the chance of each node to become the leader during a Raft election process.
+          But we can imagine a advanced study to clearfy the impact of the network to the leader 
+          election (or other process) with the help of Splay. 
 
-          \begin{lstlisting}[style=MyLua]
+          \begin{table}[]
+            \centering
+            \begin{tabular}{|c|c|c|c|c|c|c|}
+            \hline
+            Topologies             & \multicolumn{6}{c|}{\% Leader (number time become leader)}                                                                      \\ \hline
+            \multicolumn{1}{|l|}{} & Node 1                 & Node 2                & Node 3         & Node 4        & Node 5                & Total leader election \\ \hline
+            Topology 1, \ref{fig:topo1}           & 20.36 \% (90)          & 21.27 \% (94)         & 19.91 \% (88)  & 18.78 \% (83) & 19.68 \% (87)         & 100 \% (442)          \\ \hline
+            Topology 2, \ref{fig:topo2}           & \textbf{10.50 \% (38)} & \textbf{9.67 \% (35)} & 28.17\% (102)  & 25.69 \% (93) & 25.97 \% (94)         & 100 \% (362)          \\ \hline
+            Topology 3, \ref{fig:topo3}            & 22.61 \% (90)          & 25.63 \% (102)        & 25.63 \% (102) & 23.62 \% (94) & \textbf{2.51 \% (10)} & 100 \% (398)          \\ \hline
+            \end{tabular}
+            \caption{Result of Raft leader election after long run and by crashing the leader before the second heartbeart} 
+            \label{tab:leader}
+          \end{table}
+
+      \subsection{Advanced fault injection}
+        
+        The user have already test the triggering of election in the previous section
+        by crashing the leader but he wants to increase the confidence of is implementation. 
+        Then, he add other fault injection at different key point of his algorithm to 
+        see how his implementation will manage different faults.
+
+        To achieve this, the student puts four crash points in his code.
+        First ad before, he adds a crash point in the heartbeart function but with other parameters
+        (when the 6th heartbeart is called and recover after 0.5 second) : 
+        \begin{lstlisting}[style=MyLua]
+...
+function heartbeat()
+  -- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: AFTER 5
+  for i, n in pairs(job.nodes) do
+...
+        \end{lstlisting}
+        Secondly, he adds crash points not depending on the
+        node's state but triggering less often. Firstly, when a RPC vote
+        request is received, this one will be triggered by a node when it receives a vote request
+        from a candidate with a probability of 0.05 :
+        \begin{lstlisting}[style=MyLua]
 ...
 function request_vote(term, candidate_id)
   -- CRASH POINT 1 2 3 4 5: RECOVERY 0.5: RANDOM 0.05
   print("RPC Request Vote FROM "..candidate_id.." Term: "..term)
 ...
-          \end{lstlisting}
+        \end{lstlisting}
 
-          This one will be triggered by a node when it receives a vote request
-          from a candidate with a probability of 0.05 .\\
-          The student creates other crash points in another key step of
-          the algorithm (when a vote is granted) to observe the behavior of
-          the Raft election when there is a fault.\\
+        Secondly, he adds a crash point when a vote is granted by a node :
+        \begin{lstlisting}[style=MyLua]
+...
+        if vote_granted == true then
+          nb_vote = nb_vote + 1
+          -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : RANDOM 0.06
+...
+        \end{lstlisting}   
 
-          After some tests, he checks the logs for the different topology
-          settings, and he sees that everything went as expected. Indeed, when
-          the leader crashes, another node will trigger a new leader
-          election and become a candidate. If there is no conflict with another
-          candidate (election triggered by two nodes at the same time), this
-          candidate will become the leader and only one node can be a leader
-          at the same time.
+        And last, he creates a fault injection just \textbf{after} than a node reply to a vote request RPC.
+        \begin{lstlisting}[style=MyLua]
+...
+        set_election_timeout() -- reset the election timeout
+    end
+    events.thread(function()
+        -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : RANDOM 0.05
+    end)
+    return persistent_state.current_term, vote_granted
+end 
+...
+        \end{lstlisting}
+        We add a new thread and adding the crash in it, it is a trick for that the crash append after the return 
+        and the RPC reply on the network. It is working because the Non-preemptive of Lua will first finish the current 
+        code before passing to a other coroutine (behind the scene of the thread). \\
+
+        After letting running the code on 5 daemon during 10 minutes,
+        he checks the logs for the different topology
+        settings, and he sees that everything went as expected. Indeed,
+        leader elections happen without any problem (if majority on) and there is no more than one leader
+        in the same time. Moreover, when there are not enough nodes alive (less than 3), 
+        the leader election will not progress until the majority of nodes is on. \\
+        He does not conclude the correctness of his code, because it is impossible to test every 
+        situation, but he is more confident about the Raft election process and 
+        his pratical code of it. 
 
       \subsection{Animation results}
 
