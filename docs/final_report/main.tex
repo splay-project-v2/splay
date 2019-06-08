@@ -388,7 +388,7 @@
 
         \begin{figure}[H]
           \centering
-          \includegraphics[scale=0.6]{figures/prev_arch.png}
+          \includegraphics[scale=0.4]{figures/prev_arch.png}
           \caption{\label{prev_arch} Legacy Splay Architecture}
         \end{figure}
 
@@ -447,7 +447,8 @@
           The \textbf{\texttt{daemons}} are the last piece of the system.
           Written in Lua, they are not Linux daemons, but services designed
           to take the role of nodes on which the \textbf{\texttt{jobs}} will
-          run.\\
+          run. They are also called \textbf{\texttt{Splayds}} in the
+          database.\\
           The \textbf{\texttt{daemons}} register on the
           \textbf{\texttt{controller}} through TCP connections so that they
           can communicate.\\
@@ -724,73 +725,19 @@
           the user specify those crashpoints in the Lua code within the Lua
           editor.
 
-  \chapter{Architecture and Changes Development}
+  \chapter{Architecture and Development}
   \label{chap:dev}
 
     This chapter will detail our work on the \texttt{Splay} project concerning the
     architectural changes and the modifications of already present features
-    of the system.\\
-    We'll first go through more detailed explanations on the base \texttt{Splay}
-    project we started working from, then go through each change we listed
-    in our roadmap.
-
-    \section{The Base Project}
-
-      Before going any further, we'll see the internal details of the system
-      such as the original software architecture and some implementation
-      details so that the reader will be able to precisely understand the
-      changes we achieved in the following sections.
-
-      \subsection{Architecture}
-
-        The old \texttt{Splay} architecture was composed of:
-
-        \begin{itemize}
-          \item The \textbf{Controller}: The core part of \texttt{Splay}, waits for jobs
-          and dispatch them to the daemons.
-          \item \textbf{Daemons}: Workers registering to the controller and waiting
-          for jobs to achieve.
-          \item A \textbf{MySQL DB}: The communication piece of \texttt{Splay}, allowing
-          communication between the user and the system.
-          \item A \textbf{CLI Server, CLI Client, SplayWeb}: Pair of CLI tools
-          and a web application made in Rails to let the user interact with
-          \texttt{Splay} through communication with the MySQL Database.
-        \end{itemize}
-
-        Whether through the usage of the CLI application or the web application,
-        the user was able to interact with the \texttt{Splay} system, to send his
-        jobs, and gather many information such as the logs or the current
-        state of the running \texttt{Splay}ds (the \texttt{Splay} daemons).\\
-
-        The fact that the database was the central piece of communication
-        between the controller and the user applications was a design choice
-        that we decided to respect and to keep working that way. Indeed, the
-        \textbf{Controller} is the central piece within the \texttt{Splay} project,
-        trying to push changes in that design choice and try to implement a
-        different way of communication than the database would have, more
-        than probably, implied a total rewrite of the controller.\\
-
-        That being said, we weren't totally satisfied with the interaction
-        possibilities offered to the user. Indeed, the Ruby on Rails application
-        was quite old, and the client/server pair of the command line interface
-        stack had a hard to maintain and to huge codebase compared to the
-        features that it had to offer.\\
-
-        We thus chose to operate major changes on this part of the \texttt{Splay}
-        project, in order to combine the arrival of our new features and
-        changes onto the core of \texttt{Splay} with better user experience.
-
-      \subsection{Implementation} % TODO: TODO
-
-        Describe a bit more precisely how the system works (daemon creation,
-        jobs creation, logging)
+    of the system we listed in our roadmap.
 
     \section{Project Analysis and Modifications}
 
       Having the project in our hands and free to apply changes to achieve our
       goals, we analyzed which parts of the project were problematic today and
-      how could we change it to ensure a better user experience, a better
-      maintainability and the overall software quality.
+      how could we change it to ensure better user experience, better
+      maintainability and better overall software quality.
 
       \subsection{Better User Services}
 
@@ -801,13 +748,14 @@
         database to transmit and gather information to the \textbf{Controller}.\\
 
         The first decision to make in order to solve this problem was to
-        merge those two services into a single one and to call that new
+        merge those two services into a single one, and to call that new
         service according to his role among the system: The \textbf{Backend},
         according to the viewpoint of the client.\\
         This backend would have the ambition to offer a secured API through
-        the usage of JWT \cite{JWT} and therefore allowing the development
+        the usage of JWT \cite{JWT} (a token based identification system
+        for web applications) and therefore allowing the development
         of services around that backend, in our case a web application and
-        a command line interface application.\\
+        a command line interface.\\
 
         The web application would thus use a recent JavaScript technology
         allowing dynamic interactions with the user, and the CLI would use
@@ -848,7 +796,7 @@
 
         The main repository called \textbf{Splay} contains all the other services
         through the submodule \cite{GitSubmodules} feature of git. These
-        subrepositories representing the new architecture wanted:
+        subrepositories representing the new architecture:
 
         \begin{itemize}
           \item the cli (command line interface)
@@ -868,16 +816,16 @@
         \cite{DockerHubGithub}.
         This was specially made to ease the integration testing using a
         continuous integration service, which would have to build every single
-        image otherwise (we'll talk about this in a dedicated chapter).\\
+        image otherwise.\\
 
-        Now the services were clearly and logically separated in their
+        Now that the services were clearly and logically separated in their
         distinct repositories, it would be really easier for us to track
         the changes made in each service and would ease further improvements
         by \texttt{Splay} maintainers.
 
     \section{Backend Development}
 
-      In this section, we'll go through the development of our new Backend
+      In this section, we will go through the development of our new Backend
       as the central communication interface with the database for the user
       applications.\\
 
@@ -889,7 +837,7 @@
         for us to stay within the Ruby ecosystem to create the new service
         that would become what we called the \textbf{Backend}. The technology
         we wanted to use for this development had to offer an efficient
-        solution to the following issues:
+        solution to the following challenges:
 
         \begin{itemize}
           \item Allowing simple interfacing with the MySQL database in order
@@ -907,43 +855,42 @@
         The both of us already having a certain experience in using Ruby on
         Rails, and for the reasons of ecosystem consistency we talked about
         in the previous sections, we immediately agreed on using this
-        framework for the backend. The fact of staying in the same language
-        ecosystem would allow us to make sure that future contributors to
-        the application would not have to play with too many technologies and
-        therefore make the future evolution of \texttt{Splay} easier.\\
+        framework for the backend.\\
+        Staying in the same language ecosystem would allow us to make sure
+        that future contributors to the application would not have to master
+        too many technologies and therefore make the future evolution
+        of \texttt{Splay} easier.\\
+
         It should also be noticed that, as we exposed it when talking about the
         changes in the renewed software architecture of \texttt{Splay}, the previous
         web application and the CLI server had a similar role although being
         specialized for different applications. However, the common logic
         of these two Ruby services was already present, and a part of the
-        work was therefore just the matter of isolating this common logic
-        and making it better.\\
+        work was therefore just a matter of isolating this common logic.\\
 
-        Indeed, Rails allow to easily develop, besides traditional MVC web
-        applications, API only applications that doesn't contain all the stuff
+        Rails allow to easily develop, besides traditional MVC web
+        applications, API-only applications that don't contain all the code
         and complexity needed for presenting HTML views to the user and thus
         having a lighter and more concise codebases.\\
+
         The ActiveRecord~\cite{activerecord} ORM shipped with the Rails
         applications is also a major advantage for this technology, allowing us
         to easily and efficiently manage the system's jobs and daemons.\\
-        Finally, the availability of some libraries such as RSpec made for the
-        testing (topic on which we'll talk more deeply in a dedicated chapter),
-        Rubocop for the linter, or even the Netflix's fast\_jsonapi library for
-        data serialization has definitely made Rails the right technology to
-        choose for the Backend.
+        Finally, the availability of some libraries such as RSpec~\cite{rspec}
+        made for the testing, Rubocop~\cite{Rubocop} for the linter definitely
+        made Rails the right technology to choose for the Backend.
 
       \subsection{Centralization of Splay's Backend}
 
-        As said before in the technology choices section, one big thing
-        we wanted to achieve was the merge of the old CLI server and
-        the backend part from the full-stack old web application as those two
-        services were basically achieving the same work and holding the
-        same responsibilities.\\
+        Oone big thing we wanted to achieve was the merge of the old CLI
+        server and the backend part from the full-stack old web application
+        as those two services were basically achieving the same work and
+        holding the same responsibilities.\\
 
         We started with a fresh Ruby on Rails application, passing the
         generator the \textit{--api} option so that we were provided with
         a clean and simple Rails app without all the front-end dedicated
-        files, making it simpler and lighter.\\
+        files.\\
 
         Before writing any line of code, the following tools were added
         to the project:
@@ -954,32 +901,31 @@
           driven development approach.
           \item \textbf{Rubocop}: A static code analyser (linter) to follow
           good codestyle conventions and avoid bad pattern right from the start.
-          \item \textbf{Travis}
+          \item \textbf{Travis}: A continuous integration platform
           \item \textbf{CodeCov} A test coverage tool to get further
           information on the test suite.
         \end{itemize}
 
         Now that the app was ready for development, the major features
-        we wanted to provide were the one provided by the old CLI server and
+        we wanted to provide were the ones provided by the old CLI server and
         were the following:
 
         \begin{itemize}
           \item User and session management (creation, login)
           \item Job management (creation, deletion, listing, details)
-          \item Daemon querrying (listing, details)
-          \item Job logs querrying
+          \item Daemon querying (listing, details)
+          \item Job logs querying
         \end{itemize}
 
         Implementing those features would let us immediately reuse the old
-        CLI client for testing purposes and would provide sufficient actions
-        to start the development of the web application, which could unveil
-        need for new endpoints on the backend to provide user with more
-        actions in order to interact the system.\\
+        CLI client for testing purposes and would provide sufficient endpoints
+        to start the development of the web application.\\
 
         \subsubsection{Models}
 
-          The first phase of this centralized backend development was to
-          put it in charge of the database and the way the data was handled.\\
+          The first phase of this centralized backend development was
+          to make it hold the responsibility of the database management and
+          the way data was handled.\\
 
           For this purpose, we progressively created database migrations
           for each model of the \texttt{Splay} system (jobs, daemons, users, etc...)
@@ -989,19 +935,19 @@
           having a double check through the application and through the
           database schema.\\
           For each model created, we also wrote model tests to ensure those
-          constraints were respected when creating a new model and trying
-          to save it into the database.
+          constraints were respected when creating a new model and saving it
+          into the database.
 
         \subsubsection{User Registration}
 
           To achieve the registration of users, we simply used the
           well-known Devise~\cite{devise} gem (gems are how ruby libraries are
-          called) which provide out-of-the box an efficient and flexible
-          authentication solution for Rails application.\\
+          called). It provides out-of-the box an efficient and flexible
+          authentication solution for Rails applications.\\
           As we were to allow the authentication through a future JSON API,
           the most relevant part in using Devise was to make use of all
           the user registration process given by the gem, using good principles
-          in terms of password hashing with salt to store them. We didn't
+          in terms of password hashing with salt to store them. We did not
           have to reinvent the wheel about user registration.\\
 
           Moreover, for any further development or evolution of the application,
@@ -1010,7 +956,7 @@
           through emails, and many other listed on the gem webpage.\\
 
           Devise was therefore the best choice for our registration management,
-          even for an API only Rails application.
+          even for an API-only Rails application.
 
         \subsubsection{User Authentication}
 
@@ -1022,12 +968,12 @@
           JWT is returned to the calling application to provide it with a way
           to authenticate further requests. This JWT holds encrypted
           information (with a secret key) such as the user id to allow the Rails
-          app to identify to whom belongs the request. The fact that the token
+          app to identify to whothe request belongs. The fact that the token
           is generated in the backend with a secret key also means that the
           token cannot be altered or forged by a malicious application.\\
 
-          To make this works, we had to begin the work on the API endpoints.
-          Before starting to work on those endpoints, we agree that we would
+          To achieve this, we had to syart the work on the API endpoints.
+          Before starting to work on those endpoints, we agreed that we would
           follow the principles of REST~\cite{rest} for the API. Endpoints would
           represent entities with classic HTTP verbs to interact with them.\\
 
@@ -1035,32 +981,34 @@
 
           \begin{itemize}
             \item A route entry representing the entity. In this case,
-            authentication is linked to the session entity and achieve through
+            authentication is linked to the session entity and achieved through
             a POST method, as we want to create a new session.
             \item A controller method corresponding to the endpoint action.
             Here then, a Session controller exists, with a create method in
-            which the password checking happens, and a response is returned
-            accordingly.
+            which the password checking happens, and where a response is
+            returned accordingly.
           \end{itemize}
 
           As we were in the objective of following good practices, we wanted
-          to follow the \textit{"Fat models, skinny controllers"} principle.
+          to follow the \textit{"Fat models, skinny controllers"}~\cite{fatski}
+          principle.\\
+          This principle states that most of the logic should be put in the
+          models, and keep the controller with the minimal and relevant logic.
+          For example, some methods in the controller require authentication,
+          like creating a new job. Therefore, instead of putting all the code
+          required to manage that authentication in the controller, it should
+          be moved out in a model dedicated to authentication or even in
+          the user model.\\
+
           But instead of bloating our models with the needed inner logic for
-          authentication, we created intermediate layers called services
+          authentication, we created intermediate layers called services~\cite{fatmod}
           in Rails. Those services hold the needed logic to keep the controllers
           nice and clean. In the case of authentication, the controller receives
           the request from the router filled with user data, then delegates
-          the task of password verification, token generation if succeeded,
-          and just return the result in the response.\\
-
-          The same process was also applied to manage registration through
-          the API, as it needed the JWT layer to be in a working state.\\
-
-          Finally, we also wrote tests simulating request making use of our
-          API, which we'll explain in more detail in a dedicated chapter.
-          Nevertheless, each test is testing the different behavior of
-          the endpoints, like registering with a bad email, logging in with
-          a non-existent user, etc...
+          the task of password verification, token generation if successful,
+          and just return the result in the response. The same process was also
+          applied to manage registration through the API, as it needed the JWT
+          layer to be in a working state.
 
         \subsubsection{Splay Endpoints}
 
@@ -1068,23 +1016,25 @@
           necessary basis to create the other endpoints in order to let
           an authenticated user interact with \texttt{Splay}.\\
 
-          Once again, we created an authentication service that would check
+          Once again, we created an authentication service that checks
           the request's token to verify whether or not the user was valid or
           if he had the necessary rights to perform the requested action.\\
 
           The endpoints we created are the following:
 
-          \begin{itemize}
-            \item \textbf{Users}: Create, destroy, index (get the list of that
-            resource)
-            \item \textbf{Sessions}: Create
-            \item \textbf{Splayds}: Index
-            \item \textbf{Jobs}: Index, show (get info on a specific entity
-            of that resource), destroy and create
-            \item \textbf{Logs}: Show
-          \end{itemize}
+          \begin{table}[H]
+            \begin{tabular}{|l|l|}
+            \hline
+            \textbf{Endpoint} & \textbf{Methods}       \\ \hline
+            Users             & Create, destroy, index \\
+            Sessions          & Create                 \\
+            Splayds           & Index                  \\
+            Jobs              & Index, show            \\
+            Logs              & Show                   \\ \hline
+            \end{tabular}
+          \end{table}
 
-          The create methods required additional checks in corresponding
+          The \textsc{create} methods required additional checks in corresponding
           services, to carefully create the entity in the database with
           the data sent with the request and make sure those data were
           satisfying the constraints.\\
@@ -1092,42 +1042,42 @@
         \subsubsection{Error Handling}
 
           In order to provide the best response to the applications
-          communicating with the backend, we wanted to respond with
-          the right HTTP errors code in case of errors.\\
+          communicating with the backend anf follow the REST
+          principles, we wanted to respond with the right HTTP status code in
+          case of errors.\\
 
-          Indeed, a successful request is automatically answered with a 200
+          A successful request is answered with a 200
           status code by the Rails application by default.\\
           Rails has a really convenient way to raise errors and catch them
-          in the same or upper component on the call stack, we therefore
-          made use of that tool to implement the following error management
-          strategy:
+          in the same or upper component on the call stack. We used that tool
+          to implement the following error management strategy:
 
           \begin{itemize}
-            \item Each Controller of our API inherit from a common file
+            \item Each Controller of our API inherits from a common file
             called \textit{ApplicationController}
             \item This ApplicationController holds a set of catchers (rescue
-            in the Ruby language) to catch which errors could happen in our
+            in the Ruby language) to catch which errors happen in our
             application:
               \begin{itemize}
-                \item The entity that the user wants to create isn't valid, this
-                means he sent bad parameters through the request
-                \item The requested action is not authorized for this user
+                \item The entity that the user wants to create isn not valid,
+                this means he sent bad parameters through the request;
+                \item The requested action is not authorized for this user;
                 \item The request is malformed (missing fields or badly forged
-                request)
-                \item The requested entity doesn't exist (for example a user
+                request);
+                \item The requested entity does not exist (for example a user
                 wants to get the job details for a non-existing job)
               \end{itemize}
-            \item Then in any controller or service used by a controller, we
+            \item Then, in any controller or service used by a controller, we
             can raise an error and associate an error message, which will be
-            automatically rescued at the root level and trigger a response with
+            automatically catch at the root level and trigger a response with
             the right HTTP status code and the given error message.
           \end{itemize}
 
     \section{Web Application Development}
 
       This section will detail the development of the new web application,
-      starting with the choice of technology required to achieve this task, and
-      then going through the development details.
+      starting with the choice of technology, and then going through the
+      development details.
 
       \subsection{Choosing the Framework}
 
@@ -1137,10 +1087,10 @@
         framework that would satisfy the following conditions: \\
 
         \begin{itemize}
-          \item Light
-          \item Ease of development and maintenance
-          \item Access to numerous third-party libraries
-          \item Popular enough to ensure support over time
+          \item Light in terms of weightness;
+          \item Ease of development and maintenance;
+          \item Access to numerous third-party libraries;
+          \item Popular enough to ensure support over time.
         \end{itemize}
 
         In order to develop a front-end application, the JavaScript ecosystem
@@ -1151,37 +1101,38 @@
         component-based UI development offered by the two other frameworks,
         which were lighter and avoided having to develop in the MVC style.
         Even if we both had previous experience with React thanks to a
-        Cloud Computing course at the UCLouvain, we decided to go for VueJS
+        Cloud Computing course at UCLouvain, we decided to go for VueJS
         instead of React.\\
 
-        The first major advantage of Vue is how light it is, we also took into
+        The first major advantage of Vue is how light it is. We also took into
         account the fact that this technology was gaining in popularity for
         multiple years now to be today a huge player in the world of web
         technologies. Moreover, as we took some time to develop a proof
         of concept application using Vue, we were totally satisfied with the
         simplicity of development that that framework was offering to the
-        developers and allowed us to be totally confident into the fact
+        developers.\\
+        Vue allowed us to be totally confident into the fact
         that going for this technology would allow any further contributor
         of the \texttt{Splay} project to easily get in and participate to the
         development.\\
         Indeed, a Vue application is organized around single components, each
         having its own HTML template, their CSS style declarations and
         the associated JavaScript code. No other exotic language is required.\\
-        The fact that the framework is in the JavaScript ecosystem and
+        The fact that the framework belongs to the JavaScript ecosystem and is
         associated to the NPM package manager also allows to take advantage of
         numerous existing libraries, such as data visualization libraries,
-        testing libraries, etc... \\
+        testing libraries, etc...\\
 
-        For all those reasons, Vue revealed itself the best choice for a
+        For all those reasons, Vue was the best choice for a
         web application and also allowing us to develop with something
         we liked and with recent technologies, besides providing an efficient
         solution to the conditions we needed for the technology.
 
       \subsection{The new front-end application development}
 
-        As the development of the backend was started (detailed in the
-        previous section), we started in the meantime the development of a
-        Single Page Application using the VueJS framework.\\
+        As the development of the backend was started, we started in the
+        meantime the development of a Single Page Application using
+        the VueJS framework.\\
 
         After removing the old files of the previous web application, we
         created a basic VueJS project (version 2.5.X at that time) having a
@@ -1198,7 +1149,8 @@
         project, we installed the Vue-Router package, a Vue extension
         allowing the navigation through different URI within the same
         single page application (without any reload and additional requests
-        to the web server), allowing the user to switch from page to page
+        to the web server).\\
+        This package allows the user to switch from page to page
         as he was on a regular website. Those pages being in fact components
         loaded depending on the selected URI in a root component.\\
         We then created the associated routes for the user registration and
@@ -1212,18 +1164,22 @@
         visits.\\
 
         In order to get the same features as the legacy web application,
-        we created a \textbf{monitoring} page, on which the important
-        information would be displayed to the user in lists.\\
-        A list of \texttt{Splay} daemons (created by the controller) is retrieved
-        from the backend and displayed with global information in a nice
-        bootstrap table.\\
-        A second table used for jobs (also fetched from the backend) is also
-        displayed with general data about these jobs. The user can choose to
-        get more details about a specific \texttt{Splay} daemon or job using a button
-        on the application. He can also choose to kill a job, sending the
-        related command to the backend to let the controller achieve that job
-        killing.\\
-        The creation of a job is done through a simple form and we implemented
+        we created a \textbf{monitoring} page, on which important
+        information would be displayed to the user in lists:
+
+        \begin{itemize}
+          \item A list of \texttt{Splay} daemons (created by the controller) is retrieved
+          from the backend and displayed with global information in a nice
+          bootstrap table.
+          \item A second table used for jobs (also fetched from the backend) is also
+          displayed with general data about these jobs. The user can choose to
+          get more details about a specific \texttt{Splay} daemon or job using a button
+          on the application. He can also choose to kill a job, sending the
+          related command to the backend to let the controller achieve that job
+          killing.
+        \end{itemize}
+
+        The creation of a job is done through a simple form. We implemented
         an automatic check of the fields using the vee-validate package
         \cite{VeeValidate}. As the data sent to the backend is also checked
         before using those to create a new job, vee-validate offers us
@@ -1243,7 +1199,7 @@
         button next to the job details) which holds the involved daemons logs
         with, for each line, the time and the daemon id indication. The user
         can then choose to download the logs as a textfile (as it was possible
-        before) and check how its job performed.
+        before) and check how his job performed.
 
     \section{CLI Development}
 
@@ -1253,32 +1209,31 @@
 
       \subsection{Using Python}
 
-        The old pair of services intended to compose the CLI service was
+        The old pair of services intended to compose the CLI service were
         written in Lua on the client side, and the CLI server was in Ruby. As
         the server's logic would be moved and merged into the \textbf{Backend}
         service, and as we wanted to keep a command line interface application
         in order to run tests of the global project, we needed to reevaluate
-        the relevance of the Lua usage for this application.\\
+        the relevance of Lua for this application.\\
 
         It is more than probable that Lua was used for coherence reasons back
-        in the days, and to avoid scattering \texttt{Splay} around too much different
+        in the days, and to avoid scattering \texttt{Splay} around too many different
         technologies (although Ruby may have been used too instead of Lua).
         Still, maybe today this choice was not the most relevant for a CLI
-        application. Indeed, our small client CLI had to be:
+        application. Indeed, our small client CLI had to:
 
         \begin{itemize}
-          \item Simple
-          \item Concise
-          \item Written in an easy-to-use language
-          \item Having convenient libraries allowing to create simple CLI apps
+          \item Be simple;
+          \item Be concise;
+          \item Be written in an easy-to-use language;
+          \item Having convenient libraries allowing to create simple CLI apps.
         \end{itemize}
 
         However, we inherited of an application scattered in multiples Lua
-        files, each file representing a CLI command. We therefore had a huge
-        source of code duplication, as each file was repeating the process
-        of parsing the user arguments when the program was called, and also
-        repeating the process of reaching the server through a HTTP library
-        in Lua.\\
+        files, each file representing a CLI command. We therefore had code
+        duplication, as each file was repeating the process of parsing the user
+        arguments when the program was called, and also repeating the process
+        of reaching the server through a HTTP library in Lua.\\
         Ruby was indeed a relevant option if we wanted to restrict the number
         of different technologies in use among the project, but Python was
         a better choice to write such a simple script as our CLI. Python has
@@ -1297,50 +1252,49 @@
         configuration to handle a headless browser, making the test suite
         too much complicated).\\
 
-        We started by creating a simple Python script allowing to be launched
+        We started by creating a simple Python script executable
         through Bash and running version 3 of Python.\\
 
         The first step was to set up the available commands to create our CLI.
-        In order to make the code the cleanest and simplest as possible, we
-        decided to use the \textbf{Click} \cite{click} library, a perfect
-        Python package designed to create beautiful CLI's with just a little
+        In order to make the code the cleanest and simplest possible, we
+        decided to use the \textsc{Click}~\cite{click} library, a perfect
+        Python package designed to create powerful CLI's with just a little
         code.\\
         The steps for creating a command are:
 
         \begin{itemize}
-          \item Declare the creation of a command
-          \item Declare eventual arguments and constraints on those arguments
-          \item Declare eventual options for the command
-          \item Write the body of the related command
+          \item Declaring the creation of a command;
+          \item Declaring eventual arguments and constraints on those arguments;
+          \item Declaring eventual options for the command;
+          \item Writing the body of the related command.
         \end{itemize}
 
-        Each command or option can be supplemented with help messages. Then,
-        back in the scenes, Click reassembles all of this and format the
-        output of the CLI, displaying to the user help details if requested
-        and even help details for specific commands.\\
+        Each command or option can be supplemented with help messages. Then
+        \textsc{Click} reassembles all of this and format theoutput of the CLI,
+        displaying to the user help details if requested and even help details
+        for specific commands.\\
 
         The next step was to make real use of the Backend's API, thus we used
         \textbf{requests} \cite{requests} and \textbf{json} Python's libraries to
         achieve the HTTP communication and the JSON requests encoding and
         responses parsing.\\
 
-        This complete rewrite of the CLI allowed us to reduce thousands of
-        Lua lines of code and to obtain a most two hundred of simple and
-        maintainable lines Python lines of code achieving the same features
-        than before.
+        This complete rewrite of the CLI allowed us to remove thousands of
+        Lua lines of code and to obtain two hundred of simple and
+        maintainable lines Python lines of code achieving the same features.
 
     \section{Bug fix on Daemon and Controller}
 
-      As we explained before, the daemon and controller are the only services
-      among \texttt{Splay} that weren't assigned a complete refactor because of how
+      The daemon and controller are the only services
+      among \texttt{Splay} that were not assigned a complete refactor because of how
       complex and long that task would have been. Nevertheless, these services
-      weren't stable enough and a lot of bugs happened during our tests.\\
+      were not stable enough and a lot of bugs were found during our tests.\\
       We therefore needed to apply a lot of corrective changes on those, and
-      this section's goal is to detail this part of our work.
+      this section details this.
 
       \subsection{Controller changes}
 
-        The major source of issues on the controller were due to a previous
+        Most of the issues on the controller were due to a previous
         maintainers misuse of the sequel calls (a Ruby library offering a MySQL
         toolkit), but this is an overall list of all the changes that we
         applied:
@@ -1359,10 +1313,10 @@
           to clean as much as possible the raw SQL string calls by using
           interpolation (see the improvements section in the conclusion).
           \item \textbf{Communication with daemons}: The communication between daemons
-          and the controller wasn't consistent is some cases. For example, the
-          logs retrievement was buggy because daemons were sending more
+          and the controller was not consistent is some cases. For example, the
+          logs retrieval was buggy because daemons were sending more
           information than expected by the controller.\\
-          Therefore, logs retrievement and creation has been fixed, but
+          Therefore, logs retrial and creation were fixed, but
           also improved to be cleaner and more readable (previously an issue on
           the old project \cite{logTimestamps}).
           \item \textbf{Small Changes}: We added more logs when needed and
@@ -1382,7 +1336,8 @@
           \item As explained in the controller part, we fixed the communication
           protocol used between the daemon and the controller, mainly for
           the logging and the registration of daemons on the controller.
-          \item The topology socket restriction is now automatically achieved
+          \item The topology socket restriction % REMY HELP PLS - DEFINE WHAT IS TOPOLOGY SOCKET RESTRICTION
+          is now automatically achieved
           when a topology is given with a job. This restriction is used to
           simulate the topology settings, limiting the bandwidth and creating
           latency.\\
@@ -1400,7 +1355,7 @@
           LuaCrypto cannot use the last Linux's OpenSSL package (due to a
           security issue, and older versions cannot be used in newer OS),
           LuaCrypto was also not updated anymore and moreover, an issue about
-          this was open in the old project repository \cite{sslLib}.\\
+          this was open in the old project repository~\cite{sslLib}.\\
           We therefore updated the code to make use of the new luaossl library.
           \item Multiple bug fixes mainly due to the Lua version change needed
           to be solved.
@@ -1414,15 +1369,15 @@
 
       \begin{figure}[!tbp]
         \centering
-        \begin{minipage}[b]{0.45\textwidth}
+        \begin{subfigure}{0.45\textwidth}
           \includegraphics[width=\textwidth]{figures/prev_arch.png}
           \caption{Previous Architecture}
-        \end{minipage}
+        \end{subfigure}
         \hfill
-        \begin{minipage}[b]{0.45\textwidth}
+        \begin{subfigure}{0.45\textwidth}
           \includegraphics[width=\textwidth]{figures/new_arch.png}
           \caption{Renewed Architecture}
-        \end{minipage}
+        \end{subfigure}
         \caption{Splay Architectural Comparison}
         \label{fig:test}
       \end{figure}
