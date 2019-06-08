@@ -6,6 +6,7 @@
 \usepackage{hyperref}
 \usepackage[final]{graphicx}
 \usepackage{subcaption}
+\usepackage{csquotes}
 
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
@@ -162,10 +163,10 @@
         to communicate with each other in order to achieve their common task.
         \item The student will also need to get feedback on how his
         algorithm performed.
-        \item The student will implement the algorithm from pseudo-code 
-        (informal and simplified programming language)  % TODO : Footer ?
-        and will be confronted to one of the
-        following problems when setting communication and feedback on the machines:
+        \item The student will implement the algorithm from pseudo-code
+        \footnote{Pseudo-code is an informal and simplified programming language}
+        and will be confronted to one of the following problems when setting
+        communication and feedback on the machines:
           \begin{itemize}
             \item He will bloat his implementation with all the needed
             code for communication and feedback.
@@ -182,8 +183,8 @@
         in even more code bloating or in an even more complex home-made system.
       \end{itemize}
 
-      Another issue with distributed algorithms is that the pseudo-code 
-      (from papers for example) is usually far from what a true solution to the % TODO : by example ?
+      Another issue with distributed algorithms is that the pseudo-code
+      (from papers for example) is usually far from what a true solution to the
       related problem would be. There is in general a lot of time management
       and asynchronous calls and responses from the nodes among the system,
       increasing the gap between the theoretical specifications and practical
@@ -192,7 +193,7 @@
     \section{Learning Solutions}
 
       There is a need for solutions to help students in the distributed
-      algorithm learning process.\\ % TODO : process creation ?
+      algorithm learning process.\\
 
       Some testbeds facilitate the testing of distributed algorithms, such as
       emulab~\cite{Emulab}, ModelNet~\cite{ModelNet} or
@@ -229,31 +230,38 @@
       This is where the Splay project takes its origins.
 
     \section{Splay}
-      % TODO : uniformize SPLAY name with \textsc{Splay} everywhere
-      The SPLAY project was initiated to solve the difficulty to test and
-      develop distributed algorithm in a large scale. SPLAY is not a recent
-      project (started around 2006), and lot of features have been added since
-      it's creation. The first version of SPLAY was designed to "cover all % TODO : can i do that "citation" ?
-      aspects of the development and evaluation chain" of distributed
-      application~\cite{SPLAY}. \\ 
-      % TODO : SplayNet -> \textsc{SplayNet}
+
+      The \texttt{Splay} project was initiated to solve the difficulty to test
+      and develop distributed algorithm in a large scale. \texttt{Splay} is
+      not a recent project (started around 2006), and lot of features have been
+      added since it's creation. The first version of \texttt{Splay} was
+      designed to "cover all aspects of the development and evaluation
+      chain" of distributed application~\cite{SPLAY}.\\
       After some years a module has been developed to emulate network
-      topologies, SplayNet~\cite{SplayNet}. This middleware implements an easy
-      way to set the topology network between the endpoints (machines) and
-      emulate the behaviour in latency, throughput and congestion according
+      topologies, \textsc{SplayNet}~\cite{SplayNet}. This middleware implements
+      an easy way to set the topology network between the endpoints (machines)
+      and emulate the behaviour in latency, throughput and congestion according
       to that topology.
 
     \section{Our Work on Splay}
 
-      Our thesis details our work on the Splay project. Splay was initially
-      designed to be used by researchers in distributed systems, our goal
-      was to enhance the initial project to turn it into a framework
+      Our thesis details our work on the \texttt{Splay} project. \texttt{Splay}
+      was initially designed to be used by researchers in distributed systems,
+      our goal was to enhance the initial project to turn it into a framework
       better suited for teaching and learning.\\
       This work follows the idea of providing students with tools
       allowing them to practically assess what they learn during the
-      theoretical lessons, as the Inginous~\cite{inginious} platform allows.\\ % TODO: maybe a sentence more to discribed Inginous
+      theoretical lessons, as the INGInous~\cite{inginious} platform allows.\\
+      As their Github repository explains :
+      \begin{displayquote}
+        "INGInious is an intelligent grader that allows secured and automated
+        testing of code made by students."
+      \end{displayquote}
+      We think that our work is complementary to what INGInous achieves,
+      bringing new ideas and solutions on the distributed systems learning
+      side.\\
 
-      We relaunched the development of Splay, starting from a stable
+      We relaunched the development of \texttt{Splay}, starting from a stable
       version and progressively updating it and adding new
       features in order to make it a good tool for the learning and
       experimentation of distributed algorithms.\\
@@ -280,125 +288,229 @@
         way of learning distributed algorithms.
       \end{itemize}
 
-      This document will detail how we turned Splay into an integrated platform
-      designed to help students learning and practicing distributed systems.\\
+      This document will detail how we turned \texttt{Splay} into an integrated
+      platform designed to help students learning and practicing distributed
+      systems.\\
       In the next chapter, we will explicit how we designed the changes made on
-      Splay to address the problem of making it a learning and teaching
+      \texttt{Splay} to address the problem of making it a learning and teaching
       platform.\\
       Chapter~\cite{chap:dev} will explain in detail all our development,
-      implementation and architectural changes on Splay.\\
+      implementation and architectural changes on \texttt{Splay}.\\
       Chapter~\cite{chap:qual} will present all our work to ensure code quality
       in the project.\\
       We will then explain the development of the new features
-      of Splay in chapter~\cite{chap:newfeat}, present a real scenario of usage
-      in chapter~\cite{chap:usercase} and then conclude this document.
+      of \texttt{Splay} in chapter~\cite{chap:newfeat}, present a real scenario
+      of usage in chapter~\cite{chap:usercase} and then conclude this document.
 
   \chapter{Splay for Learning and Teaching}
-    \label{chap:splayteaching}
+  \label{chap:splayteaching}
 
     In this chapter, we will explicit the solution needed to help the
-    students learns distributed algorithms, then compare it with what Splay
-    offered when we first put our hands on it. Based on user scenarios
-    describing a user experience, we will then draw the roadmap of modifications
-    and enhancement we needed to perform on the old Splay to reach our
-    perfect solution. % TODO : perfect to alternative solution 
+    students learn distributed algorithms, then detail what the previous
+    version of \texttt{Splay} was offering.\\
+    Based of scenarios describing practical use cases of our solution, we will
+    then draw a roadmap of modifications and enhancements we decided to
+    contribute to the project.
 
     \section{A Solution Definition}
 
-      From the previous problems we identified before, we wanted to have an
-      application that could allow students and professors to develop and
-      test their distributed algorithms with the best possible experience.
-      To answers those problems, these are the qualities needed for the
-      solution we wanted to develop:
+      We wanted an application that allows students and professors to develop
+      and test distributed algorithms. These are the qualities needed for this
+      application:
 
       \begin{itemize}
-        \item The whole system should be easy to use for beginners and people
-        who just started to learn Distributed Systems but also for professors.
+        \item The application should be easy to use for beginners and people
+        who just started to learn Distributed Systems, but also for professors.
         \item The application should allow the user to define parameters about
-        the network and nodes he's running his algorithm in, like latencies
-        or specific network configurations so that it would correctly
-        impact the way its algorithm is running.
-        \item The application should provide an enjoyable way for the user
+        the network and nodes he is running his algorithm on such as latencies
+        or packet losses.
+        \item The application should provide an practical way for the user
         to write his algorithm.
         \item The application should allow the user to get detailed information
-        about how its algorithm performed within the system.
-        \item The application would offer services focused on the development
-        of algorithm, therefore and as we identified it as an issue before, no
-        or barely no time should be spent on the configuration of the machines
-        needed to create a distributed system ready to receive algorithms.
+        about how his algorithm performed within the system.
+        \item The application should offer services focused on the development
+        of algorithm. No time should be spent on the configuration of the
+        machines needed to create a distributed system ready to run algorithms.
       \end{itemize}
 
-    \section{What Splay Offered} % TODO: TODO
+    \section{What Splay Offered}
 
-      In the version of the project we started working with, the possibilities
-      offered to the user were quite limited:
+      In this section, we will go through specific topics concerning the Splay
+      application in the state \textbf{before} we added our contributions.\\
+      We will first detail how a user interacted with the application,
+      defining in the mean time specific terms related to
+      the application and that we will use in the rest of this document with
+      the same meaning.\\
+      Then, we will detail the software architecture, proposing a global
+      picture of the application and then going through each component. This
+      part will also detail what happens internally during a user interaction
+      with the application.
 
-      \begin{itemize}
-        \item
-      \end{itemize}
+      \subsection{Application Usage}
+
+        The user is able to interact with the application through two
+        services, a command line interface and a full-stack web application.\\
+        In order to test a distributed algorithm the user has to send, through
+        one of these services, what we call a \textbf{\texttt{job}}. A
+        \textbf{\texttt{job}} encapsulates everything needed by the application
+        to run the distributed algorithm and is composed of the following
+        elements:
+
+        \begin{itemize}
+          \item The distributed algorithm, in Lua, that the user wants to test.
+          \item A number of nodes on which the algorithm should run.
+          \item Various fields like a name and a description defining the job.
+          \item A \textbf{\texttt{topology}}. As explained in
+          \textsc{SplayNet}~\cite{SplayNet}, the user can design a network
+          \textbf{\texttt{topology}} which will be used by the application
+          to run the algorithm in the specified topology through emulation.
+          This topology (optional) must be passed in the job and defined
+          using XML.
+        \end{itemize}
+
+        Then the user receives an id number corresponding to his job, and
+        is able to retreive \textbf{\texttt{logs}} (through the web application
+        or the command-line interface).\\
+        These \textbf{\texttt{logs}}, and this
+        definition will hold for the rest of this document when we talk about
+        \textbf{\texttt{logs}}, contain the informations about one job's
+        execution on the application.\\
+        Each node produces logging informations about its processing of the
+        algorithm, containing its identification number and timestamps.\\
+        The application then merge each of these individual informations
+        to produce a single and ordered log file about one job, which we
+        call the \textbf{\texttt{logs}}.
+
+      \subsection{Software Architecture}
+
+        The figure~\ref{prev_arch} details the legacy \texttt{Splay}
+        architecture.
+
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale=0.6]{figures/prev_arch.png}
+          \caption{\label{prev_arch} Legacy Splay Architecture}
+        \end{figure}
+
+        \subsubsection{CLI and Web application}
+
+          Each of these two services were designed to allow interaction
+          with the application. These interactions consist of managing the users
+          (connection, registration), sending new \textbf{\texttt{jobs}},
+          requesting \textbf{\texttt{logs}} and getting informations
+          about the application state (number of available nodes, for example).\\
+
+          The CLI service is in fact composed of two sub-services, a server
+          ready to receive commands and a client to send commands:
+          \begin{itemize}
+            \item The CLI server is written in Ruby, running a simple
+            HTTP server and waiting for specific HTTP calls containing
+            commands representing the wanted interaction (new job, session
+            creation, ...).
+            \item The CLI client is written in Lua and is composed of
+            multiple Lua files, each one representing a command to send
+            to the server.
+          \end{itemize}
+
+          The web application is written in Ruby on Rails~\cite{ror}, and
+          allows the same interactions with the system but through
+          a HTML user-interface.\\
+          It has thus different HTML pages for user registration, session
+          creation, sending jobs and reading logs.\\
+
+          Each of these services communicates with the other components
+          through the \textbf{\texttt{databse}}.
+
+        \subsubsection{Database}
+
+          The database is the central communication piece of \texttt{Splay},
+          allowing communication between the user and the rest of the
+          application.\\
+          It contains all the information needed by the different components
+          of the application.\\
+          The jobs are created by the user applications, then collected by the
+          \textbf{\texttt{controller}}.\\
+
+        \subsubsection{Controller}
+
+          The \textbf{\texttt{controller}}, written in Ruby, is the service
+          which will orchestrate the job execution sent by the user.\\
+          From the job written in the database through the user applications,
+          the controller will choose the requested nodes, dispatch the
+          algorithm on these nodes, parse the topology if present to make
+          use of \textsc{SplayNet} and emulate the network conditions.\\
+          This service is also responsible for the \textbf{\texttt{logs}}
+          creation.
+
+        \subsubsection{Daemons}
+
+          The \textbf{\texttt{daemons}} are the last piece of the system.
+          Written in Lua, they are not Linux daemons, but services designed
+          to take the role of nodes on which the \textbf{\texttt{jobs}} will
+          run.\\
+          The \textbf{\texttt{daemons}} register on the
+          \textbf{\texttt{controller}} through TCP connections so that they
+          can communicate.\\
+
+          The creators of Splay made the choice of Lua because it is a very
+          small and powerful language, it's tiny core ensuring a light
+          footprint, which is conveniant for a scripting language.\\
+          Easily embedded with the C language and non-preemptive, it
+          facilitates the creation and execution of distributed algorithms.
 
     \section{User Scenarios}
 
-      Before create a precise list of features to add to Splay, we first
+      Before creating a precise list of features to add to \texttt{Splay}, we first
       thought about scenarios. We imagined how someone would want to exercise
       and experiment with his distributed algorithm, using a platform like
-      Splay. From these scenarios we would then get the precise new features
-      we had to implement in order to make those scenarios possible and
+      \texttt{Splay}. From these scenarios we would then get the precise new features
+      we had to implement in order to make these scenarios possible and
       concrete.\\
 
-      These scenarios would be useful to keep track of the progression of our
-      work as we would progressively making those a reality, but also useful
-      to use them to create tests (needed, as we explained before) and ensure
-      these features would be covered.
+      These scenarios are useful to keep track of the progression of our
+      work as we would progressively making these a reality, but also useful
+      to use them to create tests and ensure these features would be covered.
 
-      \subsection{Scenarios}
+      \subsubsection{A student trains on Splay}
 
-        We will present different scenarios where Splay can be a solid solution.
+        As a student, I would like to be able to put in practice what I learned
+        during my courses about distributed systems and applications.\\
+        Hopefully, my university provides an existing installation of \texttt{Splay}
+        available through the university network.\\
+        I can access this service using a web application. After
+        registration and login, I have access to a complete Lua Editor that
+        allows me to create my own distributed algorithm.\\
+        I can also choose parameters such as the number of nodes on
+        which run my algorithms, a topology editor to emulate network
+        conditions and inject faults.\\
+        After I submitted my job, I can get logs about how my algorithm
+        performed in the system. I can also choose to kill my job in case
+        I did something wrong and the job is not finishing at all.
 
-        \subsubsection{First Scenario}
+      \subsubsection{A professor trains on Splay}
 
-          As a student, I'd like to be able to put in practice what I learned
-          during my courses about distributed systems and applications.\\
-          Hopefully, my university provides an existing installation of Splay
-          available through the university network.\\
-          I can access this service on the web through a web application. After
-          registration and login, I have access to a complete Lua Editor that
-          allows me to create my own distributed algorithm.\\
-          I can also choose parameters such as the number of daemons on
-          which run my algorithms, a topology editor to emulate network
-          conditions, inject faults, etc...\\
-          Once I submitted my job, I can get logs about how my algorithm
-          performed in the system. I can also choose to kill my job in case
-          I did something wrong and the job is not finishing at all.
+        As a professor, I would like to be able to experiment with a new
+        approach of solving the leader election problem among a set of
+        nodes.\\
+        The new leader election approach is described in a paper with some
+        pseudo-code and has special cases of execution when the some nodes
+        are linked through extremely slow connections,
+        Thanks to \texttt{Splay}, I can rewrite the pseudo-code in actual
+        Lua code in a dedicated editor, create special cases of topologies
+        thanks to a topology editor.\\
+        I can get all the information about the algorithm execution
+        thanks to the \texttt{Splay} logging system.
 
-        \subsubsection{Second Scenario}
-
-          As a professor, I would like to be able to experiment with a new
-          approach of solving the leader election problem among a set of
-          nodes.\\
-          I can use the Splay system which is linked with a cluster of
-          Raspberry Pi's.\\
-          The new leader election approach is described in a paper with some
-          pseudo-code and has special cases of execution when the topology is
-          a bit exotic.\\
-          Thanks to Splay, I can rewrite the pseudo-code in actual Lua code
-          in a dedicated editor, and create special cases of topologies
-          thanks to a topology editor, and get all the information about
-          the algorithm execution thanks to the Splay logging system.
-
-    \section{A first update}
+    \section{Cleaning Up and Updating Splay}
 
       Before starting this thesis, we had the opportunity to get a part-time
       job with the objective of updating the languages and frameworks versions
-      used within the project and to get familiar with it. The project being
-      paused since 2016 on an unstable version, Raziel made us start on a % TODO : Changement to do here
-      commit from September 2011 which was stable enough, losing the
-      accomplished work between 2011 and 2016 but with no other choice.\\
+      used within the project and to get familiar with it. We based our work on
+      the latest major release of the application.\\
 
-      We progressively became more familiar with the project and started to
-      understand how it was working behind the scene, and eventually succeeded
-      to upgrades the different versions and get back the project in a working
-      state, those versions being:
+      We progressively became more familiar with the project, and succeeded
+      to upgrades the different versions of the languages and frameworks and
+      get back the project state, these versions being:
 
       \begin{itemize}
         \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
@@ -407,17 +519,17 @@
       \end{itemize}
 
       At the end of those ten days of work, we had a healthy and updated
-      base to work with and ready to receive the real work of our thesis.
+      base to work with and ready to receive the contributions of our thesis.
 
     \section{Roadmap}
 
       This section presents our roadmap of the updates and new features
-      we wanted to perform on the Splay system. We will first go through
+      we wanted to perform on the \texttt{Splay} system. We will first go through
       the changes and updates, and then will talk about the new features.
 
       \subsection{Changes}
 
-        Between our version update of the Splay components and the
+        Between our version update of the \texttt{Splay} components and the
         implementation of new features on the system, a huge amount of
         work had to be achieve. These updates and changes were concerning
         the overall project organization, software quality and maintenance
@@ -428,7 +540,7 @@
         \subsubsection{Github Organization Recast}
 
           During the part-time job, we realized that the code organization
-          was not really good and should be changed.\\
+          was not really up to current standards and should be changed.\\
           The code of the six different services was located in the same and
           unique repository, this had the consequence of making way harder
           the navigation in the project's tree during the development, the
@@ -438,78 +550,95 @@
           Having to start back from a 2011 commit also made us realize that the
           project wasn't making use of the git version tagging system, that
           can mark the stable releases of the different versions of the project
-          through history, and we should accomplish this from now on.
+          through history, and that we should accomplish this from now on.
 
         \subsubsection{Testing Implementation}
 
           The version upgrade process revealed a cruel lack of testing among
           the project, at any level of the application.\\
-          The major consequence of this fact was that we had to make repairs
-          step by step because of the languages and frameworks version changes,
-          and we had to base ourselves on a certain global understanding of how
-          the project was working and some final execution results of scenarios
-          to estimate that the project was functional again. It was totally
-          impossible to be sure that our changes weren't impacting some internal
-          behavior of the project in a negative but imperceptible way,
-          consequences that were not avoidable in the end but that we would
-          only discover thereafter when implementing new features.\\
-          It was therefore obvious for us that we would set up a series of tests
-          at different levels of the application during the next phases of our
-          work, in order to make the project way more maintainable than in the
-          state we received it and to ensure that further enhancement would
-          be way more easier.
+          The major consequence of this was that we had to make repairs
+          step by step because of the languages and frameworks version changes.
+          Moreover, we had to base ourselves on a certain global understanding
+          of how the project was working and some final execution results of
+          scenarios to estimate that the project was functional again.\\
+
+          It was totally impossible to be sure that our changes weren't
+          impacting some internal behavior of the project in a negative but
+          imperceptible way, consequences that were not avoidable in the end
+          but that we would only discover thereafter when implementing new
+          features.\\
+          It was therefore obvious for us that we would have to set up a series
+          of tests at different levels of the application during the next
+          phases of our work, in order to make the project more maintainable
+          than in the state we received it and to ensure that further
+          enhancement would be easier to implement.
 
         \subsubsection{Front-end Refreshment}
 
           The current full-stack Rails application was quite old and not
-          really enjoyable to use for interacting with the Splay system.
+          really enjoyable to use for interacting with the \texttt{Splay}
+          system. This application was also not following good practices
+          promoted by Rails such as REST~\cite{} or keeping lightweight
+          controllers~\cite{fatmode}.\\
           Therefore, we would need to improve this application in order to
           provide a better user experience and easier way to learn distributed
-          algorithm through Splay.
+          algorithm through \texttt{Splay}.
 
         \subsubsection{Easy installation}
 
-          During our first work on Splay, we noticed that the installation and the
-          usage of the system were not easy to handle. Some services were dockerized
-          and a docker-compose file was present which already facilitated the
-          installation, but these docker images were not perfectly built:
-          healthcheck were missing, big distribution images were used slowing down
-          the setup phase and image building.\\
+          During our first work on \texttt{Splay}, we noticed that the
+          installation and the usage of the system were not easy to handle.\\
+
+          Some services were dockerized, this means that dedicated files
+          were present to allow creating images of these services in order
+          to run the services in Docker containers.\\
+          Containers are "standard units of software that packages up code and
+          all its dependencies so the application runs quickly and reliably
+          from one computing environment to another. A Docker container image
+          is a lightweight, standalone, executable package of software that
+          includes everything needed to run an application: code, runtime,
+          system tools, system libraries and settings"~\cite{dockercontainer}.\\
+          A docker-compose file was present which already facilitated the
+          installation. Docker-compose files allows to specify a
+          collection of services and links between these services so that
+          they will share a common network, allowing easy communication
+          between each service~\cite{dockercompose}.\\
+
+          However, these docker images were not perfectly built: healthcheck
+          were missing, big distribution images were used slowing down the
+          setup phase and image building.\\
           Also, there wasn't a proper \textbf{one-click install} script for
           making quick tests.\\
-          Therefore, one of our goals was to get clean, small and with updated
-          libraries docker images. These images needed to be fully integrated
-          between them through the docker-compose file. An automated install
-          script and running script should be made available for the user.
-
-        \subsubsection{Features Fixing} % TODO: TODO
-          % Talk about bugs in general and a goal to solve existing bug,
-          % And try to not adding new ones -> focus on stability of the project
-          Fixing what was not working in Splay 2011?
+          Therefore, one of our goals was to create clean, small and with
+          updated libraries docker images. These images needed to be fully
+          integrated between them through the docker-compose file. We should
+          provide the users with an automated install script and a running
+          script.
 
       \subsection{New Features}
 
         In order to reach our goals and be able to provide the users with
         an experience close to the scenarios we imagined, here are the
-        features that we needed to add to Splay.
+        features that we needed to add to \texttt{Splay}.
 
         \subsubsection{Complete Lua editor on the website}
 
-          The first web application of Splay already allowed the user to send
+          The first web application of \texttt{Splay} already allowed the user to send
           his own Lua code to create the job but the system was not really
           user-friendly.\\
 
           As we were going to rebuild the web application and modernize it,
           we wanted to provide the user with a convenient way to prepare
-          the job he wanted to send into the Splay system. For that purpose,
+          the job he wanted to send into the \texttt{Splay} system. For that purpose,
           we wanted to integrate an algorithm editor with the following
           characteristics:
 
           \begin{itemize}
-            \item Standalone editor
-            \item Code coloration for the Lua language
-            \item Error parsing
-            \item Optionally some auto-completion features
+            \item A standalone algorithm editor.
+            \item Code coloration for the Lua language in the editor.
+            \item An error parsing system so that the user would be warned
+            about syntax error in his algorithm.
+            \item Optionally some auto-completion features.
           \end{itemize}
 
           Having this feature available within the job creation page, the user
@@ -522,45 +651,44 @@
           parameters such as:
 
           \begin{itemize}
-            \item Nodes
-            \item Edges with latency, bandwidth, packet loss rate and queuing
-            length
+            \item Nodes;
+            \item Links with latency, bandwidth, packet loss rate and queuing
+            length parameters;
             \item Specs with latency, bandwidth, packet loss rate and queuing
             length, that could be used by edges to easily acquire those
-            attributes
+            attributes.
           \end{itemize}
 
           Special nodes like router could also be added to the topology in order
-          to create more complex networks. The Splay system will then
+          to create more complex networks. The \texttt{Splay} system will then
           approximate the true parameters for each source-destination by
           emulating this topology.\\
 
-          This topology definition in the legacy project was done through
-          the sending of an XML file following a specific format described
-          in ModelNet \cite{ModelNet}.\\
+          Following a standard format for topology generators such as
+          used in \cite{ModelNet}, \texttt{Splay} users previously
+          defined their topologies through sending XML files.\\
           This format not being really user-friendly and quite hard to read,
-          and with the fact that ModelNet documentation is not easy to find
+          and with the fact that format documentation is not easy to find
           on the Internet, we decided that the new web application would have
-          to provide an easy way for the user to define its own topology
-          still following the ModelNet standards.\\
+          to provide an easy way for the user to define his own topology
+          still following the standards.\\
 
           This topology editor should provide a graphical interface with
-          buttons and fields allowing an easy configuration. Each change
-          using this interface would result in immediate visual feedback
-          thanks to a topology visualization tool, such that the user would
-          have a better view about his topology than by reading XML lines.
-          Nevertheless, an XML editor and visualization tool should be included
-          in the topology editor which would translate the visual output of
-          the tool into readable XML or translate its XML content into the
-          visualization tool.\\
+          allowing an easy configuration. Each change using this interface
+          would result in immediate visual feedback thanks to a topology
+          visualization tool, such that the user would have a better view about
+          his topology than by reading XML. Nevertheless, an XML editor and
+          visualization tool should be included in the topology editor which
+          would translate the visual output of the tool into readable XML or
+          translate its XML content into the visualization tool.\\
 
           In summary, this tool should provide the user with:
 
           \begin{itemize}
-            \item A topology editor with simple input fields
-            \item A topology visualization tool
-            \item An XML editor
-            \item A way to convert the visual topology in XML, and conversely
+            \item A topology editor with simple input fields;
+            \item A topology visualization tool;
+            \item An XML editor;
+            \item A way to convert the visual topology in XML, and conversely.
           \end{itemize}
 
         \subsubsection{Fault Injection}
@@ -569,13 +697,16 @@
           moreover, it is hard to make real code that is reliable. The robustness
           and correctness of a distributed solution is the key point to test
           for a designed solution, and manually injecting of fault is painful
-          and can take some time. \\
+          and can take some time as one will need to modify his algorithm.\\
 
           With the legacy project and the dockerization, it was obviously
           possible to crash a single daemon during the execution of a job, just
           by killing the running container of that daemon.\\
           However, the main problem of this trivial solution is that we cannot
-          control where the crash may happen during the code execution.
+          control where the crash may happen during the code execution, and
+          it would require to stop and restart containers. Controlling where
+          and when the crash happens is an important feature to explore
+          corner cases, solve difficult-to-reproduce bugs.\\
           We wanted to improve this by providing the user with a feature
           allowing him to choose when one or multiple daemons would crash during
           the execution. We came up with two ideas:
@@ -587,18 +718,19 @@
           \end{itemize}
 
           To sum up, our fault injection tool would allow the user to choose
-          when (in the execution tree) and where (one or several nodes) the
+          when (in the execution tree) and where (at one or several nodes) the
           crash happens in the daemon, in an user-friendly way. The best and
-          most straightforward way to achieve this would have been to let
+          most straightforward way to achieve thisis to let
           the user specify those crashpoints in the Lua code within the Lua
           editor.
 
   \chapter{Architecture and Changes Development}
+  \label{chap:dev}
 
-    This chapter will detail our work on the Splay project concerning the
+    This chapter will detail our work on the \texttt{Splay} project concerning the
     architectural changes and the modifications of already present features
     of the system.\\
-    We'll first go through more detailed explanations on the base Splay
+    We'll first go through more detailed explanations on the base \texttt{Splay}
     project we started working from, then go through each change we listed
     in our roadmap.
 
@@ -611,29 +743,29 @@
 
       \subsection{Architecture}
 
-        The old Splay architecture was composed of:
+        The old \texttt{Splay} architecture was composed of:
 
         \begin{itemize}
-          \item The \textbf{Controller}: The core part of Splay, waits for jobs
+          \item The \textbf{Controller}: The core part of \texttt{Splay}, waits for jobs
           and dispatch them to the daemons.
           \item \textbf{Daemons}: Workers registering to the controller and waiting
           for jobs to achieve.
-          \item A \textbf{MySQL DB}: The communication piece of Splay, allowing
+          \item A \textbf{MySQL DB}: The communication piece of \texttt{Splay}, allowing
           communication between the user and the system.
           \item A \textbf{CLI Server, CLI Client, SplayWeb}: Pair of CLI tools
           and a web application made in Rails to let the user interact with
-          Splay through communication with the MySQL Database.
+          \texttt{Splay} through communication with the MySQL Database.
         \end{itemize}
 
         Whether through the usage of the CLI application or the web application,
-        the user was able to interact with the Splay system, to send his
+        the user was able to interact with the \texttt{Splay} system, to send his
         jobs, and gather many information such as the logs or the current
-        state of the running Splayds (the Splay daemons).\\
+        state of the running \texttt{Splay}ds (the \texttt{Splay} daemons).\\
 
         The fact that the database was the central piece of communication
         between the controller and the user applications was a design choice
         that we decided to respect and to keep working that way. Indeed, the
-        \textbf{Controller} is the central piece within the Splay project,
+        \textbf{Controller} is the central piece within the \texttt{Splay} project,
         trying to push changes in that design choice and try to implement a
         different way of communication than the database would have, more
         than probably, implied a total rewrite of the controller.\\
@@ -644,9 +776,9 @@
         stack had a hard to maintain and to huge codebase compared to the
         features that it had to offer.\\
 
-        We thus chose to operate major changes on this part of the Splay
+        We thus chose to operate major changes on this part of the \texttt{Splay}
         project, in order to combine the arrival of our new features and
-        changes onto the core of Splay with better user experience.
+        changes onto the core of \texttt{Splay} with better user experience.
 
       \subsection{Implementation} % TODO: TODO
 
@@ -686,7 +818,7 @@
 
       \subsection{Github Repository Reorganization}
 
-        From our analysis on the Splay project, we weren't satisfied with how
+        From our analysis on the \texttt{Splay} project, we weren't satisfied with how
         it was maintained on Github so far. Our major concerns were the
         following:
 
@@ -699,7 +831,7 @@
 
         From this analysis, we also realized that the project was really
         lacking documentation in order to help and guide people interested
-        in Splay to install and run it.\\
+        in \texttt{Splay} to install and run it.\\
 
         Therefore, we started with forking the project in a personal repository,
         allowing us to perform complete reorganization of all the directories
@@ -741,7 +873,7 @@
         Now the services were clearly and logically separated in their
         distinct repositories, it would be really easier for us to track
         the changes made in each service and would ease further improvements
-        by Splay maintainers.
+        by \texttt{Splay} maintainers.
 
     \section{Backend Development}
 
@@ -766,7 +898,7 @@
           Daemons, etc...
           \item Allow to develop and expose a JSON API allowing other front-end
           services (web application and CLI) to make use of this API and
-          interact with the Splay system.
+          interact with the \texttt{Splay} system.
           \item Offer a large choice of libraries for testing, data
           serialization using JSON, and other libraries solving the problems
           we talked about before.
@@ -778,9 +910,9 @@
         framework for the backend. The fact of staying in the same language
         ecosystem would allow us to make sure that future contributors to
         the application would not have to play with too many technologies and
-        therefore make the future evolution of Splay easier.\\
+        therefore make the future evolution of \texttt{Splay} easier.\\
         It should also be noticed that, as we exposed it when talking about the
-        changes in the renewed software architecture of Splay, the previous
+        changes in the renewed software architecture of \texttt{Splay}, the previous
         web application and the CLI server had a similar role although being
         specialized for different applications. However, the common logic
         of these two Ruby services was already present, and a part of the
@@ -850,7 +982,7 @@
           put it in charge of the database and the way the data was handled.\\
 
           For this purpose, we progressively created database migrations
-          for each model of the Splay system (jobs, daemons, users, etc...)
+          for each model of the \texttt{Splay} system (jobs, daemons, users, etc...)
           with the right constraints on their fields.\\
           We reflected these constraints inside the generated Rails models to
           ensure that no corrupted data could be registered into the system,
@@ -934,7 +1066,7 @@
 
           From all the previous tasks on the backend, we now had all the
           necessary basis to create the other endpoints in order to let
-          an authenticated user interact with Splay.\\
+          an authenticated user interact with \texttt{Splay}.\\
 
           Once again, we created an authentication service that would check
           the request's token to verify whether or not the user was valid or
@@ -1030,7 +1162,7 @@
         simplicity of development that that framework was offering to the
         developers and allowed us to be totally confident into the fact
         that going for this technology would allow any further contributor
-        of the Splay project to easily get in and participate to the
+        of the \texttt{Splay} project to easily get in and participate to the
         development.\\
         Indeed, a Vue application is organized around single components, each
         having its own HTML template, their CSS style declarations and
@@ -1082,12 +1214,12 @@
         In order to get the same features as the legacy web application,
         we created a \textbf{monitoring} page, on which the important
         information would be displayed to the user in lists.\\
-        A list of Splay daemons (created by the controller) is retrieved
+        A list of \texttt{Splay} daemons (created by the controller) is retrieved
         from the backend and displayed with global information in a nice
         bootstrap table.\\
         A second table used for jobs (also fetched from the backend) is also
         displayed with general data about these jobs. The user can choose to
-        get more details about a specific Splay daemon or job using a button
+        get more details about a specific \texttt{Splay} daemon or job using a button
         on the application. He can also choose to kill a job, sending the
         related command to the backend to let the controller achieve that job
         killing.\\
@@ -1129,7 +1261,7 @@
         the relevance of the Lua usage for this application.\\
 
         It is more than probable that Lua was used for coherence reasons back
-        in the days, and to avoid scattering Splay around too much different
+        in the days, and to avoid scattering \texttt{Splay} around too much different
         technologies (although Ruby may have been used too instead of Lua).
         Still, maybe today this choice was not the most relevant for a CLI
         application. Indeed, our small client CLI had to be:
@@ -1157,9 +1289,9 @@
 
         A nice CLI client was still needed within the project, whether it
         would be for quick testing from people experienced with using the
-        Splay application and wanting to have small scripts making their
+        \texttt{Splay} application and wanting to have small scripts making their
         work faster, for the developers in order to allow easy manual testing
-        of the Splay endpoints or, and most importantly, to allow automatic
+        of the \texttt{Splay} endpoints or, and most importantly, to allow automatic
         feature testing and continuous integration (this would still be
         possible using the web application but would require a lot more
         configuration to handle a headless browser, making the test suite
@@ -1200,7 +1332,7 @@
     \section{Bug fix on Daemon and Controller}
 
       As we explained before, the daemon and controller are the only services
-      among Splay that weren't assigned a complete refactor because of how
+      among \texttt{Splay} that weren't assigned a complete refactor because of how
       complex and long that task would have been. Nevertheless, these services
       weren't stable enough and a lot of bugs happened during our tests.\\
       We therefore needed to apply a lot of corrective changes on those, and
@@ -1244,7 +1376,7 @@
 
         We had to change and fix small parts of the daemon in order to make
         it consistent with the controller (concerning the communication part)
-        and also made some improvements on the Splay's Lua library.
+        and also made some improvements on the \texttt{Splay}'s Lua library.
 
         \begin{itemize}
           \item As explained in the controller part, we fixed the communication
@@ -1296,16 +1428,17 @@
       \end{figure}
 
   \chapter{Quality Assurance}
+  \label{chap:qual}
 
     In this chapter, we will talk about the techniques we used to ensure the
     quality of the code. We put the effort into ensuring quality into two
-    parts, one being the way we organized ourselves to work together on Splay,
+    parts, one being the way we organized ourselves to work together on \texttt{Splay},
     the other being testing and validation on the codebase.
 
     \section{Development Methodology}
 
-      Being two students on this development project necessarily required a 
-      method of organizing ourselves more effective than for a development 
+      Being two students on this development project necessarily required a
+      method of organizing ourselves more effective than for a development
       project alone.\\
 
       Thanks to the courses about AGILE methodologies we followed during our
@@ -1317,7 +1450,7 @@
         \subsection{Kanban}
 
           The first tool we put in place, and this from the very beginning of
-          the update period of Splay, was a Kanban using the online website
+          the update period of \texttt{Splay}, was a Kanban using the online website
           Trello~\cite{trello}. The kanban allowed us to: \\
 
           \begin{itemize}
@@ -1330,7 +1463,7 @@
             features the most explicit possible before starting the development.
             \item Have a way of tracking the project's progression and offering
             to all the people related to the project a simple and effective way
-            to keep themselves informed about Splay's state.
+            to keep themselves informed about \texttt{Splay}'s state.
             \item To focus ourselves on specific tasks and to work in an
             iterative and efficient way.
           \end{itemize}
@@ -1363,7 +1496,7 @@
           \begin{figure}[H]
             \centering
             \includegraphics[scale=0.6]{figures/gitflow.png}
-            \caption{\label{prev_arch} Gitflow Workflow}
+            \caption{\label{gitworkflow} Gitflow Workflow}
           \end{figure}
 
           The second benefit of this methodology was to
@@ -1386,24 +1519,24 @@
     \section{Testing and Validation}
 
       In this section, we talk more deeply about the way we wanted to ensure
-      the testing and the validation part in the Splay project, whether it be
+      the testing and the validation part in the \texttt{Splay} project, whether it be
       at the global system level or at the user functionalities level. Each
       section will go through the different services and how we tested then, and
       also how we tested the application globally.\\
 
-      The fact that Splay had only few tests (not directly integrated) in the state we receive it
+      The fact that \texttt{Splay} had only few tests (not directly integrated) in the state we receive it
       motivated us into developing a solid test suite for the system.
       Indeed, that fact made our task much harder because we were progressing
       in the dark, each minor change was prone to create dysfunctions that we
       might only notice way later during our work.\\
 
       The test writing phase took place from the very beginning of our work on
-      Splay as part of our development methodology,
+      \texttt{Splay} as part of our development methodology,
       to make sure that we were ensuring the new code's maintainability, but
-      also to progressively give Splay's core new tests to have a healthy
+      also to progressively give \texttt{Splay}'s core new tests to have a healthy
       and maintainable final product.\\
 
-      The figure~\ref{global_testing} details the whole Splay project with the different
+      The figure~\ref{global_testing} details the whole \texttt{Splay} project with the different
       test suites and procedures. Each of them will be detail on this chapter.
 
       \begin{figure}[H]
@@ -1457,7 +1590,7 @@
           on this project and increase the overall code quality and
           maintainability. We chose not to change any preset of the shipped-in
           ESLint configuration to ensure following common guidelines among the Vue
-          community and make sure any developer joining the Splay project will
+          community and make sure any developer joining the \texttt{Splay} project will
           be able to work on the web application seamlessly.
 
       \subsection{Testing in Backend}
@@ -1491,7 +1624,7 @@
 
           \texttt{RSpec}~\cite{rspec} is a library aiming to ease behavior Driven
           Development on Ruby projects. BDD and TDD (Test-Driven Development) are
-          practices we wanted to follow for our work on the Splay development,
+          practices we wanted to follow for our work on the \texttt{Splay} development,
           this would allow us to adopt a green-red-refactor work cycle but also
           to focus on writing natural language scenarios and then translating
           them into test scenarios.
@@ -1518,8 +1651,8 @@
         \subsubsection{Request Testing}
 
           The request tests inside the Backend service are the most important
-          tests we wrote, in terms of code coverage, but also, it covers almost 
-          every implemented features inside of this Splay service.\\
+          tests we wrote, in terms of code coverage, but also, it covers almost
+          every implemented features inside of this \texttt{Splay} service.\\
 
           The request specs among the RSpec tool are made to simulate
           the behavior of a third-party application sending a request to
@@ -1547,7 +1680,7 @@
           application and to provide the developer with useful information
           thanks to its test execution analysis.\\
 
-          Our ambition on the user part of the Splay project was a total recast of
+          Our ambition on the user part of the \texttt{Splay} project was a total recast of
           the services in more simple and maintainable ones, it was therefore
           obvious and simple for us to reach a total coverage of that new codebase
           with a test suite and thus chose to use that tool.\\
@@ -1582,10 +1715,10 @@
         The Daemon is a critical part of the project as it has to communicate
         with the controller to receive the jobs, run the jobs and return
         information to the controller about the job state. But the Daemon also
-        provides a rich distributed library (Splay lib) written in Lua to the user.\\
+        provides a rich distributed library (\texttt{Splay} lib) written in Lua to the user.\\
         In the legacy project, only a few tests were present and their
         task was to check the installation and to test some very basic features
-        (small functionalities) of the Lua Splay library. Some of those tests
+        (small functionalities) of the Lua \texttt{Splay} library. Some of those tests
         weren't passing anymore (if they did pass one day), and no testing
         library was used.\\
 
@@ -1600,7 +1733,7 @@
         Moreover, we added a lot of tests about each modification we made
         (openssl package updated, new misc functions, small changes in existing
         functions, ...) and also about the new features.\\
-        Sadly the whole Splay lib of the Daemon isn't entirely tested,
+        Sadly the whole \texttt{Splay} lib of the Daemon isn't entirely tested,
         the huge amount of code (some being documented and some not) made it
         really hard for us to make it ourselves during the period of this
         thesis. But our work on the Daemon is still improving the maintainability
@@ -1617,13 +1750,13 @@
         For these functional tests, we didn't use complex technology and
         thought that a Bash scripts series would be more than sufficient to
         reach our goal. Bash scripts could indeed not allow us to recreate user
-        behavior using Splay through the web application, but as this
+        behavior using \texttt{Splay} through the web application, but as this
         application is using the exact same API offered by the Backend than the
         CLI application, we could simulate user behavior through that CLI (and
         that is one of the reasons why we decided to keep a CLI application
         within the project).\\
 
-        The integration tests were placed in a dedicated directory at the Splay
+        The integration tests were placed in a dedicated directory at the \texttt{Splay}
         project's root, and execute the following actions for each test:
 
         \begin{itemize}
@@ -1639,7 +1772,7 @@
         By proceeding this way and with the fact of using our user scenarios to
         determine the actions described in the test suite, we can make sure
         that the implementation of our features is functional and will stay
-        functional through the lifetime and evolutions of Splay. Moreover, those
+        functional through the lifetime and evolutions of \texttt{Splay}. Moreover, those
         tests are adding an additional validation layer compared to the tests
         targeting the different services individually. We have here tests that
         are involving each service in concrete scenarios and reflecting real
@@ -1654,7 +1787,7 @@
         automatically run a test procedure listed in a script and then offer
         feedback on how the test suite went.\\
 
-        Splay being an open source project, that we hope to see growing in the
+        \texttt{Splay} being an open source project, that we hope to see growing in the
         future, its collaborative development will inevitably happen through
         the Github organization in which the different repositories are located.\\
         The coupling of Travis with Github allows, in the case of a pull request,
@@ -1664,6 +1797,7 @@
         explained before in the Gitflow section.
 
     \chapter{New Features}
+    \label{chap:newfeat}
 
       In the previous chapters, we went through the development of all
       the changes we had to implement in the already existing features
@@ -1688,7 +1822,7 @@
           moved aside, as it would take too much time to achieve and would not
           be a solution allowing easy evolution through time.\\
           We then found a great package named \texttt{Brace}, a browserified
-          version of the Ace editor~\cite{Ace}. Ace can handle hundreds of 
+          version of the Ace editor~\cite{Ace}. Ace can handle hundreds of
           different programming languages concerning syntax coloration,
           error handling, line number displaying.\\
 
@@ -1933,7 +2067,7 @@
         replaced (if no error is found) by a function call containing the
         crash id number. Therefore, when the code executes, the crash
         function will access the library and will act depending on what
-        information is stored into the crash table (the type of crash and 
+        information is stored into the crash table (the type of crash and
         the triggering moment).
 
         The parsing handles any error the user could have done about the
@@ -1952,12 +2086,12 @@
 
         The Lua multithreading is non-preemptive, this means that we cannot stop a thread from the
         outside~\cite{CoroutineLua}. This particularity helps to simplify distributed algorithms,
-        but for the fault injection, it limits the field of possibility 
+        but for the fault injection, it limits the field of possibility
         (we cannot kill thread without killing the process).
         Then, a solution is to exit the process it-self by using an OS function (os.exit),
         then kill all threads. We also have the possibility of sending an exit
         status code to the process (as parameters of the function),
-        which is very convenient for knowing if we need to restart or stay 
+        which is very convenient for knowing if we need to restart or stay
         down after a crash point was triggered.\\
 
         With this way of exiting, we can create artificial crash points which
@@ -1977,8 +2111,8 @@
         of a crash), the parent process checks the exit status code and act
         accordingly. If the exit status code is 65 or 66, it means that a
         crash has been triggered (or that the user wants to exit
-        with one of these values). We choosed to use 65 and 66 because 
-        according to this article~\cite{StatusCode}, the range is 64-113 
+        with one of these values). We choosed to use 65 and 66 because
+        according to this article~\cite{StatusCode}, the range is 64-113
         is proposed to be user-defined status code.
 
         \begin{itemize}
@@ -1995,6 +2129,7 @@
         coroutines can't execute any code) before crashing.
 
   \chapter{Use Case}
+  \label{chap:usercase}
 
     We will take the example of a student following a course on distributed
     applications and distributed systems who wants to prototype the Raft
@@ -2050,21 +2185,21 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
       \subsection{Raft election}
 
-        Raft is a consensus algorithm, often used as a alternative as Paxos because 
-        it seems more understandable. The problem of consensus is fundamental 
-        in fault-tolerant distributed system, it involves the agreements of 
+        Raft is a consensus algorithm, often used as a alternative as Paxos because
+        it seems more understandable. The problem of consensus is fundamental
+        in fault-tolerant distributed system, it involves the agreements of
         a value by multiple instances. When a desicion is validated by the system,
-        it is final. Typically a consensus algorithm make progress only if there are 
+        it is final. Typically a consensus algorithm make progress only if there are
         the majority of node alive and with a connection between then, it is
         also the case of Raft. \\
 
-        Raft works in two phase, a leader election where a leader is 
-        voted (only one) and after a phase of value replication done by the leader 
+        Raft works in two phase, a leader election where a leader is
+        voted (only one) and after a phase of value replication done by the leader
         to the others machines. To remain leader, the related node sends heartbeat
-        to avoid that others relaunch a election. The election can be trigger by 
+        to avoid that others relaunch a election. The election can be trigger by
         any nodes if this one does not received news from the leader during a period of time (election timeout).
-        This election timeout is randomly choose between two values to avoid as much as conflict 
-        of election. When a node trigger a election, it becomes a candidate and request 
+        This election timeout is randomly choose between two values to avoid as much as conflict
+        of election. When a node trigger a election, it becomes a candidate and request
         vote to others nodes, if it obtains a mojority of vote, it becomes the leader.
         Also, at each election a term (number increasing monotonically)
         is used to progress the election. \\
@@ -2073,11 +2208,11 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         the readability (even with Lua). \\
 
         The Raft implementation that we will present in the next subsection is based on
-        some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}. 
+        some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}.
         We have done the Lua code of the Raft consensus leader
-        election part with the help of the Splay lib~\cite{SplayLib}. 
-        Splay lib supplies a great number of tool to communicate 
-        between nodes, we have choose to use Remote Procedure Call (RPC) over UDP.\\ 
+        election part with the help of the Splay lib~\cite{SplayLib}.
+        Splay lib supplies a great number of tool to communicate
+        between nodes, we have choose to use Remote Procedure Call (RPC) over UDP.\\
 
       \subsection{Creation of the Algorithm}
 
@@ -2097,7 +2232,7 @@ local urpc = require("splay.urpc")
 do
 	local p = print
 	print = function(...)
-		p(job.position.." : "..(...)) 
+		p(job.position.." : "..(...))
 	end
 end
 
@@ -2109,7 +2244,7 @@ volatile_state = {
 }
 
 -- Save in stable storage (here just a file)
-persistent_state = { 
+persistent_state = {
     current_term = 0,
     voted_for = nil,
 }
@@ -2150,13 +2285,13 @@ function stepdown(term)
     set_election_timeout()
 
     -- If I was leader but obviously not anymore - remove pediodic heartbeat
-    if thread_heartbeat ~= nil then 
+    if thread_heartbeat ~= nil then
         events.kill(thread_heartbeat)
     end
 end
 
 local inc = 0
-function uprc_call_timeout(node, data, timeout) 
+function uprc_call_timeout(node, data, timeout)
     inc = inc + 1 -- Unique name for each rpc
     local name = "urpc.call:"..inc
     local ok = false
@@ -2169,7 +2304,7 @@ function uprc_call_timeout(node, data, timeout)
     local function timeout_rec()
         events.thread(function()
             events.sleep(timeout)
-            if (ok == false) then 
+            if (ok == false) then
                 call()
                 timeout_rec()
             end
@@ -2208,7 +2343,7 @@ function heartbeat()
     for i, n in pairs(job.nodes) do
         if i ~= job.position then
             events.thread(function ()
-                term, success = send_append_entry(i, n, nil) 
+                term, success = send_append_entry(i, n, nil)
                 if term ~= nil and term > persistent_state.current_term then
                     stepdown(term)
                 end
@@ -2232,7 +2367,7 @@ end
 
         \begin{minipage}{\linewidth}
         \begin{lstlisting}[style=MySmallLua,caption={RPC functions}]
--- Append Entry RPC function used by leader for the heartbeat 
+-- Append Entry RPC function used by leader for the heartbeat
 -- (avoiding new election) - entry == nil means heartbeat
 -- Also normally used for log replication (not present here)
 function append_entry(term, leader_id, entry)
@@ -2242,12 +2377,12 @@ function append_entry(term, leader_id, entry)
     end
     set_election_timeout() -- reset the election timeout
     volatile_state.state = "follower" -- if candidate, return in follower state
-    
+
     if entry == nil then
         -- HEARTBEAT
         return persistent_state.current_term, true
     else
-        -- NORMAL Entry (Log replication feature - not present here) 
+        -- NORMAL Entry (Log replication feature - not present here)
         return persistent_state.current_term, false
     end
 end
@@ -2275,7 +2410,7 @@ function request_vote(term, candidate_id)
         set_election_timeout() -- reset the election timeout
     end
     return persistent_state.current_term, vote_granted
-end  
+end
         \end{lstlisting}
         \end{minipage}
 
@@ -2285,7 +2420,7 @@ function set_election_timeout()
     election_time = misc.time()
     local time = election_time
     events.thread(function ()
-        -- Randomize the sleeping time = [election_timeout, 2 * election_timeout] 
+        -- Randomize the sleeping time = [election_timeout, 2 * election_timeout]
         events.sleep(((math.random() + 1.0) * election_timeout))
         -- if the timeout is not cancelled -> trigger election
         if (time == election_time) then trigger_election_timeout() end
@@ -2309,7 +2444,7 @@ function trigger_election_timeout()
                 if vote_granted == true then
                     nb_vote = nb_vote + 1
                     -- If the majority grant the vote -> become the leader
-                    if nb_vote > majority_threshold and volatile_state.state == "candidate" then 
+                    if nb_vote > majority_threshold and volatile_state.state == "candidate" then
                         become_leader()
                     end
                 end
@@ -2329,7 +2464,7 @@ end
 urpc.server(job.me)
 
 events.run(function()
-    
+
     set_election_timeout() -- set the election timeout
 
     -- After 1800 second the node will exit
@@ -2395,7 +2530,7 @@ end)
       execution.\\
       For this purpose, we created a small tool designed to parse the
       logs and allow the user to see that evolution during the job's
-      execution (adding to Splay tools directory). 
+      execution (adding to Splay tools directory).
       This tool is embedded in the web application with some
       JavaScript. It shows the node states (follower, candidate or leader),
       if a packet is traveling between two nodes and time
@@ -2423,7 +2558,7 @@ end)
       very quickly (< 8 ms) and it is hard to capture the visualisation of it
       (or with an very small speed factor).\\
       The main reason is the lack of latency between nodes. Indeed, without
-      topology emulation, the RPC messages travel with the native latency (in case of 
+      topology emulation, the RPC messages travel with the native latency (in case of
       the student installation, only docker network latency is expected), and then a candidate
       gets its vote granted really fast (and thus becomes the leader directly,
       with almost no chances of conflict with another node).
@@ -2719,9 +2854,9 @@ end
           For this purpose, we could modify the socket wrapping done to achieve
           topology emulation (or creating a new one) where our crash library could ask
           for restrictions over the network simulation.\\
-          Moreover, this idea can go futher, to be able to create network partition between 
-          several nodes, creating two or more splited network where nodes can 
-          only communicate with others located in the same partition.\\ 
+          Moreover, this idea can go futher, to be able to create network partition between
+          several nodes, creating two or more splited network where nodes can
+          only communicate with others located in the same partition.\\
 
           Moreover, we can imagine providing the user with more control options
           to configure more precisely what should happen in case of crash or
@@ -2861,30 +2996,30 @@ end
         securitization of the platform so that it could be used everywhere.
 
     \section{Objectives achievement} % TODO: resume of the project
-      
-      First, we have explain the importance distributed 
+
+      First, we have explain the importance distributed
       algorithm but also the difficulty to prototype existing solution and also new ideas
       from papers. Then we explain that Splay is a very good solution of that problem,
-      it allows to any student or professor to quickly implement a 
+      it allows to any student or professor to quickly implement a
       distributed prototype in a efficient way and get direct result of it.\\
 
       Then we explain our implication on the Splay project in different way.
-      First by modernize the old project with more appropriate 
-      technologies and improves the software quality. Secondly by adding 
+      First by modernize the old project with more appropriate
+      technologies and improves the software quality. Secondly by adding
       tests suite on each services, which was a big lack in the old project.
-      After, we explained the addition of new features to transforme Splay 
+      After, we explained the addition of new features to transforme Splay
       in a more appropriate learning application. Mainly, there is 3 new features,
-      a web Lua editor, a topology creation tool, both added to the web application and 
-      a way to create precise fault injection in the code path. \\ 
-      
-      Moreover we show a real demonstration of Splay with a well know 
+      a web Lua editor, a topology creation tool, both added to the web application and
+      a way to create precise fault injection in the code path. \\
+
+      Moreover we show a real demonstration of Splay with a well know
       distributed algorithm, the Raft election. This demonstration
       clearly present the importance of our new features.
 
-      We have achieves our objectif on the project, even, we are dispointed to not did 
+      We have achieves our objectif on the project, even, we are dispointed to not did
       works with a hardware solution with the cluster of Raspberry Pi (was not ready).
       Also, Splay, in our point of views still need some improvements and refactoring
-      of the old features to be maintainable in the future and able to add 
+      of the old features to be maintainable in the future and able to add
       some extended features.
 
   \nocite{*}
