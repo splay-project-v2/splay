@@ -196,8 +196,8 @@
       algorithm learning process.\\
 
       Some testbeds facilitate the testing of distributed algorithms, such as
-      emulab~\cite{Emulab}, ModelNet~\cite{ModelNet} or
-      PlanetLab~\cite{PlanetLab}. But these solutions have some serious
+      \texttt{emulab}~\cite{Emulab}, \texttt{ModelNet}~\cite{ModelNet} or
+      \texttt{PlanetLab}~\cite{PlanetLab}. But these solutions have some serious
       drawbacks:
 
       \begin{itemize}
@@ -212,8 +212,8 @@
       exists for that precise purpose in different languages, such as:
 
       \begin{itemize}
-        \item Mace~\cite{Mace} in C++
-        \item Pymote~\cite{Pymote} in Python
+        \item \texttt{Mace}~\cite{Mace} in C++
+        \item \texttt{Pymote}~\cite{Pymote} in Python
       \end{itemize}
 
       These solutions were not integrated together or not suiting the real needs
@@ -227,7 +227,7 @@
         \item Light enough for low costhardware.
       \end{itemize}
 
-      This is where the Splay project takes its origins.
+      This is where the \texttt{Splay} project takes its origins.
 
     \section{Splay}
 
@@ -238,7 +238,7 @@
       designed to "cover all aspects of the development and evaluation
       chain" of distributed application~\cite{SPLAY}.\\
       After some years a module has been developed to emulate network
-      topologies, \textsc{SplayNet}~\cite{SplayNet}. This middleware implements
+      topologies, \texttt{SplayNet}~\cite{SplayNet}. This middleware implements
       an easy way to set the topology network between the endpoints (machines)
       and emulate the behaviour in latency, throughput and congestion according
       to that topology.
@@ -251,13 +251,13 @@
       better suited for teaching and learning.\\
       This work follows the idea of providing students with tools
       allowing them to practically assess what they learn during the
-      theoretical lessons, as the INGInous~\cite{inginious} platform allows.\\
-      As their Github repository explains :
+      theoretical lessons, as the \texttt{INGInous}~\cite{inginious} platform allows.\\
+      As their \texttt{Github} repository explains :
       \begin{displayquote}
-        "INGInious is an intelligent grader that allows secured and automated
-        testing of code made by students."
+        "\texttt{INGInious} is an intelligent grader that allows secured and
+        automated testing of code made by students."
       \end{displayquote}
-      We think that our work is complementary to what INGInous achieves,
+      We think that our work is complementary to what \texttt{INGInous} achieves,
       bringing new ideas and solutions on the distributed systems learning
       side.\\
 
@@ -357,7 +357,7 @@
         elements:
 
         \begin{itemize}
-          \item The distributed algorithm, in Lua, that the user wants to test.
+          \item The distributed algorithm, in \texttt{Lua}, that the user wants to test.
           \item A number of nodes on which the algorithm should run.
           \item Various fields like a name and a description defining the job.
           \item A \textbf{\texttt{topology}}. As explained in
@@ -403,16 +403,16 @@
           The CLI service is in fact composed of two sub-services, a server
           ready to receive commands and a client to send commands:
           \begin{itemize}
-            \item The CLI server is written in Ruby, running a simple
+            \item The CLI server is written in \texttt{Ruby}, running a simple
             HTTP server and waiting for specific HTTP calls containing
             commands representing the wanted interaction (new job, session
             creation, ...).
-            \item The CLI client is written in Lua and is composed of
-            multiple Lua files, each one representing a command to send
+            \item The CLI client is written in \texttt{Lua} and is composed of
+            multiple \texttt{Lua} files, each one representing a command to send
             to the server.
           \end{itemize}
 
-          The web application is written in Ruby on Rails~\cite{ror}, and
+          The web application is written in \texttt{Ruby on Rails}~\cite{ror}, and
           allows the same interactions with the system but through
           a HTML user-interface.\\
           It has thus different HTML pages for user registration, session
@@ -433,7 +433,7 @@
 
         \subsubsection{Controller}
 
-          The \textbf{\texttt{controller}}, written in Ruby, is the service
+          The \textbf{\texttt{controller}}, written in \texttt{Ruby}, is the service
           which will orchestrate the job execution sent by the user.\\
           From the job written in the database through the user applications,
           the controller will choose the requested nodes, dispatch the
@@ -445,7 +445,7 @@
         \subsubsection{Daemons}
 
           The \textbf{\texttt{daemons}} are the last piece of the system.
-          Written in Lua, they are not Linux daemons, but services designed
+          Written in \texttt{Lua}, they are not Linux daemons, but services designed
           to take the role of nodes on which the \textbf{\texttt{jobs}} will
           run. They are also called \textbf{\texttt{Splayds}} in the
           database.\\
@@ -453,7 +453,7 @@
           \textbf{\texttt{controller}} through TCP connections so that they
           can communicate.\\
 
-          The creators of Splay made the choice of Lua because it is a very
+          The creators of \texttt{Splay} made the choice of \texttt{Lua} because it is a very
           small and powerful language, it's tiny core ensuring a light
           footprint, which is conveniant for a scripting language.\\
           Easily embedded with the C language and non-preemptive, it
@@ -479,7 +479,7 @@
         Hopefully, my university provides an existing installation of \texttt{Splay}
         available through the university network.\\
         I can access this service using a web application. After
-        registration and login, I have access to a complete Lua Editor that
+        registration and login, I have access to a complete \texttt{Lua} Editor that
         allows me to create my own distributed algorithm.\\
         I can also choose parameters such as the number of nodes on
         which run my algorithms, a topology editor to emulate network
@@ -497,7 +497,7 @@
         pseudo-code and has special cases of execution when the some nodes
         are linked through extremely slow connections,
         Thanks to \texttt{Splay}, I can rewrite the pseudo-code in actual
-        Lua code in a dedicated editor, create special cases of topologies
+        \texttt{Lua} code in a dedicated editor, create special cases of topologies
         thanks to a topology editor.\\
         I can get all the information about the algorithm execution
         thanks to the \texttt{Splay} logging system.
@@ -514,9 +514,9 @@
       get back the project state, these versions being:
 
       \begin{itemize}
-        \item \textbf{Ruby}: 1.8.6 $\rightarrow$ 2.5.3
-        \item \textbf{Lua}: 5.1 $\rightarrow$ 5.3
-        \item \textbf{Rails}: 2.1.0 $\rightarrow$ 5.2.0
+        \item \textbf{\texttt{Ruby}}: 1.8.6 $\rightarrow$ 2.5.3
+        \item \textbf{\texttt{Lua}}: 5.1 $\rightarrow$ 5.3
+        \item \textbf{\texttt{Rails}}: 2.1.0 $\rightarrow$ 5.2.0
       \end{itemize}
 
       At the end of those ten days of work, we had a healthy and updated
@@ -549,7 +549,7 @@
           of these different services.\\
 
           Having to start back from a 2011 commit also made us realize that the
-          project wasn't making use of the git version tagging system, that
+          project was not making use of the git version tagging system, that
           can mark the stable releases of the different versions of the project
           through history, and that we should accomplish this from now on.
 
@@ -563,7 +563,7 @@
           of how the project was working and some final execution results of
           scenarios to estimate that the project was functional again.\\
 
-          It was totally impossible to be sure that our changes weren't
+          It was totally impossible to be sure that our changes were not
           impacting some internal behavior of the project in a negative but
           imperceptible way, consequences that were not avoidable in the end
           but that we would only discover thereafter when implementing new
@@ -576,10 +576,10 @@
 
         \subsubsection{Front-end Refreshment}
 
-          The current full-stack Rails application was quite old and not
+          The current full-stack \texttt{Rails} application was quite old and not
           really enjoyable to use for interacting with the \texttt{Splay}
           system. This application was also not following good practices
-          promoted by Rails such as REST~\cite{} or keeping lightweight
+          promoted by \texttt{Rails} such as REST~\cite{} or keeping lightweight
           controllers~\cite{fatmode}.\\
           Therefore, we would need to improve this application in order to
           provide a better user experience and easier way to learn distributed
@@ -608,7 +608,7 @@
           However, these docker images were not perfectly built: healthcheck
           were missing, big distribution images were used slowing down the
           setup phase and image building.\\
-          Also, there wasn't a proper \textbf{one-click install} script for
+          Also, there was not a proper \textbf{one-click install} script for
           making quick tests.\\
           Therefore, one of our goals was to create clean, small and with
           updated libraries docker images. These images needed to be fully
@@ -625,7 +625,7 @@
         \subsubsection{Complete Lua editor on the website}
 
           The first web application of \texttt{Splay} already allowed the user to send
-          his own Lua code to create the job but the system was not really
+          his own \texttt{Lua} code to create the job but the system was not really
           user-friendly.\\
 
           As we were going to rebuild the web application and modernize it,
@@ -636,7 +636,7 @@
 
           \begin{itemize}
             \item A standalone algorithm editor.
-            \item Code coloration for the Lua language in the editor.
+            \item Code coloration for the \texttt{Lua} language in the editor.
             \item An error parsing system so that the user would be warned
             about syntax error in his algorithm.
             \item Optionally some auto-completion features.
@@ -666,7 +666,7 @@
           emulating this topology.\\
 
           Following a standard format for topology generators such as
-          used in \cite{ModelNet}, \texttt{Splay} users previously
+          used in \texttt{ModelNet}~\cite{ModelNet}, \texttt{Splay} users previously
           defined their topologies through sending XML files.\\
           This format not being really user-friendly and quite hard to read,
           and with the fact that format documentation is not easy to find
@@ -722,7 +722,7 @@
           when (in the execution tree) and where (at one or several nodes) the
           crash happens in the daemon, in an user-friendly way. The best and
           most straightforward way to achieve thisis to let
-          the user specify those crashpoints in the Lua code within the Lua
+          the user specify those crashpoints in the \texttt{Lua} code within the \texttt{Lua}
           editor.
 
   \chapter{Architecture and Development}
@@ -743,7 +743,7 @@
 
         The main issue on the architecture of the user services was a code
         duplication issue or at least a duplication related to the solutions
-        created to resolve a common problem. The Rails web application and the
+        created to resolve a common problem. The \texttt{Rails} web application and the
         CLI server had the common role of letting the user manipulate the
         database to transmit and gather information to the \textbf{Controller}.\\
 
@@ -752,7 +752,7 @@
         service according to his role among the system: The \textbf{Backend},
         according to the viewpoint of the client.\\
         This backend would have the ambition to offer a secured API through
-        the usage of JWT \cite{JWT} (a token based identification system
+        the usage of \texttt{JWT}~\cite{JWT} (a token based identification system
         for web applications) and therefore allowing the development
         of services around that backend, in our case a web application and
         a command line interface.\\
@@ -761,12 +761,12 @@
         allowing dynamic interactions with the user, and the CLI would use
         a simple and dedicated technology, those two services consuming the
         same API offered by the backend. The backend, for its part, would
-        stay in the Ruby ecosystem, in order to keep a technology consistency
+        stay in the \texttt{Ruby} ecosystem, in order to keep a technology consistency
         with the global project and the technologies already in use.
 
       \subsection{Github Repository Reorganization}
 
-        From our analysis on the \texttt{Splay} project, we weren't satisfied with how
+        From our analysis on the \texttt{Splay} project, we were not satisfied with how
         it was maintained on Github so far. Our major concerns were the
         following:
 
@@ -786,7 +786,7 @@
         and files composing the project and adding some basic documentation.
         Each service was successfully placed in a distinct directory while
         keeping the docker-compose file working.\\
-        The project was cleaner, however, we felt that this wasn't enough
+        The project was cleaner, however, we felt that this was not enough
         and that we could achieve a better structure. The project is big and
         consisting of multiple services interacting with each other but
         not sharing any code. We therefore decided to create a new Github
@@ -795,7 +795,7 @@
         of the project.\\
 
         The main repository called \textbf{Splay} contains all the other services
-        through the submodule \cite{GitSubmodules} feature of git. These
+        through the submodule~\cite{GitSubmodules} feature of git. These
         subrepositories representing the new architecture:
 
         \begin{itemize}
@@ -813,7 +813,7 @@
         For each master branch of these subrepositories, a link with Dockerhub
         has been made so that each push on master will trigger an automatic build
         of a docker image using the source and uploading it on the Dockerhub
-        \cite{DockerHubGithub}.
+       ~\cite{DockerHubGithub}.
         This was specially made to ease the integration testing using a
         continuous integration service, which would have to build every single
         image otherwise.\\
@@ -832,9 +832,9 @@
       \subsection{The Choice of Rails}
 
         The controller service and the old pair of services composing the CLI
-        having been developed with the Ruby language, and the old web
-        application having been developed with Ruby on Rails, it was obvious
-        for us to stay within the Ruby ecosystem to create the new service
+        having been developed with the \texttt{Ruby} language, and the old web
+        application having been developed with \texttt{Ruby on Rails}, it was obvious
+        for us to stay within the \texttt{Ruby} ecosystem to create the new service
         that would become what we called the \textbf{Backend}. The technology
         we wanted to use for this development had to offer an efficient
         solution to the following challenges:
@@ -852,8 +852,8 @@
           we talked about before.
         \end{itemize}
 
-        The both of us already having a certain experience in using Ruby on
-        Rails, and for the reasons of ecosystem consistency we talked about
+        The both of us already having a certain experience in using \texttt{Ruby on
+        Rails}, and for the reasons of ecosystem consistency we talked about
         in the previous sections, we immediately agreed on using this
         framework for the backend.\\
         Staying in the same language ecosystem would allow us to make sure
@@ -865,20 +865,20 @@
         changes in the renewed software architecture of \texttt{Splay}, the previous
         web application and the CLI server had a similar role although being
         specialized for different applications. However, the common logic
-        of these two Ruby services was already present, and a part of the
+        of these two \texttt{Ruby} services was already present, and a part of the
         work was therefore just a matter of isolating this common logic.\\
 
-        Rails allow to easily develop, besides traditional MVC web
-        applications, API-only applications that don't contain all the code
+        \texttt{Rails} allow to easily develop, besides traditional MVC web
+        applications, API-only applications that do not contain all the code
         and complexity needed for presenting HTML views to the user and thus
         having a lighter and more concise codebases.\\
 
-        The ActiveRecord~\cite{activerecord} ORM shipped with the Rails
+        The ActiveRecord~\cite{activerecord} ORM shipped with the \texttt{Rails}
         applications is also a major advantage for this technology, allowing us
         to easily and efficiently manage the system's jobs and daemons.\\
         Finally, the availability of some libraries such as RSpec~\cite{rspec}
-        made for the testing, Rubocop~\cite{Rubocop} for the linter definitely
-        made Rails the right technology to choose for the Backend.
+        made for the testing, \texttt{Rubocop}~\cite{Rubocop} for the linter definitely
+        made \texttt{Rails} the right technology to choose for the Backend.
 
       \subsection{Centralization of Splay's Backend}
 
@@ -887,22 +887,22 @@
         as those two services were basically achieving the same work and
         holding the same responsibilities.\\
 
-        We started with a fresh Ruby on Rails application, passing the
+        We started with a fresh \texttt{Ruby on Rails} application, passing the
         generator the \textit{--api} option so that we were provided with
-        a clean and simple Rails app without all the front-end dedicated
+        a clean and simple \texttt{Rails} app without all the front-end dedicated
         files.\\
 
         Before writing any line of code, the following tools were added
         to the project:
 
         \begin{itemize}
-          \item \textbf{Rspec}: A performant and easy to use Ruby testing
+          \item \textbf{\texttt{Rspec}}: A performant and easy to use \texttt{Ruby} testing
           framework to be able to begin development following the test
           driven development approach.
-          \item \textbf{Rubocop}: A static code analyser (linter) to follow
+          \item \textbf{\texttt{Rubocop}}: A static code analyser (linter) to follow
           good codestyle conventions and avoid bad pattern right from the start.
-          \item \textbf{Travis}: A continuous integration platform
-          \item \textbf{CodeCov} A test coverage tool to get further
+          \item \textbf{\texttt{Travis}}: A continuous integration platform
+          \item \textbf{\texttt{CodeCov}}: A test coverage tool to get further
           information on the test suite.
         \end{itemize}
 
@@ -930,7 +930,7 @@
           For this purpose, we progressively created database migrations
           for each model of the \texttt{Splay} system (jobs, daemons, users, etc...)
           with the right constraints on their fields.\\
-          We reflected these constraints inside the generated Rails models to
+          We reflected these constraints inside the generated \texttt{Rails} models to
           ensure that no corrupted data could be registered into the system,
           having a double check through the application and through the
           database schema.\\
@@ -941,33 +941,33 @@
         \subsubsection{User Registration}
 
           To achieve the registration of users, we simply used the
-          well-known Devise~\cite{devise} gem (gems are how ruby libraries are
+          well-known \texttt{Devise}~\cite{devise} gem (gems are how \texttt{Ruby} libraries are
           called). It provides out-of-the box an efficient and flexible
-          authentication solution for Rails applications.\\
+          authentication solution for \texttt{Rails} applications.\\
           As we were to allow the authentication through a future JSON API,
-          the most relevant part in using Devise was to make use of all
+          the most relevant part in using \texttt{Devise} was to make use of all
           the user registration process given by the gem, using good principles
           in terms of password hashing with salt to store them. We did not
           have to reinvent the wheel about user registration.\\
 
           Moreover, for any further development or evolution of the application,
-          we know that Devise also provides user management modules such as
+          we know that \texttt{Devise} also provides user management modules such as
           Omniauth support, account tracking, registration confirmation
           through emails, and many other listed on the gem webpage.\\
 
-          Devise was therefore the best choice for our registration management,
-          even for an API-only Rails application.
+          \texttt{Devise} was therefore the best choice for our registration management,
+          even for an API-only \texttt{Rails} application.
 
         \subsubsection{User Authentication}
 
           As we mentioned it before, one of the best ways to handle user
           authentication in JSON API applications is by using the JSON Web
-          Tokens (JWT), following the industry standard from RFC7519~\cite{rfc7519}.\\
+          Tokens (\texttt{JWT}), following the industry standard from RFC7519~\cite{rfc7519}.\\
 
-          Upon successful registration or login on the Rails application, a
-          JWT is returned to the calling application to provide it with a way
-          to authenticate further requests. This JWT holds encrypted
-          information (with a secret key) such as the user id to allow the Rails
+          Upon successful registration or login on the \texttt{Rails} application, a
+          \texttt{JWT} is returned to the calling application to provide it with a way
+          to authenticate further requests. This \texttt{JWT} holds encrypted
+          information (with a secret key) such as the user id to allow the \texttt{Rails}
           app to identify to whothe request belongs. The fact that the token
           is generated in the backend with a secret key also means that the
           token cannot be altered or forged by a malicious application.\\
@@ -1002,12 +1002,12 @@
 
           But instead of bloating our models with the needed inner logic for
           authentication, we created intermediate layers called services~\cite{fatmod}
-          in Rails. Those services hold the needed logic to keep the controllers
+          in \texttt{Rails}. Those services hold the needed logic to keep the controllers
           nice and clean. In the case of authentication, the controller receives
           the request from the router filled with user data, then delegates
           the task of password verification, token generation if successful,
           and just return the result in the response. The same process was also
-          applied to manage registration through the API, as it needed the JWT
+          applied to manage registration through the API, as it needed the \texttt{JWT}
           layer to be in a working state.
 
         \subsubsection{Splay Endpoints}
@@ -1047,8 +1047,8 @@
           case of errors.\\
 
           A successful request is answered with a 200
-          status code by the Rails application by default.\\
-          Rails has a really convenient way to raise errors and catch them
+          status code by the \texttt{Rails} application by default.\\
+          \texttt{Rails} has a really convenient way to raise errors and catch them
           in the same or upper component on the call stack. We used that tool
           to implement the following error management strategy:
 
@@ -1056,7 +1056,7 @@
             \item Each Controller of our API inherits from a common file
             called \textit{ApplicationController}
             \item This ApplicationController holds a set of catchers (rescue
-            in the Ruby language) to catch which errors happen in our
+            in the \texttt{Ruby} language) to catch which errors happen in our
             application:
               \begin{itemize}
                 \item The entity that the user wants to create isn not valid,
@@ -1093,37 +1093,37 @@
           \item Popular enough to ensure support over time.
         \end{itemize}
 
-        In order to develop a front-end application, the JavaScript ecosystem
+        In order to develop a front-end application, the \texttt{JavaScript} ecosystem
         was an obvious choice, and we made a pre-selection among the most
         popular web framework on the market and recognized for their qualities:
-        ReactJS, Angular and VueJS.\\
+        \texttt{ReactJS}, \texttt{Angular} and \texttt{VueJS}.\\
         We rapidly removed Angular from our list because we preferred the
         component-based UI development offered by the two other frameworks,
         which were lighter and avoided having to develop in the MVC style.
-        Even if we both had previous experience with React thanks to a
-        Cloud Computing course at UCLouvain, we decided to go for VueJS
+        Even if we both had previous experience with \texttt{ReactJS} thanks to a
+        Cloud Computing course at UCLouvain, we decided to go for \texttt{Vue}
         instead of React.\\
 
-        The first major advantage of Vue is how light it is. We also took into
+        The first major advantage of \texttt{Vue} is how light it is. We also took into
         account the fact that this technology was gaining in popularity for
         multiple years now to be today a huge player in the world of web
         technologies. Moreover, as we took some time to develop a proof
-        of concept application using Vue, we were totally satisfied with the
+        of concept application using \texttt{Vue}, we were totally satisfied with the
         simplicity of development that that framework was offering to the
         developers.\\
-        Vue allowed us to be totally confident into the fact
+        \texttt{Vue} allowed us to be totally confident into the fact
         that going for this technology would allow any further contributor
         of the \texttt{Splay} project to easily get in and participate to the
         development.\\
-        Indeed, a Vue application is organized around single components, each
+        Indeed, a \texttt{Vue} application is organized around single components, each
         having its own HTML template, their CSS style declarations and
-        the associated JavaScript code. No other exotic language is required.\\
-        The fact that the framework belongs to the JavaScript ecosystem and is
+        the associated \texttt{JavaScript} code. No other exotic language is required.\\
+        The fact that the framework belongs to the \texttt{JavaScript} ecosystem and is
         associated to the NPM package manager also allows to take advantage of
         numerous existing libraries, such as data visualization libraries,
         testing libraries, etc...\\
 
-        For all those reasons, Vue was the best choice for a
+        For all those reasons, \texttt{Vue} was the best choice for a
         web application and also allowing us to develop with something
         we liked and with recent technologies, besides providing an efficient
         solution to the conditions we needed for the technology.
@@ -1132,21 +1132,21 @@
 
         As the development of the backend was started, we started in the
         meantime the development of a Single Page Application using
-        the VueJS framework.\\
+        the \texttt{Vue} framework.\\
 
         After removing the old files of the previous web application, we
-        created a basic VueJS project (version 2.5.X at that time) having a
+        created a basic \texttt{Vue} project (version 2.5.X at that time) having a
         simple home page and using the bootstrap-vue package
-        \cite{BootstrapVue}. \textbf{Bootstrap} \cite{Bootstrap} is a
-        well-known HTML, CSS and JavaScript framework used to create responsive
+       ~\cite{BootstrapVue}. \textbf{Bootstrap}~\cite{Bootstrap} is a
+        well-known HTML, CSS and \texttt{JavaScript} framework used to create responsive
         and modern web interface.\\
         Bootstrap is a real Swiss-army knife among the design framework
         and helped us building a visually pleasant and easy to use
-        web application with minimal custom CSS and JavaScript code.\\
+        web application with minimal custom CSS and \texttt{JavaScript} code.\\
 
         The next step was to build a register and a login page to allow
-        user management. In order to manage different pages in the same Vue
-        project, we installed the Vue-Router package, a Vue extension
+        user management. In order to manage different pages in the same \texttt{Vue}
+        project, we installed the \texttt{Vue-Router} package, a \texttt{Vue} extension
         allowing the navigation through different URI within the same
         single page application (without any reload and additional requests
         to the web server).\\
@@ -1157,7 +1157,7 @@
         connection, the forms directly using the freshly written API available
         on the backend.\\
         In order to use that JSON API and allow communications with the
-        backend, we used axios \cite{axios}, a popular HTTP Javascript client.
+        backend, we used \texttt{axios}~\cite{axios}, a popular HTTP Javascript client.
         This being done, our web application allowed the user to create its
         account and connect to it, receiving an authentication token that
         was stored on the client browser to allow auto-login on the next
@@ -1171,7 +1171,7 @@
           \item A list of \texttt{Splay} daemons (created by the controller) is retrieved
           from the backend and displayed with global information in a nice
           bootstrap table.
-          \item A second table used for jobs (also fetched from the backend) is also
+          \item A second table used for \texttt{jobs} (also fetched from the backend) is also
           displayed with general data about these jobs. The user can choose to
           get more details about a specific \texttt{Splay} daemon or job using a button
           on the application. He can also choose to kill a job, sending the
@@ -1181,7 +1181,7 @@
 
         The creation of a job is done through a simple form. We implemented
         an automatic check of the fields using the vee-validate package
-        \cite{VeeValidate}. As the data sent to the backend is also checked
+       ~\cite{VeeValidate}. As the data sent to the backend is also checked
         before using those to create a new job, vee-validate offers us
         a double validation and allows giving the user better feedback
         about any field he would have forgotten or wrongly filled.\\
@@ -1210,15 +1210,15 @@
       \subsection{Using Python}
 
         The old pair of services intended to compose the CLI service were
-        written in Lua on the client side, and the CLI server was in Ruby. As
+        written in \texttt{Lua} on the client side, and the CLI server was in \texttt{Ruby}. As
         the server's logic would be moved and merged into the \textbf{Backend}
         service, and as we wanted to keep a command line interface application
         in order to run tests of the global project, we needed to reevaluate
-        the relevance of Lua for this application.\\
+        the relevance of \texttt{Lua} for this application.\\
 
-        It is more than probable that Lua was used for coherence reasons back
+        It is more than probable that \texttt{Lua} was used for coherence reasons back
         in the days, and to avoid scattering \texttt{Splay} around too many different
-        technologies (although Ruby may have been used too instead of Lua).
+        technologies (although \texttt{Ruby} may have been used too instead of \texttt{Lua}).
         Still, maybe today this choice was not the most relevant for a CLI
         application. Indeed, our small client CLI had to:
 
@@ -1229,12 +1229,12 @@
           \item Having convenient libraries allowing to create simple CLI apps.
         \end{itemize}
 
-        However, we inherited of an application scattered in multiples Lua
+        However, we inherited of an application scattered in multiples \texttt{Lua}
         files, each file representing a CLI command. We therefore had code
         duplication, as each file was repeating the process of parsing the user
         arguments when the program was called, and also repeating the process
-        of reaching the server through a HTTP library in Lua.\\
-        Ruby was indeed a relevant option if we wanted to restrict the number
+        of reaching the server through a HTTP library in \texttt{Lua}.\\
+        \texttt{Ruby} was indeed a relevant option if we wanted to restrict the number
         of different technologies in use among the project, but Python was
         a better choice to write such a simple script as our CLI. Python has
         a lot of very convenient libraries to treat HTTP calls and to
@@ -1257,7 +1257,7 @@
 
         The first step was to set up the available commands to create our CLI.
         In order to make the code the cleanest and simplest possible, we
-        decided to use the \textsc{Click}~\cite{click} library, a perfect
+        decided to use the \texttt{Click}~\cite{click} library, a perfect
         Python package designed to create powerful CLI's with just a little
         code.\\
         The steps for creating a command are:
@@ -1270,18 +1270,18 @@
         \end{itemize}
 
         Each command or option can be supplemented with help messages. Then
-        \textsc{Click} reassembles all of this and format theoutput of the CLI,
+        \texttt{Click} reassembles all of this and format theoutput of the CLI,
         displaying to the user help details if requested and even help details
         for specific commands.\\
 
         The next step was to make real use of the Backend's API, thus we used
-        \textbf{requests} \cite{requests} and \textbf{json} Python's libraries to
+        \texttt{requests}~\cite{requests} and \textbf{json} \texttt{Python}'s libraries to
         achieve the HTTP communication and the JSON requests encoding and
         responses parsing.\\
 
         This complete rewrite of the CLI allowed us to remove thousands of
-        Lua lines of code and to obtain two hundred of simple and
-        maintainable lines Python lines of code achieving the same features.
+        \texttt{Lua} lines of code and to obtain two hundred of simple and
+        maintainable lines \texttt{Python} lines of code achieving the same features.
 
     \section{Bug fix on Daemon and Controller}
 
@@ -1295,14 +1295,14 @@
       \subsection{Controller changes}
 
         Most of the issues on the controller were due to a previous
-        maintainers misuse of the sequel calls (a Ruby library offering a MySQL
+        maintainers misuse of the sequel calls (a \texttt{Ruby} library offering a MySQL
         toolkit), but this is an overall list of all the changes that we
         applied:
 
         \begin{itemize}
           \item \textbf{Sequel Calls}: We have detected that in the legacy
           source code, a maintainer wanted to change and replace the old library
-          called dbd-mysql \cite{dbdMysql} for the Sequel \cite{Sequel} one. We
+          called dbd-mysql~\cite{dbdMysql} for the Sequel~\cite{Sequel} one. We
           totally agreed with this as dbd-mysql has not been not updated since
           2010 and still has bugs whereas Sequel manages different type of
           rmdb's and is still an active project.\\
@@ -1310,7 +1310,7 @@
           written, therefore a lot of calls were returning no data at all or
           inserting nothing. We thus had to check every Sequel usage in all the
           code and change for the right call. We also tried in the same process
-          to clean as much as possible the raw SQL string calls by using
+          to clean as much as possible the raw \texttt{SQL} string calls by using
           interpolation (see the improvements section in the conclusion).
           \item \textbf{Communication with daemons}: The communication between daemons
           and the controller was not consistent is some cases. For example, the
@@ -1318,11 +1318,11 @@
           information than expected by the controller.\\
           Therefore, logs retrial and creation were fixed, but
           also improved to be cleaner and more readable (previously an issue on
-          the old project \cite{logTimestamps}).
+          the old project~\cite{logTimestamps}).
           \item \textbf{Small Changes}: We added more logs when needed and
           removed the unneeded ones, the database creation responsibility has
           been delegated to the backend (previously held by the controller). We
-          also used Rubocop \cite{Rubocop} in order to get a uniformized code
+          also used \texttt{Rubocop}~\cite{Rubocop} in order to get a uniformized code
           style and correct wrong patterns in the code.
         \end{itemize}
 
@@ -1330,7 +1330,7 @@
 
         We had to change and fix small parts of the daemon in order to make
         it consistent with the controller (concerning the communication part)
-        and also made some improvements on the \texttt{Splay}'s Lua library.
+        and also made some improvements on the \texttt{Splay}'s \texttt{Lua} library.
 
         \begin{itemize}
           \item As explained in the controller part, we fixed the communication
@@ -1350,14 +1350,14 @@
           different ip (thanks to docker, this is the case), but that is
           something that should be improved and changed and we will talk about
           it in the improvements section.
-          \item We removed the LuaCrypto library from the daemon and added
+          \item We removed the \texttt{LuaCrypto} library from the daemon and added
           luaossl to replace it. The main reason of this change was that
-          LuaCrypto cannot use the last Linux's OpenSSL package (due to a
+          \texttt{LuaCrypto} cannot use the last Linux's OpenSSL package (due to a
           security issue, and older versions cannot be used in newer OS),
-          LuaCrypto was also not updated anymore and moreover, an issue about
+          \texttt{LuaCrypto} was also not updated anymore and moreover, an issue about
           this was open in the old project repository~\cite{sslLib}.\\
           We therefore updated the code to make use of the new luaossl library.
-          \item Multiple bug fixes mainly due to the Lua version change needed
+          \item Multiple bug fixes mainly due to the \texttt{Lua} version change needed
           to be solved.
         \end{itemize}
 
@@ -1437,7 +1437,7 @@
           The project and all the services composing it are versioned using the
           \textit{Git} versioning system and are hosted on the online service
           \textit{Github}.\\
-          We, therefore, organized our work on the Gitflow model. Each feature or
+          We, therefore, organized our work on the \texttt{Gitflow} model. Each feature or
           task we created on the kanban was meant to receive its very own
           branch, starting from the main branch.
           Once the feature finished and tested, a pull request was made asking
@@ -1502,8 +1502,8 @@
 
       \subsection{Testing in Web App}
 
-        As we chose Vue as our framework for the web application service,
-        all we had to deal with was components. As Vue is organized around
+        As we chose \texttt{Vue} as our framework for the web application service,
+        all we had to deal with was components. As \texttt{Vue} is organized around
         the use of components, the immediate reward of this was that we would
         be able to write tests dedicated to isolated and simple components.
 
@@ -1523,12 +1523,12 @@
           providing us with a really simple API.\\
 
           In order to test the application using \texttt{Jest}, we created a directories
-          hierarchy reflecting the Vue components hierarchy we created, thus
+          hierarchy reflecting the \texttt{Vue} components hierarchy we created, thus
           a test file corresponding to a component file. In each of these
           test specifications, we decided to target the core part of each
           component: the methods.\\
           Indeed, there is no need to test whether or not a click on a button
-          triggers the associated action as this is part of the Vue system. What
+          triggers the associated action as this is part of the \texttt{Vue} system. What
           we wanted to test was the triggered action we wrote ourselves and
           were simply functions.\\
           Each file, therefore, tests that the related components can be
@@ -1537,14 +1537,14 @@
 
         \subsubsection{ESLint}
 
-          Provided by default when creating a new Vue project, ESLint~\cite{eslint}
+          Provided by default when creating a new \texttt{Vue} project, ESLint~\cite{eslint}
           is a JavaScript linter that allows the developer to
           make sure he is not writing code inducing problematic patterns or not
           respecting code guidelines.\\
           This helps to keep a consistent code style as we were two developers working
           on this project and increase the overall code quality and
           maintainability. We chose not to change any preset of the shipped-in
-          ESLint configuration to ensure following common guidelines among the Vue
+          ESLint configuration to ensure following common guidelines among the \texttt{Vue}
           community and make sure any developer joining the \texttt{Splay} project will
           be able to work on the web application seamlessly.
 
@@ -1560,7 +1560,7 @@
           with the system.
         \end{itemize}
 
-        The backend is written in Rails, therefore, we have access to the
+        The backend is written in \texttt{Rails}, therefore, we have access to the
         ActiveRecord ORM which allows manipulating the database by associating
         tables to models. These models are thus granted with attributes,
         constraints to comply with on these attributes following the constraints
@@ -1578,7 +1578,7 @@
         \subsubsection{RSpec}
 
           \texttt{RSpec}~\cite{rspec} is a library aiming to ease behavior Driven
-          Development on Ruby projects. BDD and TDD (Test-Driven Development) are
+          Development on \texttt{Ruby} projects. BDD and TDD (Test-Driven Development) are
           practices we wanted to follow for our work on the \texttt{Splay} development,
           this would allow us to adopt a green-red-refactor work cycle but also
           to focus on writing natural language scenarios and then translating
@@ -1586,7 +1586,7 @@
 
         \subsubsection{Model Testing}
 
-          As we made it explicit in upper sections, the Rails ORM layer offers
+          As we made it explicit in upper sections, the \texttt{Rails} ORM layer offers
           a reflexion about the database constraints by representing its
           tables under the form of models granted with attributes, that we can
           enrich with additional attributes, methods and an overlay of
@@ -1611,7 +1611,7 @@
 
           The request specs among the RSpec tool are made to simulate
           the behavior of a third-party application sending a request to
-          our service and therefore making the whole Rails stack runs
+          our service and therefore making the whole \texttt{Rails} stack runs
           to provide an answer to this request.\\
           Each request is going through the following elements:\\
 
@@ -1631,7 +1631,7 @@
         \subsubsection{Code Coverage - Simple Cov}
 
           We chose to use Simple Cov in succession of the testing applied to
-          the Backend. This tool allows us to measure the code coverage of Ruby
+          the Backend. This tool allows us to measure the code coverage of \texttt{Ruby}
           application and to provide the developer with useful information
           thanks to its test execution analysis.\\
 
@@ -1648,7 +1648,7 @@
             write the tests covering the feature and then writing the feature
             instead of writing the feature and then tests in order to reach
             the coverage level
-            \item Ensuring we don't let parts of the code or certain branches
+            \item Ensuring we do not let parts of the code or certain branches
             in conditional statements being untested
             \item Refrain to write useless code. The tests are supposed to cover
             which features should exist, a decrease in the coverage level
@@ -1658,8 +1658,8 @@
 
         \subsubsection{Code Quality - Rubocop}
 
-          We used Rubocop as the last piece of the tool stack designed to ensure
-          the code quality within the service. Rubocop is a static code analysis
+          We used \texttt{Rubocop} as the last piece of the tool stack designed to ensure
+          the code quality within the service. \texttt{Rubocop} is a static code analysis
           tool (linter) allowing to detect violations to a set of rules about
           the code style and good practices (too many lines of code for a method,
           too many variables instantiations, too many conditional branching
@@ -1670,16 +1670,16 @@
         The Daemon is a critical part of the project as it has to communicate
         with the controller to receive the jobs, run the jobs and return
         information to the controller about the job state. But the Daemon also
-        provides a rich distributed library (\texttt{Splay} lib) written in Lua to the user.\\
+        provides a rich distributed library (\texttt{Splay} lib) written in \texttt{Lua} to the user.\\
         In the legacy project, only a few tests were present and their
         task was to check the installation and to test some very basic features
-        (small functionalities) of the Lua \texttt{Splay} library. Some of those tests
-        weren't passing anymore (if they did pass one day), and no testing
+        (small functionalities) of the \texttt{Lua} \texttt{Splay} library. Some of those tests
+        were not passing anymore (if they did pass one day), and no testing
         library was used.\\
 
         We wanted to change this, so we started by adding a testing library
         called Busted~\cite{busted}. This library allowed elegant unit testing,
-        still under active development and fully integrated with Lua 5.3.\\
+        still under active development and fully integrated with \texttt{Lua} 5.3.\\
         Then we successfully transformed the old existing tests into busted
         tests. With only this single change, we were able to detect some
         anomalies in the lib code and fix these. We added some test steps
@@ -1688,7 +1688,7 @@
         Moreover, we added a lot of tests about each modification we made
         (openssl package updated, new misc functions, small changes in existing
         functions, ...) and also about the new features.\\
-        Sadly the whole \texttt{Splay} lib of the Daemon isn't entirely tested,
+        Sadly the whole \texttt{Splay} lib of the Daemon is not entirely tested,
         the huge amount of code (some being documented and some not) made it
         really hard for us to make it ourselves during the period of this
         thesis. But our work on the Daemon is still improving the maintainability
@@ -1702,7 +1702,7 @@
         features in a global way among the system and to achieve this goal we
         just had to translate our user scenarios into test scenarios.\\
 
-        For these functional tests, we didn't use complex technology and
+        For these functional tests, we did not use complex technology and
         thought that a Bash scripts series would be more than sufficient to
         reach our goal. Bash scripts could indeed not allow us to recreate user
         behavior using \texttt{Splay} through the web application, but as this
@@ -1749,7 +1749,7 @@
         to gather the review about the test execution on the branch asking to be
         merged with the main branch, and therefore to make sure the build is
         clean and the tests are passing before merging the new code, as
-        explained before in the Gitflow section.
+        explained before in the \texttt{Gitflow} section.
 
     \chapter{New Features}
     \label{chap:newfeat}
@@ -1763,7 +1763,7 @@
 
       \section{Web Application enhancement}
 
-        The new web application implemented in Vue, which we detailed in
+        The new web application implemented in \texttt{Vue}, which we detailed in
         the previous chapters, has received some of our important new features
         of the project aiming to provide a better user experience: the
         integrated algorithm editor and the topology creation tool.
@@ -1771,7 +1771,7 @@
         \subsection{The Lua editor}
 
           One of our objectives for the web application was to provide the user
-          with a fully integrated Lua editor within the application and
+          with a fully integrated \texttt{Lua} editor within the application and
           available during the job creation process.\\
           The idea of entirely building ourselves this editor was quickly
           moved aside, as it would take too much time to achieve and would not
@@ -1782,7 +1782,7 @@
           error handling, line number displaying.\\
 
           The integration of Ace in the project was really easy and light thanks
-          to the available npm package. The editor now displays Lua code
+          to the available npm package. The editor now displays \texttt{Lua} code
           perfectly colorized and hislights syntax errors.\\
 
           Sadly, no built-in auto-completion module was available from the
@@ -1873,13 +1873,13 @@
         Addressing these two issues was an extremely easy task, the job of
         converting the topology in XML was already available and done on
         the job submission. We reused the Brace package used
-        for the Lua code editor to create an XML Topology editor.\\
+        for the \texttt{Lua} code editor to create an XML Topology editor.\\
         The user could then trigger an XML creation into the Brace editor
         before sending the job or paste its code into the Brace editor, and
         then ask for reflecting the XML topology into the visual editor. It
         was just then the matter of parsing the XML and generating the
         corresponding JSON entities, reusing the functions we already wrote
-        for the Vue components composing this global feature.
+        for the \texttt{Vue} components composing this global feature.
 
         \begin{figure}[H]
           \centering
@@ -1896,7 +1896,7 @@
 
       We therefore made the decision to use a domain specific language (DSL)
       for the crash management so that a user could define the crash point
-      in the Lua code as a comment. During the job execution phase, just before
+      in the \texttt{Lua} code as a comment. During the job execution phase, just before
       executing the user code, we parse the code and gather those crash
       points generate crashes.
 
@@ -1904,7 +1904,7 @@
 
         We defined our small domain specific language to be simple to use
         for the user and flexible enough for the parsing phase. This DSL
-        needed to be integrated into the Lua code without forcing the user to
+        needed to be integrated into the \texttt{Lua} code without forcing the user to
         modify its algorithm code and trying to avoid totally crashing
         the daemon in case of the crash points specified by the user were
         not correct.\\
@@ -1915,10 +1915,10 @@
 
         For these reasons, we designed the feature so that a crash point has
         to be represented as \textbf{one line} of code and beginning by
-        two hyphens (--) which indicates a Lua comment.\\
+        two hyphens (--) which indicates a \texttt{Lua} comment.\\
         To avoid interpreting any other comment, those crash points must
         contain the keyword \textsc{CRASH POINT}. Achieving this by comments
-        was probably the best option so that the real code doesn't get any
+        was probably the best option so that the real code does not get any
         interference with our crash point functionality. The crash then
         happens exactly where the crash point is defined, it is, therefore,
         possible to make the execution code crashing anywhere (thread, middle
