@@ -582,8 +582,8 @@
           The current full-stack \texttt{Rails} application was quite old and not
           really enjoyable to use for interacting with the \texttt{Splay}
           system. This application was also not following good practices
-          promoted by \texttt{Rails} such as REST~\cite{} or keeping lightweight
-          controllers~\cite{fatmode}.\\
+          promoted by \texttt{Rails} such as REST~\cite{rest} or keeping lightweight
+          controllers~\cite{fatmod}.\\
           Therefore, we would need to improve this application in order to
           provide a better user experience and easier way to learn distributed
           algorithm through \texttt{Splay}.
@@ -1495,7 +1495,7 @@
       and maintainable final product.\\
 
       The figure~\ref{global_testing} details the whole \texttt{Splay} project with the different
-      test suites and procedures. Each of them will be detail on this chapter.
+      test suites and procedures. Each of them will be detailed in this chapter.
 
       \begin{figure}[H]
         \centering
@@ -2139,38 +2139,42 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
       After the successful easy installation, the real work can start, our
       student will create his own implementation of Raft using the Splay
-      library.\\
+      library.
 
       \subsection{Raft election}
 
-        Raft is a consensus algorithm, often used as a alternative as Paxos because
+        Raft is a consensus algorithm, often used as an alternative as Paxos because
         it seems more understandable. The problem of consensus is fundamental
         in fault-tolerant distributed system, it involves the agreements of
         a value by multiple instances. When a desicion is validated by the system,
-        it is final. Typically a consensus algorithm make progress only if there are
-        the majority of node alive and with a connection between then, it is
+        it is final. Typically a consensus algorithm make progress only if there is
+        a majority of node alive and with a connection between them, it is
         also the case of Raft. \\
 
-        Raft works in two phase, a leader election where a leader is
-        voted (only one) and after a phase of value replication done by the leader
-        to the others machines. To remain leader, the related node sends heartbeat
-        to avoid that others relaunch a election. The election can be trigger by
-        any nodes if this one does not received news from the leader during a period of time (election timeout).
-        This election timeout is randomly choose between two values to avoid as much as conflict
-        of election. When a node trigger a election, it becomes a candidate and request
-        vote to others nodes, if it obtains a mojority of vote, it becomes the leader.
-        Also, at each election a term (number increasing monotonically)
-        is used to progress the election. \\
+        Raft works in two phases: a leader election phase and a phase of
+        value replication initiated by the leader.\\
+        During leader election phase, where a unique leader is elected
+        through a voting process. To remain the leader, the node holding
+        this position sends hearbeats to avoid that other nodes trigger a
+        new election. A leader election can be triggered by any node if it
+        does not receives heartbeats during a certain period of time (election
+        timeout).\\
+        This election timeout is randomly chosen between two values
+        to avoid a much as possible any conflit of election. When a node
+        triggers an election, it becomes a candidate and request votes to
+        the others nodes, and becomes leader if it receives a majority of votes.\\
+        Also, on each election a term a term (number increasing monotonically)
+        is used to progress the election.\\
         We will present and focus only on this election subproblem of
-        Raft because the state machine replication heavily increases the complexity and
-        the readability (even with Lua). \\
+        Raft, because the state machine replication heavily increases the complexity and
+        the readability (even with Lua).\\
 
         The Raft implementation that we will present in the next subsection is based on
         some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}.
-        We have done the Lua code of the Raft consensus leader
+        We have implemented the Lua code of the Raft consensus leader
         election part with the help of the Splay lib~\cite{SplayLib}.
         Splay lib supplies a great number of tool to communicate
-        between nodes, we have choose to use Remote Procedure Call (RPC) over UDP.\\
+        between nodes, we chose to use Remote Procedure Call (RPC) over UDP.\\
 
       \subsection{Creation of the Algorithm}
 
@@ -2469,7 +2473,7 @@ end)
 2019-05-30 08:20:10.0622 (2)  3: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
         \end{lstlisting}
 
-        The log can be cut in small parts to detail to process of election: 
+        The log can be cut in small parts to detail to process of election:
         \begin{itemize}
           \item Line 1 : the leader timeout is finish on the node 2, then a leader election is trigger.
           \item Lines 2-5 : the candidate (node 2) send vote request to other nodes
@@ -2478,7 +2482,7 @@ end)
           Then the node becomes the leader.
           \item Lines 17-22 : Leader (node 2) send heartbeat directly to other nodes to specify that it is the leader now
           (also he receives the rest of vote request response).
-          \item Lines 23-26 : Others nodes gets heartbeat from the leader and reset their election timeout. 
+          \item Lines 23-26 : Others nodes gets heartbeat from the leader and reset their election timeout.
         \end{itemize}
 
     \section{Timeline Animation}
@@ -2574,26 +2578,26 @@ end)
 
         \subsubsection{Network topology impact}
 
-          The student then tries his implementation of with three network configurations~\ref{fig:topologies}.
+          The student then tries his implementation with three network configurations~\ref{fig:topologies}.
           The log results show that Daemons succeeded at achieving the leader
           election and quickly stabilize (one becomes the leader, the other
           become followers) in those different network configurations.\\
-          But the network topology can affect 
+          But the network topology can affect
           the leader selection (some nodes have more chance to other becoming the leader), he expects
           to obtain different results for each topology :
           \begin{itemize}
-            \item First topology \ref{fig:topo1} : he expects that each node have almost the same chance to be the leader because 
+            \item First topology \ref{fig:topo1} : he expects that each node have almost the same chance to be the leader because
             the latencies between endpoints is small compared to the timeout election range (1.5 seconds).
-            \item Second topology \ref{fig:topo2} : he expects than daemon 3-4-5 have slightly more chance 
-            to become the leader (a kind of partition is done with a majority and two other node) than daemon 1-2 because 
+            \item Second topology \ref{fig:topo2} : he expects than daemon 3-4-5 have slightly more chance
+            to become the leader (a kind of partition is done with a majority and two other node) than daemon 1-2 because
             there is a kind of partition between the first two nodes and the rest with a big latency (250 ms).
             \item Thrid topology \ref{fig:topo3} : he expects that the daemon 5 has very small chance to become the leader compared to the others.
-            Also we can see that the communication with daemon 5 create always 
-            a RPC timeout, and then other node need to resend each time a supplement packet to daemon 5.          
+            Also we can see that the communication with daemon 5 create always
+            a RPC timeout, and then other node need to resend each time a supplement packet to daemon 5.
           \end{itemize}
           To support these expectations and to test the fault tolerance of the algorithm,
-          the student makes experiments with single fault injection. he adds 
-          a crash point in the heartbeat function to crash the leader before the second heartbeat and trigger a new election : 
+          the student makes experiments with single fault injection. he adds
+          a crash point in the heartbeat function to crash the leader before the second heartbeat and trigger a new election :
           \begin{lstlisting}[style=MyLua]
 ...
 function heartbeat()
@@ -2602,16 +2606,16 @@ function heartbeat()
 ...
           \end{lstlisting}
 
-          The student launch the code turn during approximately 13 minutes and parse the log to get 
+          The student launch the code turn during approximately 13 minutes and parse the log to get
           the number of time each node is became leader. First, he concludes that crashing the leader
           does not crash the Raft election process but only restart a election as expected. \\
-          Then, the result~\ref{tab:leader} after the long run supports 
+          Then, the result~\ref{tab:leader} after the long run supports
           his expectations concerning the chance of each node to become the leader.\\
-          Here, the purpose is \textbf{not} making statistical evidence/model but 
+          Here, the purpose is \textbf{not} making statistical evidence/model but
           only showing the importance of the topology emulation on a distributed algorithm
           and specifically on the chance of each node to become the leader during a Raft election process.
-          But we can imagine a advanced study to clearfy the impact of the network to the leader 
-          election (or other process) with the help of Splay. 
+          But we can imagine a advanced study to clearfy the impact of the network to the leader
+          election (or other process) with the help of Splay.
 
           \begin{table}[]
             \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -2622,20 +2626,20 @@ function heartbeat()
             Topology 2~\ref{fig:topo2}           & \textbf{\begin{tabular}[c]{@{}c@{}}10.50 \%\\ (38)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}9.67 \%\\ (35)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}28.17\%\\ (102)\end{tabular}  & \begin{tabular}[c]{@{}c@{}}25.69 \%\\ (93)\end{tabular} & \begin{tabular}[c]{@{}c@{}}25.97 \%\\ (94)\end{tabular}         & \begin{tabular}[c]{@{}c@{}}100 \%\\ (362)\end{tabular} \\ \hline
             Topology 3~\ref{fig:topo3} & \begin{tabular}[c]{@{}c@{}}22.61 \%\\ (90)\end{tabular}          & \begin{tabular}[c]{@{}c@{}}25.63 \%\\ (102)\end{tabular}        & \begin{tabular}[c]{@{}c@{}}25.63 \%\\ (102)\end{tabular} & \begin{tabular}[c]{@{}c@{}}23.62 \%\\ (94)\end{tabular} & \textbf{\begin{tabular}[c]{@{}c@{}}2.51 \%\\ (10)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}100 \%\\ (398)\end{tabular} \\ \hline
             \end{tabular}
-            \caption{Result of Raft leader election after long run and by crashing the leader before the second heartbeart} 
+            \caption{Result of Raft leader election after long run and by crashing the leader before the second heartbeart}
             \label{tab:leader}
           \end{table}
 
       \subsection{Advanced fault injection}
-        
+
         The user have already test the triggering of election in the previous section
-        by crashing the leader but he wants to increase the confidence of is implementation. 
-        Then, he add other fault injection at different key point of his algorithm to 
+        by crashing the leader but he wants to increase the confidence of is implementation.
+        Then, he add other fault injection at different key point of his algorithm to
         see how his implementation will manage different faults.
 
         To achieve this, the student puts four crash points in his code.
         First ad before, he adds a crash point in the heartbeart function but with other parameters
-        (when the 6th heartbeart is called and recover after 0.5 second) : 
+        (when the 6th heartbeart is called and recover after 0.5 second) :
         \begin{lstlisting}[style=MyLua]
 ...
 function heartbeat()
@@ -2662,7 +2666,7 @@ if vote_granted == true then
   nb_vote = nb_vote + 1
   -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : RANDOM 0.06
 ...
-        \end{lstlisting}   
+        \end{lstlisting}
 
         And last, he creates a fault injection just \textbf{after} than a node reply to a vote request RPC.
         \begin{lstlisting}[style=MyLua]
@@ -2673,22 +2677,22 @@ if vote_granted == true then
         -- CRASH POINT 1 2 3 4 5 : RECOVERY 0.5 : RANDOM 0.05
     end)
     return persistent_state.current_term, vote_granted
-end 
+end
 ...
         \end{lstlisting}
-        We add a new thread and adding the crash in it, it is a trick for that the crash append after the return 
-        and the RPC reply on the network. It is working because the Non-preemptive of Lua will first finish the current 
+        We add a new thread and adding the crash in it, it is a trick for that the crash append after the return
+        and the RPC reply on the network. It is working because the Non-preemptive of Lua will first finish the current
         code before passing to a other coroutine (behind the scene of the thread). \\
 
         After letting running the code on 5 daemon during 10 minutes,
         he checks the logs for the different topology
         settings, and he sees that everything went as expected. Indeed,
         leader elections happen without any problem (if majority on) and there is no more than one leader
-        in the same time. Moreover, when there are not enough nodes alive (less than 3), 
+        in the same time. Moreover, when there are not enough nodes alive (less than 3),
         the leader election will not progress until the majority of nodes is on. \\
-        He does not conclude the correctness of his code, because it is impossible to test every 
-        situation, but he is more confident about the Raft election process and 
-        his pratical code of it. 
+        He does not conclude the correctness of his code, because it is impossible to test every
+        situation, but he is more confident about the Raft election process and
+        his pratical code of it.
 
       \subsection{Animation results}
 
