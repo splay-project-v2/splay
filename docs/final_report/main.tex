@@ -207,8 +207,8 @@
       exists for that precise purpose in different languages, such as:
 
       \begin{itemize}
-        \item \texttt{Mace}~\cite{Mace} in C++
-        \item \texttt{Pymote}~\cite{Pymote} in Python
+        \item \texttt{Mace}~\cite{Mace} in \texttt{C++}
+        \item \texttt{Pymote}~\cite{Pymote} in \texttt{Python}
       \end{itemize}
 
       These solutions were not integrated together or not suiting the real needs
@@ -371,7 +371,8 @@
         \texttt{logs}, contain the informations about one job's
         execution on the application.\\
         Each node produces logging informations about its processing of the
-        algorithm (by simple print call), containing its identification number and timestamps.\\ % TODO :review
+        algorithm (with simple \textsc{print} calls), containing its
+        identification number and timestamps.\\
         The application then merge each of these individual informations
         to produce a single log file about one job, which we
         call the \texttt{logs}.
@@ -413,17 +414,17 @@
           It has thus different \texttt{HTML} pages for user registration, session
           creation, sending jobs and reading logs.\\
 
-          Each of these services communicates with the other components % TODO other components = controller
+          Each of these services communicates with the other components
           through the \textbf{\texttt{databse}}.
 
         \subsubsection{Database}
 
           The database is the central communication piece of \texttt{Splay},
-          allowing communication between the user and the rest of the % TODO : user or CLI + web <=> controller
+          allowing communication between the user and the rest of the
           application.\\
           It contains all the information needed by the different components
           of the application.\\
-          The jobs are created by the user applications, then collected by the % TODO : user applications remainder (CLI + wab app)
+          The jobs are created by the user applications, then collected by the
           \textbf{\texttt{controller}}.\\
 
         \subsubsection{Controller}
@@ -433,9 +434,10 @@
           From the job written in the database through the user applications,
           the controller will choose the requested nodes, dispatch the
           algorithm on these nodes, parse the topology if present to make
-          use of \texttt{SplayNet} and emulate the network conditions.\\ % TODO : the controller not emulate but only send info to daemon
-          This service is also responsible for the \texttt{logs} % TODO : retrievement + creation
-          creation.
+          use of \texttt{SplayNet} and send to the nodes the different
+          informations about network conditions.\\
+          This service is also responsible for the \texttt{logs}
+          retrieval and creation.
 
         \subsubsection{Daemons}
 
@@ -444,7 +446,7 @@
           to take the role of nodes on which the \texttt{jobs} will
           run. They are also called \textbf{\texttt{Splayds}} in the
           database.\\
-          The \texttt{daemons} register on the % TODO : missing a word?
+          The \texttt{daemons} register on the
           \texttt{controller} through TCP connections so that they
           can communicate.\\
 
@@ -452,7 +454,23 @@
           small and powerful language, it's tiny core ensuring a light
           footprint, which is conveniant for a scripting language.\\
           Easily embedded with the C language and non-preemptive, it
-          facilitates the creation and execution of distributed algorithms.
+          facilitates the creation and execution of distributed algorithms.\\
+
+          There is a whole high-level library designed to help the creation of
+          distributed algorithms in \texttt{Lua} on \texttt{Splay}, which we
+          call \texttt{SplayLib}. This is a rich library that offers for
+          example:
+
+          \begin{itemize}
+            \item Event management;
+            \item RPC servers creation and calls;
+            \item High level TCP and UDP servers creation
+            \item Global scheduler including a threading system
+          \end{itemize}
+
+          The whole manual of this library can be found on the official
+          website of Splay~\cite{SplayLib}.
+
 
     \section{User Scenarios}
 
@@ -514,7 +532,7 @@
         \item \textbf{\texttt{Rails}}: 2.1.0 $\rightarrow$ 5.2.0
       \end{itemize}
 
-      At the end of those ten days of work, we had a healthy and updated % TODO : healthier maybe but healthy ?
+      At the end of those ten days of work, we had a healthier and updated
       base to work with and ready to receive the contributions of our thesis.
 
     \section{Roadmap}
@@ -529,8 +547,8 @@
         implementation of new features on the system, a huge amount of
         work had to be achieve. These updates and changes were concerning
         the overall project organization, software quality and maintenance
-        guidelines and also a lot of work on the global codebase to fix % TODO, 2 and
-        issues and bugs that we have noticed during the whole development.
+        guidelines and also a lot of work on the global codebase to fix
+        issues and bugs that we noticed during the whole development.
         We will breifly detail each of those changes.
 
         \subsubsection{Github Organization Recast}
@@ -601,7 +619,7 @@
           between each service~\cite{dockercompose}.\\
 
           However, these docker images were not perfectly built: healthcheck
-          were missing, big distribution images were used slowing down the % TODO : and old distibution image (ubuntu 12) ?
+          were missing, big and old distribution images were used thus slowing down the
           setup phase and image building.\\
           Also, there was not a proper \textbf{one-click install} script for
           making quick tests.\\
@@ -1253,8 +1271,8 @@
         arguments when the program was called, and also repeating the process
         of reaching the server through a \texttt{HTTP} library in \texttt{Lua}.\\
         \texttt{Ruby} was indeed a relevant option if we wanted to restrict the number
-        of different technologies in use among the project, but Python was
-        a better choice to write such a simple script as our CLI. Python has
+        of different technologies in use among the project, but \texttt{Python} was
+        a better choice to write such a simple script as our CLI. \texttt{Python} has
         a lot of very convenient libraries to treat \texttt{HTTP} calls and to
         manage and parse user arguments when creating a CLI application.
 
@@ -1270,13 +1288,13 @@
         configuration to handle a headless browser, making the test suite
         too much complicated).\\
 
-        We started by creating a simple Python script executable
-        through Bash and running version 3 of Python.\\
+        We started by creating a simple \texttt{Python} script executable
+        through Bash and running version 3 of \texttt{Python}.\\
 
         The first step was to set up the available commands to create our CLI.
         In order to make the code the cleanest and simplest possible, we
         decided to use the \texttt{Click}~\cite{click} library, a perfect
-        Python package designed to create powerful CLI's with just a little
+        \texttt{Python} package designed to create powerful CLI's with just a little
         code.\\
         The steps for creating a command are:
 
@@ -1354,8 +1372,7 @@
           \item As explained in the controller part, we fixed the communication
           protocol used between the daemon and the controller, mainly for
           the logging and the registration of daemons on the controller.
-          \item The topology socket restriction % REMY HELP PLS - DEFINE WHAT IS TOPOLOGY SOCKET RESTRICTION
-          is now automatically achieved
+          \item The topology socket restriction is now automatically achieved
           when a topology is given with a job. This restriction is used to
           simulate the topology settings, limiting the bandwidth and creating
           latency.\\
@@ -1631,7 +1648,7 @@
           the behavior of a third-party application sending a request to
           our service and therefore making the whole \texttt{Rails} stack runs
           to provide an answer to this request.\\
-          Each request is going through the following elements:\\
+          Each request is going through the following elements:
 
           \begin{figure}[H]
             \centering
@@ -2175,7 +2192,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         also the case of Raft. \\
 
         Raft works in two phases: a leader election phase and a phase of
-        value replication initiated by the leader.\\ % TODO when client ask this state machine
+        value replication initiated by client to the current leader.\\
         During leader election phase, where a unique leader is elected
         through a voting process. To remain the leader, the node holding
         this position sends hearbeats to avoid that other nodes trigger a
@@ -2195,7 +2212,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         The Raft implementation that we will present in the next subsection is based on
         some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}.
         We have implemented the Lua code of the Raft consensus leader
-        election part with the help of the \texttt{Splay} lib~\cite{SplayLib}. % TODO : talk about the splay lib before (chap 2 ?)
+        election part with the help of the \texttt{Splay} lib~\cite{SplayLib}.
         \texttt{Splay} lib supplies a great number of tool to communicate
         between nodes, we chose to use Remote Procedure Call (RPC) over UDP.\\
 
@@ -2531,8 +2548,9 @@ end)
       green for the candidate state and red for the leader state.\\
       Also, network packets currently travelling between nodes change the color
       of the directed edge into black and become larger (depending on the
-      number of packets). This figure~\ref{fig:timeline} has as one goal, to
-      show the animation tool with all possibilities (not explain the raft election). \\ % TODO : check the last sentence
+      number of packets).\\
+      The figure~\ref{fig:timeline} aims to show all the possibilities offered by the animation
+      tool, and is not explaining the Raft election process.
 
       \begin{figure}[H]
         \centering
@@ -2654,7 +2672,7 @@ function heartbeat()
           First, he concludes that crashing the leader does not crashes the
           Raft election process but only restarts an election, as expected.
           He also obtains interesting result~\ref{tab:leader}, which at first glance,
-          supports his expectations. \\ % TODO :check
+          supports his expectations. \\
           Here, the purpose is \textbf{not} to make statistical evidence/model but
           only to show the importance of the topology emulation on a
           distributed algorithm and specifically of the chance of each node
@@ -2736,7 +2754,7 @@ end
         \end{lstlisting}
 
         We create a new thread which will be executed after the RPC function
-        returns, therefore, after the node sent it response (on network). Indeed this is % TODO : check
+        returns, thus after the node sends it response (on network). Indeed this is
         working because of the non-preemptive nature of \texttt{Lua}, the thread
         will execute after the current one (RPC call), and the crash will happen (if happen)
         after the RCP response is sent back.\\
@@ -2941,11 +2959,11 @@ end
           A radical solution to clean this service and offer a new alternative
           to users would be to completely rewrite the Daemon service using
           another technology.\\
-          The best alternative for the language would be Python, Python is a
+          The best alternative for the language would be \texttt{Python}, \texttt{Python} is a
           very popular language with a supportive community and constantly
           updated, having rich libraries offering complete sets of tools.\\
           However, the main drawback of this solution would be the performance
-          offered by vanilla Python compared to the very small core of Lua and
+          offered by vanilla \texttt{Python} compared to the very small core of Lua and
           its C integration. But the main drawback of Lua is evolution, Lua has
           not received major updates since 2014 and the libraries used in this
           project are not evolving too. Moreover, the tiny core of Lua forces
@@ -2991,7 +3009,8 @@ end
         supposed to be running in a restricted area and the project is secure in
         general.\\
         But with further analysis, we found out that the project was not secure
-        in various ways:\\
+        in various ways:
+
         \begin{itemize}
           \item The restriction on the socket can actually be completely
           bypassed. Indeed, using Lua there is a way to unload a package
@@ -3013,7 +3032,7 @@ end
         extremely important for the project to have future work about the
         securitization of the platform so that it could be used everywhere.
 
-    \section{Objectives achievement} % TODO: Rewrote
+    \section{Objectives Achievement} % TODO: Rewrote
 
       We have explain the importance distributed
       algorithm but also the difficulty to prototype existing solution and also new ideas
@@ -3029,6 +3048,8 @@ end
       in a more appropriate learning application. Mainly, there is 3 new features,
       a web Lua editor, a topology creation tool, both added to the web application and
       a way to create precise fault injection in the code path. \\
+
+      
 
       Moreover we show a real demonstration of \texttt{Splay} with a well know
       distributed algorithm, the Raft election. This demonstration
