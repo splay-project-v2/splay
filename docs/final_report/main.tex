@@ -111,10 +111,20 @@
   \maketitle
 
   \chapter*{Abstract}
-  {\color{red} TODO}
+
+    
 
   \chapter*{Acknowledgements}
-  {\color{red} TODO}
+
+    We would like to thank Etienne Riviere, our thesis supervisor who offered
+    us the opportunity of working on this project and took some precious time
+    to hold a meeting with us each week during two whole semesters.\\
+
+    We also thank Raziel Carvajal Gomez for helping us during our
+    part-time job period on the Splay application.\\
+
+    Finally, we thank Peter Van Roy and Guillaume Derval for taking the time
+    of being readers of our thesis.
 
   \tableofcontents
 
@@ -3031,34 +3041,49 @@ end
         extremely important for the project to have future work about the
         securitization of the platform so that it could be used everywhere.
 
-    \section{Objectives Achievement} % TODO: Rewrote
+    \section{Objectives Achievements}
 
-      We have explain the importance distributed
-      algorithm but also the difficulty to prototype existing solution and also new ideas
-      from papers. Then we explain that \texttt{Splay} is a very good solution of that problem,
-      it allows to any student or professor to quickly implement a
-      distributed prototype in a efficient way and get direct result of it.\\
+      This project was a real challenge, we had to start working with an
+      already existing project composed with multiple different services
+      interacting in a complex way. We managed to understand the
+      implementation details and habits of previous maintainers in order to
+      achieve our goal of transforming \texttt{Splay} in an
+      integrated platform for distributed systems training and learning.\\
 
-      Then we explain our implication on the \texttt{Splay} project in different way.
-      First by modernize the old project with more appropriate
-      technologies and improves the software quality. Secondly by adding
-      tests suite on each services, which was a big lack in the old project.
-      After, we explained the addition of new features to transforme \texttt{Splay}
-      in a more appropriate learning application. Mainly, there is 3 new features,
-      a web Lua editor, a topology creation tool, both added to the web application and
-      a way to create precise fault injection in the code path. \\
+      Our primary goal was to achieve a certain work of software engineering on
+      the base project we started working with, which we accomplished with
+      a solid test suite on the multiple services of the application.\\
+      We wanted to improve the project structure and maintainability, which
+      we did by reorganizing the code on different repositories, using
+      the test suites with continuous integration to support further
+      contributions. We revised the whole \texttt{Docker} management of
+      the project, creating lightweight docker images with automatic
+      builds on \texttt{DockerHub} and creating a \texttt{docker-compose} file
+      for easy installation and set up of the project.\\
 
-      
+      Our main goal was to turn \texttt{Splay} in an integrated platform for
+      distributed systems training and learning. We achieved this with a
+      brand new web application using recent web technologies, and easy
+      to use for students and professors. A complete Lua editor helps to
+      write the distributed algorithm with syntax coloration and error
+      parsing. A complete topology editor allows to draw complex network
+      topologies on which running the distributed algorithms, and a fault
+      injection system so that the user can trigger faults in specific
+      parts of his implementation to test its robustness.\\
 
-      Moreover we show a real demonstration of \texttt{Splay} with a well know
-      distributed algorithm, the Raft election. This demonstration
-      clearly present the importance of our new features.
+      Another idea for the project we had to put aside was to make the project
+      run on a cluster of RaspberryPi. The cluster itself is a side-project
+      and was not ready to receive a \texttt{Splay} installation at the
+      time we finished this thesis.\\
+      From our point of view, \texttt{Splay} still needs some refactoring
+      of the oldest codebase so that it would completely support the
+      implementations of new features and the improvements we listed before.\\
 
-      We have achieves our objectif on the project, even, we are dispointed to not did
-      works with a hardware solution with the cluster of Raspberry Pi (was not ready).
-      Also, \texttt{Splay}, in our point of views still need some improvements and refactoring
-      of the old features to be maintainable in the future and able to add
-      some extended features.
+      We managed to show a real demonstration of a practical usage of
+      \texttt{Splay} with the well-known Raft election algorithm, clearly
+      presenting the importance, quality and usefulness of our contributions
+      on the application. We are really satisfied about our result of our
+      contributions on the application.
 
   \nocite{*}
   \bibliographystyle{plain}
