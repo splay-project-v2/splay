@@ -1160,7 +1160,8 @@
         visits.\\
 
         In order to get the same features as the legacy web application,
-        we created a \textbf{monitoring} page, on which important
+        we created a \textbf{monitoring} page (showed on
+        figure~\ref{monitor_web}), on which important
         information would be displayed to the user in lists:
 
         \begin{itemize}
@@ -1168,12 +1169,33 @@
           from the backend and displayed with global information in a nice
           bootstrap table.
           \item A second table used for \texttt{jobs} (also fetched from the backend) is also
-          displayed with general data about these jobs. The user can choose to
-          get more details about a specific \texttt{Splay} daemon or job using a button
-          on the application. He can also choose to kill a job, sending the
-          related command to the backend to let the controller achieve that job
-          killing.
+          displayed with general data about these jobs.
         \end{itemize}
+
+        \begin{figure}
+          \centering
+          \includegraphics[scale=0.27]{figures/monitor.png}
+          \caption{\label{monitor_web} Monitoring Page}
+        \end{figure}
+
+        The user can choose to
+        get more details about a specific \texttt{Splay} daemon or job using a button
+        on the application, the result is showed in
+        figures~\ref{daemon_details}~and~\ref{job_details}. He can also choose
+        to kill a job, sending the related command to the backend to let the
+        controller achieve that job killing.
+
+        \begin{figure}
+          \centering
+          \includegraphics[scale=0.55]{figures/daemondetails.png}
+          \caption{\label{daemon_details} Daemon Details}
+        \end{figure}
+
+        \begin{figure}
+          \centering
+          \includegraphics[scale=0.55]{figures/jobdetails.png}
+          \caption{\label{job_details} Job Details}
+        \end{figure}
 
         The creation of a job is done through a simple form. We implemented
         an automatic check of the fields using the \texttt{vee-validate}
