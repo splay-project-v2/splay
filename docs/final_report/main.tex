@@ -2655,7 +2655,7 @@ end)
 
           The student then tries his implementation with three network
           configurations~\ref{fig:topologies}.\\
-          The log results shows that Daemons succeeded at achieving the leader
+          The log shows that Daemons succeeded to achieve the leader
           election and quickly stabilize (one becomes the leader, the others
           are followers) in those different network configurations.\\
           But the network topology can affect the leader selection (some nodes
@@ -2663,24 +2663,24 @@ end)
           obtain different results for each topology :
 
           \begin{itemize}
-            \item First topology \ref{fig:topo1} : he expects that each node
-            have almost the same chances to become the leader because the
-            latencies between all endpoints is small compared to the timeout
+            \item First topology~\ref{fig:topo1}: he expects that each node
+            has almost the same chances to become the leader because the
+            latencies between all endpoints are small compared to the timeout
             election range (1.5 seconds).
-            \item Second topology \ref{fig:topo2} : he expects that daemons
+            \item Second topology~\ref{fig:topo2}: he expects that daemons
             3-4-5 have slightly more chances to become the leader
             than daemons 1-2 because there is a kind of partition between the
             first two nodes and the rest with a big latency (250 ms).
-            \item Thrid topology \ref{fig:topo3} : he expects that the daemon
+            \item Third topology~\ref{fig:topo3}: he expects that the daemon
             5 has very small chances to become the leader compared to the
-            others (network packet take at minimun 0.63 second to travel between node 5 and other nodes).
+            others (network packet take at minimum 0.63 seconds to travel between node 5 and other nodes).
             He expects also that the communication with daemon 5 always
-            creates a RPC timeout (set to 0.5 second), and then other nodes will resend each
+            triggers the RPC timeout (set to 0.5 seconds), then other nodes will resend each
             time another packet to daemon 5.
           \end{itemize}
 
           To support these expectations and to test the fault tolerance of
-          the algorithm, the student makes experiments with single fault
+          the algorithm, the student makes experiments with a single fault
           injection. He adds a crash point in the heartbeat function to
           make the leader crash before the second heartbeat and
           thus trigger a new election :
@@ -2693,10 +2693,10 @@ function heartbeat()
 ...
           \end{lstlisting}
 
-          The student launches the code turn during approximately 13 minutes,
+          The student launches the code turn during approximately 13 minutes
           and parses the logs to get the number of times each node becomes the
           leader.\\
-          First, he concludes that crashing the leader does not crashes the
+          First, he concludes that crashing the leader does not crash the
           Raft election process but only restarts an election, as expected.
           He also obtains interesting result~\ref{tab:leader}, which at first glance,
           supports his expectations. \\
@@ -2729,9 +2729,9 @@ function heartbeat()
         algorithm to see how his implementation will manage these faults.\\
 
         To achieve this, the student puts four crash points in his code.
-        Ad before, he adds a crash point in the heartbeart function, but with
-        other parameters (when the 6th heartbeart is called and recovers
-        after 0.5 second) :
+        Ad before, he adds a crash point in the heartbeat function, but with
+        other parameters (when the 6th heartbeat is called and recovers
+        after 0.5 seconds) :
 
         \begin{lstlisting}[style=MyLua]
 ...
@@ -2741,7 +2741,7 @@ function heartbeat()
 ...
         \end{lstlisting}
 
-        Secondly, he adds acrash point not depending on the
+        Secondly, he adds a crash point not depending on the
         node state but triggering less often. It will be triggered by a node
         when it receives a vote request from a candidate with a probability
         of 0.05 :
@@ -2780,8 +2780,8 @@ end
 ...
         \end{lstlisting}
 
-        We create a new thread which will be executed after the RPC function
-        returns, thus after the node sends it response (on network). Indeed this is
+        We create a new thread that will be executed after the RPC function
+        returns, thus after the node sends its response (on the network). Indeed this is
         working because of the non-preemptive nature of \texttt{Lua}, the thread
         will execute after the current one (RPC call), and the crash will happen (if happen)
         after the RCP response is sent back.\\
@@ -2790,8 +2790,8 @@ end
         checks the logs for the different topology settings.\\
         He sees that everything went as expected. Indeed, the leader
         election process is performed without any problem and there is never
-        more than on leader at the same time.\\
-        Moreover, when there less than a majority of nodes is alive, the leader
+        more than one leader at the same time.\\
+        Moreover, when there is less than a majority of nodes alive, the leader
         election process will not progress until there is a majority again.\\
         The student is now more confident about his implementation of Raft.
 
@@ -2800,7 +2800,7 @@ end
         Now the student has tried his Raft election implementation on
         different topologies and with some crash points, he can observe some
         interesting results thanks to the animation tool.\\
-        A complete Raft election can be divided in multiple steps. The next
+        A complete Raft election can be divided into multiple steps. The next
         figure shows a complete election process with a conflict between
         three candidates (candidates asking almost at the same time vote
         requests to the others).\\
@@ -2844,7 +2844,7 @@ end
           \label{fig:election}
         \end{figure}
 
-        In case of figure~\ref{fig:election}, no node crashes but we can show
+        In the case of figure~\ref{fig:election}, no node crashes but we can show
         that even when a crash happens, Raft is fault-tolerant as long as there
         is a majority of nodes alive (3 in this case). If there are only one or
         two nodes alive, the election can't be achieved until a third node
@@ -2917,8 +2917,8 @@ end
           For this purpose, we could modify the socket wrapping done to achieve
           topology emulation (or creating a new one) where our crash library could ask
           for restrictions over the network simulation.\\
-          Moreover, this idea can go futher, to be able to create network partition between
-          several nodes, creating two or more splited network where nodes can
+          Moreover, this idea can go further, to be able to create a network partition between
+          several nodes, creating two or more split network where nodes can
           only communicate with others located in the same partition.\\
 
           Moreover, we can imagine providing the user with more control options
