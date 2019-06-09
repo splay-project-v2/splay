@@ -1160,7 +1160,7 @@
         having its own \texttt{HTML} template, their \texttt{CSS} style declarations, and
         the associated \texttt{JavaScript} code. No other exotic language is required.\\
         The fact that the framework belongs to the \texttt{JavaScript} ecosystem and is
-        associated with the NPM package manager also allows to take advantage of
+        associated with the \texttt{npm} package manager also allows to take advantage of
         numerous existing libraries, such as data visualization libraries,
         testing libraries, etc...\\
 
@@ -1835,8 +1835,8 @@
           One of our objectives for the web application was to provide the user
           with a fully integrated \texttt{Lua} editor within the application and
           available during the job creation process.\\
-          The idea of entirely building ourselves this editor was quickly
-          moved aside, as it would take too much time to achieve and would not
+          The idea of entirely building ourselves this editor has quickly
+          put aside, as it would take too much time to achieve and would not
           be a solution allowing easy evolution through time.\\
           We then found a great package named \texttt{Brace}, a browserified
           version of the Ace editor~\cite{Ace}. Ace can handle hundreds of
@@ -1844,7 +1844,7 @@
           error handling, line number displaying.\\
 
           The integration of Ace in the project was really easy and light thanks
-          to the available npm package. The editor now displays \texttt{Lua} code
+          to the available \texttt{npm} package. The editor now displays \texttt{Lua} code
           perfectly colorized and highlights syntax errors.\\
 
           Sadly, no built-in auto-completion module was available from the
@@ -1892,11 +1892,11 @@
         prevent the user from creating wrong settings such as a link having the
         same node as source and destination and ensure the topology would
         fit in the \texttt{Splay} system. To help a user manage the created
-        elements of a topology, a simple summary of these elements are
+        elements of topology, a simple summary of these elements is
         output on the page with the related information. A simple click on those
-        allows to delete the corresponding element from the topology.\\
+        allows deleting the corresponding element from the topology.\\
         Indeed, any deletion of a node would delete the link it is associated
-        to, or any deletion of a spec would delete the associated links.\\
+        with, or any deletion of a spec would delete the associated links.\\
 
         \begin{figure}[H]
           \centering
@@ -1964,11 +1964,11 @@
       of the code in the middle of the execution tree, therefore only the
       daemon was able to handle with precision the crash.\\
 
-      We therefore made the decision to use a domain specific language (DSL)
+      We, accordingly, made the decision to use a domain specific language (DSL)
       for the crash management so that a user could define the crash point
       in the \texttt{Lua} code as a comment. During the job execution phase, just before
       executing the user code, we parse the code and gather those crash
-      points generate crashes.
+      points that generate crashes.
 
       \subsection{Domain Specific Language (DSL)}
 
@@ -1978,7 +1978,7 @@
         modify its algorithm code and trying to avoid totally crashing
         the daemon in case of the crash points specified by the user were
         not correct.\\
-        Also, the difference in terms of th number of lines of code between the
+        Also, the difference in terms of the number of lines of code between the
         source code before and after the parsing needed to be the same in
         order to keep the feedback error messages right (getting the same line
         number when locating the error).\\
@@ -1992,13 +1992,13 @@
         interference with our crash point functionality. The crash then
         happens exactly where the crash point is defined, it is, therefore,
         possible to make the execution code crashing anywhere (thread, middle
-        of a function, etc...)\\
+        of a function, etc...).\\
 
         Secondly, a fault is defined by a type, the moment it should occur and
         on which node it should occur. These characteristics also needed to
-        be specified within our DSL. Each characteristic follows the
-        \textsc{CRASH POINT} keyword and are separated by a colon, their are
-        defined by their keyword and values if needed.
+        be specified within our DSL. Each characteristic following the
+        \textsc{CRASH POINT} keyword is separated by a colon and is defined
+        by specific keyword and values if needed.
 
         \begin{itemize}
           \item First, the chosen nodes to be affected by the crash must be
@@ -2023,7 +2023,7 @@
         A stop crash means that the node will die forever. Conversely, a
         recovery crash means that the node will crash and recover after the
         number of seconds specified by the user (float number).\\
-        Concerning the moment of the crash, there are two possible specification:
+        Concerning the moment of the crash, there are two possible specifications:
 
         \begin{itemize}
           \item The \textbf{AFTER} keyword means that the user specifies the
@@ -2113,7 +2113,7 @@
         outside~\cite{CoroutineLua}. This particularity helps to simplify distributed algorithms,
         but for the fault injection, it limits the field of possibility
         (we cannot kill a thread without killing the process).
-        Then, a solution is to exit the process it-self by using an OS function (os.exit),
+        Then, a solution is to exit the process itself by using an OS function (os.exit),
         then kill all threads. We also have the possibility of sending an exit
         status code to the process (as parameters of the function),
         which is very convenient for knowing if we need to restart or stay
@@ -2124,19 +2124,19 @@
         current execution. Moreover, we can pass special exit status codes
         in order to send messages to the parent process.\\
         In order to use these exit codes, we created a fork (available from
-        the C splay library) before parsing the crash point and executing
+        the C Splay library) before parsing the crash point and executing
         the user code.\\
         Therefore, the child process will execute the parsing of the crash
         point and proceed to the code execution, and the parent process will
         wait to receive the exit status code of its child. We added a Lua
-        function (waitpid) for this purpose and used the original waitpid
-        of C \cite{waitpid}.\\
+        function (\textit{waitpid}) for this purpose and used the original \textit{waitpid}
+        of C~\cite{waitpid}.\\
 
         When the child process terminates (either in a normal way or because
         of a crash), the parent process checks the exit status code and act
         accordingly. If the exit status code is 65 or 66, it means that a
         crash has been triggered (or that the user wants to exit
-        with one of these values). We choosed to use 65 and 66 because
+        with one of these values). We chose to use 65 and 66 because
         according to this article~\cite{StatusCode}, the range is 64-113
         is proposed to be user-defined status code.
 
@@ -2158,7 +2158,7 @@
 
     We will take the example of a student following a course on distributed
     applications and distributed systems who wants to prototype the Raft
-    leader election algorithm on five different nodes. He choses to use
+    leader election algorithm on five different nodes. He chooses to use
     \texttt{Splay} for his tests using his own laptop (or if available, a cluster
     of mini-computers) and right now he has no available installation of the
     \texttt{Splay} system. We are going to describe the different steps that our
@@ -2171,7 +2171,7 @@
     execution of Raft by showing an animation of the evolution of the
     endpoints states.\\
     Moreover, he would like to test its algorithm implementation through
-    different network topologies and analyse the solution
+    different network topologies and analyze the solution
     robustness by injecting faults at key parts of the algorithm.
 
     \section{Installation of Splay}
@@ -2196,7 +2196,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       each service, some little wait time is requested for this download
       phase and for each service to start.\\
       Once this is done, the student has access to the web application of
-      the \texttt{Splay} system, using his favorite web browser with this url:
+      the \texttt{Splay} system, using his favorite web browser with this URL :
       \url{http://localhost:8080/}.\\
       He creates his own account by registering on the platform, opens a new
       session (which will be kept open for the next time he wants to use
@@ -2212,42 +2212,42 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         Raft is a consensus algorithm, often used as an alternative as Paxos because
         it seems more understandable. The problem of consensus is fundamental
-        in fault-tolerant distributed system, it involves the agreements of
-        a value by multiple instances. When a desicion is validated by the system,
-        it is final. Typically a consensus algorithm make progress only if there is
+        in a fault-tolerant distributed system, it involves the agreements of
+        value by multiple instances. When a decision is validated by the system,
+        it is final. Typically a consensus algorithm makes progress only if there is
         a majority of node alive and with a connection between them, it is
         also the case of Raft. \\
 
         Raft works in two phases: a leader election phase and a phase of
-        value replication initiated by client to the current leader.\\
-        During leader election phase, where a unique leader is elected
+        value replication initiated by the client to the current leader.\\
+        During the leader election phase, where a unique leader is elected
         through a voting process. To remain the leader, the node holding
-        this position sends hearbeats to avoid that other nodes trigger a
+        this position sends heartbeats to avoid that other nodes trigger a
         new election. A leader election can be triggered by any node if it
         does not receives heartbeats during a certain period of time (election
         timeout).\\
         This election timeout is randomly chosen between two values
-        to avoid a much as possible any conflit of election. When a node
+        to avoid a much as possible any conflict during the election. When a node
         triggers an election, it becomes a candidate and request votes to
-        the other nodes, and becomes leader if it receives a majority of votes.\\
-        Also, on each election a term (number increasing monotonically)
-        is used to progress the election.\\
+        the other nodes and becomes the leader if it receives a majority of votes.\\
+        Also, on each election, a term (number)
+        is increased (monotonically) to progress the election.\\
         We will present and focus only on this election subproblem of
-        Raft, because the state machine replication heavily increases the complexity and
+        Raft because the state machine replication heavily increases the complexity and
         the readability (even in Lua).\\
 
         The Raft implementation that we will present in the next subsection is based on
         some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}.
         We have implemented the \texttt{Lua} code of the Raft consensus leader
         election part with the help of the \texttt{Splay} lib~\cite{SplayLib}.
-        \texttt{Splay} lib supplies a great number of tool to communicate
+        \texttt{Splay} lib supplies a great number of tools to communicate
         between nodes, we chose to use Remote Procedure Call (RPC) over UDP.\\
 
       \subsection{Creation of the Algorithm}
 
         The student finally created the \texttt{Lua} version of the Raft leader
         election subproblem, which is not trivial, but made
-        understandable. We cut the commented code in multiple parts to improved the readability,
+        understandable. We cut the commented code in multiple parts to improve the readability,
         the whole code can be found on the GitHub repository
         \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election.lua}}.
 
@@ -2540,16 +2540,16 @@ end)
 2019-05-30 08:20:10.0622 (2)  3: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
         \end{lstlisting}
 
-        The log can be cut in small parts to detail to process of election:
+        The log can be cut in small parts to detail the process of election:
         \begin{itemize}
-          \item Line 1 : The leader timeout is finished on the node 2, then a leader election is triggered.
-          \item Lines 2-5 : The candidate (node 2) sends a vote request to the other nodes.
-          \item Lines 6-13 : The others nodes received the vote request from node 2 and return the result.
-          \item Lines 14-16 : Node 2 received two results of its vote requests and obtain the majority of votes.
+          \item Line 1: The leader timeout is finished on node 2, then a leader election is triggered.
+          \item Lines 2-5: The candidate (node 2) sends a vote request to the other nodes.
+          \item Lines 6-13: The other nodes received the vote request from node 2 and return the result.
+          \item Lines 14-16: Node 2 received two results of its vote requests and obtain the majority of votes.
           Therefore, it becomes the leader.
-          \item Lines 17-22 : Leader (node 2) sends heartbeat directly to the other nodes to specify that it is now the leader
-          (also he receives the rest of the vote request response).
-          \item Lines 23-26 : Other nodes gets heartbeat from the leader and reset their election timeout.
+          \item Lines 17-22: Leader (node 2) sends heartbeat directly to the other nodes to specify that it is now the leader
+          (also he receives the rest of the vote request reply).
+          \item Lines 23-26: Other nodes get a heartbeat from the leader and reset their election timeout.
         \end{itemize}
 
     \section{Timeline Animation}
@@ -2558,7 +2558,7 @@ end)
       see how the network and the connection are evolving during his job's
       execution.\\
       For this purpose, we created a small tool designed to parse the
-      logs and allow the user to see that evolution during the job's
+      logs and allow the user to see the evolution during the job's
       execution (adding to \texttt{Splay} tools directory).
       This tool is embedded in the web application with some
       JavaScript. It shows the node states (follower, candidate or leader),
@@ -2570,14 +2570,14 @@ end)
 
       This tool takes a text-based log, a speed factor and auto-connect
       checkbox as inputs, and here, it is used to illustrate our Raft election
-      process evolution over time. We represent on the graph the node (job)
-      state by different colors : blue for the follower state,
+      process over time. We represent on the graph the node (job)
+      state by different colors: blue for the follower state,
       green for the candidate state and red for the leader state.\\
-      Also, network packets currently travelling between nodes change the color
+      Also, network packets currently traveling between nodes change the color
       of the directed edge into black and become larger (depending on the
       number of packets).\\
-      The figure~\ref{fig:timeline} aims to show all the possibilities offered by the animation
-      tool, and is not explaining the Raft election process.
+      Figure~\ref{fig:timeline} aims to show all the possibilities offered by the animation
+      tool and is not explaining the Raft election process.
 
       \begin{figure}[H]
         \centering
@@ -2589,8 +2589,8 @@ end)
       If we observe the leader election from the first result (without
       topology emulation and no crashes) with this tool, we will not see clearly
       the evolution of the nodes states, because the leader election finishes
-      very quickly (< 8 ms) and it is hard to capture the visualisation of it
-      (or with an very small speed factor).\\
+      very quickly (< 8 ms) and it is hard to capture the visualization of it
+      (or with a very small speed factor).\\
       The main reason is the lack of latency between nodes. Indeed, without
       topology emulation, the RPC messages travel with the native latency
       (in case of the student installation, only \texttt{Docker} network latency is
@@ -2604,13 +2604,13 @@ end)
       like to try to break his Raft election by testing it with different
       network settings and by adding some fault injection in the critical
       parts of the process. Moreover, he wants to observe the difference of
-      chances for a node to become leader depending on the network topology.
+      chances for a node to become the leader depending on the network topology.
 
       \subsection{Network Topology Emulation}
 
         The student wants to test his implementation on different network
-        topologies and see the difference of the chances for each node to
-        become leader.
+        topologies and see the difference in the chances for each node to
+        become the leader.
 
         \subsubsection{Topology settings}
 
