@@ -1,4 +1,4 @@
-% EPL master thesis covers template
+ \texttt{Lua} % EPL master thesis covers template
 \documentclass{eplmastersthesis}
 \usepackage{float}
 \usepackage{xcolor}
@@ -112,7 +112,23 @@
 
   \chapter*{Abstract}
 
-    
+    This master thesis covers the contributions made to the Splay application
+    in order to turn it into an integrated platform for distributed systems
+    training and learning.\\
+    Splay was initially designed for researchers to facilitate the testing and
+    design of distributed applications in an execution environment with low
+    overhead and footprint, with a simple language resembling to pseudo-code.\\
+
+    Preceding the contributions, an extensive work of software engineering has
+    also been achieved to set up a complete test environment using unit and
+    integration testing with continuous integration, a complete and easy to use
+    installation script, a total project management recast on Github.\\
+
+    The contributions made to Splay are a new web application designed
+    for students and professors with an algorithm editor, a network topology
+    creation tool to simulate network conditions in which the algorithm will
+    be running, a fault injection system to control and place crash points
+    in the distributed algorithm and be able to test its robustness.
 
   \chapter*{Acknowledgements}
 
@@ -236,7 +252,7 @@
 
     \section{Splay}
 
-      The \texttt{Splay} project was initiated to solve the difficulty of testing 
+      The \texttt{Splay} project was initiated to solve the difficulty of testing
       and developing distributed algorithms on a large scale. \texttt{Splay} is
       not a recent project (started around 2006), and a lot of features have been
       added since it's creation. The first version of \texttt{Splay} was
@@ -615,27 +631,27 @@
 
           Some services were dockerized, this means that dedicated files
           were present to allow creating images of these services in order
-          to run the services in Docker containers.\\
+          to run the services in \texttt{Docker} containers.\\
           Containers are "standard units of software that packages up the code and
           all its dependencies so the application runs quickly and reliably
-          from one computing environment to another. A Docker container image
+          from one computing environment to another. A \texttt{Docker} container image
           is a lightweight, standalone, executable package of software that
           includes everything needed to run an application: code, runtime,
           system tools, system libraries and settings"~\cite{dockercontainer}.\\
-          A docker-compose file was present which already facilitated the
-          installation. Docker-compose file allows specifying  a
+          A \texttt{docker-compose} file was present which already facilitated the
+          installation. \texttt{Docker-compose}~\cite{dockercompose} file allows specifying  a
           collection of services and links between these services so that
           they will share a common network, allowing easy communication
-          between each service~\cite{dockercompose}.\\
+          between each service.\\
 
-          However, these docker images were not perfectly built: health checks
+          However, these \texttt{Docker} images were not perfectly built: health checks
           were missing, big and old distribution images were used thus slowing down the
           setup phase and image building.\\
           Also, there was not a proper \textbf{one-click install} script for
           making quick tests.\\
           Therefore, one of our goals was to create clean, small and with
-          updated libraries docker images. These images needed to be fully
-          integrated between them through the docker-compose file. We should
+          updated libraries \texttt{Docker} images. These images needed to be fully
+          integrated between them through the \texttt{docker-compose} file. We should
           provide the users with an automated install script and a running
           script.
 
@@ -808,7 +824,7 @@
         allowing us to perform a complete reorganization of all the directories
         and files composing the project and adding some basic documentation.
         Each service was successfully placed in a distinct directory while
-        keeping the docker-compose file working.\\
+        keeping the \texttt{docker-compose} file working.\\
         The project was cleaner, however, we felt that this was not enough
         and that we could achieve a better structure. The project is big and
         consisting of multiple services interacting with each other but
@@ -835,7 +851,7 @@
 
         For each master branch of these sub-repositories, a link with Dockerhub
         has been made so that each push on master will trigger an automatic build
-        of a docker image using the source and uploading it on the
+        of a \texttt{Docker} image using the source and uploading it on the
         Dockerhub~\cite{DockerHubGithub}.
         This was specially made to ease the integration testing using a
         continuous integration service, which would have to build every single
@@ -1391,7 +1407,7 @@
           without any restriction.\\
           To bypass this, we created a new topology restriction only based on
           the IP, but that means that all the nodes (daemons) need to have a
-          different IP (thanks to docker, this is the case), but that is
+          different IP (thanks to \texttt{Docker}, this is the case), but that is
           something that should be improved and changed and we will talk about
           it in the improvements section.
           \item We removed the \texttt{LuaCrypto} library from the daemon and added
@@ -1727,7 +1743,7 @@
         Then we successfully transformed the old existing tests into busted
         tests. With only this single change, we were able to detect some
         anomalies in the lib code and fix these. We added some test steps
-        in the docker image creation to avoid creating malformed images.\\
+        in the \texttt{Docker} image creation to avoid creating malformed images.\\
 
         Moreover, we added a lot of tests about each modification we made
         (\texttt{openssl} package updated, new misc functions, small changes in existing
@@ -1760,7 +1776,7 @@
 
         \begin{itemize}
           \item Cleaning the containers.
-          \item Rebuilding the different services listed in the docker-compose
+          \item Rebuilding the different services listed in the \texttt{docker-compose}
           file.
           \item Starting up the services.
           \item Executing commands through the CLI.
@@ -2082,7 +2098,7 @@
         Parsing is done line by line and if any error is found (also error
         about the parsing code itself), the concerned line will be unchanged, and
         a warning or error message will be written in the logs.\\
-        This feature is fully written in Lua using the basic regex matcher of Lua
+        This feature is fully written in \texttt{Lua} using the basic regex matcher of Lua
         \cite{RegexLua} (it is not a complete Regex implementation).
 
       \subsection{Execution}
@@ -2091,7 +2107,7 @@
         we shall now see in detail how the crashes exactly happen, how they
         are handled and how the nodes recover if they have to.\\
 
-        The Lua multithreading is non-preemptive, this means that we cannot stop a thread from the
+        The \texttt{Lua} multithreading is non-preemptive, this means that we cannot stop a thread from the
         outside~\cite{CoroutineLua}. This particularity helps to simplify distributed algorithms,
         but for the fault injection, it limits the field of possibility
         (we cannot kill a thread without killing the process).
@@ -2101,8 +2117,8 @@
         which is very convenient for knowing if we need to restart or stay
         down after a crash point was triggered.\\
 
-        With this way of exiting, we can create artificial crash points that
-        will immediately kill every coroutine (threads) of Lua and its
+        With this way of exiting, we can create artificial crash points which
+        will immediately kill every coroutine (threads) of \texttt{Lua} and its
         current execution. Moreover, we can pass special exit status codes
         in order to send messages to the parent process.\\
         In order to use these exit codes, we created a fork (available from
@@ -2131,7 +2147,7 @@
         creating another fork, and the crash table is reset when reparsing
         the original code. Moreover, when it is a recovery crash, the user
         can define the downtime. Our simple solution to achieve this is by
-        using the non-preemptive feature of Lua and forcing the process
+        using the non-preemptive feature of \texttt{Lua} and forcing the process
         to sleep x seconds without any yield coroutine (therefore other
         coroutines cannot execute any code) before crashing.
 
@@ -2163,8 +2179,8 @@
       repository~\cite{SplayV2Git} that the installation does not depend on
       any operating system or hardware. The README file of the Github project
       precisely describes how to install \texttt{Splay}. Then, following the
-      instructions, he clones the main repository and installs docker and
-      docker-compose on his computer.\\
+      instructions, he clones the main repository and installs \texttt{Docker} and
+      \texttt{docker-compose} on his computer.\\
       In order to run \texttt{Splay} on production mode, he runs the following
       commands: \\
 
@@ -2220,14 +2236,14 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         The Raft implementation that we will present in the next subsection is based on
         some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}.
-        We have implemented the Lua code of the Raft consensus leader
+        We have implemented the \texttt{Lua} code of the Raft consensus leader
         election part with the help of the \texttt{Splay} lib~\cite{SplayLib}.
         \texttt{Splay} lib supplies a great number of tool to communicate
         between nodes, we chose to use Remote Procedure Call (RPC) over UDP.\\
 
       \subsection{Creation of the Algorithm}
 
-        The student finally created the Lua version of the Raft leader
+        The student finally created the \texttt{Lua} version of the Raft leader
         election subproblem, which is not trivial, but made
         understandable. We cut the commented code in multiple parts to improved the readability,
         the whole code can be found on the github repository
@@ -2575,7 +2591,7 @@ end)
       (or with an very small speed factor).\\
       The main reason is the lack of latency between nodes. Indeed, without
       topology emulation, the RPC messages travel with the native latency
-      (in case of the student installation, only docker network latency is
+      (in case of the student installation, only \texttt{Docker} network latency is
       expected), and then a candidate gets its vote granted really fast (and
       thus becomes the leader directly, with almost no chances of conflict
       with another node).
@@ -2858,12 +2874,12 @@ end
 
         \subsubsection{Lua editor}
 
-        During the development of our features, we noticed that the Lua Editor
+        During the development of our features, we noticed that the \texttt{Lua} Editor
         is probably the less important one. The main reason making this feature
         the less important is that most of the time, users create their own Lua
         scripts on their favorite editor and then apply a copy-paste on the
         system.\\
-        A fully integrated IDE with a Lua an installed Lua package offers more
+        A fully integrated IDE with a \texttt{Lua} an installed \texttt{Lua} package offers more
         than our editor, but with little improvements, our editor could equal
         any other:
 
@@ -2873,7 +2889,7 @@ end
           the help of the Ace Editor package.
           \item \textbf{Specific Auto-Completion}: The integration of the \texttt{Splay
           Lua} library to the auto-completion feature with some hints would
-          be a great achievement and make the Lua editor an even better
+          be a great achievement and make the \texttt{Lua} editor an even better
           option than an IDE.
           \item \textbf{Color Theme}: Ace allows to set a color scheme for
           the editor, an option for the user to change this color scheme
@@ -2972,10 +2988,10 @@ end
           very popular language with a supportive community and constantly
           updated, having rich libraries offering complete sets of tools.\\
           However, the main drawback of this solution would be the performance
-          offered by vanilla \texttt{Python} compared to the very small core of Lua and
-          its C integration. But the main drawback of Lua is evolution, Lua has
+          offered by vanilla \texttt{Python} compared to the very small core of \texttt{Lua} and
+          its C integration. But the main drawback of \texttt{Lua} is evolution, \texttt{Lua} has
           not received major updates since 2014 and the libraries used in this
-          project are not evolving too. Moreover, the tiny core of Lua forces
+          project are not evolving too. Moreover, the tiny core of \texttt{Lua} forces
           the user to write its own basic functions that are built-in in many
           other languages and thus were placed in the \texttt{Splay} lib in our case.\\
           This results in a greater number of lines of codes for the \texttt{Splay} lib,
@@ -3022,7 +3038,7 @@ end
 
         \begin{itemize}
           \item The restriction on the socket can actually be completely
-          bypassed. Indeed, using Lua there is a way to unload a package
+          bypassed. Indeed, using \texttt{Lua} there is a way to unload a package
           dynamically (package.loaded["name\_package"] = nil). Using this
           technique, we can unload the socket package (that was loaded with a
           restriction) and reload it with the corresponding statements placed
@@ -3057,16 +3073,16 @@ end
       we did by reorganizing the code on different repositories, using
       the test suites with continuous integration to support further
       contributions. We revised the whole \texttt{Docker} management of
-      the project, creating lightweight docker images with automatic
+      the project, creating lightweight \texttt{Docker} images with automatic
       builds on \texttt{DockerHub} and creating a \texttt{docker-compose} file
       for easy installation and set up of the project.\\
 
       Our main goal was to turn \texttt{Splay} in an integrated platform for
       distributed systems training and learning. We achieved this with a
       brand new web application using recent web technologies, and easy
-      to use for students and professors. A complete Lua editor helps to
+      to use for students and professors. A complete \texttt{Lua} editor helps to
       write the distributed algorithm with syntax coloration and error
-      parsing. A complete topology editor allows to draw complex network
+      parsing. A complete topology editor allows drawing complex network
       topologies on which running the distributed algorithms, and a fault
       injection system so that the user can trigger faults in specific
       parts of his implementation to test its robustness.\\
@@ -3082,8 +3098,8 @@ end
       We managed to show a real demonstration of a practical usage of
       \texttt{Splay} with the well-known Raft election algorithm, clearly
       presenting the importance, quality and usefulness of our contributions
-      on the application. We are really satisfied about our result of our
-      contributions on the application.
+      on the application. We are really satisfied about the results of our
+      contributions to the application.
 
   \nocite{*}
   \bibliographystyle{plain}
