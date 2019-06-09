@@ -1142,7 +1142,7 @@
         having its own \texttt{HTML} template, their \texttt{CSS} style declarations, and
         the associated \texttt{JavaScript} code. No other exotic language is required.\\
         The fact that the framework belongs to the \texttt{JavaScript} ecosystem and is
-        associated with the NPM package manager also allows to take advantage of
+        associated with the \texttt{npm} package manager also allows to take advantage of
         numerous existing libraries, such as data visualization libraries,
         testing libraries, etc...\\
 
@@ -1817,8 +1817,8 @@
           One of our objectives for the web application was to provide the user
           with a fully integrated \texttt{Lua} editor within the application and
           available during the job creation process.\\
-          The idea of entirely building ourselves this editor was quickly
-          moved aside, as it would take too much time to achieve and would not
+          The idea of entirely building ourselves this editor has quickly
+          put aside, as it would take too much time to achieve and would not
           be a solution allowing easy evolution through time.\\
           We then found a great package named \texttt{Brace}, a browserified
           version of the Ace editor~\cite{Ace}. Ace can handle hundreds of
@@ -1826,7 +1826,7 @@
           error handling, line number displaying.\\
 
           The integration of Ace in the project was really easy and light thanks
-          to the available npm package. The editor now displays \texttt{Lua} code
+          to the available \texttt{npm} package. The editor now displays \texttt{Lua} code
           perfectly colorized and highlights syntax errors.\\
 
           Sadly, no built-in auto-completion module was available from the
@@ -1874,11 +1874,11 @@
         prevent the user from creating wrong settings such as a link having the
         same node as source and destination and ensure the topology would
         fit in the \texttt{Splay} system. To help a user manage the created
-        elements of a topology, a simple summary of these elements are
+        elements of topology, a simple summary of these elements is
         output on the page with the related information. A simple click on those
-        allows to delete the corresponding element from the topology.\\
+        allows deleting the corresponding element from the topology.\\
         Indeed, any deletion of a node would delete the link it is associated
-        to, or any deletion of a spec would delete the associated links.\\
+        with, or any deletion of a spec would delete the associated links.\\
 
         \begin{figure}[H]
           \centering
@@ -1946,11 +1946,11 @@
       of the code in the middle of the execution tree, therefore only the
       daemon was able to handle with precision the crash.\\
 
-      We therefore made the decision to use a domain specific language (DSL)
+      We, accordingly, made the decision to use a domain specific language (DSL)
       for the crash management so that a user could define the crash point
       in the \texttt{Lua} code as a comment. During the job execution phase, just before
       executing the user code, we parse the code and gather those crash
-      points generate crashes.
+      points that generate crashes.
 
       \subsection{Domain Specific Language (DSL)}
 
@@ -1960,7 +1960,7 @@
         modify its algorithm code and trying to avoid totally crashing
         the daemon in case of the crash points specified by the user were
         not correct.\\
-        Also, the difference in terms of th number of lines of code between the
+        Also, the difference in terms of the number of lines of code between the
         source code before and after the parsing needed to be the same in
         order to keep the feedback error messages right (getting the same line
         number when locating the error).\\
@@ -1974,13 +1974,13 @@
         interference with our crash point functionality. The crash then
         happens exactly where the crash point is defined, it is, therefore,
         possible to make the execution code crashing anywhere (thread, middle
-        of a function, etc...)\\
+        of a function, etc...).\\
 
         Secondly, a fault is defined by a type, the moment it should occur and
         on which node it should occur. These characteristics also needed to
-        be specified within our DSL. Each characteristic follows the
-        \textsc{CRASH POINT} keyword and are separated by a colon, their are
-        defined by their keyword and values if needed.
+        be specified within our DSL. Each characteristic following the
+        \textsc{CRASH POINT} keyword is separated by a colon and is defined
+        by specific keyword and values if needed.
 
         \begin{itemize}
           \item First, the chosen nodes to be affected by the crash must be
@@ -2005,7 +2005,7 @@
         A stop crash means that the node will die forever. Conversely, a
         recovery crash means that the node will crash and recover after the
         number of seconds specified by the user (float number).\\
-        Concerning the moment of the crash, there are two possible specification:
+        Concerning the moment of the crash, there are two possible specifications:
 
         \begin{itemize}
           \item The \textbf{AFTER} keyword means that the user specifies the
@@ -2095,30 +2095,30 @@
         outside~\cite{CoroutineLua}. This particularity helps to simplify distributed algorithms,
         but for the fault injection, it limits the field of possibility
         (we cannot kill a thread without killing the process).
-        Then, a solution is to exit the process it-self by using an OS function (os.exit),
+        Then, a solution is to exit the process itself by using an OS function (os.exit),
         then kill all threads. We also have the possibility of sending an exit
         status code to the process (as parameters of the function),
         which is very convenient for knowing if we need to restart or stay
         down after a crash point was triggered.\\
 
-        With this way of exiting, we can create artificial crash points which
+        With this way of exiting, we can create artificial crash points that
         will immediately kill every coroutine (threads) of Lua and its
         current execution. Moreover, we can pass special exit status codes
         in order to send messages to the parent process.\\
         In order to use these exit codes, we created a fork (available from
-        the C splay library) before parsing the crash point and executing
+        the C Splay library) before parsing the crash point and executing
         the user code.\\
         Therefore, the child process will execute the parsing of the crash
         point and proceed to the code execution, and the parent process will
         wait to receive the exit status code of its child. We added a Lua
-        function (waitpid) for this purpose and used the original waitpid
-        of C \cite{waitpid}.\\
+        function (\textit{waitpid}) for this purpose and used the original \textit{waitpid}
+        of C~\cite{waitpid}.\\
 
         When the child process terminates (either in a normal way or because
         of a crash), the parent process checks the exit status code and act
         accordingly. If the exit status code is 65 or 66, it means that a
         crash has been triggered (or that the user wants to exit
-        with one of these values). We choosed to use 65 and 66 because
+        with one of these values). We chose to use 65 and 66 because
         according to this article~\cite{StatusCode}, the range is 64-113
         is proposed to be user-defined status code.
 
@@ -2140,7 +2140,7 @@
 
     We will take the example of a student following a course on distributed
     applications and distributed systems who wants to prototype the Raft
-    leader election algorithm on five different nodes. He choses to use
+    leader election algorithm on five different nodes. He chooses to use
     \texttt{Splay} for his tests using his own laptop (or if available, a cluster
     of mini-computers) and right now he has no available installation of the
     \texttt{Splay} system. We are going to describe the different steps that our
@@ -2153,7 +2153,7 @@
     execution of Raft by showing an animation of the evolution of the
     endpoints states.\\
     Moreover, he would like to test its algorithm implementation through
-    different network topologies and analyse the solution
+    different network topologies and analyze the solution
     robustness by injecting faults at key parts of the algorithm.
 
     \section{Installation of Splay}
