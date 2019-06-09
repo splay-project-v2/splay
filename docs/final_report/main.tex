@@ -1,4 +1,4 @@
-% EPL master thesis covers template
+ \texttt{Lua} % EPL master thesis covers template
 \documentclass{eplmastersthesis}
 \usepackage{float}
 \usepackage{xcolor}
@@ -2098,7 +2098,7 @@
         Parsing is done line by line and if any error is found (also error
         about the parsing code itself), the concerned line will be unchanged, and
         a warning or error message will be written in the logs.\\
-        This feature is fully written in Lua using the basic regex matcher of Lua
+        This feature is fully written in \texttt{Lua} using the basic regex matcher of Lua
         \cite{RegexLua} (it is not a complete Regex implementation).
 
       \subsection{Execution}
@@ -2107,7 +2107,7 @@
         we shall now see in detail how the crashes exactly happen, how they
         are handled and how the nodes recover if they have to.\\
 
-        The Lua multithreading is non-preemptive, this means that we cannot stop a thread from the
+        The \texttt{Lua} multithreading is non-preemptive, this means that we cannot stop a thread from the
         outside~\cite{CoroutineLua}. This particularity helps to simplify distributed algorithms,
         but for the fault injection, it limits the field of possibility
         (we cannot kill a thread without killing the process).
@@ -2118,7 +2118,7 @@
         down after a crash point was triggered.\\
 
         With this way of exiting, we can create artificial crash points which
-        will immediately kill every coroutine (threads) of Lua and its
+        will immediately kill every coroutine (threads) of \texttt{Lua} and its
         current execution. Moreover, we can pass special exit status codes
         in order to send messages to the parent process.\\
         In order to use these exit codes, we created a fork (available from
@@ -2147,7 +2147,7 @@
         creating another fork, and the crash table is reset when reparsing
         the original code. Moreover, when it is a recovery crash, the user
         can define the downtime. Our simple solution to achieve this is by
-        using the non-preemptive feature of Lua and forcing the process
+        using the non-preemptive feature of \texttt{Lua} and forcing the process
         to sleep x seconds without any yield coroutine (therefore other
         coroutines cannot execute any code) before crashing.
 
@@ -2236,14 +2236,14 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         The Raft implementation that we will present in the next subsection is based on
         some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}.
-        We have implemented the Lua code of the Raft consensus leader
+        We have implemented the \texttt{Lua} code of the Raft consensus leader
         election part with the help of the \texttt{Splay} lib~\cite{SplayLib}.
         \texttt{Splay} lib supplies a great number of tool to communicate
         between nodes, we chose to use Remote Procedure Call (RPC) over UDP.\\
 
       \subsection{Creation of the Algorithm}
 
-        The student finally created the Lua version of the Raft leader
+        The student finally created the \texttt{Lua} version of the Raft leader
         election subproblem, which is not trivial, but made
         understandable. We cut the commented code in multiple parts to improved the readability,
         the whole code can be found on the github repository
@@ -2874,12 +2874,12 @@ end
 
         \subsubsection{Lua editor}
 
-        During the development of our features, we noticed that the Lua Editor
+        During the development of our features, we noticed that the \texttt{Lua} Editor
         is probably the less important one. The main reason making this feature
         the less important is that most of the time, users create their own Lua
         scripts on their favorite editor and then apply a copy-paste on the
         system.\\
-        A fully integrated IDE with a Lua an installed Lua package offers more
+        A fully integrated IDE with a \texttt{Lua} an installed \texttt{Lua} package offers more
         than our editor, but with little improvements, our editor could equal
         any other:
 
@@ -2889,7 +2889,7 @@ end
           the help of the Ace Editor package.
           \item \textbf{Specific Auto-Completion}: The integration of the \texttt{Splay
           Lua} library to the auto-completion feature with some hints would
-          be a great achievement and make the Lua editor an even better
+          be a great achievement and make the \texttt{Lua} editor an even better
           option than an IDE.
           \item \textbf{Color Theme}: Ace allows to set a color scheme for
           the editor, an option for the user to change this color scheme
@@ -2988,10 +2988,10 @@ end
           very popular language with a supportive community and constantly
           updated, having rich libraries offering complete sets of tools.\\
           However, the main drawback of this solution would be the performance
-          offered by vanilla \texttt{Python} compared to the very small core of Lua and
-          its C integration. But the main drawback of Lua is evolution, Lua has
+          offered by vanilla \texttt{Python} compared to the very small core of \texttt{Lua} and
+          its C integration. But the main drawback of \texttt{Lua} is evolution, \texttt{Lua} has
           not received major updates since 2014 and the libraries used in this
-          project are not evolving too. Moreover, the tiny core of Lua forces
+          project are not evolving too. Moreover, the tiny core of \texttt{Lua} forces
           the user to write its own basic functions that are built-in in many
           other languages and thus were placed in the \texttt{Splay} lib in our case.\\
           This results in a greater number of lines of codes for the \texttt{Splay} lib,
@@ -3038,7 +3038,7 @@ end
 
         \begin{itemize}
           \item The restriction on the socket can actually be completely
-          bypassed. Indeed, using Lua there is a way to unload a package
+          bypassed. Indeed, using \texttt{Lua} there is a way to unload a package
           dynamically (package.loaded["name\_package"] = nil). Using this
           technique, we can unload the socket package (that was loaded with a
           restriction) and reload it with the corresponding statements placed
@@ -3080,7 +3080,7 @@ end
       Our main goal was to turn \texttt{Splay} in an integrated platform for
       distributed systems training and learning. We achieved this with a
       brand new web application using recent web technologies, and easy
-      to use for students and professors. A complete Lua editor helps to
+      to use for students and professors. A complete \texttt{Lua} editor helps to
       write the distributed algorithm with syntax coloration and error
       parsing. A complete topology editor allows to draw complex network
       topologies on which running the distributed algorithms, and a fault
