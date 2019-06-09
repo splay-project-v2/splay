@@ -122,7 +122,7 @@
     Preceding the contributions, an extensive work of software engineering has
     also been achieved to set up a complete test environment using unit and
     integration testing with continuous integration, a complete and easy to use
-    installation script, a total project management recast on Github.\\
+    installation script, a total project management recast on GitHub.\\
 
     The contributions made to Splay are a new web application designed
     for students and professors with an algorithm editor, a network topology
@@ -273,7 +273,7 @@
       This work follows the idea of providing students with tools
       allowing them to practically assess what they learn during the
       theoretical lessons, as the \texttt{INGInous}~\cite{inginious} platform allows.\\
-      As their \texttt{Github} repository explains :
+      As their \texttt{GitHub} repository explains :
       \begin{displayquote}
         "\texttt{INGInious} is an intelligent grader that allows secured and
         automated testing of code made by students."
@@ -577,7 +577,7 @@
         issues and bugs that we noticed during the whole development.
         We will briefly detail each of those changes.
 
-        \subsubsection{Github Organization Recast}
+        \subsubsection{GitHub Organization Recast}
 
           During the part-time job, we realized that the code organization
           was not really up to current standards and should be changed.\\
@@ -803,10 +803,10 @@
         stay in the \texttt{Ruby} ecosystem, in order to keep a technology consistency
         with the global project and the technologies already in use.
 
-      \subsection{Github Repository Reorganization}
+      \subsection{GitHub Repository Reorganization}
 
         From our analysis on the \texttt{Splay} project, we were not satisfied with how
-        it was maintained on Github so far. Our major concerns were the
+        it was maintained on GitHub so far. Our major concerns were the
         following:
 
         \begin{itemize}
@@ -828,7 +828,7 @@
         The project was cleaner, however, we felt that this was not enough
         and that we could achieve a better structure. The project is big and
         consisting of multiple services interacting with each other but
-        not sharing any code. Therefore, We decided to create a new Github
+        not sharing any code. Therefore, We decided to create a new GitHub
         organization called \textbf{The Splay Project V2} in which we created
         a distinct repository for each service and one as the main repository
         of the project.\\
@@ -1095,8 +1095,9 @@
             \item Each Controller of our API inherits from a common file
             called \textit{ApplicationController}
             \item This ApplicationController holds a set of catchers (rescue
-            in the \texttt{Ruby} language) to catch which errors happen in our
+            in the \texttt{Ruby} language) to catch which error happens in our
             application:
+
               \begin{itemize}
                 \item The entity that the user wants to create is not valid,
                 this means he sent bad parameters through the request;
@@ -1106,6 +1107,7 @@
                 \item The requested entity does not exist (for example a user
                 wants to get the job details for a non-existing job)
               \end{itemize}
+
             \item Then, in any controller or service used by a controller, we
             can raise an error and associate an error message, which will be
             automatically caught at the root level and trigger a response with
@@ -1255,7 +1257,7 @@
         and maintainable code. Only the log downloading functionality was
         missing at this point. \\
         As soon as we completed the backend with the logging endpoint, we
-        add this feature to the website with some improvements. When the
+        added this feature to the website with some improvements. When the
         job is running or is finished, the user can see the log (using a
         button next to the job details) which holds the involved daemons logs
         with, for each line, the time and the daemon id indication. The user
@@ -1492,11 +1494,11 @@
           apply on to work afterward, but a complete part of the development
           and helping us to reach our goals.
 
-        \subsection{Github and Gitflow}
+        \subsection{GitHub and Gitflow}
 
           The project and all the services composing it are versioned using the
           \textit{Git} versioning system and are hosted on the online service
-          \textit{Github}.\\
+          \textit{GitHub}.\\
           We, therefore, organized our work on the \texttt{Gitflow} model. Each feature or
           task we created on the kanban was meant to receive its very own
           branch, starting from the main branch.
@@ -1798,14 +1800,14 @@
 
         Once again in a way to ensure quality, the different services were placed
         on the Travis CI~\cite{travis} continuous integration platform. Travis
-        can be coupled with Github to detect any change on the branches and
+        can be coupled with GitHub to detect any change on the branches and
         automatically run a test procedure listed in a script and then offer
         feedback on how the test suite went.\\
 
         \texttt{Splay} being an open source project, that we hope to see growing in the
         future, its collaborative development will inevitably happen through
-        the Github organization in which the different repositories are located.\\
-        The coupling of Travis with Github allows, in the case of a pull request,
+        the GitHub organization in which the different repositories are located.\\
+        The coupling of Travis with GitHub allows, in the case of a pull request,
         to gather the review about the test execution on the branch asking to be
         merged with the main branch, and therefore to make sure the build is
         clean and the tests are passing before merging the new code, as
@@ -2175,9 +2177,9 @@
     \section{Installation of Splay}
 
       The student only has his laptop to work on his distributed algorithms
-      courses, and hopefully, he found out on the \texttt{Splay}'s main Github
+      courses, and hopefully, he found out on the \texttt{Splay}'s main GitHub
       repository~\cite{SplayV2Git} that the installation does not depend on
-      any operating system or hardware. The README file of the Github project
+      any operating system or hardware. The README file of the GitHub project
       precisely describes how to install \texttt{Splay}. Then, following the
       instructions, he clones the main repository and installs \texttt{Docker} and
       \texttt{docker-compose} on his computer.\\
@@ -2246,7 +2248,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         The student finally created the \texttt{Lua} version of the Raft leader
         election subproblem, which is not trivial, but made
         understandable. We cut the commented code in multiple parts to improved the readability,
-        the whole code can be found on the github repository
+        the whole code can be found on the GitHub repository
         \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election.lua}}.
 
         \begin{minipage}{\linewidth}
