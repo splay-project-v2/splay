@@ -631,27 +631,27 @@
 
           Some services were dockerized, this means that dedicated files
           were present to allow creating images of these services in order
-          to run the services in Docker containers.\\
+          to run the services in \texttt{Docker} containers.\\
           Containers are "standard units of software that packages up the code and
           all its dependencies so the application runs quickly and reliably
-          from one computing environment to another. A Docker container image
+          from one computing environment to another. A \texttt{Docker} container image
           is a lightweight, standalone, executable package of software that
           includes everything needed to run an application: code, runtime,
           system tools, system libraries and settings"~\cite{dockercontainer}.\\
-          A docker-compose file was present which already facilitated the
-          installation. Docker-compose~\cite{dockercompose} file allows specifying  a
+          A \texttt{docker-compose} file was present which already facilitated the
+          installation. \texttt{Docker-compose}~\cite{dockercompose} file allows specifying  a
           collection of services and links between these services so that
           they will share a common network, allowing easy communication
           between each service.\\
 
-          However, these docker images were not perfectly built: health checks
+          However, these \texttt{Docker} images were not perfectly built: health checks
           were missing, big and old distribution images were used thus slowing down the
           setup phase and image building.\\
           Also, there was not a proper \textbf{one-click install} script for
           making quick tests.\\
           Therefore, one of our goals was to create clean, small and with
-          updated libraries docker images. These images needed to be fully
-          integrated between them through the docker-compose file. We should
+          updated libraries \texttt{Docker} images. These images needed to be fully
+          integrated between them through the \texttt{docker-compose} file. We should
           provide the users with an automated install script and a running
           script.
 
@@ -824,7 +824,7 @@
         allowing us to perform a complete reorganization of all the directories
         and files composing the project and adding some basic documentation.
         Each service was successfully placed in a distinct directory while
-        keeping the docker-compose file working.\\
+        keeping the \texttt{docker-compose} file working.\\
         The project was cleaner, however, we felt that this was not enough
         and that we could achieve a better structure. The project is big and
         consisting of multiple services interacting with each other but
@@ -851,7 +851,7 @@
 
         For each master branch of these sub-repositories, a link with Dockerhub
         has been made so that each push on master will trigger an automatic build
-        of a docker image using the source and uploading it on the
+        of a \texttt{Docker} image using the source and uploading it on the
         Dockerhub~\cite{DockerHubGithub}.
         This was specially made to ease the integration testing using a
         continuous integration service, which would have to build every single
@@ -1407,7 +1407,7 @@
           without any restriction.\\
           To bypass this, we created a new topology restriction only based on
           the IP, but that means that all the nodes (daemons) need to have a
-          different IP (thanks to docker, this is the case), but that is
+          different IP (thanks to \texttt{Docker}, this is the case), but that is
           something that should be improved and changed and we will talk about
           it in the improvements section.
           \item We removed the \texttt{LuaCrypto} library from the daemon and added
@@ -1743,7 +1743,7 @@
         Then we successfully transformed the old existing tests into busted
         tests. With only this single change, we were able to detect some
         anomalies in the lib code and fix these. We added some test steps
-        in the docker image creation to avoid creating malformed images.\\
+        in the \texttt{Docker} image creation to avoid creating malformed images.\\
 
         Moreover, we added a lot of tests about each modification we made
         (\texttt{openssl} package updated, new misc functions, small changes in existing
@@ -1776,7 +1776,7 @@
 
         \begin{itemize}
           \item Cleaning the containers.
-          \item Rebuilding the different services listed in the docker-compose
+          \item Rebuilding the different services listed in the \texttt{docker-compose}
           file.
           \item Starting up the services.
           \item Executing commands through the CLI.
@@ -2179,8 +2179,8 @@
       repository~\cite{SplayV2Git} that the installation does not depend on
       any operating system or hardware. The README file of the Github project
       precisely describes how to install \texttt{Splay}. Then, following the
-      instructions, he clones the main repository and installs docker and
-      docker-compose on his computer.\\
+      instructions, he clones the main repository and installs \texttt{Docker} and
+      \texttt{docker-compose} on his computer.\\
       In order to run \texttt{Splay} on production mode, he runs the following
       commands: \\
 
@@ -2591,7 +2591,7 @@ end)
       (or with an very small speed factor).\\
       The main reason is the lack of latency between nodes. Indeed, without
       topology emulation, the RPC messages travel with the native latency
-      (in case of the student installation, only docker network latency is
+      (in case of the student installation, only \texttt{Docker} network latency is
       expected), and then a candidate gets its vote granted really fast (and
       thus becomes the leader directly, with almost no chances of conflict
       with another node).
@@ -3073,7 +3073,7 @@ end
       we did by reorganizing the code on different repositories, using
       the test suites with continuous integration to support further
       contributions. We revised the whole \texttt{Docker} management of
-      the project, creating lightweight docker images with automatic
+      the project, creating lightweight \texttt{Docker} images with automatic
       builds on \texttt{DockerHub} and creating a \texttt{docker-compose} file
       for easy installation and set up of the project.\\
 
