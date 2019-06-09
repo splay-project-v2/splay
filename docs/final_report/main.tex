@@ -2102,7 +2102,7 @@
 
       The student only has his laptop to work on his distributed algorithms
       courses, and hopefully, he found out on the \texttt{Splay}'s main Github
-      repository~\cite{SplayV2Git} that the installation doesn't depend on
+      repository~\cite{SplayV2Git} that the installation does not depend on
       any operating system or hardware. The README file of the Github project
       precisely describes how to install \texttt{Splay}. Then, following the
       instructions, he clones the main repository and installs docker and
@@ -2143,7 +2143,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         also the case of Raft. \\
 
         Raft works in two phases: a leader election phase and a phase of
-        value replication initiated by the leader.\\
+        value replication initiated by the leader.\\ % TODO when client ask this state machine
         During leader election phase, where a unique leader is elected
         through a voting process. To remain the leader, the node holding
         this position sends hearbeats to avoid that other nodes trigger a
@@ -2154,16 +2154,16 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         to avoid a much as possible any conflit of election. When a node
         triggers an election, it becomes a candidate and request votes to
         the others nodes, and becomes leader if it receives a majority of votes.\\
-        Also, on each election a term a term (number increasing monotonically)
+        Also, on each election a term (number increasing monotonically)
         is used to progress the election.\\
         We will present and focus only on this election subproblem of
         Raft, because the state machine replication heavily increases the complexity and
-        the readability (even with Lua).\\
+        the readability (even in Lua).\\
 
         The Raft implementation that we will present in the next subsection is based on
         some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}.
         We have implemented the Lua code of the Raft consensus leader
-        election part with the help of the \texttt{Splay} lib~\cite{SplayLib}.
+        election part with the help of the \texttt{Splay} lib~\cite{SplayLib}. % TODO : talk about the splay lib before (chap 2 ?)
         \texttt{Splay} lib supplies a great number of tool to communicate
         between nodes, we chose to use Remote Procedure Call (RPC) over UDP.\\
 
@@ -2221,7 +2221,7 @@ end
         \end{minipage}
 
         \begin{minipage}{\linewidth}
-        \begin{lstlisting}[style=MySmallLua,caption={Utils functions - for all nodes}]
+        \begin{lstlisting}[style=MySmallLua,caption={Utils functions for all nodes}]
 function save_persistent_state()
     pers_file = io.open(filename_persistent, "w+")
     pers_file:write(json.encode(persistent_state))
@@ -2467,10 +2467,10 @@ end)
         The log can be cut in small parts to detail to process of election:
         \begin{itemize}
           \item Line 1 : The leader timeout is finished on the node 2, then a leader election is triggered.
-          \item Lines 2-5 : The candidate (node 2) sends a vote request to the other nodes
-          \item Lines 6-13 : Theothers nodes received the vote request from node 2 and return the result.
-          \item Lines 14-16 : Node 2 received the two results of its vote request and obtain the majority of votes.
-          Thereforeit becomes the leader.
+          \item Lines 2-5 : The candidate (node 2) sends a vote request to the other nodes.
+          \item Lines 6-13 : The others nodes received the vote request from node 2 and return the result.
+          \item Lines 14-16 : Node 2 received two results of its vote requests and obtain the majority of votes.
+          Therefore, it becomes the leader.
           \item Lines 17-22 : Leader (node 2) sends heartbeat directly to the other nodes to specify that it is now the leader
           (also he receives the rest of the vote request response).
           \item Lines 23-26 : Other nodes gets heartbeat from the leader and reset their election timeout.
@@ -2487,8 +2487,8 @@ end)
       This tool is embedded in the web application with some
       JavaScript. It shows the node states (follower, candidate or leader),
       if a packet is traveling between two nodes and time
-      indications following the animation. We used the vis.js library
-      \cite{VisJS} (dynamic graph library). The Raft code has been slightly
+      indications following the animation. We used the vis.js library~\cite{VisJS} 
+      (dynamic graph library). The Raft code has been slightly
       modified in order to print the appropriate logs (code can be found here
       \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).\\
 
@@ -2499,12 +2499,14 @@ end)
       green for the candidate state and red for the leader state.\\
       Also, network packets currently travelling between nodes change the color
       of the directed edge into black and become larger (depending on the
-      number of packets).\\
+      number of packets). This figure~\ref{fig:timeline} has as one goal, to 
+      show the animation tool with all possibilities (not explain the raft election). \\ % TODO : check the last sentence
 
       \begin{figure}[H]
         \centering
         \includegraphics[width=0.4\linewidth]{figures/user_case/anim_pres.png}
         \caption{Timeline animation example}
+        \label{fig:timeline}
       \end{figure}
 
       If we observe the leader election from the first result (without
@@ -2537,10 +2539,10 @@ end)
 
           After testing the algorithm in a native network environment,
           the student tries it with three different network
-          topology configurations, created wit the network topology tool on
+          topology configurations, created with the network topology tool on
           the web application.\\
           Here are representations of the topologies~\ref{fig:topologies},
-          with specifications on the edges between nodes-routers and
+          with network specifications on the edges between nodes-routers and
           routers-routers.\\
           These specifications are focused on latency only,
           bandwidth constraints are not really influencing Raft election as
@@ -2578,7 +2580,7 @@ end)
           configurations~\ref{fig:topologies}.\\
           The log results shows that Daemons succeeded at achieving the leader
           election and quickly stabilize (one becomes the leader, the others
-          become followers) in those different network configurations.\\
+          are followers) in those different network configurations.\\
           But the network topology can affect the leader selection (some nodes
           have more chances than others of becoming the leader). He expects to
           obtain different results for each topology :
@@ -2586,17 +2588,17 @@ end)
           \begin{itemize}
             \item First topology \ref{fig:topo1} : he expects that each node
             have almost the same chances to become the leader because the
-            latencies between endpoints is small compared to the timeout
+            latencies between all endpoints is small compared to the timeout
             election range (1.5 seconds).
             \item Second topology \ref{fig:topo2} : he expects that daemons
             3-4-5 have slightly more chances to become the leader
-            (a kind of partition is done with a majority and two other nodes)
             than daemons 1-2 because there is a kind of partition between the
             first two nodes and the rest with a big latency (250 ms).
             \item Thrid topology \ref{fig:topo3} : he expects that the daemon
             5 has very small chances to become the leader compared to the
-            others. We can also see that the communication with daemon 5 always
-            creates a RPC timeout, and then other nodes need to resend each
+            others (network packet take at minimun 0.63 second to travel between node 5 and other nodes).
+            He expects also that the communication with daemon 5 always
+            creates a RPC timeout (set to 0.5 second), and then other nodes will resend each
             time another packet to daemon 5.
           \end{itemize}
 
@@ -2618,8 +2620,10 @@ function heartbeat()
           and parses the logs to get the number of times each node becomes the
           leader.\\
           First, he concludes that crashing the leader does not crashes the
-          Raft election process but only restarts an election, as expected.\\
-          The purpose is \textbf{not} to make statistical evidence/model but
+          Raft election process but only restarts an election, as expected.
+          Also he obtains interesting result~\ref{tab:leader}, which, at first glance,
+          supports his expectations. \\ % TODO :check
+          Here, the purpose is \textbf{not} to make statistical evidence/model but
           only to show the importance of the topology emulation on a
           distributed algorithm and specifically of the chance of each node
           to become the leader during a Raft election process.\\
@@ -2700,10 +2704,10 @@ end
         \end{lstlisting}
 
         We create a new thread which will be executed after the RPC function
-        returns, therefore after the node received a response. Indeed this is
+        returns, therefore, after the node sent it response (on network). Indeed this is % TODO : check
         working because of the non-preemptive nature of \texttt{Lua}, the thread
-        will execute after, and the crash will happen after the RCP response is
-        sent.\\
+        will execute after the current one (RPC call), and the crash will happen (if happen)
+        after the RCP response is sent back.\\
 
         After letting the code run on 5 daemons for 10 minutes, the student
         checks the logs for the different topology settings.\\
@@ -2729,7 +2733,7 @@ end
         will become the leader (no conflict this time).\\
         Note that conflicts happen rarely with 3 candidates because the
         leader timeout is well-balanced thanks to randomization and the
-        topology used is an normal case (topology 2 \ref{fig:topo2}).
+        topology used is not a extreme case (topology 2 \ref{fig:topo2}).
 
         % Show four step of election: all followers -> two candidate -> one leader -> leader + heartbeat
         \begin{figure}[H]
@@ -2918,7 +2922,7 @@ end
           This results in a greater number of lines of codes for the \texttt{Splay} lib,
           which thus includes more chances of bugs.\\
           Going back to the performance question, using a just-in-time compiler
-          such as PyPy~\cite{PyPy} to significantly boost the performance and
+          such as \texttt{PyPy}~\cite{PyPy} to significantly boost the performance and
           using some distributed libraries to quickly create a new \texttt{Splay} library
           may be a solution.
 
