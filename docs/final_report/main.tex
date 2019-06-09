@@ -2194,7 +2194,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
       each service, some little wait time is requested for this download
       phase and for each service to start.\\
       Once this is done, the student has access to the web application of
-      the \texttt{Splay} system, using his favorite web browser with this url:
+      the \texttt{Splay} system, using his favorite web browser with this URL :
       \url{http://localhost:8080/}.\\
       He creates his own account by registering on the platform, opens a new
       session (which will be kept open for the next time he wants to use
@@ -2210,43 +2210,43 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
 
         Raft is a consensus algorithm, often used as an alternative as Paxos because
         it seems more understandable. The problem of consensus is fundamental
-        in fault-tolerant distributed system, it involves the agreements of
-        a value by multiple instances. When a desicion is validated by the system,
-        it is final. Typically a consensus algorithm make progress only if there is
+        in a fault-tolerant distributed system, it involves the agreements of
+        value by multiple instances. When a decision is validated by the system,
+        it is final. Typically a consensus algorithm makes progress only if there is
         a majority of node alive and with a connection between them, it is
         also the case of Raft. \\
 
         Raft works in two phases: a leader election phase and a phase of
-        value replication initiated by client to the current leader.\\
-        During leader election phase, where a unique leader is elected
+        value replication initiated by the client to the current leader.\\
+        During the leader election phase, where a unique leader is elected
         through a voting process. To remain the leader, the node holding
-        this position sends hearbeats to avoid that other nodes trigger a
+        this position sends heartbeats to avoid that other nodes trigger a
         new election. A leader election can be triggered by any node if it
         does not receives heartbeats during a certain period of time (election
         timeout).\\
         This election timeout is randomly chosen between two values
-        to avoid a much as possible any conflit of election. When a node
+        to avoid a much as possible any conflict during the election. When a node
         triggers an election, it becomes a candidate and request votes to
-        the other nodes, and becomes leader if it receives a majority of votes.\\
-        Also, on each election a term (number increasing monotonically)
-        is used to progress the election.\\
+        the other nodes and becomes the leader if it receives a majority of votes.\\
+        Also, on each election, a term (number)
+        is increased (monotonically) to progress the election.\\
         We will present and focus only on this election subproblem of
-        Raft, because the state machine replication heavily increases the complexity and
+        Raft because the state machine replication heavily increases the complexity and
         the readability (even in Lua).\\
 
         The Raft implementation that we will present in the next subsection is based on
         some papers~\cite{RaftPaper} and articles/courses~\cite{RaftSlide}~\cite{RaftSite}.
         We have implemented the \texttt{Lua} code of the Raft consensus leader
         election part with the help of the \texttt{Splay} lib~\cite{SplayLib}.
-        \texttt{Splay} lib supplies a great number of tool to communicate
+        \texttt{Splay} lib supplies a great number of tools to communicate
         between nodes, we chose to use Remote Procedure Call (RPC) over UDP.\\
 
       \subsection{Creation of the Algorithm}
 
         The student finally created the \texttt{Lua} version of the Raft leader
         election subproblem, which is not trivial, but made
-        understandable. We cut the commented code in multiple parts to improved the readability,
-        the whole code can be found on the github repository
+        understandable. We cut the commented code in multiple parts to improve the readability,
+        the whole code can be found on the GitHub repository
         \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election.lua}}.
 
         \begin{minipage}{\linewidth}
@@ -2538,16 +2538,16 @@ end)
 2019-05-30 08:20:10.0622 (2)  3: RPC Append entry FROM 2.0 Term: 1.0 Entry: null
         \end{lstlisting}
 
-        The log can be cut in small parts to detail to process of election:
+        The log can be cut in small parts to detail the process of election:
         \begin{itemize}
-          \item Line 1 : The leader timeout is finished on the node 2, then a leader election is triggered.
-          \item Lines 2-5 : The candidate (node 2) sends a vote request to the other nodes.
-          \item Lines 6-13 : The others nodes received the vote request from node 2 and return the result.
-          \item Lines 14-16 : Node 2 received two results of its vote requests and obtain the majority of votes.
+          \item Line 1: The leader timeout is finished on node 2, then a leader election is triggered.
+          \item Lines 2-5: The candidate (node 2) sends a vote request to the other nodes.
+          \item Lines 6-13: The other nodes received the vote request from node 2 and return the result.
+          \item Lines 14-16: Node 2 received two results of its vote requests and obtain the majority of votes.
           Therefore, it becomes the leader.
-          \item Lines 17-22 : Leader (node 2) sends heartbeat directly to the other nodes to specify that it is now the leader
-          (also he receives the rest of the vote request response).
-          \item Lines 23-26 : Other nodes gets heartbeat from the leader and reset their election timeout.
+          \item Lines 17-22: Leader (node 2) sends heartbeat directly to the other nodes to specify that it is now the leader
+          (also he receives the rest of the vote request reply).
+          \item Lines 23-26: Other nodes get a heartbeat from the leader and reset their election timeout.
         \end{itemize}
 
     \section{Timeline Animation}
@@ -2556,7 +2556,7 @@ end)
       see how the network and the connection are evolving during his job's
       execution.\\
       For this purpose, we created a small tool designed to parse the
-      logs and allow the user to see that evolution during the job's
+      logs and allow the user to see the evolution during the job's
       execution (adding to \texttt{Splay} tools directory).
       This tool is embedded in the web application with some
       JavaScript. It shows the node states (follower, candidate or leader),
@@ -2568,14 +2568,14 @@ end)
 
       This tool takes a text-based log, a speed factor and auto-connect
       checkbox as inputs, and here, it is used to illustrate our Raft election
-      process evolution over time. We represent on the graph the node (job)
-      state by different colors : blue for the follower state,
+      process over time. We represent on the graph the node (job)
+      state by different colors: blue for the follower state,
       green for the candidate state and red for the leader state.\\
-      Also, network packets currently travelling between nodes change the color
+      Also, network packets currently traveling between nodes change the color
       of the directed edge into black and become larger (depending on the
       number of packets).\\
-      The figure~\ref{fig:timeline} aims to show all the possibilities offered by the animation
-      tool, and is not explaining the Raft election process.
+      Figure~\ref{fig:timeline} aims to show all the possibilities offered by the animation
+      tool and is not explaining the Raft election process.
 
       \begin{figure}[H]
         \centering
@@ -2587,8 +2587,8 @@ end)
       If we observe the leader election from the first result (without
       topology emulation and no crashes) with this tool, we will not see clearly
       the evolution of the nodes states, because the leader election finishes
-      very quickly (< 8 ms) and it is hard to capture the visualisation of it
-      (or with an very small speed factor).\\
+      very quickly (< 8 ms) and it is hard to capture the visualization of it
+      (or with a very small speed factor).\\
       The main reason is the lack of latency between nodes. Indeed, without
       topology emulation, the RPC messages travel with the native latency
       (in case of the student installation, only \texttt{Docker} network latency is
@@ -2602,13 +2602,13 @@ end)
       like to try to break his Raft election by testing it with different
       network settings and by adding some fault injection in the critical
       parts of the process. Moreover, he wants to observe the difference of
-      chances for a node to become leader depending on the network topology.
+      chances for a node to become the leader depending on the network topology.
 
       \subsection{Network Topology Emulation}
 
         The student wants to test his implementation on different network
-        topologies and see the difference of the chances for each node to
-        become leader.
+        topologies and see the difference in the chances for each node to
+        become the leader.
 
         \subsubsection{Topology settings}
 
