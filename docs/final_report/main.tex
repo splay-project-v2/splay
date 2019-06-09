@@ -360,7 +360,7 @@
           \texttt{topology} which will be used by the application
           to run the algorithm in the specified topology through emulation.
           This topology (optional) must be passed in the job and defined
-          using XML.
+          using \texttt{XML}.
         \end{itemize}
 
         Then the user receives an id number corresponding to his job, and
@@ -371,9 +371,9 @@
         \texttt{logs}, contain the informations about one job's
         execution on the application.\\
         Each node produces logging informations about its processing of the
-        algorithm (by simple print call), containing its identification number and timestamps.\\ % TODO :review 
+        algorithm (by simple print call), containing its identification number and timestamps.\\ % TODO :review
         The application then merge each of these individual informations
-        to produce a single and ordered log file about one job, which we % TODO : it is not order! :/ 
+        to produce a single log file about one job, which we
         call the \texttt{logs}.
 
       \subsection{Software Architecture}
@@ -399,7 +399,7 @@
           ready to receive commands and a client to send commands:
           \begin{itemize}
             \item The CLI server is written in \texttt{Ruby}, running a simple
-            HTTP server and waiting for specific HTTP calls containing
+            \texttt{HTTP} server and waiting for specific \texttt{HTTP} calls containing
             commands representing the wanted interaction (new job, session
             creation, ...).
             \item The CLI client is written in \texttt{Lua} and is composed of
@@ -409,8 +409,8 @@
 
           The web application is written in \texttt{Ruby on Rails}~\cite{ror}, and
           allows the same interactions with the system but through
-          a HTML user-interface.\\
-          It has thus different HTML pages for user registration, session
+          a \texttt{HTML} user-interface.\\
+          It has thus different \texttt{HTML} pages for user registration, session
           creation, sending jobs and reading logs.\\
 
           Each of these services communicates with the other components % TODO other components = controller
@@ -531,7 +531,7 @@
         the overall project organization, software quality and maintenance
         guidelines and also a lot of work on the global codebase to fix % TODO, 2 and
         issues and bugs that we have noticed during the whole development.
-        We'll breifly detail each of those changes.
+        We will breifly detail each of those changes.
 
         \subsubsection{Github Organization Recast}
 
@@ -662,7 +662,7 @@
 
           Following a standard format for topology generators such as
           used in \texttt{ModelNet}~\cite{ModelNet}, \texttt{Splay} users previously
-          defined their topologies through sending XML files.\\
+          defined their topologies through sending \texttt{XML} files.\\
           This format not being really user-friendly and quite hard to read,
           and with the fact that format documentation is not easy to find
           on the Internet, we decided that the new web application would have
@@ -673,18 +673,18 @@
           allowing an easy configuration. Each change using this interface
           would result in immediate visual feedback thanks to a topology
           visualization tool, such that the user would have a better view about
-          his topology than by reading XML. Nevertheless, an XML editor and
+          his topology than by reading \texttt{XML}. Nevertheless, an \texttt{XML} editor and
           visualization tool should be included in the topology editor which
-          would translate the visual output of the tool into readable XML or
-          translate its XML content into the visualization tool.\\
+          would translate the visual output of the tool into readable \texttt{XML} or
+          translate its \texttt{XML} content into the visualization tool.\\
 
           In summary, this tool should provide the user with:
 
           \begin{itemize}
             \item A topology editor with simple input fields;
             \item A topology visualization tool;
-            \item An XML editor;
-            \item A way to convert the visual topology in XML, and conversely.
+            \item An \texttt{XML} editor;
+            \item A way to convert the visual topology in \texttt{XML}, and conversely.
           \end{itemize}
 
         \subsubsection{Fault Injection}
@@ -807,7 +807,8 @@
 
         For each master branch of these subrepositories, a link with Dockerhub
         has been made so that each push on master will trigger an automatic build
-        of a docker image using the source and uploading it on the Dockerhub~\cite{DockerHubGithub}.
+        of a docker image using the source and uploading it on the
+        Dockerhub~\cite{DockerHubGithub}.
         This was specially made to ease the integration testing using a
         continuous integration service, which would have to build every single
         image otherwise.\\
@@ -864,7 +865,7 @@
 
         \texttt{Rails} allow to easily develop, besides traditional MVC web
         applications, API-only applications that do not contain all the code
-        and complexity needed for presenting HTML views to the user and thus
+        and complexity needed for presenting \texttt{HTML} views to the user and thus
         having a lighter and more concise codebases.\\
 
         The ActiveRecord~\cite{activerecord} ORM shipped with the \texttt{Rails}
@@ -969,7 +970,7 @@
           To achieve this, we had to syart the work on the API endpoints.
           Before starting to work on those endpoints, we agreed that we would
           follow the principles of REST~\cite{rest} for the API. Endpoints would
-          represent entities with classic HTTP verbs to interact with them.\\
+          represent entities with classic \texttt{HTTP} verbs to interact with them.\\
 
           Each endpoint inside our system is managed by the following stack:
 
@@ -1016,7 +1017,8 @@
 
           The endpoints we created are the following:
 
-          \begin{table}[H] % TODO : centering ?
+          \begin{table}[H]
+            \centering
             \begin{tabular}{|l|l|}
             \hline
             \textbf{Endpoint} & \textbf{Methods}       \\ \hline
@@ -1037,7 +1039,7 @@
 
           In order to provide the best response to the applications
           communicating with the backend anf follow the REST
-          principles, we wanted to respond with the right HTTP status code in
+          principles, we wanted to respond with the right \texttt{HTTP} status code in
           case of errors.\\
 
           A successful request is answered with a 200
@@ -1064,7 +1066,7 @@
             \item Then, in any controller or service used by a controller, we
             can raise an error and associate an error message, which will be
             automatically catch at the root level and trigger a response with
-            the right HTTP status code and the given error message.
+            the right \texttt{HTTP} status code and the given error message.
           \end{itemize}
 
     \section{Web Application Development}
@@ -1110,9 +1112,9 @@
         of the \texttt{Splay} project to easily get in and participate to the
         development.\\
         Indeed, a \texttt{Vue} application is organized around single components, each
-        having its own HTML template, their CSS style declarations and
+        having its own \texttt{HTML} template, their \texttt{CSS} style declarations and
         the associated \texttt{JavaScript} code. No other exotic language is required.\\
-        The fact that the framework belongs to the \texttt{JavaScript} ecosystem and is % TODO: if Javascript is in texttt, html , css not ?
+        The fact that the framework belongs to the \texttt{JavaScript} ecosystem and is
         associated to the NPM package manager also allows to take advantage of
         numerous existing libraries, such as data visualization libraries,
         testing libraries, etc...\\
@@ -1130,13 +1132,13 @@
 
         After removing the old files of the previous web application, we
         created a basic \texttt{Vue} project (version 2.5.X at that time) having a
-        simple home page and using the \texttt{bootstrap-vue} package~\cite{BootstrapVue}. 
+        simple home page and using the \texttt{bootstrap-vue} package~\cite{BootstrapVue}.
         \textbf{Bootstrap}~\cite{Bootstrap} is a
-        well-known HTML, CSS and \texttt{JavaScript} framework used to create responsive
+        well-known \texttt{HTML}, \texttt{CSS} and \texttt{JavaScript} framework used to create responsive
         and modern web interface.\\
         Bootstrap is a real Swiss-army knife among the design framework
         and helped us building a visually pleasant and easy to use
-        web application with minimal custom CSS and \texttt{JavaScript} code.\\
+        web application with minimal custom \texttt{CSS} and \texttt{JavaScript} code.\\
 
         The next step was to build a register and a login page to allow
         user management. In order to manage different pages in the same \texttt{Vue}
@@ -1151,7 +1153,7 @@
         connection, the forms directly using the freshly written API available
         on the backend.\\
         In order to use that JSON API and allow communications with the
-        backend, we used \texttt{axios}~\cite{axios}, a popular HTTP Javascript client.
+        backend, we used \texttt{axios}~\cite{axios}, a popular \texttt{HTTP} Javascript client.
         This being done, our web application allowed the user to create its
         account and connect to it, receiving an authentication token that
         was stored on the client browser to allow auto-login on the next
@@ -1174,14 +1176,14 @@
         \end{itemize}
 
         The creation of a job is done through a simple form. We implemented
-        an automatic check of the fields using the vee-validate package
-       ~\cite{VeeValidate}. As the data sent to the backend is also checked
-        before using those to create a new job, vee-validate offers us
+        an automatic check of the fields using the \texttt{vee-validate}
+        package~\cite{VeeValidate}. As the data sent to the backend is also
+        checked before using those to create a new job, \texttt{vee-validate} offers us
         a double validation and allows giving the user better feedback
         about any field he would have forgotten or wrongly filled.\\
-        Vee-validate is a small package solving the problem of
+        \texttt{Vee-validate} is a small package solving the problem of
         manual checking of forms by adding some properties to inputs, and it
-        makes our code more compact and less messy.
+        makes our code more compact and less messy.\\
 
         This being done, we almost retrieved all the legacy features (for the
         web application) but in a much nicer way, with a modern solution
@@ -1227,11 +1229,11 @@
         files, each file representing a CLI command. We therefore had code
         duplication, as each file was repeating the process of parsing the user
         arguments when the program was called, and also repeating the process
-        of reaching the server through a HTTP library in \texttt{Lua}.\\
+        of reaching the server through a \texttt{HTTP} library in \texttt{Lua}.\\
         \texttt{Ruby} was indeed a relevant option if we wanted to restrict the number
         of different technologies in use among the project, but Python was
         a better choice to write such a simple script as our CLI. Python has
-        a lot of very convenient libraries to treat HTTP calls and to
+        a lot of very convenient libraries to treat \texttt{HTTP} calls and to
         manage and parse user arguments when creating a CLI application.
 
       \subsection{Developing the CLI}
@@ -1270,7 +1272,7 @@
 
         The next step was to make real use of the Backend's API, thus we used
         \texttt{requests}~\cite{requests} and \textbf{json} \texttt{Python}'s libraries to
-        achieve the HTTP communication and the JSON requests encoding and
+        achieve the \texttt{HTTP} communication and the JSON requests encoding and
         responses parsing.\\
 
         This complete rewrite of the CLI allowed us to remove thousands of
@@ -1296,11 +1298,11 @@
         \begin{itemize}
           \item \textbf{Sequel Calls}: We have detected that in the legacy
           source code, a maintainer wanted to change and replace the old library
-          called dbd-mysql~\cite{dbdMysql} for the Sequel~\cite{Sequel} one. We
-          totally agreed with this as dbd-mysql has not been not updated since
+          called \texttt{dbd-mysql}~\cite{dbdMysql} for the \texttt{Sequel}~\cite{Sequel} one. We
+          totally agreed with this as \texttt{dbd-mysql} has not been not updated since
           2010 and still has bugs whereas Sequel manages different type of
           rmdb's and is still an active project.\\
-          The problem was that most of the SQL calls through Sequel were wrongly
+          The problem was that most of the \texttt{SQL} calls through Sequel were wrongly
           written, therefore a lot of calls were returning no data at all or
           inserting nothing. We thus had to check every Sequel usage in all the
           code and change for the right call. We also tried in the same process
@@ -1600,7 +1602,7 @@
         \subsubsection{Request Testing}
 
           The request tests inside the Backend service are the most important
-          tests we wrote, in terms of code coverage, but also, it covers almost
+          tests we wrote in terms of code coverage, but also, it covers almost
           every implemented features inside of this \texttt{Splay} service.\\
 
           The request specs among the RSpec tool are made to simulate
@@ -1790,7 +1792,7 @@
         The second objective concerning the web application was to provide to the
         user an easy way to enter the topology details, where the distributed algorithm
         will run into. The previous and only way to send a topology
-        to the server was to write a whole XML file following the ModelNet
+        to the server was to write a whole \texttt{XML} file following the ModelNet
         topology representation, a somehow tedious and error-prone process.\\
 
         The first step in our solution was to create a user interface with
@@ -1845,7 +1847,7 @@
         Once the user is done editing his topology, he does not have to
         do anything more. We created the editor so that the saved entities
         of it (being JSON elements) would be directly transformed into the
-        corresponding XML file and sent to the backend alongside the
+        corresponding \texttt{XML} file and sent to the backend alongside the
         job.\\
 
         However, using a visual tool with buttons and inputs is not always
@@ -1853,24 +1855,24 @@
         thought that some \texttt{Splay} users would probably not want to be obliged
         to play with our topology editor and would keep their topology
         settings in some file alongside with their code.\\
-        Therefore, We wanted to allow the user to play with XML directly
+        Therefore, We wanted to allow the user to play with \texttt{XML} directly
         if he wanted to, offering the following service:
 
         \begin{itemize}
           \item A user creating the topology could also translate what's
-          displayed in the visual editor into the XML definition.
+          displayed in the visual editor into the \texttt{XML} definition.
           \item A user creating the topology could directly paste
-          his XML topology in some editor and also have the option of
+          his \texttt{XML} topology in some editor and also have the option of
           translating it into a visualization.
         \end{itemize}
 
         Addressing these two issues was an extremely easy task, the job of
-        converting the topology in XML was already available and done on
+        converting the topology in \texttt{XML} was already available and done on
         the job submission. We reused the Brace package used
-        for the \texttt{Lua} code editor to create an XML Topology editor.\\
-        The user could then trigger an XML creation into the Brace editor
+        for the \texttt{Lua} code editor to create an \texttt{XML} Topology editor.\\
+        The user could then trigger an \texttt{XML} creation into the Brace editor
         before sending the job or paste its code into the Brace editor, and
-        then ask for reflecting the XML topology into the visual editor. It
+        then ask for reflecting the \texttt{XML} topology into the visual editor. It
         was just then the matter of parsing the XML and generating the
         corresponding JSON entities, reusing the functions we already wrote
         for the \texttt{Vue} components composing this global feature.
@@ -1982,21 +1984,21 @@
 -- CRASH POINT 1 2 3 4 5:RECOVERY 0:RANDOM 0.5
           \end{lstlisting}
 
-        We also added some negative examples (won't trigger any crash
-        and won't crash the daemon):
+        We also added some negative examples (will not trigger any crash
+        and will not crash the daemon):
 
         \begin{lstlisting}[style=MyLua]
--- Won't work because Crash point not in uppercase
+-- will not work because Crash point not in uppercase
 --Crash Point 1 2: STOP: AFTER 3
 
--- Won't work because no node is specified.
+-- will not work because no node is specified.
 -- CRASH POINT:RECOVERY  965:   AFTER 3
 
--- Won't work because RECOVER is not a valid
+-- will not work because RECOVER is not a valid
 -- type (but warning expected).
 -- CRASH POINT 1 2:RECOVER 1: AFTER 3
 
--- Won't work because TIME is not a valid type
+-- will not work because TIME is not a valid type
 -- for now (but error expected).
 -- CRASH POINT 1 2:RECOVERY 1: TIME 3
         \end{lstlisting}
@@ -2036,7 +2038,7 @@
         The Lua multithreading is non-preemptive, this means that we cannot stop a thread from the
         outside~\cite{CoroutineLua}. This particularity helps to simplify distributed algorithms,
         but for the fault injection, it limits the field of possibility
-        (we cannot kill thread without killing the process).
+        (we cannot kill a thread without killing the process).
         Then, a solution is to exit the process it-self by using an OS function (os.exit),
         then kill all threads. We also have the possibility of sending an exit
         status code to the process (as parameters of the function),
@@ -2075,7 +2077,7 @@
         can define the downtime. Our simple solution to achieve this is by
         using the non-preemptive feature of Lua and forcing the process
         to sleep x seconds without any yield coroutine (therefore other
-        coroutines can't execute any code) before crashing.
+        coroutines cannot execute any code) before crashing.
 
   \chapter{Use Case}
   \label{chap:usercase}
@@ -2153,7 +2155,7 @@ docker-compose -f docker-compose.prod.yml up -d --scale daemon=7
         This election timeout is randomly chosen between two values
         to avoid a much as possible any conflit of election. When a node
         triggers an election, it becomes a candidate and request votes to
-        the others nodes, and becomes leader if it receives a majority of votes.\\
+        the other nodes, and becomes leader if it receives a majority of votes.\\
         Also, on each election a term (number increasing monotonically)
         is used to progress the election.\\
         We will present and focus only on this election subproblem of
@@ -2344,7 +2346,7 @@ end
 function request_vote(term, candidate_id)
     print("RPC Request Vote FROM "..candidate_id.." Term : "..term)
 
-    -- It the candidate is late - don't grant the vote
+    -- If the candidate is late - do not grant the vote
     if term < persistent_state.current_term then
         return persistent_state.current_term, false
     elseif term > persistent_state.current_term then
@@ -2354,7 +2356,7 @@ function request_vote(term, candidate_id)
     local vote_granted = false
 
     -- Condition to grant the vote :
-    --  (If the node doesn't already grant the vote to and other)
+    --  (If the node does not already grant the vote to and other)
     if (persistent_state.voted_for == nil or persistent_state.voted_for == candidate_id) then
         -- Save the candidate vote
         persistent_state.voted_for = candidate_id
@@ -2487,7 +2489,7 @@ end)
       This tool is embedded in the web application with some
       JavaScript. It shows the node states (follower, candidate or leader),
       if a packet is traveling between two nodes and time
-      indications following the animation. We used the vis.js library~\cite{VisJS} 
+      indications following the animation. We used the vis.js library~\cite{VisJS}
       (dynamic graph library). The Raft code has been slightly
       modified in order to print the appropriate logs (code can be found here
       \footnote{\url{https://github.com/splay-project-v2/cli/blob/master/app_test/raft_election_anim.lua}}).\\
@@ -2499,7 +2501,7 @@ end)
       green for the candidate state and red for the leader state.\\
       Also, network packets currently travelling between nodes change the color
       of the directed edge into black and become larger (depending on the
-      number of packets). This figure~\ref{fig:timeline} has as one goal, to 
+      number of packets). This figure~\ref{fig:timeline} has as one goal, to
       show the animation tool with all possibilities (not explain the raft election). \\ % TODO : check the last sentence
 
       \begin{figure}[H]
@@ -2510,7 +2512,7 @@ end)
       \end{figure}
 
       If we observe the leader election from the first result (without
-      topology emulation and no crashes) with this tool, we won't see clearly
+      topology emulation and no crashes) with this tool, we will not see clearly
       the evolution of the nodes states, because the leader election finishes
       very quickly (< 8 ms) and it is hard to capture the visualisation of it
       (or with an very small speed factor).\\
@@ -2621,7 +2623,7 @@ function heartbeat()
           leader.\\
           First, he concludes that crashing the leader does not crashes the
           Raft election process but only restarts an election, as expected.
-          Also he obtains interesting result~\ref{tab:leader}, which, at first glance,
+          He also obtains interesting result~\ref{tab:leader}, which at first glance,
           supports his expectations. \\ % TODO :check
           Here, the purpose is \textbf{not} to make statistical evidence/model but
           only to show the importance of the topology emulation on a
@@ -2733,7 +2735,7 @@ end
         will become the leader (no conflict this time).\\
         Note that conflicts happen rarely with 3 candidates because the
         leader timeout is well-balanced thanks to randomization and the
-        topology used is not a extreme case (topology 2 \ref{fig:topo2}).
+        topology used is not an extreme case (topology 2 \ref{fig:topo2}).
 
         % Show four step of election: all followers -> two candidate -> one leader -> leader + heartbeat
         \begin{figure}[H]
@@ -2774,13 +2776,13 @@ end
         wakes up.\\
         The animation shows that, when the leader crashed, one or multiple
         nodes triggered a new leader election process.\\
-        Crashes can also happen on a follower or candidate node, which won't
+        Crashes can also happen on a follower or candidate node, which will not
         disturb the Raft process as long as there is a majority of nodes
         running.
 
   \chapter{Conclusion}
 
-    We'll first conclude this report by going through a list of improvements
+    We will first conclude this report by going through a list of improvements
     idea over the project, and then summarize our global achievements on the
     project compared to our initial objectives.
 
@@ -2859,7 +2861,7 @@ end
           \begin{itemize}
             \item \textbf{Modifications of items on click}: For now, it is hard
             to modify existing edges, nodes or specs. The user needs to remove
-            the specified item or modify it in the XML code, therefore
+            the specified item or modify it in the \texttt{XML} code, therefore
             an option to modify existing items through a form would be a good
             idea.
             \item \textbf{Edge in both directions}: Right now, the user can only
@@ -2966,7 +2968,7 @@ end
           dynamically (package.loaded["name\_package"] = nil). Using this
           technique, we can unload the socket package (that was loaded with a
           restriction) and reload it with the corresponding statements placed
-          at the beginning of the job code and the restriction won't exist
+          at the beginning of the job code and the restriction will not exist
           anymore.
           \item SQL calls in the controller are using string interpolation,
           in most of the cases, the call is secure manually adding escape
