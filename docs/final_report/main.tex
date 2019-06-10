@@ -177,7 +177,7 @@
 
     \section{Learning Distributed Algorithms}
 
-      The process of learning distributed algorithms is usually by the
+      The process of learning distributed algorithms is usually undermined by the
       difficulty of being able to test and apply what one learns.\\
       Usually, students are learning the theoretical components of the
       algorithms (consensus, leader election, resource allocation, ...)
@@ -216,8 +216,8 @@
 
       Another issue with distributed algorithms is that the pseudo-code
       (from papers for example) is usually far from what a true solution to the
-      related problem would be. In general, There is a lot of time management
-      and asynchronous calls and responses from the nodes among the system,
+      related problem would be. In general, there is a lot of time management,
+      asynchronous calls and responses from the nodes among the system,
       increasing the gap between the theoretical specifications and practical
       cases.
 
@@ -319,7 +319,7 @@
         way of learning distributed algorithms.
       \end{itemize}
 
-      This document will detail how we turned \texttt{Splay} into an integrated
+      This thesis will detail how we turned \texttt{Splay} into an integrated
       platform designed to help students learning and practicing distributed
       systems.\\
       In the next chapter, we will explicit how we designed the changes made on
@@ -331,7 +331,7 @@
       in the project.\\
       We will then explain the development of the new features
       of \texttt{Splay} in chapter~\ref{chap:newfeat}, present a real scenario
-      of usage in chapter~\ref{chap:usercase} and then conclude this document.
+      of usage in chapter~\ref{chap:usercase} and then conclude this thesis.
 
   \chapter{Splay for Learning and Teaching}
   \label{chap:splayteaching}
@@ -350,16 +350,16 @@
       application:
 
       \begin{itemize}
-        \item The application should be easy to use for beginners and people
+        \item It should be easy to use for beginners and people
         who just started to learn Distributed Systems, but also for professors.
-        \item The application should allow the user to define parameters about
+        \item It should allow the user to define parameters about
         the network and nodes he is running his algorithm on such as latencies
         or bandwidth.
-        \item The application should provide a practical way for the user
+        \item It should provide a practical way for the user
         to write his algorithm.
-        \item The application should allow the user to get detailed information
+        \item It should allow the user to get detailed information
         about how his algorithm performed within the system.
-        \item The application should offer services focused on the development
+        \item It should offer services focused on the development
         of an algorithm. No time should be spent on the configuration of the
         machines needed to create a distributed system ready to run algorithms.
       \end{itemize}
@@ -402,12 +402,12 @@
         Then the user receives an id number corresponding to his job and
         is able to retrieve \textbf{\texttt{logs}} (through the web application
         or the command-line interface).\\
-        These \texttt{logs} and this
+        These \texttt{logs}, and this
         definition will hold for the rest of this document when we talk about
         \texttt{logs}, contain the information about one job's
         execution on the application.\\
         Each node produces logging information about its processing of the
-        algorithm (with simple \texttt{print} function calls), containing its % lower case 
+        algorithm (with simple \texttt{print} function calls), containing its
         identification number and timestamps.\\
         The application then merges each of these individual pieces of information
         to produce a single log file about one job, which we
@@ -593,11 +593,11 @@
           was not really up to current standards and should be changed.\\
           The code of the six different services was located in the same and
           unique repository, this had the consequence of making way harder
-          the navigation in the project's tree during the development, the
-          clarity of the commits in the Git log and therefore the evolution
+          the navigation in the project's tree during the development, decreasing the
+          clarity of the commits in the Git log and therefore undermining the evolution
           of these different services.\\
 
-          Having to start back from a 2011 commit also made us realize that the
+          Having to start back from a specific commit to get a stable version also made us realize that the
           project was not making use of the Git version tagging system, that
           can mark the stable releases of the different versions of the project
           through history, and that we should accomplish this from now on.
@@ -718,12 +718,12 @@
           used in \texttt{ModelNet}~\cite{ModelNet}, \texttt{Splay} users previously
           defined their topologies through sending \texttt{XML} files.\\
           This format not being really user-friendly and quite hard to read,
-          and with the fact that format documentation is not easy to find
+          and with the fact that this format documentation is not easy to find
           on the Internet, we decided that the new web application would have
           to provide an easy way for the user to define his own topology
           still following the standards.\\
 
-          This topology editor should provide a graphical interface with
+          This topology editor should provide a graphical interface
           allowing an easy configuration. Each change using this interface
           would result in immediate visual feedback thanks to a topology
           visualization tool, such that the user would have a better view of
@@ -756,14 +756,14 @@
           control where the crash may happen during the code execution, and
           it would require to stop and restart containers. Controlling where
           and when the crash happens is an important feature to explore
-          corner cases, solve difficult-to-reproduce bugs.\\
+          corner cases and to solve difficult-to-reproduce bugs.\\
           We wanted to improve this by providing the user with a feature
           allowing him to choose when one or multiple daemons would crash during
           the execution. We came up with two ideas:
 
           \begin{itemize}
-            \item A hard crash in which the node is completely put down
-            \item A recovery crash in which the node is relaunched after some
+            \item A hard crash in which the execution is completely stopped
+            \item A recovery crash in which the execution is relaunched after some
             downtime
           \end{itemize}
 
@@ -1750,8 +1750,8 @@
         library was used.\\
 
         We wanted to change this, so we started by adding a testing library
-        called \texttt{Busted}~\cite{busted}. This library allowed elegant unit testing,
-        still under development and fully integrated with \texttt{Lua} 5.3.\\
+        called \texttt{Busted}~\cite{busted}. This library allows elegant unit testing,
+        is still under development and is fully integrated with \texttt{Lua} 5.3.\\
         Then we successfully transformed the old existing tests into busted
         tests. With only this single change, we were able to detect some
         anomalies in the lib code and fix these. We added some test steps
@@ -2110,7 +2110,7 @@
         Parsing is done line by line and if any error is found (also error
         about the parsing code itself), the concerned line will be unchanged, and
         a warning or error message will be written in the logs.\\
-        This feature is fully written in \texttt{Lua} using the basic regex matcher 
+        This feature is fully written in \texttt{Lua} using the basic regex matcher
         of \texttt{Lua}~\cite{RegexLua} (it is not a complete Regex implementation).
 
       \subsection{Execution}
