@@ -37,6 +37,16 @@
   literate={\ \ }{{\ }}1
 }
 
+\lstdefinestyle{MyBigBash}{
+  language = bash,
+  basicstyle=\small\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue},
+  showspaces=false,
+  showstringspaces=false
+}
+
 \lstdefinestyle{MyBash}{
   language = bash,
   basicstyle=\scriptsize\ttfamily,
@@ -112,10 +122,10 @@
 
   \chapter*{Abstract}
 
-    This master thesis covers the contributions made to the Splay application
+    This master thesis covers the contributions made to the \texttt{Splay} application
     in order to turn it into an integrated platform for distributed systems
     training and learning.\\
-    Splay was initially designed for researchers to facilitate the testing and
+    \texttt{Splay} was initially designed for researchers to facilitate the testing and
     design of distributed applications in an execution environment with low
     overhead and footprint, with a simple language resembling to pseudo-code.\\
 
@@ -124,7 +134,7 @@
     integration testing with continuous integration, a complete and easy to use
     installation script, a total project management recast on GitHub.\\
 
-    The contributions made to Splay are a new web application designed
+    The contributions made to \texttt{Splay} are a new web application designed
     for students and professors with an algorithm editor, a network topology
     creation tool to simulate network conditions in which the algorithm will
     be running, a fault injection system to control and place crash points
@@ -137,7 +147,7 @@
     to hold a meeting with us each week during two whole semesters.\\
 
     We also thank Raziel Carvajal Gomez for helping us during our
-    part-time job period on the Splay application.\\
+    part-time job period on the \texttt{Splay} application.\\
 
     Finally, we thank Peter Van Roy and Guillaume Derval for taking the time
     of being readers of our thesis.
@@ -344,7 +354,7 @@
         who just started to learn Distributed Systems, but also for professors.
         \item The application should allow the user to define parameters about
         the network and nodes he is running his algorithm on such as latencies
-        or packet losses.
+        or bandwidth.
         \item The application should provide a practical way for the user
         to write his algorithm.
         \item The application should allow the user to get detailed information
@@ -397,7 +407,7 @@
         \texttt{logs}, contain the information about one job's
         execution on the application.\\
         Each node produces logging information about its processing of the
-        algorithm (with simple \textsc{print} calls), containing its
+        algorithm (with simple \texttt{print} function calls), containing its % lower case 
         identification number and timestamps.\\
         The application then merges each of these individual pieces of information
         to produce a single log file about one job, which we
@@ -484,7 +494,7 @@
 
           There is a whole high-level library designed to help the creation of
           distributed algorithms in \texttt{Lua} on \texttt{Splay}, which we
-          call \texttt{SplayLib}. This is a rich library that offers for
+          call \textbf{\texttt{SplayLib}}. This is a rich library that offers for
           example:
 
           \begin{itemize}
@@ -495,7 +505,7 @@
           \end{itemize}
 
           The whole manual of this library can be found on the official
-          website of Splay~\cite{SplayLib}.
+          manual of Splay~\cite{SplayLib}.
 
 
     \section{User Scenarios}
@@ -518,7 +528,7 @@
         Hopefully, my university provides an existing installation of \texttt{Splay}
         available through the university network.\\
         I can access this service using a web application. After
-        registration and login, I have access to a complete \texttt{Lua} Editor that
+        registration and login, I have access to a complete \texttt{Lua} editor that
         allows me to create my own distributed algorithm.\\
         I can also choose parameters such as the number of nodes on
         which run my algorithms, a topology editor to emulate network
@@ -534,7 +544,7 @@
         nodes.\\
         The new leader election approach is described in a paper with some
         pseudo-code and has special cases of execution when some nodes
-        are linked through extremely slow connections,
+        are linked through extremely slow connections.
         Thanks to \texttt{Splay}, I can rewrite the pseudo-code in actual
         \texttt{Lua} code in a dedicated editor, create special cases of topologies
         thanks to a topology editor.\\
@@ -588,7 +598,7 @@
           of these different services.\\
 
           Having to start back from a 2011 commit also made us realize that the
-          project was not making use of the git version tagging system, that
+          project was not making use of the Git version tagging system, that
           can mark the stable releases of the different versions of the project
           through history, and that we should accomplish this from now on.
 
@@ -796,7 +806,7 @@
         of services around that backend, in our case a web application and
         a command line interface.\\
 
-        The web application would thus use a recent JavaScript technology
+        The web application would thus use a recent \texttt{JavaScript} technology
         allowing dynamic interactions with the user, and the CLI would use
         simple and dedicated technology, those two services consuming the
         same API offered by the backend. The backend, for its part, would
@@ -833,7 +843,7 @@
         a distinct repository for each service and one as the main repository
         of the project.\\
 
-        The main repository called \textbf{Splay} contains all the other services
+        The main repository called \textbf{splay} contains all the other services
         through the submodule~\cite{GitSubmodules} feature of git. These
         sub-repositories representing the new architecture:
 
@@ -912,10 +922,10 @@
         and complexity needed for presenting \texttt{HTML} views to the user and thus
         having a lighter and more concise codebase.\\
 
-        The ActiveRecord~\cite{activerecord} ORM shipped with the \texttt{Rails}
+        The \texttt{ActiveRecord}~\cite{activerecord} ORM shipped with the \texttt{Rails}
         applications is also a major advantage for this technology, allowing us
         to easily and efficiently manage the system's jobs and daemons.\\
-        Finally, the availability of some libraries such as RSpec~\cite{rspec}
+        Finally, the availability of some libraries such as \texttt{RSpec}~\cite{rspec}
         made for the testing, \texttt{Rubocop}~\cite{Rubocop} for the linter definitely
         made \texttt{Rails} the right technology to choose for the Backend.
 
@@ -990,7 +1000,7 @@
 
           Moreover, for any further development or evolution of the application,
           we know that \texttt{Devise} also provides user management modules such as
-          Omniauth support, account tracking, registration confirmation
+          OmniAuth support, account tracking, registration confirmation
           through emails, and many others listed on the gem webpage.\\
 
           \texttt{Devise} was, therefore, the best choice for our registration management,
@@ -1178,10 +1188,10 @@
         After removing the old files of the previous web application, we
         created a basic \texttt{Vue} project (version 2.5.X at that time) having a
         simple home page and using the \texttt{bootstrap-vue} package~\cite{BootstrapVue}.
-        \textbf{Bootstrap}~\cite{Bootstrap} is a
+        \textbf{\texttt{Bootstrap}}~\cite{Bootstrap} is a
         well-known \texttt{HTML}, \texttt{CSS}, and \texttt{JavaScript} framework used to create a responsive
         and modern web interface.\\
-        Bootstrap is a real Swiss-army knife among the design framework
+        \texttt{Bootstrap} is a real Swiss-army knife among the design framework
         and helped us building a visually pleasant and easy to use
         web application with minimal custom \texttt{CSS} and \texttt{JavaScript} code.\\
 
@@ -1338,7 +1348,7 @@
         for specific commands.\\
 
         The next step was to make real use of the Backend's API, thus we used
-        \texttt{requests}~\cite{requests} and \textbf{JSON} \texttt{Python}'s libraries to
+        \texttt{requests}~\cite{requests} and JSON \texttt{Python}'s libraries to
         achieve the \texttt{HTTP} communication and the JSON requests encoding and
         responses parsing.\\
 
@@ -1358,7 +1368,7 @@
       \subsection{Controller changes}
 
         Most of the issues on the controller were due to a previous
-        maintainers misuse of the sequel calls (a \texttt{Ruby} library offering a MySQL
+        maintainers misuse of the \texttt{sequel} calls (a \texttt{Ruby} library offering a database
         toolkit), but this is an overall list of all the changes that we
         applied:
 
@@ -1393,7 +1403,7 @@
 
         We had to change and fix small parts of the daemon in order to make
         it consistent with the controller (concerning the communication part)
-        and also made some improvements to the \texttt{Splay}'s \texttt{Lua} library.
+        and also made some improvements to the \texttt{Splay}'s \texttt{Lua} library (\texttt{SplayLib}).
 
         \begin{itemize}
           \item As explained in the controller part, we fixed the communication
@@ -1414,7 +1424,7 @@
           it in the improvements section.
           \item We removed the \texttt{LuaCrypto} library from the daemon and added
           luaossl to replace it. The main reason for this change was that
-          \texttt{LuaCrypto} cannot use the last Linux's OpenSSL package (due to a
+          \texttt{LuaCrypto} cannot use the last Linux's \texttt{openssl} package (due to a
           security issue, and older versions cannot be used in newer OS),
           \texttt{LuaCrypto} was also not updated anymore and moreover, an issue about
           this was open in the old project repository~\cite{sslLib}.\\
@@ -1575,10 +1585,10 @@
           went for the \texttt{Jest}~\cite{jest} testing framework, which was advised
           as the unit testing framework during the project creation.\\
 
-          Testing JavaScript is not always the simplest thing to achieve, the
+          Testing \texttt{JavaScript} is not always the simplest thing to achieve, the
           ecosystem being in constant evolution with diverse solutions emerging
           trying to fit with the evolution and the apparition of a lot of
-          other JavaScript frameworks.\\
+          other \texttt{JavaScript} frameworks.\\
           But Jest was a really good pick as the testing framework, as it was
           developed by Facebook and designed to fit with the majority of the
           most used front-end framework and this with almost no configuration and
@@ -1599,14 +1609,14 @@
 
         \subsubsection{ESLint}
 
-          Provided by default when creating a new \texttt{Vue} project, ESLint~\cite{eslint}
-          is a JavaScript linter that allows the developer to
+          Provided by default when creating a new \texttt{Vue} project, \texttt{ESLint}~\cite{eslint}
+          is a \texttt{JavaScript} linter that allows the developer to
           make sure he is not writing code inducing problematic patterns or not
           respecting code guidelines.\\
           This helps to keep a consistent code style as we were two developers working
           on this project and increase the overall code quality and
           maintainability. We chose not to change any preset of the shipped-in
-          ESLint configuration to ensure the following common guidelines among the \texttt{Vue}
+          \texttt{ESLint} configuration to ensure the following common guidelines among the \texttt{Vue}
           community and make sure any developer joining the \texttt{Splay} project will
           be able to work on the web application seamlessly.
 
@@ -1623,7 +1633,7 @@
         \end{itemize}
 
         The backend is written in \texttt{Rails}, therefore, we have access to the
-        ActiveRecord ORM which allows manipulating the database by associating
+        \texttt{ActiveRecord} ORM which allows manipulating the database by associating
         tables to models. These models are thus granted with attributes,
         constraints to comply with on these attributes following the constraints
         listed in the database schema, but also granted with methods. This data
@@ -1671,7 +1681,7 @@
           tests we wrote in terms of code coverage, but also, it covers almost
           every implemented features inside of this \texttt{Splay} service.\\
 
-          The request specs among the RSpec tool are made to simulate
+          The request specs among the \texttt{RSpec} tool are made to simulate
           the behavior of a third-party application sending a request to
           our service and therefore making the whole \texttt{Rails} stack runs
           to provide an answer to this request.\\
@@ -1740,8 +1750,8 @@
         library was used.\\
 
         We wanted to change this, so we started by adding a testing library
-        called Busted~\cite{busted}. This library allowed elegant unit testing,
-        still under active development and fully integrated with \texttt{Lua} 5.3.\\
+        called \texttt{Busted}~\cite{busted}. This library allowed elegant unit testing,
+        still under development and fully integrated with \texttt{Lua} 5.3.\\
         Then we successfully transformed the old existing tests into busted
         tests. With only this single change, we were able to detect some
         anomalies in the lib code and fix these. We added some test steps
@@ -1839,17 +1849,17 @@
           put aside, as it would take too much time to achieve and would not
           be a solution allowing easy evolution through time.\\
           We then found a great package named \texttt{Brace}, a browserified
-          version of the Ace editor~\cite{Ace}. Ace can handle hundreds of
+          version of the \texttt{Ace} editor~\cite{Ace}. \texttt{Ace} can handle hundreds of
           different programming languages concerning syntax coloration,
           error handling, line number displaying.\\
 
-          The integration of Ace in the project was really easy and light thanks
+          The integration of \texttt{Ace} in the project was really easy and light thanks
           to the available \texttt{npm} package. The editor now displays \texttt{Lua} code
           perfectly colorized and highlights syntax errors.\\
 
           Sadly, no built-in auto-completion module was available from the
-          Brace package. It would have been possible for us to add our own
-          auto-complete script in the Ace editor, but that was a too long
+          \texttt{Brace} package. It would have been possible for us to add our own
+          auto-complete script in the \texttt{Ace} editor, but that was a too long
           task to achieve for the time we had, we thus decided to move on and
           keep the result as it was.\\
 
@@ -1866,7 +1876,7 @@
         The second objective concerning the web application was to provide to the
         user an easy way to enter the topology details, where the distributed algorithm
         will run into. The previous and only way to send a topology
-        to the server was to write a whole \texttt{XML} file following the ModelNet
+        to the server was to write a whole \texttt{XML} file following the \texttt{ModelNet}
         topology representation, a somehow tedious and error-prone process.\\
 
         The first step in our solution was to create a user interface with
@@ -1906,7 +1916,7 @@
 
         To help the user get a better visualization of his topology, we
         decided to implement a network visualization solution using the
-        Cytoscape \texttt{cytoscape} library.\\
+        \texttt{cytoscape} library.\\
         On any update from the form explained above, the change is reflected
         inside our network visualization component adding the new links or
         nodes created by the user so that he can keep track of his topology
@@ -1942,10 +1952,10 @@
 
         Addressing these two issues was an extremely easy task, the job of
         converting the topology in \texttt{XML} was already available and done on
-        the job submission. We reused the Brace package used
+        the job submission. We reused the \texttt{Brace} package used
         for the \texttt{Lua} code editor to create an \texttt{XML} Topology editor.\\
-        The user could then trigger an \texttt{XML} creation into the Brace editor
-        before sending the job or paste its code into the Brace editor, and
+        The user could then trigger an \texttt{XML} creation into the \texttt{Brace} editor
+        before sending the job or paste its code into the \texttt{Brace} editor, and
         then ask for reflecting the \texttt{XML} topology into the visual editor. It
         was just then the matter of parsing the XML and generating the
         corresponding JSON entities, reusing the functions we already wrote
@@ -2012,7 +2022,7 @@
 
         Our final DSL looks like this:
 
-        \begin{lstlisting}[style=MyBash]
+        \begin{lstlisting}[style=MyBigBash]
 -- CRASH POINT id_splayd [id_splayd [...]]: <TYPE>: <WHEN>
 <TYPE> => STOP | RECOVERY <float>
 <WHEN> => AFTER <int> | RANDOM <float>
@@ -2026,16 +2036,16 @@
         Concerning the moment of the crash, there are two possible specifications:
 
         \begin{itemize}
-          \item The \textbf{AFTER} keyword means that the user specifies the
+          \item The \textbf{\textsc{AFTER}} keyword means that the user specifies the
           number of loops to achieve before the crash occurs. For example,
           the value 5 at the beginning of the loop means that this loop will
           execute 5 times before triggering the crash, whereas 0 triggers
           an immediate crash.
-          \item The \textbf{RANDOM} keyword means that the user specifies a
+          \item The \textbf{\textsc{RANDOM}} keyword means that the user specifies a
           probability between 0 and 1 that the node crashes each time it
           encounters the crash point through the code execution. For example,
           if the user specified 1, the crash will occur at first execution
-          (similar to AFTER 0).
+          (similar to \textsc{AFTER} 0).
         \end{itemize}
 
         To summarize the DSL, we created some positive examples (crash definition valid) :
@@ -2100,8 +2110,8 @@
         Parsing is done line by line and if any error is found (also error
         about the parsing code itself), the concerned line will be unchanged, and
         a warning or error message will be written in the logs.\\
-        This feature is fully written in \texttt{Lua} using the basic regex matcher of Lua
-        \cite{RegexLua} (it is not a complete Regex implementation).
+        This feature is fully written in \texttt{Lua} using the basic regex matcher 
+        of \texttt{Lua}~\cite{RegexLua} (it is not a complete Regex implementation).
 
       \subsection{Execution}
 
@@ -2124,11 +2134,11 @@
         current execution. Moreover, we can pass special exit status codes
         in order to send messages to the parent process.\\
         In order to use these exit codes, we created a fork (available from
-        the C Splay library) before parsing the crash point and executing
+        the C \texttt{Splay} library) before parsing the crash point and executing
         the user code.\\
         Therefore, the child process will execute the parsing of the crash
         point and proceed to the code execution, and the parent process will
-        wait to receive the exit status code of its child. We added a Lua
+        wait to receive the exit status code of its child. We added a \texttt{Lua}
         function (\textit{waitpid}) for this purpose and used the original \textit{waitpid}
         of C~\cite{waitpid}.\\
 
@@ -2141,8 +2151,8 @@
         is proposed to be user-defined status code.
 
         \begin{itemize}
-          \item \textbf{65}: Means a STOP crash, no restart is needed
-          \item \textbf{66}: Means a RECOVERY crash
+          \item \textbf{65}: Means a \textsc{STOP} crash, no restart is needed
+          \item \textbf{66}: Means a \textsc{RECOVERY} crash
         \end{itemize}
 
         The recovery crash is then achieved recursively, the parent process
@@ -2561,7 +2571,7 @@ end)
       logs and allow the user to see the evolution during the job's
       execution (adding to \texttt{Splay} tools directory).
       This tool is embedded in the web application with some
-      JavaScript. It shows the node states (follower, candidate or leader),
+      \texttt{JavaScript}. It shows the node states (follower, candidate or leader),
       if a packet is traveling between two nodes and time
       indications following the animation. We used the \texttt{vis.js} library~\cite{VisJS}
       (dynamic graph library). The Raft code has been slightly
@@ -2799,7 +2809,7 @@ end
 
         Now the student has tried his Raft election implementation on
         different topologies and with some crash points, he can observe some
-        interesting results thanks to the animation tool.\\
+        other interesting results thanks to the animation tool.\\
         A complete Raft election can be divided into multiple steps. The next
         figure shows a complete election process with a conflict between
         three candidates (candidates asking almost at the same time vote
@@ -2888,18 +2898,18 @@ end
         \begin{itemize}
           \item \textbf{Basic Auto-Completion}: A basic auto-completion can be
           done for keywords (as any other IDE) and for named functions with
-          the help of the Ace Editor package.
+          the help of the \texttt{Ace} editor package.
           \item \textbf{Specific Auto-Completion}: The integration of the \texttt{Splay
           Lua} library to the auto-completion feature with some hints would
           be a great achievement and make the \texttt{Lua} editor an even better
           option than an IDE.
-          \item \textbf{Color Theme}: Ace allows to set a color scheme for
+          \item \textbf{Color Theme}: \texttt{Ace} allows to set a color scheme for
           the editor, an option for the user to change this color scheme
           might be a great option to make the development environment
           truly enjoyable.
         \end{itemize}
 
-        As Ace can handle a lot of different languages, if in any further
+        As \texttt{Ace} can handle a lot of different languages, if in any further
         improvement a decision to switch the daemon technology was made (see
         next section about refactors), then it would be easy to change the
         targeted language.
@@ -3016,17 +3026,17 @@ end
           development phases:
 
           \begin{itemize}
-            \item Using full object-oriented with sequel~\cite{Sequel} model
+            \item Using full object-oriented with \texttt{sequel}~\cite{Sequel} model
             object for each table of the database. The SQL queries are now
             raw ones which can be insecure (in case one forgets to manually
             check against injections) and which are hard to read.\\
-            A sequel model object allows every operation on a SQL database
-            through function calls in a nice a concise Ruby way, avoiding
+            A \texttt{sequel} model object allows every operation on a SQL database
+            through function calls in a nice a concise \texttt{Ruby} way, avoiding
             SQL error syntax and most importantly it is independent of the
             database management system.
             \item A meticulous refactor of some part of the controller may be
             a good idea, and more specifically the management of jobs sent to
-            the daemons (a Ruby class named Jobd and its children classes), we
+            the daemons (a \texttt{Ruby} class named Jobd and its children classes), we
             indeed found most of the controller bugs in this part.
           \end{itemize}
 
