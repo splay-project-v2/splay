@@ -2518,7 +2518,7 @@ end)
 
         After writing the Raft code, he wants to try it on five nodes
         and without any network topology (all nodes communicate with the native network settings).\\
-        Once he sends the job, he can observes in the logs that a node
+        Once he sends the job, he can observe in the logs that a node
         effectively becomes the leader and it is sending heartbeats to avoid
         an election process from the other nodes:
 
@@ -2573,7 +2573,7 @@ end)
       execution (adding to \texttt{Splay} tools directory).
       This tool is embedded in the web application with some
       \texttt{JavaScript}. It shows the node states (follower, candidate or leader),
-      if a packet is travelling between two nodes and time
+      if a packet is traveling between two nodes and time
       indications following the animation. We used the \texttt{vis.js} library~\cite{VisJS}
       (dynamic graph library). The Raft code has been slightly
       modified in order to print the appropriate logs (code can be found here
@@ -2584,7 +2584,7 @@ end)
       process over time. We represent on the graph the node (job)
       state by different colors: blue for the follower state,
       green for the candidate state and red for the leader state.\\
-      Also, network packets currently travelling between nodes change the color
+      Also, network packets currently traveling between nodes change the color
       of the directed edge into black and become larger (depending on the
       number of packets).\\
       Figure~\ref{fig:timeline} aims to show all the possibilities offered by the animation
@@ -2602,7 +2602,7 @@ end)
       the evolution of the nodes states, because the leader election finishes
       very quickly (< 8 ms) and it is hard to capture the visualization of it
       (or with a very small speed factor).\\
-      The main reason of this is the lack of latency between nodes. Indeed, without
+      The main reason for this is the lack of latency between nodes. Indeed, without
       topology emulation, the RPC messages travel with the native latency
       (in case of the student installation, only \texttt{Docker} network latency is
       expected), and thus a candidate gets its vote granted really fast (and
@@ -2833,7 +2833,7 @@ end
           \begin{subfigure}{.45\textwidth}
             \centering
             \includegraphics[width=1.0\linewidth]{figures/user_case/election_2.png}
-            \caption{Three candidates for the leader job -> conflict, none becomes the leader, the majority is slipped}
+            \caption{Three candidates for the leader job -> conflict, none becomes the leader, the majority is split}
             \label{fig:ele2}
           \end{subfigure}
           \begin{subfigure}{.45\textwidth}
