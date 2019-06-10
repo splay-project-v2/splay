@@ -1534,8 +1534,8 @@
           Each time one of us was done with the development of a
           task and was issuing a pull request, the other was assigned as code
           reviewer and was in charge of making this code review, accepting the
-          pull request and doing the merge, or to detect errors or bugs as the
-          outcome of the code review and therefore to ask for changes to the
+          pull request and doing the merge, or detecting errors or bugs as the
+          outcome of the code review and therefore asking for changes to the
           pull request issuer.\\
 
           Besides the main code review's benefit of reducing the number of
@@ -1619,8 +1619,8 @@
           This helps to keep a consistent code style as we were two developers working
           on this project and increase the overall code quality and
           maintainability. We chose not to change any preset of the shipped-in
-          \texttt{ESLint} configuration to ensure the following common guidelines among the \texttt{Vue}
-          community and make sure any developer joining the \texttt{Splay} project will
+          \texttt{ESLint} configuration to ensure the following of common guidelines among the \texttt{Vue}
+          community and to make sure any developer joining the \texttt{Splay} project will
           be able to work on the web application seamlessly.
 
       \subsection{Testing in Backend}
@@ -1662,7 +1662,7 @@
         \subsubsection{Model Testing}
 
           As we made it explicit in upper sections, the \texttt{Rails} ORM layer offers
-          a reflexion about the database constraints by representing its
+          a reflexion of the database constraints by representing its
           tables under the form of models granted with attributes, that we can
           enrich with additional attributes, methods and an overlay of
           additional validations (such as validations on attributes
@@ -1670,11 +1670,9 @@
 
           Hence, this additional abstraction needs to be covered with a
           sufficient validation set, which we did by applying
-          \textbf{Model Testing}. This overlay applied to the
-          models but also the basic constraints specified in the database's
-          schema.\\
-
-          Therefore, this testing set is offering a double validation on the
+          \textbf{Model Testing}. This overlay applies to the
+          models but also to the basic constraints specified in the database's
+          schema. Therefore, this testing set is offering a double validation on the
           database field constraints, but also validations on the business
           logic we added in the application.
 
@@ -1706,7 +1704,7 @@
         \subsubsection{Code Coverage - Simple Cov}
 
           We chose to use Simple Cov in succession of the testing applied to
-          the Backend. This tool allows us to measure the code coverage of \texttt{Ruby}
+          the Backend. This tool allows to measure the code coverage of a \texttt{Ruby}
           application and to provide the developer with useful information
           thanks to its test execution analysis.\\
 
@@ -1774,7 +1772,7 @@
         In order to automatically test the project as a whole, we also wanted to
         develop a functional test suite. This test suite would be relatively
         simple but complete enough to make sure that we could test the developed
-        features in a global way among the system and to achieve this goal we
+        features in a global way among the system. To achieve this goal, we
         just had to translate our user scenarios into test scenarios.\\
 
         For these functional tests, we did not use complex technology and
@@ -1794,7 +1792,9 @@
           \item Rebuilding the different services listed in the \texttt{docker-compose}
           file.
           \item Starting up the services.
-          \item Executing commands through the CLI.
+          \item Executing commands through the CLI. These commands recreate
+          a real \texttt{Splay} usage by sending distributed algorithms with
+          various topologies and fault injection,
           \item Checking the returned response sent by the CLI and displaying
           whether the test phase has succeeded or failed in the terminal.
         \end{itemize}
@@ -1815,9 +1815,9 @@
         on the Travis CI~\cite{travis} continuous integration platform. Travis
         can be coupled with GitHub to detect any change on the branches and
         automatically run a test procedure listed in a script and then offer
-        feedback on how the test suite went.\\
+        feedback on how the test suite executed.\\
 
-        \texttt{Splay} being an open source project, that we hope to see growing in the
+        \texttt{Splay} being an open source project that we hope to see growing in the
         future, its collaborative development will inevitably happen through
         the GitHub organization in which the different repositories are located.\\
         The coupling of Travis with GitHub allows, in the case of a pull request,
