@@ -798,10 +798,10 @@
 
         The first decision to make in order to solve this problem was to
         merge those two services into a single one and to call that new
-        service according to his role among the system: The \textbf{Backend},
+        service according to his role among the system: the \textbf{Backend},
         according to the viewpoint of the client.\\
         This backend would have the ambition to offer a secured API through
-        the usage of \texttt{JWT}~\cite{JWT} (a token-based identification system
+        the usage of \texttt{JWT}~\cite{JWT} (a token-based authentication system
         for web applications) and therefore allowing the development
         of services around that backend, in our case a web application and
         a command line interface.\\
@@ -889,7 +889,7 @@
         solution to the following challenges:
 
         \begin{itemize}
-          \item Allowing simple interfacing with the MySQL database in order
+          \item Allow simple interfacing with the MySQL database in order
           to ensure the communication with the controller, and therefore allow
           the submission of new jobs, the gathering of information about the
           Daemons, etc...
@@ -917,7 +917,7 @@
         of these two \texttt{Ruby} services was already present, and a part of the
         work was therefore just a matter of isolating this common logic.\\
 
-        \texttt{Rails} allow to easily develop, besides traditional MVC web
+        \texttt{Rails} allows to easily develop, besides traditional MVC web
         applications, API-only applications that do not contain all the code
         and complexity needed for presenting \texttt{HTML} views to the user and thus
         having a lighter and more concise codebase.\\
@@ -937,7 +937,7 @@
         holding the same responsibilities.\\
 
         We started with a fresh \texttt{Ruby on Rails} application, passing the
-        generator the \textit{--api} option so that we were provided with
+        generator the \textsc{--api} option so that we were provided with
         a clean and simple \texttt{Rails} app without all the front-end dedicated
         files.\\
 
@@ -1003,7 +1003,7 @@
           OmniAuth support, account tracking, registration confirmation
           through emails, and many others listed on the gem webpage.\\
 
-          \texttt{Devise} was, therefore, the best choice for our registration management,
+          For all these reasons \texttt{Devise} was the best choice for our registration management,
           even for an API-only \texttt{Rails} application.
 
         \subsubsection{User Authentication}
@@ -1124,6 +1124,9 @@
             the right \texttt{HTTP} status code and the given error message.
           \end{itemize}
 
+        Once again, this allowed us to keep very simple and concise
+        controllers with self-explanatory code.
+
     \section{Web Application Development}
 
       This section will detail the development of the new web application,
@@ -1138,7 +1141,7 @@
         framework that would satisfy the following conditions: \\
 
         \begin{itemize}
-          \item Light in terms of weights;
+          \item Light in terms of resource consumption;
           \item Ease of development and maintenance;
           \item Access to numerous third-party libraries;
           \item Popular enough to ensure support over time.
@@ -1181,7 +1184,7 @@
 
       \subsection{The new front-end application development}
 
-        As the development of the backend was started, we started in the
+        As soon as the development of the backend was started, we started in the
         meantime the development of a Single Page Application using
         the \texttt{Vue} framework.\\
 
@@ -1191,7 +1194,7 @@
         \textbf{\texttt{Bootstrap}}~\cite{Bootstrap} is a
         well-known \texttt{HTML}, \texttt{CSS}, and \texttt{JavaScript} framework used to create a responsive
         and modern web interface.\\
-        \texttt{Bootstrap} is a real Swiss-army knife among the design framework
+        \texttt{Bootstrap} is a real Swiss-army knife among the design frameworks
         and helped us building a visually pleasant and easy to use
         web application with minimal custom \texttt{CSS} and \texttt{JavaScript} code.\\
 
@@ -1217,7 +1220,7 @@
         In order to get the same features as the legacy web application,
         we created a \textbf{monitoring} page (showed in
         figure~\ref{monitor_web}), on which important
-        information would be displayed to the user in lists:
+        information are displayed to the user in lists:
 
         \begin{itemize}
           \item A list of \texttt{Splay} daemons (created by the controller) is retrieved
@@ -1268,7 +1271,7 @@
         missing at this point. \\
         As soon as we completed the backend with the logging endpoint, we
         added this feature to the website with some improvements. When the
-        job is running or is finished, the user can see the log (using a
+        job is running or is finished, the user can see the logs (using a
         button next to the job details) which holds the involved daemons logs
         with, for each line, the time and the daemon id indication. The user
         can then choose to download the logs as a text file (as it was possible
@@ -1292,7 +1295,7 @@
         It is more than probable that \texttt{Lua} was used for coherence reasons back
         in the days, and to avoid scattering \texttt{Splay} around too many different
         technologies (although \texttt{Ruby} may have been used too instead of \texttt{Lua}).
-        Still, maybe today this choice was not the most relevant for a CLI
+        However, maybe today this choice was not the most relevant for a CLI
         application. Indeed, our small client CLI had to:
 
         \begin{itemize}
@@ -1384,7 +1387,7 @@
           inserting nothing. We thus had to check every Sequel usage in all the
           code and change for the right call. We also tried in the same process
           to clean as much as possible the raw \texttt{SQL} string calls by using
-          interpolation (see the improvements section in the conclusion).
+          interpolation.
           \item \textbf{Communication with daemons}: The communication between daemons
           and the controller was not consistent is some cases. For example, the
           logs retrieval was buggy because daemons were sending more
@@ -1417,18 +1420,18 @@
           is only based on the IP and port, therefore if a daemon uses a client
           port (TCP or UDP), the server will answer respond to an unknown port
           without any restriction.\\
-          To bypass this, we created a new topology restriction only based on
+          To solve this, we created a new topology restriction only based on
           the IP, but that means that all the nodes (daemons) need to have a
-          different IP (thanks to \texttt{Docker}, this is the case), but that is
+          different IP (thanks to \texttt{Docker}, this is the case). That is
           something that should be improved and changed and we will talk about
           it in the improvements section.
           \item We removed the \texttt{LuaCrypto} library from the daemon and added
-          luaossl to replace it. The main reason for this change was that
+          \texttt{luaossl} to replace it. The main reason for this change was that
           \texttt{LuaCrypto} cannot use the last Linux's \texttt{openssl} package (due to a
           security issue, and older versions cannot be used in newer OS),
           \texttt{LuaCrypto} was also not updated anymore and moreover, an issue about
           this was open in the old project repository~\cite{sslLib}.\\
-          Therefore, We updated the code to make use of the new \texttt{luaossl} library.
+          We thus updated the code to make use of the new \texttt{luaossl} library.
           \item Multiple bug fixes mainly due to the \texttt{Lua} version change needed
           to be solved.
         \end{itemize}
