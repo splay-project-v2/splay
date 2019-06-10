@@ -1003,7 +1003,7 @@
           OmniAuth support, account tracking, registration confirmation
           through emails, and many others listed on the gem webpage.\\
 
-          For all these reasons \texttt{Devise} was the best choice for our registration management,
+          For all these reasons, \texttt{Devise} was the best choice for our registration management,
           even for an API-only \texttt{Rails} application.
 
         \subsubsection{User Authentication}
@@ -1220,7 +1220,7 @@
         In order to get the same features as the legacy web application,
         we created a \textbf{monitoring} page (showed in
         figure~\ref{monitor_web}), on which important
-        information are displayed to the user in lists:
+        information are displayed to the user through lists:
 
         \begin{itemize}
           \item A list of \texttt{Splay} daemons (created by the controller) is retrieved
@@ -1423,8 +1423,7 @@
           To solve this, we created a new topology restriction only based on
           the IP, but that means that all the nodes (daemons) need to have a
           different IP (thanks to \texttt{Docker}, this is the case). That is
-          something that should be improved and changed and we will talk about
-          it in the improvements section.
+          something that should be improved.
           \item We removed the \texttt{LuaCrypto} library from the daemon and added
           \texttt{luaossl} to replace it. The main reason for this change was that
           \texttt{LuaCrypto} cannot use the last Linux's \texttt{openssl} package (due to a
@@ -1717,7 +1716,7 @@
           following:
 
           \begin{itemize}
-            \item Encourage the TDD approach, as it's easier and better to
+            \item Encourage the TDD approach, as it is easier and better to
             write the tests covering the feature and then writing the feature
             instead of writing the feature and then tests in order to reach
             the coverage level
@@ -1831,9 +1830,9 @@
 
       In the previous chapters, we went through the development of all
       the changes we had to implement in the already existing features
-      and the software architecture of the project, and also explained
+      and the software architecture of the project. We also explained
       in details how we ensured quality insurance among the whole project,
-      we now explain the development of the new features we implemented in
+      we will now explain the development of the new features we implemented in
       \texttt{Splay}.
 
       \section{Web Application enhancement}
@@ -1876,8 +1875,8 @@
 
       \subsection{Topology creation}
 
-        The second objective concerning the web application was to provide to the
-        user an easy way to enter the topology details, where the distributed algorithm
+        The second objective concerning the web application was to provide the
+        user with an easy way to enter the topology details, where the distributed algorithm
         will run into. The previous and only way to send a topology
         to the server was to write a whole \texttt{XML} file following the \texttt{ModelNet}
         topology representation, a somehow tedious and error-prone process.\\
@@ -1904,12 +1903,12 @@
         We have set validations behind the scenes and
         prevent the user from creating wrong settings such as a link having the
         same node as source and destination and ensure the topology would
-        fit in the \texttt{Splay} system. To help a user manage the created
+        fit in the \texttt{Splay} system. To help a user managing the created
         elements of topology, a simple summary of these elements is
         output on the page with the related information. A simple click on those
         allows deleting the corresponding element from the topology.\\
-        Indeed, any deletion of a node would delete the link it is associated
-        with, or any deletion of a spec would delete the associated links.\\
+        Indeed, any deletion of a node deletes the link it is associated
+        with, or any deletion of a spec deletes the associated links.\\
 
         \begin{figure}[H]
           \centering
@@ -1933,20 +1932,20 @@
 
         Once the user is done editing his topology, he does not have to
         do anything more. We created the editor so that the saved entities
-        of it (being JSON elements) would be directly transformed into the
+        (being JSON elements) would be directly transformed into the
         corresponding \texttt{XML} file and sent to the backend alongside the
         job.\\
 
         However, using a visual tool with buttons and inputs is not always
         the fastest and most practical thing for someone more experienced. We
         thought that some \texttt{Splay} users would probably not want to be obliged
-        to play with our topology editor and would keep their topology
+        to use our topology editor and would keep their topology
         settings in some file alongside with their code.\\
-        Therefore, We wanted to allow the user to play with \texttt{XML} directly
+        We wanted to allow the user to play with \texttt{XML} directly
         if he wanted to, offering the following service:
 
         \begin{itemize}
-          \item A user creating the topology could also translate what's
+          \item A user creating the topology could also translate what is
           displayed in the visual editor into the \texttt{XML} definition.
           \item A user creating the topology could directly paste
           his \texttt{XML} topology in some editor and also have the option of
@@ -1958,7 +1957,7 @@
         the job submission. We reused the \texttt{Brace} package used
         for the \texttt{Lua} code editor to create an \texttt{XML} Topology editor.\\
         The user could then trigger an \texttt{XML} creation into the \texttt{Brace} editor
-        before sending the job or paste its code into the \texttt{Brace} editor, and
+        before sending the job or paste his code into the \texttt{Brace} editor, and
         then ask for reflecting the \texttt{XML} topology into the visual editor. It
         was just then the matter of parsing the XML and generating the
         corresponding JSON entities, reusing the functions we already wrote
@@ -1975,12 +1974,12 @@
       The fault injection feature (or crash point) is achieved on the daemon
       side of the application. Indeed, we wanted to be able to trigger a crash
       of the code in the middle of the execution tree, therefore only the
-      daemon was able to handle with precision the crash.\\
+      daemon was able to handle the crash with precision.\\
 
-      We, accordingly, made the decision to use a domain specific language (DSL)
-      for the crash management so that a user could define the crash point
+      We accordingly made the decision of using a domain specific language (DSL)
+      for the crash management, so that a user could define the crash point
       in the \texttt{Lua} code as a comment. During the job execution phase, just before
-      executing the user code, we parse the code and gather those crash
+      executing the user code, we parse the code and gather the crash
       points that generate crashes.
 
       \subsection{Domain Specific Language (DSL)}
@@ -1988,22 +1987,21 @@
         We defined our small domain specific language to be simple to use
         for the user and flexible enough for the parsing phase. This DSL
         needed to be integrated into the \texttt{Lua} code without forcing the user to
-        modify its algorithm code and trying to avoid totally crashing
-        the daemon in case of the crash points specified by the user were
-        not correct.\\
+        modify its algorithm implementation. We also had to make sure that the
+        daemon itself would not crash in case of malformed crash points.
         Also, the difference in terms of the number of lines of code between the
-        source code before and after the parsing needed to be the same in
-        order to keep the feedback error messages right (getting the same line
+        source code before and after the parsing needed to be the same, this in
+        order to keep the feedback error messages correct (getting the same line
         number when locating the error).\\
 
         For these reasons, we designed the feature so that a crash point has
         to be represented as \textbf{one line} of code and beginning by
-        two hyphens (--) which indicates a \texttt{Lua} comment.\\
+        two hyphens (--), which indicates a \texttt{Lua} comment.\\
         To avoid interpreting any other comment, those crash points must
-        contain the keyword \textsc{CRASH POINT}. Achieving this by comments
+        contain the keyword \textsc{CRASH POINT}. Achieving this with comments
         was probably the best option so that the real code does not get any
         interference with our crash point functionality. The crash then
-        happens exactly where the crash point is defined, it is, therefore,
+        happens exactly where the crash point is defined, it is thus
         possible to make the execution code crashing anywhere (thread, middle
         of a function, etc...).\\
 
@@ -2018,9 +2016,9 @@
           specified. For this purpose, the user must add the ids of the
           affected nodes separated by a space (ids begin at 1 -> number of
           daemons used).
-          \item The type of crash can be specified by its name and optional
-          parameters
-          \item The moment where the crash occurs
+          \item The type of crash must be specified by its name and optional
+          parameters.
+          \item The moment where the crash occurs must be specified.
         \end{itemize}
 
         Our final DSL looks like this:
@@ -2124,9 +2122,9 @@
 
         The \texttt{Lua} multithreading is non-preemptive, this means that we cannot stop a thread from the
         outside~\cite{CoroutineLua}. This particularity helps to simplify distributed algorithms,
-        but for the fault injection, it limits the field of possibility
+        but it limits the field of possibilities for the fault injection
         (we cannot kill a thread without killing the process).
-        Then, a solution is to exit the process itself by using an OS function (os.exit),
+        A solution is to exit the process itself by using an OS function (os.exit),
         then kill all threads. We also have the possibility of sending an exit
         status code to the process (as parameters of the function),
         which is very convenient for knowing if we need to restart or stay
@@ -2146,7 +2144,7 @@
         of C~\cite{waitpid}.\\
 
         When the child process terminates (either in a normal way or because
-        of a crash), the parent process checks the exit status code and act
+        of a crash), the parent process checks the exit status code and acts
         accordingly. If the exit status code is 65 or 66, it means that a
         crash has been triggered (or that the user wants to exit
         with one of these values). We chose to use 65 and 66 because
@@ -2163,7 +2161,7 @@
         the original code. Moreover, when it is a recovery crash, the user
         can define the downtime. Our simple solution to achieve this is by
         using the non-preemptive feature of \texttt{Lua} and forcing the process
-        to sleep x seconds without any yield coroutine (therefore other
+        to sleep $x$ seconds without any yield coroutine (therefore other
         coroutines cannot execute any code) before crashing.
 
   \chapter{Use Case}
